@@ -1,0 +1,23 @@
+{
+  "name": "neuroatlas-teaching-studio",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "check": "node scripts/check-data.mjs && node scripts/literature_validate.mjs && node --test src/lib/roi.test.mjs src/lib/pam50.test.mjs",
+    "build:public": "node scripts/build-public.mjs",
+    "package:source": "node scripts/public-package.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.180.0",
+    "lucide-react": "^0.468.0"
+  },
+  "devDependencies": {
+    "vite": "^7.1.12"
+  }
+}

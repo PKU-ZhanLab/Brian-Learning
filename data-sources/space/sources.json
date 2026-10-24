@@ -1,0 +1,31 @@
+{
+  "repository": "templateflow/tpl-MNI152NLin2009aAsym",
+  "commit": "7a07138ba04c9e7289637a7a9221dd34535748df",
+  "files": [
+    {
+      "file": "tpl-MNI152NLin2009aAsym_res-1_T1w.nii.gz",
+      "url": "https://templateflow.s3.amazonaws.com/tpl-MNI152NLin2009aAsym/tpl-MNI152NLin2009aAsym_res-1_T1w.nii.gz",
+      "sha256": "a12fa7be3c02762e14ec770e940a46ce57dc6d7e4953c5228e4da646301b9fe1",
+      "bytes": 13955317
+    },
+    {
+      "file": "tpl-MNI152NLin2009aAsym_res-1_desc-brain_mask.nii.gz",
+      "url": "https://templateflow.s3.amazonaws.com/tpl-MNI152NLin2009aAsym/tpl-MNI152NLin2009aAsym_res-1_desc-brain_mask.nii.gz",
+      "sha256": "17afe7c0696e788aeceb656e16bb5e907e8d22cf8871e088e31b31c9a1941b67",
+      "bytes": 164471
+    },
+    {
+      "file": "MNI152NLin2009aAsym-template_description.json",
+      "url": "https://raw.githubusercontent.com/templateflow/tpl-MNI152NLin2009aAsym/7a07138ba04c9e7289637a7a9221dd34535748df/template_description.json",
+      "sha256": "4ab1cd0e52af93eb6fb23f4fda928cf571cecef69883bd75da5773ce315033e9",
+      "bytes": 874
+    },
+    {
+      "file": "LICENSE-MNI.txt",
+      "url": "https://raw.githubusercontent.com/templateflow/tpl-MNI152NLin2009aAsym/7a07138ba04c9e7289637a7a9221dd34535748df/LICENSE",
+      "sha256": "46e280fe1a24c6f37feef2445ed288435e0ad063504a06030b206b12fdd2629d",
+      "bytes": 682
+    }
+  ],
+  "headerNote": "Registration uses each actual NIfTI header. Repository template_description.json contains stale/different generic res shape/origin fields and is not used to place voxels."
+}

@@ -1,0 +1,2427 @@
+[
+  {
+    "sourceId": 8,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 13,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 15,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 16,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Uncus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 18,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Uncus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 19,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 23,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 26,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.*.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 29,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 33,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 34,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Uncus.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 35,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Uncus.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 36,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 38,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 41,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 44,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.*.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 45,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.*.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 46,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 53,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.*.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 59,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 60,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 75,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Uncus.Gray Matter.Brodmann area 36",
+    "ba": 36
+  },
+  {
+    "sourceId": 76,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Uncus.Gray Matter.Brodmann area 36",
+    "ba": 36
+  },
+  {
+    "sourceId": 77,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 21",
+    "ba": 21
+  },
+  {
+    "sourceId": 78,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 21",
+    "ba": 21
+  },
+  {
+    "sourceId": 79,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 21",
+    "ba": 21
+  },
+  {
+    "sourceId": 94,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Uncus.Gray Matter.Brodmann area 28",
+    "ba": 28
+  },
+  {
+    "sourceId": 95,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Uncus.Gray Matter.Brodmann area 28",
+    "ba": 28
+  },
+  {
+    "sourceId": 97,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 21",
+    "ba": 21
+  },
+  {
+    "sourceId": 101,
+    "sourceLabel": "Left Cerebrum.*.Superior Temporal Gyrus.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 102,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Orbital Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 103,
+    "sourceLabel": "Right Cerebrum.*.Orbital Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 109,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Orbital Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 123,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 124,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 129,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 36",
+    "ba": 36
+  },
+  {
+    "sourceId": 130,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 36",
+    "ba": 36
+  },
+  {
+    "sourceId": 135,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 136,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 36",
+    "ba": 36
+  },
+  {
+    "sourceId": 140,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 35",
+    "ba": 35
+  },
+  {
+    "sourceId": 141,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 35",
+    "ba": 35
+  },
+  {
+    "sourceId": 142,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Rectal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 145,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Rectal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 146,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Orbital Gyrus.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 147,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Orbital Gyrus.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 152,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Superior Frontal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 153,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Superior Frontal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 166,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 36",
+    "ba": 36
+  },
+  {
+    "sourceId": 167,
+    "sourceLabel": "Right Cerebrum.*.Fusiform Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 169,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 28",
+    "ba": 28
+  },
+  {
+    "sourceId": 170,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 28",
+    "ba": 28
+  },
+  {
+    "sourceId": 171,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 172,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 177,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 34",
+    "ba": 34
+  },
+  {
+    "sourceId": 178,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 34",
+    "ba": 34
+  },
+  {
+    "sourceId": 179,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Uncus.Gray Matter.Brodmann area 34",
+    "ba": 34
+  },
+  {
+    "sourceId": 180,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Uncus.Gray Matter.Brodmann area 34",
+    "ba": 34
+  },
+  {
+    "sourceId": 185,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 188,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 191,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 192,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 197,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 198,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 203,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 205,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 208,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 209,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 213,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 214,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 217,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 218,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 20",
+    "ba": 20
+  },
+  {
+    "sourceId": 221,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 222,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 38",
+    "ba": 38
+  },
+  {
+    "sourceId": 226,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 25",
+    "ba": 25
+  },
+  {
+    "sourceId": 227,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 25",
+    "ba": 25
+  },
+  {
+    "sourceId": 234,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 25",
+    "ba": 25
+  },
+  {
+    "sourceId": 235,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 236,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 237,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 25",
+    "ba": 25
+  },
+  {
+    "sourceId": 242,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Lingual Gyrus.Gray Matter.Brodmann area 17",
+    "ba": 17
+  },
+  {
+    "sourceId": 245,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Lingual Gyrus.Gray Matter.Brodmann area 17",
+    "ba": 17
+  },
+  {
+    "sourceId": 247,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Lingual Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 249,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Lingual Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 250,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Inferior Occipital Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 254,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Inferior Occipital Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 258,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 259,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 263,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.*.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 264,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.*.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 265,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 266,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 267,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.*.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 268,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.*.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 269,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 270,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 271,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 272,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.*.Gray Matter.Brodmann area 35",
+    "ba": 35
+  },
+  {
+    "sourceId": 275,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 21",
+    "ba": 21
+  },
+  {
+    "sourceId": 276,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 21",
+    "ba": 21
+  },
+  {
+    "sourceId": 279,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 34",
+    "ba": 34
+  },
+  {
+    "sourceId": 280,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 34",
+    "ba": 34
+  },
+  {
+    "sourceId": 281,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 25",
+    "ba": 25
+  },
+  {
+    "sourceId": 282,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 25",
+    "ba": 25
+  },
+  {
+    "sourceId": 283,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 34",
+    "ba": 34
+  },
+  {
+    "sourceId": 285,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 34",
+    "ba": 34
+  },
+  {
+    "sourceId": 286,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 21",
+    "ba": 21
+  },
+  {
+    "sourceId": 287,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 34",
+    "ba": 34
+  },
+  {
+    "sourceId": 288,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 292,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 294,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 295,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 296,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 297,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 298,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 299,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 300,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 301,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Subcallosal Gyrus.Gray Matter.Brodmann area 11",
+    "ba": 11
+  },
+  {
+    "sourceId": 302,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 303,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Inferior Occipital Gyrus.Gray Matter.Brodmann area 17",
+    "ba": 17
+  },
+  {
+    "sourceId": 304,
+    "sourceLabel": "Right Cerebrum.*.*.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 305,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Inferior Occipital Gyrus.Gray Matter.Brodmann area 17",
+    "ba": 17
+  },
+  {
+    "sourceId": 306,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Middle Occipital Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 307,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Middle Occipital Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 315,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Middle Occipital Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 316,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Middle Occipital Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 323,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Middle Occipital Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 324,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Middle Occipital Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 328,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 329,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 330,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 331,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 332,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 333,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 334,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Fusiform Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 345,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Sub-Gyral.Gray Matter.Brodmann area 28",
+    "ba": 28
+  },
+  {
+    "sourceId": 352,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 21",
+    "ba": 21
+  },
+  {
+    "sourceId": 365,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 366,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 367,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 368,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 369,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Extra-Nuclear.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 376,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Extra-Nuclear.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 380,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 25",
+    "ba": 25
+  },
+  {
+    "sourceId": 381,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 25",
+    "ba": 25
+  },
+  {
+    "sourceId": 392,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Extra-Nuclear.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 393,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Extra-Nuclear.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 395,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 396,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 399,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 400,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Extra-Nuclear.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 401,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Extra-Nuclear.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 402,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 405,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 406,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 407,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 408,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 409,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 410,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 411,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 412,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Superior Frontal Gyrus.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 413,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Superior Frontal Gyrus.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 414,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Inferior Occipital Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 415,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Inferior Occipital Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 417,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Lingual Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 418,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Lingual Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 420,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 421,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 422,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 423,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 425,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 426,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 427,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Sub-Gyral.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 428,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Sub-Gyral.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 429,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 30",
+    "ba": 30
+  },
+  {
+    "sourceId": 430,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Sub-Gyral.Gray Matter.Brodmann area 30",
+    "ba": 30
+  },
+  {
+    "sourceId": 431,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 30",
+    "ba": 30
+  },
+  {
+    "sourceId": 432,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 27",
+    "ba": 27
+  },
+  {
+    "sourceId": 433,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 27",
+    "ba": 27
+  },
+  {
+    "sourceId": 442,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 443,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 444,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 445,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 446,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 447,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 458,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 460,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 466,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 467,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Inferior Frontal Gyrus.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 468,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 469,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 24",
+    "ba": 24
+  },
+  {
+    "sourceId": 470,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 24",
+    "ba": 24
+  },
+  {
+    "sourceId": 471,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.*.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 474,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 475,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 17",
+    "ba": 17
+  },
+  {
+    "sourceId": 477,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 17",
+    "ba": 17
+  },
+  {
+    "sourceId": 478,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 479,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 480,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 481,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Lingual Gyrus.Gray Matter.Brodmann area 30",
+    "ba": 30
+  },
+  {
+    "sourceId": 482,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Lingual Gyrus.Gray Matter.Brodmann area 30",
+    "ba": 30
+  },
+  {
+    "sourceId": 483,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 484,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 487,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 488,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Inferior Temporal Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 511,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Extra-Nuclear.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 516,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 517,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 537,
+    "sourceLabel": "Inter-Hemispheric.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 540,
+    "sourceLabel": "Inter-Hemispheric.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 17",
+    "ba": 17
+  },
+  {
+    "sourceId": 558,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 560,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 564,
+    "sourceLabel": "Right Cerebellum.Anterior Lobe.Culmen.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 566,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Lingual Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 568,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Lingual Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 587,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Insula.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 588,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Insula.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 589,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Insula.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 590,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Insula.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 602,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 45",
+    "ba": 45
+  },
+  {
+    "sourceId": 603,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 45",
+    "ba": 45
+  },
+  {
+    "sourceId": 604,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Inferior Frontal Gyrus.Gray Matter.Brodmann area 47",
+    "ba": 47
+  },
+  {
+    "sourceId": 607,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 46",
+    "ba": 46
+  },
+  {
+    "sourceId": 608,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 46",
+    "ba": 46
+  },
+  {
+    "sourceId": 610,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 612,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 627,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Middle Occipital Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 628,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Middle Occipital Gyrus.Gray Matter.Brodmann area 37",
+    "ba": 37
+  },
+  {
+    "sourceId": 631,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 632,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Parahippocampal Gyrus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 634,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Superior Temporal Gyrus.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 653,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Inferior Frontal Gyrus.Gray Matter.Brodmann area 45",
+    "ba": 45
+  },
+  {
+    "sourceId": 655,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 45",
+    "ba": 45
+  },
+  {
+    "sourceId": 656,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 45",
+    "ba": 45
+  },
+  {
+    "sourceId": 658,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 46",
+    "ba": 46
+  },
+  {
+    "sourceId": 660,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 30",
+    "ba": 30
+  },
+  {
+    "sourceId": 661,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 30",
+    "ba": 30
+  },
+  {
+    "sourceId": 663,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Posterior Cingulate.Gray Matter.Brodmann area 30",
+    "ba": 30
+  },
+  {
+    "sourceId": 665,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Posterior Cingulate.Gray Matter.Brodmann area 30",
+    "ba": 30
+  },
+  {
+    "sourceId": 669,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Posterior Cingulate.Gray Matter.Brodmann area 30",
+    "ba": 30
+  },
+  {
+    "sourceId": 670,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Posterior Cingulate.Gray Matter.Brodmann area 29",
+    "ba": 29
+  },
+  {
+    "sourceId": 671,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Posterior Cingulate.Gray Matter.Brodmann area 29",
+    "ba": 29
+  },
+  {
+    "sourceId": 672,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 41",
+    "ba": 41
+  },
+  {
+    "sourceId": 673,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 41",
+    "ba": 41
+  },
+  {
+    "sourceId": 674,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 42",
+    "ba": 42
+  },
+  {
+    "sourceId": 675,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 42",
+    "ba": 42
+  },
+  {
+    "sourceId": 682,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 683,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 689,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 44",
+    "ba": 44
+  },
+  {
+    "sourceId": 690,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 44",
+    "ba": 44
+  },
+  {
+    "sourceId": 691,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 44",
+    "ba": 44
+  },
+  {
+    "sourceId": 696,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 46",
+    "ba": 46
+  },
+  {
+    "sourceId": 697,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 46",
+    "ba": 46
+  },
+  {
+    "sourceId": 699,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 700,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 702,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 703,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 704,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 705,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 706,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 23",
+    "ba": 23
+  },
+  {
+    "sourceId": 707,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 23",
+    "ba": 23
+  },
+  {
+    "sourceId": 708,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 709,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 719,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Transverse Temporal Gyrus.Gray Matter.Brodmann area 41",
+    "ba": 41
+  },
+  {
+    "sourceId": 720,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Transverse Temporal Gyrus.Gray Matter.Brodmann area 41",
+    "ba": 41
+  },
+  {
+    "sourceId": 721,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 41",
+    "ba": 41
+  },
+  {
+    "sourceId": 722,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 41",
+    "ba": 41
+  },
+  {
+    "sourceId": 723,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Transverse Temporal Gyrus.Gray Matter.Brodmann area 41",
+    "ba": 41
+  },
+  {
+    "sourceId": 727,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Transverse Temporal Gyrus.Gray Matter.Brodmann area 42",
+    "ba": 42
+  },
+  {
+    "sourceId": 729,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Transverse Temporal Gyrus.Gray Matter.Brodmann area 42",
+    "ba": 42
+  },
+  {
+    "sourceId": 733,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 734,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Precentral Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 735,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 13",
+    "ba": 13
+  },
+  {
+    "sourceId": 738,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 43",
+    "ba": 43
+  },
+  {
+    "sourceId": 739,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 43",
+    "ba": 43
+  },
+  {
+    "sourceId": 740,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 43",
+    "ba": 43
+  },
+  {
+    "sourceId": 741,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 42",
+    "ba": 42
+  },
+  {
+    "sourceId": 742,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 42",
+    "ba": 42
+  },
+  {
+    "sourceId": 748,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 44",
+    "ba": 44
+  },
+  {
+    "sourceId": 749,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 44",
+    "ba": 44
+  },
+  {
+    "sourceId": 754,
+    "sourceLabel": "Right Cerebrum.*.*.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 755,
+    "sourceLabel": "Inter-Hemispheric.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 10",
+    "ba": 10
+  },
+  {
+    "sourceId": 756,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Posterior Cingulate.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 757,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Posterior Cingulate.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 758,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Posterior Cingulate.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 760,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Posterior Cingulate.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 762,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Posterior Cingulate.Gray Matter.Brodmann area 23",
+    "ba": 23
+  },
+  {
+    "sourceId": 763,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Posterior Cingulate.Gray Matter.Brodmann area 23",
+    "ba": 23
+  },
+  {
+    "sourceId": 764,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 765,
+    "sourceLabel": "Left Cerebrum.*.Superior Temporal Gyrus.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 766,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 767,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Superior Temporal Gyrus.Gray Matter.Brodmann area 22",
+    "ba": 22
+  },
+  {
+    "sourceId": 768,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 41",
+    "ba": 41
+  },
+  {
+    "sourceId": 770,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Insula.Gray Matter.Brodmann area 41",
+    "ba": 41
+  },
+  {
+    "sourceId": 771,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Insula.Gray Matter.Brodmann area 41",
+    "ba": 41
+  },
+  {
+    "sourceId": 774,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 778,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 781,
+    "sourceLabel": "Right Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 785,
+    "sourceLabel": "Left Cerebrum.Sub-lobar.Insula.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 792,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 43",
+    "ba": 43
+  },
+  {
+    "sourceId": 793,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 43",
+    "ba": 43
+  },
+  {
+    "sourceId": 797,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Sub-Gyral.Gray Matter.Brodmann area 43",
+    "ba": 43
+  },
+  {
+    "sourceId": 804,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 805,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 806,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 808,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 809,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 810,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 813,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 814,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 815,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 816,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 818,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 819,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 820,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Middle Occipital Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 823,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Precuneus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 824,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Precuneus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 826,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Precuneus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 827,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Precuneus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 829,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Precuneus.Gray Matter.Brodmann area 23",
+    "ba": 23
+  },
+  {
+    "sourceId": 830,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Precuneus.Gray Matter.Brodmann area 23",
+    "ba": 23
+  },
+  {
+    "sourceId": 835,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 836,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 838,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 33",
+    "ba": 33
+  },
+  {
+    "sourceId": 839,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Anterior Cingulate.Gray Matter.Brodmann area 33",
+    "ba": 33
+  },
+  {
+    "sourceId": 841,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Anterior Cingulate.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 843,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 844,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 848,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Superior Occipital Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 849,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Superior Occipital Gyrus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 856,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Precuneus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 857,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Precuneus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 858,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Precuneus.Gray Matter.Brodmann area 18",
+    "ba": 18
+  },
+  {
+    "sourceId": 859,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Precuneus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 863,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Precuneus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 865,
+    "sourceLabel": "*.Frontal Lobe.Middle Temporal Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 869,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Supramarginal Gyrus.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 872,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Supramarginal Gyrus.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 877,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Inferior Parietal Lobule.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 878,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Inferior Parietal Lobule.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 881,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Inferior Parietal Lobule.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 885,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Inferior Parietal Lobule.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 891,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 2",
+    "ba": 2
+  },
+  {
+    "sourceId": 892,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 2",
+    "ba": 2
+  },
+  {
+    "sourceId": 893,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 1",
+    "ba": 1
+  },
+  {
+    "sourceId": 894,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 1",
+    "ba": 1
+  },
+  {
+    "sourceId": 895,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 896,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 897,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 898,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 899,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 900,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Frontal Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 901,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 902,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Superior Frontal Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 903,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Superior Frontal Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 905,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 906,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Superior Occipital Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 907,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Superior Occipital Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 908,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Superior Occipital Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 909,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 910,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Superior Occipital Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 915,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 916,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 917,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 918,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Sub-Gyral.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 920,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Precuneus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 923,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Precuneus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 927,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Supramarginal Gyrus.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 928,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Supramarginal Gyrus.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 932,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Sub-Gyral.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 934,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 23",
+    "ba": 23
+  },
+  {
+    "sourceId": 935,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 23",
+    "ba": 23
+  },
+  {
+    "sourceId": 938,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 939,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 940,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 941,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 24",
+    "ba": 24
+  },
+  {
+    "sourceId": 942,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 24",
+    "ba": 24
+  },
+  {
+    "sourceId": 943,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 944,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 945,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 946,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 947,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 948,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 952,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 953,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Cuneus.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 958,
+    "sourceLabel": "Left Cerebrum.Temporal Lobe.Angular Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 959,
+    "sourceLabel": "Right Cerebrum.Temporal Lobe.Angular Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 967,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Angular Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 968,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Precuneus.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 969,
+    "sourceLabel": "Right Cerebrum.Occipital Lobe.Precuneus.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 970,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Angular Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 971,
+    "sourceLabel": "Left Cerebrum.Occipital Lobe.Precuneus.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 972,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Precuneus.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 974,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Supramarginal Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 975,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Supramarginal Gyrus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 978,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Inferior Parietal Lobule.Gray Matter.Brodmann area 2",
+    "ba": 2
+  },
+  {
+    "sourceId": 981,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 982,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 983,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 984,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 986,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Precuneus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 987,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Precuneus.Gray Matter.Brodmann area 19",
+    "ba": 19
+  },
+  {
+    "sourceId": 989,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Precuneus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 990,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Precuneus.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 991,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Sub-Gyral.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 992,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Angular Gyrus.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 993,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Angular Gyrus.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 994,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Sub-Gyral.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 995,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 998,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 999,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Sub-Gyral.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 1000,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Sub-Gyral.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 1003,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 1004,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 9",
+    "ba": 9
+  },
+  {
+    "sourceId": 1006,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 1008,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 1009,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1010,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1011,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1012,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Cingulate Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1014,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Inferior Parietal Lobule.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 1015,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Inferior Parietal Lobule.Gray Matter.Brodmann area 39",
+    "ba": 39
+  },
+  {
+    "sourceId": 1016,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Precuneus.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 1017,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 1018,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Sub-Gyral.Gray Matter.Brodmann area 2",
+    "ba": 2
+  },
+  {
+    "sourceId": 1019,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Precentral Gyrus.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 1020,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Sub-Gyral.Gray Matter.Brodmann area 24",
+    "ba": 24
+  },
+  {
+    "sourceId": 1021,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Sub-Gyral.Gray Matter.Brodmann area 24",
+    "ba": 24
+  },
+  {
+    "sourceId": 1022,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1023,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1024,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1025,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 8",
+    "ba": 8
+  },
+  {
+    "sourceId": 1026,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Middle Frontal Gyrus.Gray Matter.Brodmann area 8",
+    "ba": 8
+  },
+  {
+    "sourceId": 1027,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 8",
+    "ba": 8
+  },
+  {
+    "sourceId": 1028,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 8",
+    "ba": 8
+  },
+  {
+    "sourceId": 1029,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Sub-Gyral.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 1030,
+    "sourceLabel": "Right Cerebrum.Limbic Lobe.Sub-Gyral.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 1031,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 1032,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 32",
+    "ba": 32
+  },
+  {
+    "sourceId": 1033,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 8",
+    "ba": 8
+  },
+  {
+    "sourceId": 1034,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 8",
+    "ba": 8
+  },
+  {
+    "sourceId": 1035,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Superior Frontal Gyrus.Gray Matter.Brodmann area 8",
+    "ba": 8
+  },
+  {
+    "sourceId": 1036,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Superior Frontal Gyrus.Gray Matter.Brodmann area 8",
+    "ba": 8
+  },
+  {
+    "sourceId": 1039,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Superior Parietal Lobule.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1040,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Superior Parietal Lobule.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1043,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Inferior Parietal Lobule.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1044,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Inferior Parietal Lobule.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1045,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 1049,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 1050,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Sub-Gyral.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 1053,
+    "sourceLabel": "Left Cerebrum.Limbic Lobe.Paracentral Lobule.Gray Matter.Brodmann area 31",
+    "ba": 31
+  },
+  {
+    "sourceId": 1061,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Superior Parietal Lobule.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 1062,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Superior Parietal Lobule.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 1064,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 5",
+    "ba": 5
+  },
+  {
+    "sourceId": 1065,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1066,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1067,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 5",
+    "ba": 5
+  },
+  {
+    "sourceId": 1068,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 5",
+    "ba": 5
+  },
+  {
+    "sourceId": 1070,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 5",
+    "ba": 5
+  },
+  {
+    "sourceId": 1075,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1076,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1077,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Superior Frontal Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1078,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Superior Frontal Gyrus.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1080,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Sub-Gyral.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1081,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Sub-Gyral.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1082,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Inferior Parietal Lobule.Gray Matter.Brodmann area 40",
+    "ba": 40
+  },
+  {
+    "sourceId": 1083,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Precuneus.Gray Matter.Brodmann area 5",
+    "ba": 5
+  },
+  {
+    "sourceId": 1086,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Precuneus.Gray Matter.Brodmann area 5",
+    "ba": 5
+  },
+  {
+    "sourceId": 1087,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1088,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 1089,
+    "sourceLabel": "Left Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 1090,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 1091,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 1092,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 3",
+    "ba": 3
+  },
+  {
+    "sourceId": 1093,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 1094,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Sub-Gyral.Gray Matter.Brodmann area 6",
+    "ba": 6
+  },
+  {
+    "sourceId": 1095,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 5",
+    "ba": 5
+  },
+  {
+    "sourceId": 1096,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 5",
+    "ba": 5
+  },
+  {
+    "sourceId": 1097,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Superior Parietal Lobule.Gray Matter.Brodmann area 5",
+    "ba": 5
+  },
+  {
+    "sourceId": 1098,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Superior Parietal Lobule.Gray Matter.Brodmann area 5",
+    "ba": 5
+  },
+  {
+    "sourceId": 1099,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 1100,
+    "sourceLabel": "Right Cerebrum.Frontal Lobe.Medial Frontal Gyrus.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 1101,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1102,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Postcentral Gyrus.Gray Matter.Brodmann area 7",
+    "ba": 7
+  },
+  {
+    "sourceId": 1104,
+    "sourceLabel": "Left Cerebrum.Parietal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 4",
+    "ba": 4
+  },
+  {
+    "sourceId": 1105,
+    "sourceLabel": "Right Cerebrum.Parietal Lobe.Paracentral Lobule.Gray Matter.Brodmann area 4",
+    "ba": 4
+  }
+]

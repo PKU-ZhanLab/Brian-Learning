@@ -1,0 +1,1498 @@
+{
+  "generatedAt": "2026-10-24T19:40:07.426Z",
+  "records": [
+    {
+      "id": "cichy2014",
+      "status": "verified",
+      "reference": {
+        "id": "cichy2014",
+        "title": "Resolving human object recognition in space and time",
+        "doi": "10.1038/nn.3635",
+        "pmid": "24464044",
+        "type": "fmri",
+        "method": "人体 MEG、fMRI 与表征相似性分析",
+        "summary": "将 MEG 的时间信息与 fMRI 的空间表征联系，显示视觉物体信息随加工阶段变化；不是直接把 MEG 传感器当作皮层坐标。",
+        "authors": "Cichy RM, Pantazis D, Oliva A",
+        "fullAuthorList": [
+          "Cichy RM",
+          "Pantazis D",
+          "Oliva A"
+        ],
+        "year": 2014,
+        "journal": "Nature neuroscience",
+        "volume": "17(3)",
+        "pages": "455-462",
+        "pmcid": "PMC4261693",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/24464044/",
+        "verified": "2026-10-25",
+        "verificationStatus": "cross-verified",
+        "metadataSources": [
+          "https://api.crossref.org/works/10.1038%2Fnn.3635",
+          "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A24464044+AND+SRC%3AMED&format=json&resultType=core&pageSize=10"
+        ]
+      },
+      "publicationTypes": [
+        "Comparative Study",
+        "Research Support, Non-U.S. Gov't",
+        "research-article",
+        "Research Support, U.S. Gov't, Non-P.H.S.",
+        "Journal Article",
+        "Research Support, N.I.H., Extramural"
+      ],
+      "mesh": [
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Cerebral Cortex",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Visual Cortex",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Temporal Lobe",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              },
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "SU",
+                "qualifierName": "surgery"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Animals"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Macaca mulatta"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Humans"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Magnetoencephalography",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "IS",
+                "qualifierName": "instrumentation"
+              },
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "MT",
+                "qualifierName": "methods"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Electrodes, Implanted"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Pattern Recognition, Visual",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Time Factors"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Adult"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Female"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Male"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Electrophysiological Phenomena"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Young Adult"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Functional Neuroimaging",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "IS",
+                "qualifierName": "instrumentation"
+              },
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "MT",
+                "qualifierName": "methods"
+              }
+            ]
+          }
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://api.crossref.org/works/10.1038%2Fnn.3635",
+          "retrievedAt": "2026-10-24T19:37:52.366Z",
+          "sha256": "2746175b21100a69df86d4b576489128ac4b3d9b31a978305b16ad57ebdf3aed"
+        },
+        {
+          "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A24464044+AND+SRC%3AMED&format=json&resultType=core&pageSize=10",
+          "retrievedAt": "2026-10-24T19:37:53.111Z",
+          "sha256": "2d332bb58ce0f829c13f79d068e092a47576d60bb13818dab0b28eb3668e9954"
+        }
+      ]
+    },
+    {
+      "id": "liu2002",
+      "status": "verified",
+      "reference": {
+        "id": "liu2002",
+        "title": "Stages of processing in face perception: an MEG study",
+        "doi": "10.1038/nn909",
+        "pmid": "12195430",
+        "type": "physiology",
+        "method": "人体 MEG",
+        "summary": "M100 与面孔分类有关，M170 与分类及身份识别均有关，提示面孔处理包含时间上可区分的阶段。",
+        "authors": "Liu J, Harris A, Kanwisher N",
+        "fullAuthorList": [
+          "Liu J",
+          "Harris A",
+          "Kanwisher N"
+        ],
+        "year": 2002,
+        "journal": "Nature neuroscience",
+        "volume": "5(9)",
+        "pages": "910-916",
+        "pmcid": null,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/12195430/",
+        "verified": "2026-10-25",
+        "verificationStatus": "cross-verified",
+        "metadataSources": [
+          "https://api.crossref.org/works/10.1038%2Fnn909",
+          "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A12195430+AND+SRC%3AMED&format=json&resultType=core&pageSize=10"
+        ]
+      },
+      "publicationTypes": [
+        "Research Support, U.S. Gov't, P.H.S.",
+        "Research Support, Non-U.S. Gov't",
+        "Journal Article"
+      ],
+      "mesh": [
+        {
+          "majorTopic_YN": "Y",
+          "descriptorName": "Face"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Visual Cortex",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Nerve Net",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Visual Pathways",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Humans"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Magnetoencephalography"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Photic Stimulation"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Pattern Recognition, Visual",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Psychomotor Performance",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Reaction Time",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Evoked Potentials, Visual",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Visual Fields",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Adolescent"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Adult"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://api.crossref.org/works/10.1038%2Fnn909",
+          "retrievedAt": "2026-10-24T19:37:54.262Z",
+          "sha256": "2ac664877a1b09cf9862e3ca3607757ac0d98f8c35b170debe685591e73f63ef"
+        },
+        {
+          "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A12195430+AND+SRC%3AMED&format=json&resultType=core&pageSize=10",
+          "retrievedAt": "2026-10-24T19:37:54.490Z",
+          "sha256": "3a2dd4a8e828388906b594e95d48ebf67c6b60413c9e83882fc4fb1940bf6f44"
+        }
+      ]
+    },
+    {
+      "id": "bentin1996",
+      "status": "verified",
+      "reference": {
+        "id": "bentin1996",
+        "title": "Electrophysiological Studies of Face Perception in Humans",
+        "doi": "10.1162/jocn.1996.8.6.551",
+        "pmid": "20740065",
+        "type": "physiology",
+        "method": "人体头皮 EEG / ERP",
+        "summary": "在头皮记录到面孔相关 N170 反应；头皮分布不等于单一梭状回源，也不能和颅内 N200 直接视为同一测量。",
+        "authors": "Bentin S, Allison T, Puce A, et al.",
+        "fullAuthorList": [
+          "Bentin S",
+          "Allison T",
+          "Puce A",
+          "Perez E",
+          "McCarthy G"
+        ],
+        "year": 1996,
+        "journal": "Journal of cognitive neuroscience",
+        "volume": "8(6)",
+        "pages": "551-565",
+        "pmcid": "PMC2927138",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/20740065/",
+        "verified": "2026-10-25",
+        "verificationStatus": "cross-verified",
+        "metadataSources": [
+          "https://api.crossref.org/works/10.1162%2Fjocn.1996.8.6.551",
+          "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A20740065+AND+SRC%3AMED&format=json&resultType=core&pageSize=10"
+        ]
+      },
+      "publicationTypes": [
+        "research-article",
+        "Journal Article"
+      ],
+      "mesh": [],
+      "sources": [
+        {
+          "url": "https://api.crossref.org/works/10.1162%2Fjocn.1996.8.6.551",
+          "retrievedAt": "2026-10-24T19:37:54.784Z",
+          "sha256": "3ffb08f19c110c15ce3f08e4fccbb1c84db777c879900ee03f93d4bebb5ba8b7"
+        },
+        {
+          "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A20740065+AND+SRC%3AMED&format=json&resultType=core&pageSize=10",
+          "retrievedAt": "2026-10-24T19:37:54.973Z",
+          "sha256": "ab9da1b1a52d60744522c9daaa0af0d3a9de599d8b79e784033eef41ecca511e"
+        }
+      ]
+    },
+    {
+      "id": "allison1999",
+      "status": "verified",
+      "reference": {
+        "id": "allison1999",
+        "title": "Electrophysiological studies of human face perception. I: Potentials generated in occipitotemporal cortex by face and non-face stimuli",
+        "doi": "10.1093/cercor/9.5.415",
+        "pmid": "10450888",
+        "type": "physiology",
+        "method": "人体颅内皮层表面电位",
+        "summary": "癫痫术前监测患者的皮层表面电极记录到枕颞等区域的面孔选择性 N200 和晚期反应；采样由临床需要决定。",
+        "authors": "Allison T, Puce A, Spencer DD, et al.",
+        "fullAuthorList": [
+          "Allison T",
+          "Puce A",
+          "Spencer DD",
+          "McCarthy G"
+        ],
+        "year": 1999,
+        "journal": "Cerebral cortex (New York, N.Y. : 1991)",
+        "volume": "9(5)",
+        "pages": "415-430",
+        "pmcid": null,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/10450888/",
+        "verified": "2026-10-25",
+        "verificationStatus": "cross-verified",
+        "metadataSources": [
+          "https://api.crossref.org/works/10.1093%2Fcercor%2F9.5.415",
+          "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A10450888+AND+SRC%3AMED&format=json&resultType=core&pageSize=10"
+        ]
+      },
+      "publicationTypes": [
+        "Research Support, U.S. Gov't, P.H.S.",
+        "Research Support, U.S. Gov't, Non-P.H.S.",
+        "Journal Article"
+      ],
+      "mesh": [
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Corpus Striatum",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Occipital Lobe",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Temporal Lobe",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Humans"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Epilepsy",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PP",
+                "qualifierName": "physiopathology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "Y",
+          "descriptorName": "Facial Expression"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Case-Control Studies"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Photic Stimulation"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Form Perception",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Reaction Time",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Evoked Potentials, Visual",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Sex Characteristics"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Reading"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Adolescent"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Adult"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Middle Aged"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Child"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Female"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Male"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Functional Laterality",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://api.crossref.org/works/10.1093%2Fcercor%2F9.5.415",
+          "retrievedAt": "2026-10-24T19:37:57.347Z",
+          "sha256": "80bd223adb1f354adfeb7eb9e38b5da72c8b1114853043e695a1f0b236e4fba3"
+        },
+        {
+          "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A10450888+AND+SRC%3AMED&format=json&resultType=core&pageSize=10",
+          "retrievedAt": "2026-10-24T19:37:58.050Z",
+          "sha256": "05e257c884d95d8eb689fff2de2917e9922bbcda72b2942816b92e18f082925f"
+        }
+      ]
+    },
+    {
+      "id": "parvizi2012",
+      "status": "verified",
+      "reference": {
+        "id": "parvizi2012",
+        "title": "Electrical stimulation of human fusiform face-selective regions distorts face perception",
+        "doi": "10.1523/jneurosci.2609-12.2012",
+        "pmid": "23100414",
+        "type": "intervention",
+        "method": "人体 fMRI、ECoG 与直接电刺激",
+        "summary": "单例患者右侧梭状回面孔选择区的刺激引发面孔外观扭曲，为该局部网络参与面孔知觉提供干预证据。",
+        "authors": "Parvizi J, Jacques C, Foster BL, et al.",
+        "fullAuthorList": [
+          "Parvizi J",
+          "Jacques C",
+          "Foster BL",
+          "Withoft N",
+          "Rangarajan V",
+          "Weiner KS",
+          "Grill-Spector K"
+        ],
+        "year": 2012,
+        "journal": "The Journal of neuroscience : the official journal of the Society for Neuroscience",
+        "volume": "32(43)",
+        "pages": "14915-14920",
+        "pmcid": "PMC3517886",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/23100414/",
+        "verified": "2026-10-25",
+        "verificationStatus": "cross-verified",
+        "metadataSources": [
+          "https://api.crossref.org/works/10.1523%2FJNEUROSCI.2609-12.2012",
+          "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A23100414+AND+SRC%3AMED&format=json&resultType=core&pageSize=10"
+        ],
+        "verificationNote": "PubMed中Witthoft/Withoft存在同一作者的拼写记录；作者全表采用Crossref/出版社的7名作者。"
+      },
+      "publicationTypes": [
+        "Research Support, Non-U.S. Gov't",
+        "research-article",
+        "Research Support, U.S. Gov't, Non-P.H.S.",
+        "Journal Article",
+        "Case Reports",
+        "Research Support, N.I.H., Extramural"
+      ],
+      "mesh": [
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Face"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Cerebral Cortex",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "BS",
+                "qualifierName": "blood supply"
+              },
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Visual Pathways",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "BS",
+                "qualifierName": "blood supply"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Humans"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Perceptual Disorders",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "ET",
+                "qualifierName": "etiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Oxygen",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "ME",
+                "qualifierName": "metabolism"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Tomography, X-Ray Computed"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Magnetic Resonance Imaging"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Electroencephalography"
+        },
+        {
+          "majorTopic_YN": "Y",
+          "descriptorName": "Brain Mapping"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Electric Stimulation",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "AE",
+                "qualifierName": "adverse effects"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Photic Stimulation",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "AE",
+                "qualifierName": "adverse effects"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Pattern Recognition, Visual",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Image Processing, Computer-Assisted"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Middle Aged"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Male"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://api.crossref.org/works/10.1523%2FJNEUROSCI.2609-12.2012",
+          "retrievedAt": "2026-10-24T19:37:58.344Z",
+          "sha256": "c59d7291cf348cc9045df4db5f3d83930a99277e2049569fccb74a5beb79d57f"
+        },
+        {
+          "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A23100414+AND+SRC%3AMED&format=json&resultType=core&pageSize=10",
+          "retrievedAt": "2026-10-24T19:37:58.606Z",
+          "sha256": "d5a638e9732058a527745d424614ceb9e0a92c342aaabafa89289ee531e7b38a"
+        }
+      ]
+    },
+    {
+      "id": "quiroga2005",
+      "status": "verified",
+      "reference": {
+        "id": "quiroga2005",
+        "title": "Invariant visual representation by single neurons in the human brain",
+        "doi": "10.1038/nature03687",
+        "pmid": "15973409",
+        "type": "physiology",
+        "method": "人体内侧颞叶单细胞/多单元记录",
+        "summary": "内侧颞叶部分神经元对同一人物或物体的不同图像具有较稳定的选择性；不是一人一神经元或整块脑区只编码一个概念。",
+        "authors": "Quiroga RQ, Reddy L, Kreiman G, et al.",
+        "fullAuthorList": [
+          "Quiroga RQ",
+          "Reddy L",
+          "Kreiman G",
+          "Koch C",
+          "Fried I"
+        ],
+        "year": 2005,
+        "journal": "Nature",
+        "volume": "435(7045)",
+        "pages": "1102-1107",
+        "pmcid": null,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/15973409/",
+        "verified": "2026-10-25",
+        "verificationStatus": "cross-verified",
+        "metadataSources": [
+          "https://api.crossref.org/works/10.1038%2Fnature03687",
+          "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A15973409+AND+SRC%3AMED&format=json&resultType=core&pageSize=10"
+        ]
+      },
+      "publicationTypes": [
+        "Research Support, U.S. Gov't, P.H.S.",
+        "Research Support, Non-U.S. Gov't",
+        "Research Support, U.S. Gov't, Non-P.H.S.",
+        "Journal Article",
+        "Research Support, N.I.H., Extramural"
+      ],
+      "mesh": [
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Face",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "AH",
+                "qualifierName": "anatomy & histology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Brain",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "CY",
+                "qualifierName": "cytology"
+              },
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Hippocampus",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "CY",
+                "qualifierName": "cytology"
+              },
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Temporal Lobe",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "CY",
+                "qualifierName": "cytology"
+              },
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Neurons",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "CY",
+                "qualifierName": "cytology"
+              },
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Humans"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "ROC Curve"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Memory",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Pattern Recognition, Visual",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Substrate Specificity"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Models, Neurological"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Adolescent"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Adult"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Middle Aged"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Female"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Male"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://api.crossref.org/works/10.1038%2Fnature03687",
+          "retrievedAt": "2026-10-24T19:38:00.898Z",
+          "sha256": "ac5b2a954234ad7858c1fcdcaf0e5333b85cd9ae708b6ea643cf83d1e2446094"
+        },
+        {
+          "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A15973409+AND+SRC%3AMED&format=json&resultType=core&pageSize=10",
+          "retrievedAt": "2026-10-24T19:38:01.560Z",
+          "sha256": "072916decbf0f771c344a4862b4c5162abb04b9c0d79927e4d82d2e090b5e83f"
+        }
+      ]
+    },
+    {
+      "id": "tsao2006",
+      "status": "verified",
+      "reference": {
+        "id": "tsao2006",
+        "title": "A cortical region consisting entirely of face-selective cells",
+        "doi": "10.1126/science.1119983",
+        "pmid": "16456083",
+        "type": "physiology",
+        "method": "猕猴 fMRI 定位与单细胞记录",
+        "summary": "在两只猕猴 fMRI 定位的面孔斑块内，绝大多数有视觉反应的记录细胞具有面孔选择性；不能把猕猴斑块直接当成人类 DK 梭状回。",
+        "authors": "Tsao DY, Freiwald WA, Tootell RB, et al.",
+        "fullAuthorList": [
+          "Tsao DY",
+          "Freiwald WA",
+          "Tootell RB",
+          "Livingstone MS"
+        ],
+        "year": 2006,
+        "journal": "Science (New York, N.Y.)",
+        "volume": "311(5761)",
+        "pages": "670-674",
+        "pmcid": "PMC2678572",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/16456083/",
+        "verified": "2026-10-25",
+        "verificationStatus": "cross-verified",
+        "metadataSources": [
+          "https://api.crossref.org/works/10.1126%2Fscience.1119983",
+          "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A16456083+AND+SRC%3AMED&format=json&resultType=core&pageSize=10"
+        ]
+      },
+      "publicationTypes": [
+        "Research Support, Non-U.S. Gov't",
+        "research-article",
+        "Journal Article",
+        "Research Support, N.I.H., Extramural"
+      ],
+      "mesh": [
+        {
+          "majorTopic_YN": "Y",
+          "descriptorName": "Face"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Temporal Lobe",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Neurons",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Animals"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Macaca mulatta"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Humans"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Magnetic Resonance Imaging"
+        },
+        {
+          "majorTopic_YN": "Y",
+          "descriptorName": "Brain Mapping"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Photic Stimulation"
+        },
+        {
+          "majorTopic_YN": "Y",
+          "descriptorName": "Form Perception"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Electrophysiology"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Synaptic Transmission"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Male"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://api.crossref.org/works/10.1126%2Fscience.1119983",
+          "retrievedAt": "2026-10-24T19:38:01.799Z",
+          "sha256": "29fb71490dd300307280a25cf44376da8e73036ac408085d4d2893f4a4efa386"
+        },
+        {
+          "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A16456083+AND+SRC%3AMED&format=json&resultType=core&pageSize=10",
+          "retrievedAt": "2026-10-24T19:38:01.993Z",
+          "sha256": "155170d2780bd7cb1b8e1ef1990300ba50f1b5f85da5bb440d06964b77b4dd69"
+        }
+      ]
+    },
+    {
+      "id": "gauthier1999",
+      "status": "verified",
+      "reference": {
+        "id": "gauthier1999",
+        "title": "Activation of the middle fusiform 'face area' increases with expertise in recognizing novel objects",
+        "doi": "10.1038/9224",
+        "type": "fmri",
+        "method": "人体训练与 fMRI",
+        "summary": "Greeble 训练后，面孔偏好区域对受训练物体的活动增强，支持经验可塑性；研究未证明这些区域对面孔没有选择性。",
+        "authors": "Gauthier I, Tarr MJ, Anderson AW, et al.",
+        "fullAuthorList": [
+          "Gauthier I",
+          "Tarr MJ",
+          "Anderson AW",
+          "Skudlarski P",
+          "Gore JC"
+        ],
+        "year": 1999,
+        "journal": "Nature neuroscience",
+        "volume": "2(6)",
+        "pages": "568-573",
+        "pmid": "10448223",
+        "pmcid": null,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/10448223/",
+        "verified": "2026-10-25",
+        "verificationStatus": "cross-verified",
+        "metadataSources": [
+          "https://api.crossref.org/works/10.1038%2F9224",
+          "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A%2210.1038%2F9224%22&format=json&resultType=core&pageSize=10"
+        ]
+      },
+      "publicationTypes": [
+        "Research Support, U.S. Gov't, P.H.S.",
+        "Research Support, Non-U.S. Gov't",
+        "Journal Article"
+      ],
+      "mesh": [
+        {
+          "majorTopic_YN": "Y",
+          "descriptorName": "Face"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Temporal Lobe",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Humans"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Magnetic Resonance Imaging"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Pattern Recognition, Visual",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Adult"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Female"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Male"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Recruitment, Neurophysiological",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "N",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://api.crossref.org/works/10.1038%2F9224",
+          "retrievedAt": "2026-10-24T19:38:04.144Z",
+          "sha256": "f9e73b27cba0db3376c7e8d50acf2b9759eec433394b8e322020753f4453a289"
+        },
+        {
+          "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A%2210.1038%2F9224%22&format=json&resultType=core&pageSize=10",
+          "retrievedAt": "2026-10-24T19:38:04.839Z",
+          "sha256": "d30df594685cea61df3f35291db6e61d5c7489caaa37cf700c996824b4df0893"
+        }
+      ]
+    },
+    {
+      "id": "gauthier2000",
+      "status": "verified",
+      "reference": {
+        "id": "gauthier2000",
+        "title": "Expertise for cars and birds recruits brain areas involved in face recognition",
+        "doi": "10.1038/72140",
+        "type": "fmri",
+        "method": "人体专家组 fMRI",
+        "summary": "汽车及鸟类专家在识别熟悉类别时招募部分面孔相关区域，强调专业经验、任务和选择性定义的关系。",
+        "authors": "Gauthier I, Skudlarski P, Gore JC, et al.",
+        "fullAuthorList": [
+          "Gauthier I",
+          "Skudlarski P",
+          "Gore JC",
+          "Anderson AW"
+        ],
+        "year": 2000,
+        "journal": "Nature neuroscience",
+        "volume": "3(2)",
+        "pages": "191-197",
+        "pmid": "10649576",
+        "pmcid": null,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/10649576/",
+        "verified": "2026-10-25",
+        "verificationStatus": "cross-verified",
+        "metadataSources": [
+          "https://api.crossref.org/works/10.1038%2F72140",
+          "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A%2210.1038%2F72140%22&format=json&resultType=core&pageSize=10"
+        ]
+      },
+      "publicationTypes": [
+        "Clinical Trial",
+        "Research Support, U.S. Gov't, P.H.S.",
+        "Research Support, Non-U.S. Gov't",
+        "Journal Article"
+      ],
+      "mesh": [
+        {
+          "majorTopic_YN": "Y",
+          "descriptorName": "Face"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Occipital Lobe",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Temporal Lobe",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Animals"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Birds"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Humans"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Magnetic Resonance Imaging"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Brain Mapping"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Photic Stimulation"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Pattern Recognition, Visual",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Data Display"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Task Performance and Analysis"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Professional Competence"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Automobiles"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Adult"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Male"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://api.crossref.org/works/10.1038%2F72140",
+          "retrievedAt": "2026-10-24T19:38:05.096Z",
+          "sha256": "ab021c6b9c835e389fbdba5147a9acf61a0c9d1985c4e9cd7ddcd6754b9cf166"
+        },
+        {
+          "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A%2210.1038%2F72140%22&format=json&resultType=core&pageSize=10",
+          "retrievedAt": "2026-10-24T19:38:05.287Z",
+          "sha256": "c57fc32b7f4278425f63fdd20f17978da225ca7b097604962671749ded8e42cf"
+        }
+      ]
+    },
+    {
+      "id": "haxby2001",
+      "status": "verified",
+      "reference": {
+        "id": "haxby2001",
+        "title": "Distributed and overlapping representations of faces and objects in ventral temporal cortex",
+        "doi": "10.1126/science.1063736",
+        "pmid": "11577229",
+        "type": "fmri",
+        "method": "人体 fMRI 多体素模式分析",
+        "summary": "去除对某类别反应最强的区域后，其余腹侧颞叶活动模式仍含类别信息，支持分布式且重叠的表征。",
+        "authors": "Haxby JV, Gobbini MI, Furey ML, et al.",
+        "fullAuthorList": [
+          "Haxby JV",
+          "Gobbini MI",
+          "Furey ML",
+          "Ishai A",
+          "Schouten JL",
+          "Pietrini P"
+        ],
+        "year": 2001,
+        "journal": "Science (New York, N.Y.)",
+        "volume": "293(5539)",
+        "pages": "2425-2430",
+        "pmcid": null,
+        "url": "https://pubmed.ncbi.nlm.nih.gov/11577229/",
+        "verified": "2026-10-25",
+        "verificationStatus": "cross-verified",
+        "metadataSources": [
+          "https://api.crossref.org/works/10.1126%2Fscience.1063736",
+          "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A11577229+AND+SRC%3AMED&format=json&resultType=core&pageSize=10"
+        ]
+      },
+      "publicationTypes": [
+        "Journal Article"
+      ],
+      "mesh": [
+        {
+          "majorTopic_YN": "Y",
+          "descriptorName": "Face"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Temporal Lobe",
+          "meshQualifierList": {
+            "meshQualifier": [
+              {
+                "majorTopic_YN": "Y",
+                "abbreviation": "PH",
+                "qualifierName": "physiology"
+              }
+            ]
+          }
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Visual Pathways"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Humans"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Magnetic Resonance Imaging"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Brain Mapping"
+        },
+        {
+          "majorTopic_YN": "Y",
+          "descriptorName": "Form Perception"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Pattern Recognition, Visual"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Female"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Male"
+        },
+        {
+          "majorTopic_YN": "N",
+          "descriptorName": "Recognition, Psychology"
+        }
+      ],
+      "sources": [
+        {
+          "url": "https://api.crossref.org/works/10.1126%2Fscience.1063736",
+          "retrievedAt": "2026-10-24T19:38:05.525Z",
+          "sha256": "ff54ea5235dd737738e05b9efea61a5325a20785527b89e8123dc2478769a19f"
+        },
+        {
+          "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID%3A11577229+AND+SRC%3AMED&format=json&resultType=core&pageSize=10",
+          "retrievedAt": "2026-10-24T19:38:05.707Z",
+          "sha256": "cb1e7a803339aea770892f0159e7b02bc5884b10b33575cc7d93c38d7317967d"
+        }
+      ]
+    }
+  ],
+  "publicationPolicy": "Full abstracts, raw API bodies and full article XML are omitted. Source URLs, dates and hashes remain; fetch scripts can restore local verification caches."
+}

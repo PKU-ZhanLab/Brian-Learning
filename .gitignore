@@ -1,0 +1,13 @@
+node_modules/
+dist/
+dist-public/
+.vite/
+output/
+.deployment/
+snapshots/
+data-cache/
+__pycache__/
+*.pyc
+*.log
+data-sources/literature/raw/
+data-sources/literature-upgrade/raw/

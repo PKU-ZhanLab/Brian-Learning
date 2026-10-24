@@ -1,0 +1,7423 @@
+{
+  "schemaVersion": 2,
+  "coordinateSystem": "RAS",
+  "units": "mm",
+  "generated": "2026-10-25",
+  "registrationNote": "脑内主参考为 FSL MNI152NLin6Asym。DK 分区与配对表面已核对同源模板；其余数据分别记录原作者映射、后续配准或未验证状态。相同 RAS 轴或相同体素网格不能证明解剖配准。",
+  "schematicNote": "PAM50 脊髓使用原生直化参考，未与脑模板联合配准。真实形态与教学示意分开标注；无数据的示意默认隐藏。",
+  "meshes": [
+    {
+      "id": "cortex-left",
+      "file": "dk-v2/cortex-left.json",
+      "source": "https://github.com/ThomasYeoLab/CBIG/tree/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0",
+      "space": "MNI152NLin6Asym",
+      "surface": "pial",
+      "atlasId": "dk",
+      "vertexLabels": true,
+      "vertices": 41425,
+      "triangles": 82846,
+      "sha256": "369852e06a75642df7b8b63911e9690b826e121de3d5d41f77c90b72ccec1967",
+      "processing": "VTK DecimatePro target reduction 0.72, topology preserved; original vertices and annotations retained",
+      "maxVertexTransferDistanceMm": 0,
+      "annotationLabelsPresent": 34
+    },
+    {
+      "id": "cortex-right",
+      "file": "dk-v2/cortex-right.json",
+      "source": "https://github.com/ThomasYeoLab/CBIG/tree/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0",
+      "space": "MNI152NLin6Asym",
+      "surface": "pial",
+      "atlasId": "dk",
+      "vertexLabels": true,
+      "vertices": 41352,
+      "triangles": 82700,
+      "sha256": "d68f99621222eb537270d8ac1578da89566d136ae42ca6f4f89b65348016d746",
+      "processing": "VTK DecimatePro target reduction 0.72, topology preserved; original vertices and annotations retained",
+      "maxVertexTransferDistanceMm": 0,
+      "annotationLabelsPresent": 34
+    },
+    {
+      "file": "ho-3.json",
+      "vertices": 1656,
+      "triangles": 3312,
+      "bounds": [
+        [
+          -32.87,
+          -60.46,
+          -2.64
+        ],
+        [
+          1.16,
+          28.88,
+          28.88
+        ]
+      ],
+      "sha256": "ad9402d6ebdce520ec462aea2e54e50a2d52a5152da1a5274efb27129d3a5828",
+      "id": "ho-3",
+      "atlas": "ho",
+      "label": 3,
+      "name": "Left Lateral Ventrical",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "lateral-ventricle-l"
+      ]
+    },
+    {
+      "file": "ho-4.json",
+      "vertices": 990,
+      "triangles": 1976,
+      "bounds": [
+        [
+          -23.1,
+          -37.16,
+          -5.16
+        ],
+        [
+          1.16,
+          0.87,
+          19.16
+        ]
+      ],
+      "sha256": "a030a51fc6b4b663e6ed8565d2dea3e9b1f79b14f96fd6c5bad425f8dff8ed94",
+      "id": "ho-4",
+      "atlas": "ho",
+      "label": 4,
+      "name": "Left Thalamus",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "thalamus-l"
+      ]
+    },
+    {
+      "file": "ho-5.json",
+      "vertices": 736,
+      "triangles": 1468,
+      "bounds": [
+        [
+          -19.16,
+          -20.49,
+          -6.78
+        ],
+        [
+          -4.84,
+          24.8,
+          26.15
+        ]
+      ],
+      "sha256": "855b9b6891e38bf218b2f981c7f6ef913bc0a9c061fc4ee984ae059e8c23c657",
+      "id": "ho-5",
+      "atlas": "ho",
+      "label": 5,
+      "name": "Left Caudate",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "caudate-l"
+      ]
+    },
+    {
+      "file": "ho-6.json",
+      "vertices": 906,
+      "triangles": 1808,
+      "bounds": [
+        [
+          -33.16,
+          -22.73,
+          -13.15
+        ],
+        [
+          -12.85,
+          20.49,
+          15.1
+        ]
+      ],
+      "sha256": "b28df2523b2b787361b10883ccffe4215b82614c989728a19e5d6b1bc16278d9",
+      "id": "ho-6",
+      "atlas": "ho",
+      "label": 6,
+      "name": "Left Putamen",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "putamen-l"
+      ]
+    },
+    {
+      "file": "ho-7.json",
+      "vertices": 388,
+      "triangles": 772,
+      "bounds": [
+        [
+          -27.15,
+          -18.72,
+          -9.09
+        ],
+        [
+          -10.85,
+          7,
+          7.05
+        ]
+      ],
+      "sha256": "eefdcffbb64ac1f0ae5ee6f11de25de50ae74259f0f80161ddd04c4417fcb309",
+      "id": "ho-7",
+      "atlas": "ho",
+      "label": 7,
+      "name": "Left Pallidum",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "pallidum-l"
+      ]
+    },
+    {
+      "file": "ho-8.json",
+      "vertices": 2478,
+      "triangles": 4952,
+      "bounds": [
+        [
+          -21.16,
+          -51.15,
+          -70.32
+        ],
+        [
+          23.15,
+          -10.84,
+          0.59
+        ]
+      ],
+      "sha256": "89a08ec7a63bc4cb106aad69e77e35ec71a8615c04f7d69f8f3deeecc2505dbc",
+      "id": "ho-8",
+      "atlas": "ho",
+      "label": 8,
+      "name": "Brain-Stem",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "usage": "rendered-envelope-teaching-subdivision",
+      "note": "Viewer renders the real whole-brainstem HO envelope, geometrically split at z=-22/-47 for teaching. Midbrain, pons and medulla subdivisions are not verified anatomical segmentations."
+    },
+    {
+      "file": "ho-9.json",
+      "vertices": 953,
+      "triangles": 1902,
+      "bounds": [
+        [
+          -37.05,
+          -43.15,
+          -30.59
+        ],
+        [
+          -8.47,
+          -4.85,
+          5.15
+        ]
+      ],
+      "sha256": "c25b36a04864babc28cb2e7c9c8996dfffd1b26df83e055d96f7c514d23b3541",
+      "id": "ho-9",
+      "atlas": "ho",
+      "label": 9,
+      "name": "Left Hippocampus",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "hippocampus-l"
+      ]
+    },
+    {
+      "file": "ho-10.json",
+      "vertices": 424,
+      "triangles": 844,
+      "bounds": [
+        [
+          -33.15,
+          -14.79,
+          -29.87
+        ],
+        [
+          -11.15,
+          3.1,
+          -8.95
+        ]
+      ],
+      "sha256": "732f9e7291f5ccdb2b4b7ae0deb2b21241a8f6762a506c4cb32d395e5529afcb",
+      "id": "ho-10",
+      "atlas": "ho",
+      "label": 10,
+      "name": "Left Amygdala",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "amygdala-l"
+      ]
+    },
+    {
+      "file": "ho-11.json",
+      "vertices": 176,
+      "triangles": 348,
+      "bounds": [
+        [
+          -14.91,
+          4.85,
+          -13.14
+        ],
+        [
+          -4.85,
+          19.79,
+          -1.44
+        ]
+      ],
+      "sha256": "fa97234083001fc982343b2e945354440c9da2b6811317f48ad51728a33a977f",
+      "id": "ho-11",
+      "atlas": "ho",
+      "label": 11,
+      "name": "Left Accumbens",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "accumbens-l"
+      ]
+    },
+    {
+      "file": "ho-14.json",
+      "vertices": 1396,
+      "triangles": 2788,
+      "bounds": [
+        [
+          0.84,
+          -54.03,
+          -1.72
+        ],
+        [
+          33.15,
+          28.72,
+          28.5
+        ]
+      ],
+      "sha256": "de23471cffde8d4b7a55c14d4988d120e2dbcf1710c7f27be9a5daa3e1d306e8",
+      "id": "ho-14",
+      "atlas": "ho",
+      "label": 14,
+      "name": "Right Lateral Ventricle",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "lateral-ventricle-r"
+      ]
+    },
+    {
+      "file": "ho-15.json",
+      "vertices": 946,
+      "triangles": 1888,
+      "bounds": [
+        [
+          0.84,
+          -37.15,
+          -5.15
+        ],
+        [
+          23.61,
+          1.05,
+          19.16
+        ]
+      ],
+      "sha256": "fce974c11aac8122e5d8e43b514834df68e2508556dd45c8f69df11364b0e99e",
+      "id": "ho-15",
+      "atlas": "ho",
+      "label": 15,
+      "name": "Right Thalamus",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "thalamus-r"
+      ]
+    },
+    {
+      "file": "ho-16.json",
+      "vertices": 688,
+      "triangles": 1372,
+      "bounds": [
+        [
+          4.91,
+          -18.49,
+          -6.18
+        ],
+        [
+          19.16,
+          25.05,
+          26.38
+        ]
+      ],
+      "sha256": "7f966e9ccd9a552d367887369c3eab8ad071de10f5f576cb7590a4e8c65dd3df",
+      "id": "ho-16",
+      "atlas": "ho",
+      "label": 16,
+      "name": "Right Caudate",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "caudate-r"
+      ]
+    },
+    {
+      "file": "ho-17.json",
+      "vertices": 834,
+      "triangles": 1664,
+      "bounds": [
+        [
+          12.85,
+          -20.38,
+          -12.82
+        ],
+        [
+          33.16,
+          20.79,
+          14.52
+        ]
+      ],
+      "sha256": "301195b6c6dfe27303cea2ee072e41c483faa6bd028351eeb40206ac06d8f409",
+      "id": "ho-17",
+      "atlas": "ho",
+      "label": 17,
+      "name": "Right Putamen",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "putamen-r"
+      ]
+    },
+    {
+      "file": "ho-18.json",
+      "vertices": 354,
+      "triangles": 704,
+      "bounds": [
+        [
+          11.62,
+          -16.86,
+          -8.22
+        ],
+        [
+          27.54,
+          8.18,
+          6.86
+        ]
+      ],
+      "sha256": "98c9db1fb81c458c54b1c13b495ed5e85bd8dfde40ff27ce82b8a6c48ccb5a6e",
+      "id": "ho-18",
+      "atlas": "ho",
+      "label": 18,
+      "name": "Right Pallidum",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "pallidum-r"
+      ]
+    },
+    {
+      "file": "ho-19.json",
+      "vertices": 868,
+      "triangles": 1732,
+      "bounds": [
+        [
+          10.92,
+          -41.05,
+          -29.15
+        ],
+        [
+          37.88,
+          -3.62,
+          6.51
+        ]
+      ],
+      "sha256": "732e184122cd331e8979237747909a072df751194e5cfe3716bf85a77c817d67",
+      "id": "ho-19",
+      "atlas": "ho",
+      "label": 19,
+      "name": "Right Hippocampus",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "hippocampus-r"
+      ]
+    },
+    {
+      "file": "ho-20.json",
+      "vertices": 426,
+      "triangles": 848,
+      "bounds": [
+        [
+          11.14,
+          -14.4,
+          -28.88
+        ],
+        [
+          33.15,
+          3.16,
+          -8.95
+        ]
+      ],
+      "sha256": "52280b6ff80e13f514f51a2ed8095815d91f3c197880a5f514eebd2f72ca27ce",
+      "id": "ho-20",
+      "atlas": "ho",
+      "label": 20,
+      "name": "Right Amygdala",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "amygdala-r"
+      ]
+    },
+    {
+      "file": "ho-21.json",
+      "vertices": 162,
+      "triangles": 320,
+      "bounds": [
+        [
+          4.86,
+          5.14,
+          -12.48
+        ],
+        [
+          14.57,
+          19.89,
+          -1.51
+        ]
+      ],
+      "sha256": "6f619f25ff10309c99c50177ef5058cf496d286fcc5025a834644c14136f9910",
+      "id": "ho-21",
+      "atlas": "ho",
+      "label": 21,
+      "name": "Right Accumbens",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Marching cubes of maxprob thr25 label; Gaussian sigma 0.65 voxels",
+      "structureIds": [
+        "accumbens-r"
+      ]
+    },
+    {
+      "file": "cerebellum.json",
+      "vertices": 9519,
+      "triangles": 19038,
+      "bounds": [
+        [
+          -56.93,
+          -93.16,
+          -66.23
+        ],
+        [
+          57.16,
+          -26.91,
+          1.87
+        ]
+      ],
+      "sha256": "86cd2ad37027137669f6b447253ce5d2628b4fc5fb4de0dd894e9f656b0be1e2",
+      "id": "cerebellum",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "method": "Union of Diedrichsen cerebellar maxprob thr25 labels; 2 mm; smoothed",
+      "license": "CC BY-SA 4.0"
+    }
+  ],
+  "atlases": {
+    "dk": {
+      "schemaVersion": 2,
+      "available": true,
+      "data": "dk-v2/dk68.bin",
+      "shape": [
+        91,
+        109,
+        91
+      ],
+      "affine": [
+        2,
+        0,
+        0,
+        -90,
+        0,
+        2,
+        0,
+        -126,
+        0,
+        0,
+        2,
+        -72,
+        0,
+        0,
+        0,
+        1
+      ],
+      "dtype": "uint8",
+      "order": "x-fastest",
+      "name": "Desikan–Killiany 68 · FSL MNI152 paired reconstruction",
+      "space": "MNI152NLin6Asym",
+      "labels": [
+        {
+          "id": 1,
+          "sourceId": 1001,
+          "sourceName": "bankssts",
+          "name": "Left Banks of superior temporal sulcus",
+          "zh": "左颞上沟岸",
+          "hemisphere": "L",
+          "structureId": "bankssts-l",
+          "voxels": 413,
+          "center": [
+            -53.065,
+            -44.262,
+            6.857
+          ],
+          "surfaceCenter": [
+            -52.123,
+            -44.339,
+            7.25
+          ],
+          "surfaceAnchor": [
+            -51.121,
+            -45.496,
+            7.641
+          ]
+        },
+        {
+          "id": 2,
+          "sourceId": 1002,
+          "sourceName": "caudalanteriorcingulate",
+          "name": "Left Caudal anterior cingulate cortex",
+          "zh": "左尾侧前扣带皮层",
+          "hemisphere": "L",
+          "structureId": "caudal-anterior-cingulate-l",
+          "voxels": 278,
+          "center": [
+            -5.129,
+            24.899,
+            23.748
+          ],
+          "surfaceCenter": [
+            -3.462,
+            24.466,
+            23.572
+          ],
+          "surfaceAnchor": [
+            -1.259,
+            23.443,
+            22.05
+          ]
+        },
+        {
+          "id": 3,
+          "sourceId": 1003,
+          "sourceName": "caudalmiddlefrontal",
+          "name": "Left Caudal middle frontal gyrus",
+          "zh": "左尾侧额中回",
+          "hemisphere": "L",
+          "structureId": "caudal-middle-frontal-l",
+          "voxels": 907,
+          "center": [
+            -35.149,
+            12.026,
+            46.307
+          ],
+          "surfaceCenter": [
+            -36.006,
+            11.363,
+            45.429
+          ],
+          "surfaceAnchor": [
+            -37.977,
+            11.14,
+            44.175
+          ]
+        },
+        {
+          "id": 4,
+          "sourceId": 1005,
+          "sourceName": "cuneus",
+          "name": "Left Cuneus",
+          "zh": "左楔叶",
+          "hemisphere": "L",
+          "structureId": "cuneus-l",
+          "voxels": 332,
+          "center": [
+            -5.596,
+            -78.795,
+            18.861
+          ],
+          "surfaceCenter": [
+            -5.636,
+            -75.734,
+            17.137
+          ],
+          "surfaceAnchor": [
+            -3.682,
+            -80.191,
+            18.7
+          ]
+        },
+        {
+          "id": 5,
+          "sourceId": 1006,
+          "sourceName": "entorhinal",
+          "name": "Left Entorhinal cortex",
+          "zh": "左内嗅皮层",
+          "hemisphere": "L",
+          "structureId": "entorhinal-l",
+          "voxels": 222,
+          "center": [
+            -22.937,
+            -4.622,
+            -32.117
+          ],
+          "surfaceCenter": [
+            -22.158,
+            -4.92,
+            -32.011
+          ],
+          "surfaceAnchor": [
+            -19.336,
+            -6.583,
+            -35.778
+          ]
+        },
+        {
+          "id": 6,
+          "sourceId": 1007,
+          "sourceName": "fusiform",
+          "name": "Left Fusiform gyrus",
+          "zh": "左梭状回",
+          "hemisphere": "L",
+          "structureId": "fusiform-l",
+          "voxels": 1266,
+          "center": [
+            -34.292,
+            -39.205,
+            -22.308
+          ],
+          "surfaceCenter": [
+            -34.196,
+            -39.125,
+            -21.787
+          ],
+          "surfaceAnchor": [
+            -31.965,
+            -36.483,
+            -17.024
+          ]
+        },
+        {
+          "id": 7,
+          "sourceId": 1008,
+          "sourceName": "inferiorparietal",
+          "name": "Left Inferior parietal lobule",
+          "zh": "左顶下小叶",
+          "hemisphere": "L",
+          "structureId": "inferior-parietal-l",
+          "voxels": 1840,
+          "center": [
+            -41.542,
+            -67.278,
+            34.187
+          ],
+          "surfaceCenter": [
+            -41.576,
+            -67.5,
+            35.273
+          ],
+          "surfaceAnchor": [
+            -42.934,
+            -64.31,
+            37.842
+          ]
+        },
+        {
+          "id": 8,
+          "sourceId": 1009,
+          "sourceName": "inferiortemporal",
+          "name": "Left Inferior temporal gyrus",
+          "zh": "左颞下回",
+          "hemisphere": "L",
+          "structureId": "inferior-temporal-l",
+          "voxels": 2057,
+          "center": [
+            -51.994,
+            -34.71,
+            -22.197
+          ],
+          "surfaceCenter": [
+            -52.004,
+            -38.517,
+            -19.71
+          ],
+          "surfaceAnchor": [
+            -49.56,
+            -38.942,
+            -21.352
+          ]
+        },
+        {
+          "id": 9,
+          "sourceId": 1010,
+          "sourceName": "isthmuscingulate",
+          "name": "Left Isthmus of cingulate gyrus",
+          "zh": "左扣带回峡部",
+          "hemisphere": "L",
+          "structureId": "isthmus-cingulate-l",
+          "voxels": 341,
+          "center": [
+            -6.522,
+            -44.663,
+            20.399
+          ],
+          "surfaceCenter": [
+            -5.12,
+            -43.717,
+            22.057
+          ],
+          "surfaceAnchor": [
+            -4.695,
+            -43.286,
+            21.603
+          ]
+        },
+        {
+          "id": 10,
+          "sourceId": 1011,
+          "sourceName": "lateraloccipital",
+          "name": "Left Lateral occipital cortex",
+          "zh": "左枕叶外侧皮层",
+          "hemisphere": "L",
+          "structureId": "lateral-occipital-l",
+          "voxels": 1441,
+          "center": [
+            -32.744,
+            -85.913,
+            1.903
+          ],
+          "surfaceCenter": [
+            -32.948,
+            -85.458,
+            3.815
+          ],
+          "surfaceAnchor": [
+            -31.838,
+            -86.587,
+            2.198
+          ]
+        },
+        {
+          "id": 11,
+          "sourceId": 1012,
+          "sourceName": "lateralorbitofrontal",
+          "name": "Left Lateral orbitofrontal cortex",
+          "zh": "左外侧眶额皮层",
+          "hemisphere": "L",
+          "structureId": "lateral-orbitofrontal-l",
+          "voxels": 1097,
+          "center": [
+            -23.998,
+            31.49,
+            -17.457
+          ],
+          "surfaceCenter": [
+            -24.06,
+            30.062,
+            -17.849
+          ],
+          "surfaceAnchor": [
+            -23.707,
+            29.207,
+            -18.674
+          ]
+        },
+        {
+          "id": 12,
+          "sourceId": 1013,
+          "sourceName": "lingual",
+          "name": "Left Lingual gyrus",
+          "zh": "左舌回",
+          "hemisphere": "L",
+          "structureId": "lingual-l",
+          "voxels": 643,
+          "center": [
+            -13.21,
+            -65.322,
+            -4.961
+          ],
+          "surfaceCenter": [
+            -12.263,
+            -66.847,
+            -5.197
+          ],
+          "surfaceAnchor": [
+            -12.274,
+            -64.368,
+            -3.091
+          ]
+        },
+        {
+          "id": 13,
+          "sourceId": 1014,
+          "sourceName": "medialorbitofrontal",
+          "name": "Left Medial orbitofrontal cortex",
+          "zh": "左内侧眶额皮层",
+          "hemisphere": "L",
+          "structureId": "medial-orbitofrontal-l",
+          "voxels": 632,
+          "center": [
+            -5.092,
+            40.377,
+            -16.187
+          ],
+          "surfaceCenter": [
+            -4.993,
+            40.113,
+            -17.381
+          ],
+          "surfaceAnchor": [
+            -2.589,
+            39.101,
+            -14.653
+          ]
+        },
+        {
+          "id": 14,
+          "sourceId": 1015,
+          "sourceName": "middletemporal",
+          "name": "Left Middle temporal gyrus",
+          "zh": "左颞中回",
+          "hemisphere": "L",
+          "structureId": "middle-temporal-l",
+          "voxels": 1587,
+          "center": [
+            -57.243,
+            -17.51,
+            -16.382
+          ],
+          "surfaceCenter": [
+            -57.445,
+            -20,
+            -15.853
+          ],
+          "surfaceAnchor": [
+            -56.221,
+            -20.968,
+            -22.154
+          ]
+        },
+        {
+          "id": 15,
+          "sourceId": 1016,
+          "sourceName": "parahippocampal",
+          "name": "Left Parahippocampal cortex",
+          "zh": "左海马旁皮层",
+          "hemisphere": "L",
+          "structureId": "parahippocampal-l",
+          "voxels": 245,
+          "center": [
+            -23.437,
+            -29.584,
+            -19.249
+          ],
+          "surfaceCenter": [
+            -24.771,
+            -28.978,
+            -20.981
+          ],
+          "surfaceAnchor": [
+            -25.79,
+            -31.026,
+            -22.273
+          ]
+        },
+        {
+          "id": 16,
+          "sourceId": 1017,
+          "sourceName": "paracentral",
+          "name": "Left Paracentral lobule",
+          "zh": "左中央旁小叶",
+          "hemisphere": "L",
+          "structureId": "paracentral-l",
+          "voxels": 464,
+          "center": [
+            -6.392,
+            -28.513,
+            56.207
+          ],
+          "surfaceCenter": [
+            -6.262,
+            -30.747,
+            56.929
+          ],
+          "surfaceAnchor": [
+            -1.886,
+            -31.004,
+            57.012
+          ]
+        },
+        {
+          "id": 17,
+          "sourceId": 1018,
+          "sourceName": "parsopercularis",
+          "name": "Left Pars opercularis",
+          "zh": "左额下回盖部",
+          "hemisphere": "L",
+          "structureId": "pars-opercularis-l",
+          "voxels": 876,
+          "center": [
+            -47.187,
+            19.162,
+            14.692
+          ],
+          "surfaceCenter": [
+            -47.637,
+            20.18,
+            14.373
+          ],
+          "surfaceAnchor": [
+            -50.168,
+            21.836,
+            12.342
+          ]
+        },
+        {
+          "id": 18,
+          "sourceId": 1019,
+          "sourceName": "parsorbitalis",
+          "name": "Left Pars orbitalis",
+          "zh": "左额下回眶部",
+          "hemisphere": "L",
+          "structureId": "pars-orbitalis-l",
+          "voxels": 450,
+          "center": [
+            -40.702,
+            40.578,
+            -13.2
+          ],
+          "surfaceCenter": [
+            -41.613,
+            39.067,
+            -13.812
+          ],
+          "surfaceAnchor": [
+            -37.169,
+            35.664,
+            -14.217
+          ]
+        },
+        {
+          "id": 19,
+          "sourceId": 1020,
+          "sourceName": "parstriangularis",
+          "name": "Left Pars triangularis",
+          "zh": "左额下回三角部",
+          "hemisphere": "L",
+          "structureId": "pars-triangularis-l",
+          "voxels": 580,
+          "center": [
+            -46.29,
+            35.048,
+            1.462
+          ],
+          "surfaceCenter": [
+            -46.48,
+            33.757,
+            1.412
+          ],
+          "surfaceAnchor": [
+            -46.284,
+            34.283,
+            -3.032
+          ]
+        },
+        {
+          "id": 20,
+          "sourceId": 1021,
+          "sourceName": "pericalcarine",
+          "name": "Left Pericalcarine cortex",
+          "zh": "左距状沟周围皮层",
+          "hemisphere": "L",
+          "structureId": "pericalcarine-l",
+          "voxels": 236,
+          "center": [
+            -10.254,
+            -81.322,
+            4.356
+          ],
+          "surfaceCenter": [
+            -12.319,
+            -76.709,
+            4.943
+          ],
+          "surfaceAnchor": [
+            -11.621,
+            -78.754,
+            5.199
+          ]
+        },
+        {
+          "id": 21,
+          "sourceId": 1022,
+          "sourceName": "postcentral",
+          "name": "Left Postcentral gyrus",
+          "zh": "左中央后回",
+          "hemisphere": "L",
+          "structureId": "postcentral-l",
+          "voxels": 1211,
+          "center": [
+            -44.791,
+            -22.013,
+            42.264
+          ],
+          "surfaceCenter": [
+            -41.624,
+            -23.342,
+            47.192
+          ],
+          "surfaceAnchor": [
+            -40.808,
+            -23.119,
+            49.033
+          ]
+        },
+        {
+          "id": 22,
+          "sourceId": 1023,
+          "sourceName": "posteriorcingulate",
+          "name": "Left Posterior cingulate cortex",
+          "zh": "左后扣带皮层",
+          "hemisphere": "L",
+          "structureId": "posterior-cingulate-l",
+          "voxels": 451,
+          "center": [
+            -5.1,
+            -15.534,
+            37.259
+          ],
+          "surfaceCenter": [
+            -4.116,
+            -11.832,
+            35.83
+          ],
+          "surfaceAnchor": [
+            -1.292,
+            -13.326,
+            35.871
+          ]
+        },
+        {
+          "id": 23,
+          "sourceId": 1024,
+          "sourceName": "precentral",
+          "name": "Left Precentral gyrus",
+          "zh": "左中央前回",
+          "hemisphere": "L",
+          "structureId": "precentral-l",
+          "voxels": 1732,
+          "center": [
+            -41.037,
+            -5.606,
+            41.095
+          ],
+          "surfaceCenter": [
+            -38.192,
+            -9.193,
+            44.663
+          ],
+          "surfaceAnchor": [
+            -37.271,
+            -3.178,
+            45.673
+          ]
+        },
+        {
+          "id": 24,
+          "sourceId": 1025,
+          "sourceName": "precuneus",
+          "name": "Left Precuneus",
+          "zh": "左楔前叶",
+          "hemisphere": "L",
+          "structureId": "precuneus-l",
+          "voxels": 1256,
+          "center": [
+            -8.172,
+            -57.653,
+            35.341
+          ],
+          "surfaceCenter": [
+            -8.513,
+            -57.845,
+            33.68
+          ],
+          "surfaceAnchor": [
+            -8.018,
+            -57.099,
+            36.524
+          ]
+        },
+        {
+          "id": 25,
+          "sourceId": 1026,
+          "sourceName": "rostralanteriorcingulate",
+          "name": "Left Rostral anterior cingulate cortex",
+          "zh": "左吻侧前扣带皮层",
+          "hemisphere": "L",
+          "structureId": "rostral-anterior-cingulate-l",
+          "voxels": 319,
+          "center": [
+            -4.702,
+            37.085,
+            -0.94
+          ],
+          "surfaceCenter": [
+            -3.766,
+            40.018,
+            -0.169
+          ],
+          "surfaceAnchor": [
+            -2.78,
+            40.188,
+            0.366
+          ]
+        },
+        {
+          "id": 26,
+          "sourceId": 1027,
+          "sourceName": "rostralmiddlefrontal",
+          "name": "Left Rostral middle frontal gyrus",
+          "zh": "左吻侧额中回",
+          "hemisphere": "L",
+          "structureId": "rostral-middle-frontal-l",
+          "voxels": 2203,
+          "center": [
+            -30.952,
+            47.635,
+            17.183
+          ],
+          "surfaceCenter": [
+            -30.115,
+            48.94,
+            17.113
+          ],
+          "surfaceAnchor": [
+            -28.234,
+            51.667,
+            14.049
+          ]
+        },
+        {
+          "id": 27,
+          "sourceId": 1028,
+          "sourceName": "superiorfrontal",
+          "name": "Left Superior frontal gyrus",
+          "zh": "左额上回",
+          "hemisphere": "L",
+          "structureId": "superior-frontal-l",
+          "voxels": 3403,
+          "center": [
+            -9.619,
+            29.415,
+            41.476
+          ],
+          "surfaceCenter": [
+            -10.182,
+            28.76,
+            40.488
+          ],
+          "surfaceAnchor": [
+            -4.482,
+            27.377,
+            43.141
+          ]
+        },
+        {
+          "id": 28,
+          "sourceId": 1029,
+          "sourceName": "superiorparietal",
+          "name": "Left Superior parietal lobule",
+          "zh": "左顶上小叶",
+          "hemisphere": "L",
+          "structureId": "superior-parietal-l",
+          "voxels": 1465,
+          "center": [
+            -20.438,
+            -63.873,
+            50.906
+          ],
+          "surfaceCenter": [
+            -20.265,
+            -63.762,
+            50.608
+          ],
+          "surfaceAnchor": [
+            -21.137,
+            -64.642,
+            49.486
+          ]
+        },
+        {
+          "id": 29,
+          "sourceId": 1030,
+          "sourceName": "superiortemporal",
+          "name": "Left Superior temporal gyrus",
+          "zh": "左颞上回",
+          "hemisphere": "L",
+          "structureId": "superior-temporal-l",
+          "voxels": 1817,
+          "center": [
+            -52.12,
+            -9.171,
+            -5.602
+          ],
+          "surfaceCenter": [
+            -52.019,
+            -10.231,
+            -4.934
+          ],
+          "surfaceAnchor": [
+            -53.626,
+            -10.762,
+            -7.901
+          ]
+        },
+        {
+          "id": 30,
+          "sourceId": 1031,
+          "sourceName": "supramarginal",
+          "name": "Left Supramarginal gyrus",
+          "zh": "左缘上回",
+          "hemisphere": "L",
+          "structureId": "supramarginal-l",
+          "voxels": 1577,
+          "center": [
+            -54.573,
+            -35.826,
+            33.782
+          ],
+          "surfaceCenter": [
+            -54.121,
+            -35.357,
+            33.065
+          ],
+          "surfaceAnchor": [
+            -55.214,
+            -36.541,
+            32.929
+          ]
+        },
+        {
+          "id": 31,
+          "sourceId": 1032,
+          "sourceName": "frontalpole",
+          "name": "Left Frontal pole",
+          "zh": "左额极",
+          "hemisphere": "L",
+          "structureId": "frontal-pole-l",
+          "voxels": 103,
+          "center": [
+            -6.35,
+            66,
+            -10.019
+          ],
+          "surfaceCenter": [
+            -6.168,
+            67.197,
+            -11.493
+          ],
+          "surfaceAnchor": [
+            -6.891,
+            69.107,
+            -12.103
+          ]
+        },
+        {
+          "id": 32,
+          "sourceId": 1033,
+          "sourceName": "temporalpole",
+          "name": "Left Temporal pole",
+          "zh": "左颞极",
+          "hemisphere": "L",
+          "structureId": "temporal-pole-l",
+          "voxels": 307,
+          "center": [
+            -26.899,
+            12.059,
+            -37.381
+          ],
+          "surfaceCenter": [
+            -25.958,
+            13.812,
+            -39.854
+          ],
+          "surfaceAnchor": [
+            -23.014,
+            16.288,
+            -41.695
+          ]
+        },
+        {
+          "id": 33,
+          "sourceId": 1034,
+          "sourceName": "transversetemporal",
+          "name": "Left Transverse temporal gyrus",
+          "zh": "左颞横回",
+          "hemisphere": "L",
+          "structureId": "transverse-temporal-l",
+          "voxels": 154,
+          "center": [
+            -44.429,
+            -20.896,
+            7.961
+          ],
+          "surfaceCenter": [
+            -43.948,
+            -22.089,
+            9.705
+          ],
+          "surfaceAnchor": [
+            -44.936,
+            -21.697,
+            11.899
+          ]
+        },
+        {
+          "id": 34,
+          "sourceId": 1035,
+          "sourceName": "insula",
+          "name": "Left Insula",
+          "zh": "左岛叶",
+          "hemisphere": "L",
+          "structureId": "insula-l",
+          "voxels": 968,
+          "center": [
+            -36.161,
+            -0.539,
+            0.806
+          ],
+          "surfaceCenter": [
+            -36.746,
+            -3.142,
+            3.729
+          ],
+          "surfaceAnchor": [
+            -38.171,
+            0.302,
+            7.322
+          ]
+        },
+        {
+          "id": 35,
+          "sourceId": 2001,
+          "sourceName": "bankssts",
+          "name": "Right Banks of superior temporal sulcus",
+          "zh": "右颞上沟岸",
+          "hemisphere": "R",
+          "structureId": "bankssts-r",
+          "voxels": 351,
+          "center": [
+            53.641,
+            -39.51,
+            9.698
+          ],
+          "surfaceCenter": [
+            53.026,
+            -39.903,
+            11.347
+          ],
+          "surfaceAnchor": [
+            52.435,
+            -39.904,
+            13.084
+          ]
+        },
+        {
+          "id": 36,
+          "sourceId": 2002,
+          "sourceName": "caudalanteriorcingulate",
+          "name": "Right Caudal anterior cingulate cortex",
+          "zh": "右尾侧前扣带皮层",
+          "hemisphere": "R",
+          "structureId": "caudal-anterior-cingulate-r",
+          "voxels": 348,
+          "center": [
+            5.011,
+            25.69,
+            24.471
+          ],
+          "surfaceCenter": [
+            4.236,
+            24.521,
+            23.456
+          ],
+          "surfaceAnchor": [
+            1.822,
+            26.215,
+            23.359
+          ]
+        },
+        {
+          "id": 37,
+          "sourceId": 2003,
+          "sourceName": "caudalmiddlefrontal",
+          "name": "Right Caudal middle frontal gyrus",
+          "zh": "右尾侧额中回",
+          "hemisphere": "R",
+          "structureId": "caudal-middle-frontal-r",
+          "voxels": 756,
+          "center": [
+            36.005,
+            13.119,
+            48.296
+          ],
+          "surfaceCenter": [
+            35.034,
+            12.094,
+            47.984
+          ],
+          "surfaceAnchor": [
+            38.446,
+            10.141,
+            46.401
+          ]
+        },
+        {
+          "id": 38,
+          "sourceId": 2005,
+          "sourceName": "cuneus",
+          "name": "Right Cuneus",
+          "zh": "右楔叶",
+          "hemisphere": "R",
+          "structureId": "cuneus-r",
+          "voxels": 255,
+          "center": [
+            10.039,
+            -75.827,
+            21.914
+          ],
+          "surfaceCenter": [
+            8.922,
+            -75.27,
+            21.808
+          ],
+          "surfaceAnchor": [
+            8.247,
+            -70.216,
+            24.096
+          ]
+        },
+        {
+          "id": 39,
+          "sourceId": 2006,
+          "sourceName": "entorhinal",
+          "name": "Right Entorhinal cortex",
+          "zh": "右内嗅皮层",
+          "hemisphere": "R",
+          "structureId": "entorhinal-r",
+          "voxels": 225,
+          "center": [
+            22.88,
+            -0.569,
+            -34.213
+          ],
+          "surfaceCenter": [
+            22.833,
+            -3.585,
+            -33.296
+          ],
+          "surfaceAnchor": [
+            21.717,
+            -4.005,
+            -37.499
+          ]
+        },
+        {
+          "id": 40,
+          "sourceId": 2007,
+          "sourceName": "fusiform",
+          "name": "Right Fusiform gyrus",
+          "zh": "右梭状回",
+          "hemisphere": "R",
+          "structureId": "fusiform-r",
+          "voxels": 1516,
+          "center": [
+            35.937,
+            -37.318,
+            -23.05
+          ],
+          "surfaceCenter": [
+            35.743,
+            -38.329,
+            -23.005
+          ],
+          "surfaceAnchor": [
+            36.735,
+            -38.502,
+            -23.83
+          ]
+        },
+        {
+          "id": 41,
+          "sourceId": 2008,
+          "sourceName": "inferiorparietal",
+          "name": "Right Inferior parietal lobule",
+          "zh": "右顶下小叶",
+          "hemisphere": "R",
+          "structureId": "inferior-parietal-r",
+          "voxels": 1949,
+          "center": [
+            47.681,
+            -59.525,
+            33.005
+          ],
+          "surfaceCenter": [
+            46.776,
+            -60.697,
+            33.23
+          ],
+          "surfaceAnchor": [
+            46.161,
+            -61.266,
+            33.802
+          ]
+        },
+        {
+          "id": 42,
+          "sourceId": 2009,
+          "sourceName": "inferiortemporal",
+          "name": "Right Inferior temporal gyrus",
+          "zh": "右颞下回",
+          "hemisphere": "R",
+          "structureId": "inferior-temporal-r",
+          "voxels": 1714,
+          "center": [
+            52.575,
+            -29.172,
+            -24.39
+          ],
+          "surfaceCenter": [
+            52.373,
+            -29.254,
+            -24.119
+          ],
+          "surfaceAnchor": [
+            48.294,
+            -30.699,
+            -23.413
+          ]
+        },
+        {
+          "id": 43,
+          "sourceId": 2010,
+          "sourceName": "isthmuscingulate",
+          "name": "Right Isthmus of cingulate gyrus",
+          "zh": "右扣带回峡部",
+          "hemisphere": "R",
+          "structureId": "isthmus-cingulate-r",
+          "voxels": 374,
+          "center": [
+            7.326,
+            -43.273,
+            20.396
+          ],
+          "surfaceCenter": [
+            6.872,
+            -42.6,
+            18.079
+          ],
+          "surfaceAnchor": [
+            5.597,
+            -44.327,
+            18.723
+          ]
+        },
+        {
+          "id": 44,
+          "sourceId": 2011,
+          "sourceName": "lateraloccipital",
+          "name": "Right Lateral occipital cortex",
+          "zh": "右枕叶外侧皮层",
+          "hemisphere": "R",
+          "structureId": "lateral-occipital-r",
+          "voxels": 1385,
+          "center": [
+            37.523,
+            -81.529,
+            0.644
+          ],
+          "surfaceCenter": [
+            37.313,
+            -81.435,
+            1.835
+          ],
+          "surfaceAnchor": [
+            39.242,
+            -85.672,
+            -0.84
+          ]
+        },
+        {
+          "id": 45,
+          "sourceId": 2012,
+          "sourceName": "lateralorbitofrontal",
+          "name": "Right Lateral orbitofrontal cortex",
+          "zh": "右外侧眶额皮层",
+          "hemisphere": "R",
+          "structureId": "lateral-orbitofrontal-r",
+          "voxels": 1020,
+          "center": [
+            24.31,
+            32.757,
+            -17.537
+          ],
+          "surfaceCenter": [
+            23.997,
+            32.491,
+            -18.188
+          ],
+          "surfaceAnchor": [
+            25.088,
+            31.964,
+            -18.912
+          ]
+        },
+        {
+          "id": 46,
+          "sourceId": 2013,
+          "sourceName": "lingual",
+          "name": "Right Lingual gyrus",
+          "zh": "右舌回",
+          "hemisphere": "R",
+          "structureId": "lingual-r",
+          "voxels": 659,
+          "center": [
+            14.765,
+            -61.439,
+            -3.985
+          ],
+          "surfaceCenter": [
+            15.281,
+            -62.134,
+            -2.683
+          ],
+          "surfaceAnchor": [
+            16.681,
+            -65.484,
+            -5.237
+          ]
+        },
+        {
+          "id": 47,
+          "sourceId": 2014,
+          "sourceName": "medialorbitofrontal",
+          "name": "Right Medial orbitofrontal cortex",
+          "zh": "右内侧眶额皮层",
+          "hemisphere": "R",
+          "structureId": "medial-orbitofrontal-r",
+          "voxels": 670,
+          "center": [
+            4.901,
+            40.791,
+            -15.513
+          ],
+          "surfaceCenter": [
+            4.8,
+            41.622,
+            -14.999
+          ],
+          "surfaceAnchor": [
+            3.311,
+            41.208,
+            -15.226
+          ]
+        },
+        {
+          "id": 48,
+          "sourceId": 2015,
+          "sourceName": "middletemporal",
+          "name": "Right Middle temporal gyrus",
+          "zh": "右颞中回",
+          "hemisphere": "R",
+          "structureId": "middle-temporal-r",
+          "voxels": 1901,
+          "center": [
+            58.204,
+            -20.214,
+            -14.1
+          ],
+          "surfaceCenter": [
+            58.622,
+            -22.301,
+            -12.846
+          ],
+          "surfaceAnchor": [
+            58.074,
+            -19.01,
+            -9.321
+          ]
+        },
+        {
+          "id": 49,
+          "sourceId": 2016,
+          "sourceName": "parahippocampal",
+          "name": "Right Parahippocampal cortex",
+          "zh": "右海马旁皮层",
+          "hemisphere": "R",
+          "structureId": "parahippocampal-r",
+          "voxels": 283,
+          "center": [
+            25.258,
+            -26.933,
+            -20.544
+          ],
+          "surfaceCenter": [
+            26.995,
+            -26.818,
+            -21.742
+          ],
+          "surfaceAnchor": [
+            28.492,
+            -26.571,
+            -21.714
+          ]
+        },
+        {
+          "id": 50,
+          "sourceId": 2017,
+          "sourceName": "paracentral",
+          "name": "Right Paracentral lobule",
+          "zh": "右中央旁小叶",
+          "hemisphere": "R",
+          "structureId": "paracentral-r",
+          "voxels": 555,
+          "center": [
+            7.052,
+            -24.789,
+            56.216
+          ],
+          "surfaceCenter": [
+            7.296,
+            -26.051,
+            55.284
+          ],
+          "surfaceAnchor": [
+            4.511,
+            -26.015,
+            56.926
+          ]
+        },
+        {
+          "id": 51,
+          "sourceId": 2018,
+          "sourceName": "parsopercularis",
+          "name": "Right Pars opercularis",
+          "zh": "右额下回盖部",
+          "hemisphere": "R",
+          "structureId": "pars-opercularis-r",
+          "voxels": 642,
+          "center": [
+            48.265,
+            16.745,
+            14.078
+          ],
+          "surfaceCenter": [
+            48.625,
+            16.506,
+            14.413
+          ],
+          "surfaceAnchor": [
+            50.175,
+            10.342,
+            15.097
+          ]
+        },
+        {
+          "id": 52,
+          "sourceId": 2019,
+          "sourceName": "parsorbitalis",
+          "name": "Right Pars orbitalis",
+          "zh": "右额下回眶部",
+          "hemisphere": "R",
+          "structureId": "pars-orbitalis-r",
+          "voxels": 419,
+          "center": [
+            43.613,
+            41.37,
+            -12.038
+          ],
+          "surfaceCenter": [
+            44.137,
+            40.108,
+            -11.706
+          ],
+          "surfaceAnchor": [
+            38.537,
+            37.516,
+            -13.44
+          ]
+        },
+        {
+          "id": 53,
+          "sourceId": 2020,
+          "sourceName": "parstriangularis",
+          "name": "Right Pars triangularis",
+          "zh": "右额下回三角部",
+          "hemisphere": "R",
+          "structureId": "pars-triangularis-r",
+          "voxels": 588,
+          "center": [
+            48.401,
+            32.966,
+            3.527
+          ],
+          "surfaceCenter": [
+            47.894,
+            32.915,
+            3.978
+          ],
+          "surfaceAnchor": [
+            45.775,
+            31.27,
+            -1.819
+          ]
+        },
+        {
+          "id": 54,
+          "sourceId": 2021,
+          "sourceName": "pericalcarine",
+          "name": "Right Pericalcarine cortex",
+          "zh": "右距状沟周围皮层",
+          "hemisphere": "R",
+          "structureId": "pericalcarine-r",
+          "voxels": 212,
+          "center": [
+            12.132,
+            -76.406,
+            7.208
+          ],
+          "surfaceCenter": [
+            13.238,
+            -75.048,
+            7.508
+          ],
+          "surfaceAnchor": [
+            13.209,
+            -75.426,
+            7.657
+          ]
+        },
+        {
+          "id": 55,
+          "sourceId": 2022,
+          "sourceName": "postcentral",
+          "name": "Right Postcentral gyrus",
+          "zh": "右中央后回",
+          "hemisphere": "R",
+          "structureId": "postcentral-r",
+          "voxels": 989,
+          "center": [
+            46.69,
+            -18.315,
+            40.623
+          ],
+          "surfaceCenter": [
+            43.644,
+            -19.289,
+            44.773
+          ],
+          "surfaceAnchor": [
+            41.237,
+            -19.817,
+            47.028
+          ]
+        },
+        {
+          "id": 56,
+          "sourceId": 2023,
+          "sourceName": "posteriorcingulate",
+          "name": "Right Posterior cingulate cortex",
+          "zh": "右后扣带皮层",
+          "hemisphere": "R",
+          "structureId": "posterior-cingulate-r",
+          "voxels": 563,
+          "center": [
+            5.453,
+            -12.693,
+            37.783
+          ],
+          "surfaceCenter": [
+            5.526,
+            -12.621,
+            37.938
+          ],
+          "surfaceAnchor": [
+            2.371,
+            -13.702,
+            36.833
+          ]
+        },
+        {
+          "id": 57,
+          "sourceId": 2024,
+          "sourceName": "precentral",
+          "name": "Right Precentral gyrus",
+          "zh": "右中央前回",
+          "hemisphere": "R",
+          "structureId": "precentral-r",
+          "voxels": 1643,
+          "center": [
+            42.565,
+            -3.832,
+            40.236
+          ],
+          "surfaceCenter": [
+            41.264,
+            -5.899,
+            41.451
+          ],
+          "surfaceAnchor": [
+            40.232,
+            -2.62,
+            45.934
+          ]
+        },
+        {
+          "id": 58,
+          "sourceId": 2025,
+          "sourceName": "precuneus",
+          "name": "Right Precuneus",
+          "zh": "右楔前叶",
+          "hemisphere": "R",
+          "structureId": "precuneus-r",
+          "voxels": 1500,
+          "center": [
+            9.849,
+            -56.696,
+            37.011
+          ],
+          "surfaceCenter": [
+            9.875,
+            -55.645,
+            38.538
+          ],
+          "surfaceAnchor": [
+            9.028,
+            -56.461,
+            37.622
+          ]
+        },
+        {
+          "id": 59,
+          "sourceId": 2026,
+          "sourceName": "rostralanteriorcingulate",
+          "name": "Right Rostral anterior cingulate cortex",
+          "zh": "右吻侧前扣带皮层",
+          "hemisphere": "R",
+          "structureId": "rostral-anterior-cingulate-r",
+          "voxels": 296,
+          "center": [
+            5.628,
+            38.453,
+            3.581
+          ],
+          "surfaceCenter": [
+            4.869,
+            40.402,
+            3.334
+          ],
+          "surfaceAnchor": [
+            2.745,
+            38.295,
+            4.453
+          ]
+        },
+        {
+          "id": 60,
+          "sourceId": 2027,
+          "sourceName": "rostralmiddlefrontal",
+          "name": "Right Rostral middle frontal gyrus",
+          "zh": "右吻侧额中回",
+          "hemisphere": "R",
+          "structureId": "rostral-middle-frontal-r",
+          "voxels": 2596,
+          "center": [
+            33.73,
+            47.272,
+            16.424
+          ],
+          "surfaceCenter": [
+            34.718,
+            46.671,
+            17.935
+          ],
+          "surfaceAnchor": [
+            31.429,
+            48.979,
+            18.169
+          ]
+        },
+        {
+          "id": 61,
+          "sourceId": 2028,
+          "sourceName": "superiorfrontal",
+          "name": "Right Superior frontal gyrus",
+          "zh": "右额上回",
+          "hemisphere": "R",
+          "structureId": "superior-frontal-r",
+          "voxels": 3315,
+          "center": [
+            12.01,
+            32.074,
+            41.409
+          ],
+          "surfaceCenter": [
+            12.76,
+            32.62,
+            39.917
+          ],
+          "surfaceAnchor": [
+            8.875,
+            27.81,
+            33.482
+          ]
+        },
+        {
+          "id": 62,
+          "sourceId": 2029,
+          "sourceName": "superiorparietal",
+          "name": "Right Superior parietal lobule",
+          "zh": "右顶上小叶",
+          "hemisphere": "R",
+          "structureId": "superior-parietal-r",
+          "voxels": 1553,
+          "center": [
+            25.56,
+            -60.759,
+            52.986
+          ],
+          "surfaceCenter": [
+            25.756,
+            -61.056,
+            52.014
+          ],
+          "surfaceAnchor": [
+            25.14,
+            -62.292,
+            50.646
+          ]
+        },
+        {
+          "id": 63,
+          "sourceId": 2030,
+          "sourceName": "superiortemporal",
+          "name": "Right Superior temporal gyrus",
+          "zh": "右颞上回",
+          "hemisphere": "R",
+          "structureId": "superior-temporal-r",
+          "voxels": 1730,
+          "center": [
+            53.659,
+            -5.657,
+            -6.186
+          ],
+          "surfaceCenter": [
+            53.702,
+            -6.045,
+            -6.346
+          ],
+          "surfaceAnchor": [
+            56.406,
+            -8.567,
+            -7.576
+          ]
+        },
+        {
+          "id": 64,
+          "sourceId": 2031,
+          "sourceName": "supramarginal",
+          "name": "Right Supramarginal gyrus",
+          "zh": "右缘上回",
+          "hemisphere": "R",
+          "structureId": "supramarginal-r",
+          "voxels": 1326,
+          "center": [
+            55.784,
+            -29.195,
+            33.732
+          ],
+          "surfaceCenter": [
+            54.971,
+            -29.545,
+            34.407
+          ],
+          "surfaceAnchor": [
+            55.643,
+            -29.725,
+            33.922
+          ]
+        },
+        {
+          "id": 65,
+          "sourceId": 2032,
+          "sourceName": "frontalpole",
+          "name": "Right Frontal pole",
+          "zh": "右额极",
+          "hemisphere": "R",
+          "structureId": "frontal-pole-r",
+          "voxels": 155,
+          "center": [
+            7.161,
+            65.652,
+            -11.252
+          ],
+          "surfaceCenter": [
+            6.603,
+            66.634,
+            -13.639
+          ],
+          "surfaceAnchor": [
+            7.753,
+            68.17,
+            -14.332
+          ]
+        },
+        {
+          "id": 66,
+          "sourceId": 2033,
+          "sourceName": "temporalpole",
+          "name": "Right Temporal pole",
+          "zh": "右颞极",
+          "hemisphere": "R",
+          "structureId": "temporal-pole-r",
+          "voxels": 261,
+          "center": [
+            29.808,
+            16.805,
+            -34.644
+          ],
+          "surfaceCenter": [
+            28.872,
+            19.211,
+            -36.834
+          ],
+          "surfaceAnchor": [
+            26.957,
+            22.09,
+            -37.438
+          ]
+        },
+        {
+          "id": 67,
+          "sourceId": 2034,
+          "sourceName": "transversetemporal",
+          "name": "Right Transverse temporal gyrus",
+          "zh": "右颞横回",
+          "hemisphere": "R",
+          "structureId": "transverse-temporal-r",
+          "voxels": 119,
+          "center": [
+            45.58,
+            -18.168,
+            8.218
+          ],
+          "surfaceCenter": [
+            44.826,
+            -18.986,
+            10.606
+          ],
+          "surfaceAnchor": [
+            45.696,
+            -17.083,
+            11.034
+          ]
+        },
+        {
+          "id": 68,
+          "sourceId": 2035,
+          "sourceName": "insula",
+          "name": "Right Insula",
+          "zh": "右岛叶",
+          "hemisphere": "R",
+          "structureId": "insula-r",
+          "voxels": 959,
+          "center": [
+            37.585,
+            1.871,
+            -0.234
+          ],
+          "surfaceCenter": [
+            38.265,
+            -0.254,
+            3.019
+          ],
+          "surfaceAnchor": [
+            39.182,
+            3.569,
+            5.429
+          ]
+        }
+      ],
+      "positiveLabelCount": 68,
+      "source": "https://github.com/ThomasYeoLab/CBIG/tree/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0",
+      "license": "CBIG MIT; retain FreeSurfer and MNI template attribution",
+      "note": "完整34×2 DK皮层区，包含双侧岛叶。来自同一FSL MNI152模板的FreeSurfer分割与配对皮层表面；2mm标签最近邻重采样，顶点标签来自原始aparc.annot。不是个体解剖边界。",
+      "alignmentStatus": "verified-native",
+      "meshes": [
+        {
+          "id": "cortex-left",
+          "file": "dk-v2/cortex-left.json",
+          "source": "https://github.com/ThomasYeoLab/CBIG/tree/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0",
+          "space": "MNI152NLin6Asym",
+          "surface": "pial",
+          "atlasId": "dk",
+          "vertexLabels": true,
+          "vertices": 41425,
+          "triangles": 82846,
+          "sha256": "369852e06a75642df7b8b63911e9690b826e121de3d5d41f77c90b72ccec1967",
+          "processing": "VTK DecimatePro target reduction 0.72, topology preserved; original vertices and annotations retained",
+          "maxVertexTransferDistanceMm": 0,
+          "annotationLabelsPresent": 34
+        },
+        {
+          "id": "white-left",
+          "file": "dk-v2/white-left.json",
+          "source": "https://github.com/ThomasYeoLab/CBIG/tree/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0",
+          "space": "MNI152NLin6Asym",
+          "surface": "white",
+          "atlasId": "dk",
+          "vertexLabels": true,
+          "vertices": 41425,
+          "triangles": 82846,
+          "sha256": "6c6a3dca2154660c87460a3f9ac181bcd1545031e1682e86d797461b5e3de895",
+          "processing": "VTK DecimatePro target reduction 0.72, topology preserved; original vertices and annotations retained",
+          "maxVertexTransferDistanceMm": 0,
+          "annotationLabelsPresent": 34
+        },
+        {
+          "id": "cortex-right",
+          "file": "dk-v2/cortex-right.json",
+          "source": "https://github.com/ThomasYeoLab/CBIG/tree/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0",
+          "space": "MNI152NLin6Asym",
+          "surface": "pial",
+          "atlasId": "dk",
+          "vertexLabels": true,
+          "vertices": 41352,
+          "triangles": 82700,
+          "sha256": "d68f99621222eb537270d8ac1578da89566d136ae42ca6f4f89b65348016d746",
+          "processing": "VTK DecimatePro target reduction 0.72, topology preserved; original vertices and annotations retained",
+          "maxVertexTransferDistanceMm": 0,
+          "annotationLabelsPresent": 34
+        },
+        {
+          "id": "white-right",
+          "file": "dk-v2/white-right.json",
+          "source": "https://github.com/ThomasYeoLab/CBIG/tree/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0",
+          "space": "MNI152NLin6Asym",
+          "surface": "white",
+          "atlasId": "dk",
+          "vertexLabels": true,
+          "vertices": 41352,
+          "triangles": 82700,
+          "sha256": "3f30ff73da984ad91cef06c27e769594d65b41fafe3a613e5db476d2714a9d22",
+          "processing": "VTK DecimatePro target reduction 0.72, topology preserved; original vertices and annotations retained",
+          "maxVertexTransferDistanceMm": 0,
+          "annotationLabelsPresent": 34
+        }
+      ],
+      "sha256": "2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+      "templateComparison": {
+        "pearsonR": 0.9986572312460016,
+        "brainVoxelsCompared": 228453,
+        "mask": "target T1 intensity > 500",
+        "normalizedRmseByTargetStd": 0.05180477275375772,
+        "intensityFitScale": 36.39795870692567,
+        "intensityFitIntercept": 96.66861213979173,
+        "sourceInputEvidence": "recon-all.cmd line 2 names FSL 4.1.5 data/standard/MNI152_T1_1mm.nii.gz",
+        "interpretation": "Same FSL template anatomy, with FreeSurfer conforming/intensity quantization; this is not a new registration estimate."
+      },
+      "tkRasToScannerRas": [
+        1,
+        0,
+        0,
+        -1,
+        0,
+        1,
+        0,
+        -17,
+        0,
+        0,
+        1,
+        19,
+        0,
+        0,
+        0,
+        1
+      ],
+      "sourceCommit": "634f676630929a71297852d01dd92a287103e861",
+      "sourceSha256": "a93978f91fb119ac57fa173cfbbc2f2c2bf631015ceac8750b67e277f3fb89ca",
+      "canOverlayOnTarget": true
+    },
+    "aal": {
+      "available": false,
+      "data": null,
+      "shape": [
+        91,
+        109,
+        91
+      ],
+      "affine": [
+        2,
+        0,
+        0,
+        -90,
+        0,
+        2,
+        0,
+        -125,
+        0,
+        0,
+        2,
+        -71,
+        0,
+        0,
+        0,
+        1
+      ],
+      "dtype": "uint8",
+      "order": "x-fastest",
+      "labels": [
+        {
+          "id": 1,
+          "name": "Precentral L",
+          "voxels": 3526,
+          "center": [
+            -38.93,
+            -5.96,
+            50.64
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Precentral R",
+          "voxels": 3381,
+          "center": [
+            41.1,
+            -8.55,
+            51.81
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Frontal Sup L",
+          "voxels": 3599,
+          "center": [
+            -18.77,
+            34.49,
+            41.95
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Frontal Sup R",
+          "voxels": 4056,
+          "center": [
+            21.6,
+            30.91,
+            43.5
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Frontal Sup Orb L",
+          "voxels": 963,
+          "center": [
+            -16.82,
+            46.92,
+            -13.72
+          ]
+        },
+        {
+          "id": 6,
+          "name": "Frontal Sup Orb R",
+          "voxels": 997,
+          "center": [
+            18.18,
+            47.62,
+            -14.49
+          ]
+        },
+        {
+          "id": 7,
+          "name": "Frontal Mid L",
+          "voxels": 4863,
+          "center": [
+            -33.76,
+            32.49,
+            35.13
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Frontal Mid R",
+          "voxels": 5104,
+          "center": [
+            37.39,
+            32.75,
+            33.81
+          ]
+        },
+        {
+          "id": 9,
+          "name": "Frontal Mid Orb L",
+          "voxels": 888,
+          "center": [
+            -30.89,
+            50.14,
+            -9.99
+          ]
+        },
+        {
+          "id": 10,
+          "name": "Frontal Mid Orb R",
+          "voxels": 1015,
+          "center": [
+            32.89,
+            52.27,
+            -11.14
+          ]
+        },
+        {
+          "id": 11,
+          "name": "Frontal Inf Oper L",
+          "voxels": 1038,
+          "center": [
+            -48.8,
+            12.49,
+            18.8
+          ]
+        },
+        {
+          "id": 12,
+          "name": "Frontal Inf Oper R",
+          "voxels": 1399,
+          "center": [
+            49.93,
+            14.68,
+            21.2
+          ]
+        },
+        {
+          "id": 13,
+          "name": "Frontal Inf Tri L",
+          "voxels": 2529,
+          "center": [
+            -45.89,
+            29.67,
+            13.58
+          ]
+        },
+        {
+          "id": 14,
+          "name": "Frontal Inf Tri R",
+          "voxels": 2151,
+          "center": [
+            50.06,
+            29.9,
+            13.82
+          ]
+        },
+        {
+          "id": 15,
+          "name": "Frontal Inf Orb L",
+          "voxels": 1690,
+          "center": [
+            -36.24,
+            30.49,
+            -12.46
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Frontal Inf Orb R",
+          "voxels": 1707,
+          "center": [
+            40.91,
+            31.99,
+            -12.26
+          ]
+        },
+        {
+          "id": 17,
+          "name": "Rolandic Oper L",
+          "voxels": 990,
+          "center": [
+            -47.41,
+            -8.78,
+            13.64
+          ]
+        },
+        {
+          "id": 18,
+          "name": "Rolandic Oper R",
+          "voxels": 1331,
+          "center": [
+            52.38,
+            -6.54,
+            14.33
+          ]
+        },
+        {
+          "id": 19,
+          "name": "Supp Motor Area L",
+          "voxels": 2147,
+          "center": [
+            -5.69,
+            4.55,
+            61.06
+          ]
+        },
+        {
+          "id": 20,
+          "name": "Supp Motor Area R",
+          "voxels": 2371,
+          "center": [
+            8.25,
+            -0.09,
+            61.51
+          ]
+        },
+        {
+          "id": 21,
+          "name": "Olfactory L",
+          "voxels": 280,
+          "center": [
+            -8.26,
+            14.86,
+            -11.69
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Olfactory R",
+          "voxels": 289,
+          "center": [
+            10.12,
+            15.66,
+            -11.56
+          ]
+        },
+        {
+          "id": 23,
+          "name": "Frontal Sup Medial L",
+          "voxels": 2992,
+          "center": [
+            -5.17,
+            48.89,
+            30.64
+          ]
+        },
+        {
+          "id": 24,
+          "name": "Frontal Sup Medial R",
+          "voxels": 2134,
+          "center": [
+            8.75,
+            50.53,
+            29.93
+          ]
+        },
+        {
+          "id": 25,
+          "name": "Frontal Mid Orb L",
+          "voxels": 719,
+          "center": [
+            -5.44,
+            53.52,
+            -7.86
+          ]
+        },
+        {
+          "id": 26,
+          "name": "Frontal Mid Orb R",
+          "voxels": 856,
+          "center": [
+            7.83,
+            51.41,
+            -7.52
+          ]
+        },
+        {
+          "id": 27,
+          "name": "Rectus L",
+          "voxels": 852,
+          "center": [
+            -5.44,
+            36.71,
+            -18.57
+          ]
+        },
+        {
+          "id": 28,
+          "name": "Rectus R",
+          "voxels": 745,
+          "center": [
+            8,
+            35.45,
+            -18.44
+          ]
+        },
+        {
+          "id": 29,
+          "name": "Insula L",
+          "voxels": 1858,
+          "center": [
+            -35.41,
+            6.44,
+            3.17
+          ]
+        },
+        {
+          "id": 30,
+          "name": "Insula R",
+          "voxels": 1770,
+          "center": [
+            38.72,
+            6.02,
+            1.81
+          ]
+        },
+        {
+          "id": 31,
+          "name": "Cingulum Ant L",
+          "voxels": 1400,
+          "center": [
+            -4.36,
+            35.2,
+            13.54
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Cingulum Ant R",
+          "voxels": 1313,
+          "center": [
+            8.12,
+            36.72,
+            15.43
+          ]
+        },
+        {
+          "id": 33,
+          "name": "Cingulum Mid L",
+          "voxels": 1941,
+          "center": [
+            -5.88,
+            -15.1,
+            41.21
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Cingulum Mid R",
+          "voxels": 2203,
+          "center": [
+            7.66,
+            -9.2,
+            39.44
+          ]
+        },
+        {
+          "id": 35,
+          "name": "Cingulum Post L",
+          "voxels": 463,
+          "center": [
+            -5.21,
+            -43.17,
+            24.28
+          ]
+        },
+        {
+          "id": 36,
+          "name": "Cingulum Post R",
+          "voxels": 335,
+          "center": [
+            7.18,
+            -42.09,
+            21.47
+          ]
+        },
+        {
+          "id": 37,
+          "name": "Hippocampus L",
+          "voxels": 932,
+          "center": [
+            -25.26,
+            -20.96,
+            -10.38
+          ]
+        },
+        {
+          "id": 38,
+          "name": "Hippocampus R",
+          "voxels": 946,
+          "center": [
+            28.95,
+            -19.99,
+            -10.58
+          ]
+        },
+        {
+          "id": 39,
+          "name": "ParaHippocampal L",
+          "voxels": 978,
+          "center": [
+            -21.49,
+            -16.29,
+            -20.92
+          ]
+        },
+        {
+          "id": 40,
+          "name": "ParaHippocampal R",
+          "voxels": 1132,
+          "center": [
+            25.15,
+            -15.3,
+            -20.74
+          ]
+        },
+        {
+          "id": 41,
+          "name": "Amygdala L",
+          "voxels": 220,
+          "center": [
+            -23.51,
+            -0.95,
+            -17.45
+          ]
+        },
+        {
+          "id": 42,
+          "name": "Amygdala R",
+          "voxels": 248,
+          "center": [
+            27.06,
+            0.43,
+            -17.81
+          ]
+        },
+        {
+          "id": 43,
+          "name": "Calcarine L",
+          "voxels": 2258,
+          "center": [
+            -7.48,
+            -78.82,
+            6.1
+          ]
+        },
+        {
+          "id": 44,
+          "name": "Calcarine R",
+          "voxels": 1861,
+          "center": [
+            15.71,
+            -73.45,
+            9.02
+          ]
+        },
+        {
+          "id": 45,
+          "name": "Cuneus L",
+          "voxels": 1526,
+          "center": [
+            -6.26,
+            -80.42,
+            26.84
+          ]
+        },
+        {
+          "id": 46,
+          "name": "Cuneus R",
+          "voxels": 1424,
+          "center": [
+            13.19,
+            -79.59,
+            27.85
+          ]
+        },
+        {
+          "id": 47,
+          "name": "Lingual L",
+          "voxels": 2095,
+          "center": [
+            -14.86,
+            -67.86,
+            -5.01
+          ]
+        },
+        {
+          "id": 48,
+          "name": "Lingual R",
+          "voxels": 2300,
+          "center": [
+            16.08,
+            -67.14,
+            -4.22
+          ]
+        },
+        {
+          "id": 49,
+          "name": "Occipital Sup L",
+          "voxels": 1366,
+          "center": [
+            -16.76,
+            -84.61,
+            27.85
+          ]
+        },
+        {
+          "id": 50,
+          "name": "Occipital Sup R",
+          "voxels": 1413,
+          "center": [
+            23.96,
+            -81.21,
+            30.27
+          ]
+        },
+        {
+          "id": 51,
+          "name": "Occipital Mid L",
+          "voxels": 3270,
+          "center": [
+            -32.62,
+            -81.02,
+            15.77
+          ]
+        },
+        {
+          "id": 52,
+          "name": "Occipital Mid R",
+          "voxels": 2098,
+          "center": [
+            37.13,
+            -79.99,
+            19.07
+          ]
+        },
+        {
+          "id": 53,
+          "name": "Occipital Inf L",
+          "voxels": 941,
+          "center": [
+            -36.48,
+            -78.57,
+            -8.16
+          ]
+        },
+        {
+          "id": 54,
+          "name": "Occipital Inf R",
+          "voxels": 989,
+          "center": [
+            37.87,
+            -82.19,
+            -7.99
+          ]
+        },
+        {
+          "id": 55,
+          "name": "Fusiform L",
+          "voxels": 2310,
+          "center": [
+            -31.39,
+            -40.41,
+            -20.61
+          ]
+        },
+        {
+          "id": 56,
+          "name": "Fusiform R",
+          "voxels": 2518,
+          "center": [
+            33.66,
+            -39.2,
+            -20.53
+          ]
+        },
+        {
+          "id": 57,
+          "name": "Postcentral L",
+          "voxels": 3892,
+          "center": [
+            -42.9,
+            -22.78,
+            48.46
+          ]
+        },
+        {
+          "id": 58,
+          "name": "Postcentral R",
+          "voxels": 3823,
+          "center": [
+            41.16,
+            -25.77,
+            52.25
+          ]
+        },
+        {
+          "id": 59,
+          "name": "Parietal Sup L",
+          "voxels": 2065,
+          "center": [
+            -23.71,
+            -59.81,
+            58.66
+          ]
+        },
+        {
+          "id": 60,
+          "name": "Parietal Sup R",
+          "voxels": 2222,
+          "center": [
+            25.84,
+            -59.43,
+            61.71
+          ]
+        },
+        {
+          "id": 61,
+          "name": "Parietal Inf L",
+          "voxels": 2447,
+          "center": [
+            -43.11,
+            -46.02,
+            46.42
+          ]
+        },
+        {
+          "id": 62,
+          "name": "Parietal Inf R",
+          "voxels": 1345,
+          "center": [
+            46.29,
+            -46.59,
+            49.19
+          ]
+        },
+        {
+          "id": 63,
+          "name": "SupraMarginal L",
+          "voxels": 1256,
+          "center": [
+            -56.15,
+            -33.94,
+            30.12
+          ]
+        },
+        {
+          "id": 64,
+          "name": "SupraMarginal R",
+          "voxels": 1974,
+          "center": [
+            57.26,
+            -31.82,
+            34.13
+          ]
+        },
+        {
+          "id": 65,
+          "name": "Angular L",
+          "voxels": 1173,
+          "center": [
+            -44.43,
+            -61.08,
+            35.28
+          ]
+        },
+        {
+          "id": 66,
+          "name": "Angular R",
+          "voxels": 1752,
+          "center": [
+            45.23,
+            -60.24,
+            38.32
+          ]
+        },
+        {
+          "id": 67,
+          "name": "Precuneus L",
+          "voxels": 3528,
+          "center": [
+            -7.59,
+            -56.32,
+            47.64
+          ]
+        },
+        {
+          "id": 68,
+          "name": "Precuneus R",
+          "voxels": 3265,
+          "center": [
+            9.69,
+            -56.31,
+            43.36
+          ]
+        },
+        {
+          "id": 69,
+          "name": "Paracentral Lobule L",
+          "voxels": 1349,
+          "center": [
+            -7.97,
+            -25.65,
+            69.69
+          ]
+        },
+        {
+          "id": 70,
+          "name": "Paracentral Lobule R",
+          "voxels": 836,
+          "center": [
+            7.13,
+            -31.94,
+            67.79
+          ]
+        },
+        {
+          "id": 71,
+          "name": "Caudate L",
+          "voxels": 962,
+          "center": [
+            -11.77,
+            10.72,
+            9.07
+          ]
+        },
+        {
+          "id": 72,
+          "name": "Caudate R",
+          "voxels": 994,
+          "center": [
+            14.49,
+            11.78,
+            9.15
+          ]
+        },
+        {
+          "id": 73,
+          "name": "Putamen L",
+          "voxels": 1009,
+          "center": [
+            -24.21,
+            3.6,
+            2.07
+          ]
+        },
+        {
+          "id": 74,
+          "name": "Putamen R",
+          "voxels": 1064,
+          "center": [
+            27.48,
+            4.68,
+            2.19
+          ]
+        },
+        {
+          "id": 75,
+          "name": "Pallidum L",
+          "voxels": 293,
+          "center": [
+            -18.06,
+            -0.36,
+            -0.04
+          ]
+        },
+        {
+          "id": 76,
+          "name": "Pallidum R",
+          "voxels": 280,
+          "center": [
+            20.92,
+            -0.06,
+            -0.09
+          ]
+        },
+        {
+          "id": 77,
+          "name": "Thalamus L",
+          "voxels": 1100,
+          "center": [
+            -11.2,
+            -17.84,
+            7.61
+          ]
+        },
+        {
+          "id": 78,
+          "name": "Thalamus R",
+          "voxels": 1057,
+          "center": [
+            12.7,
+            -17.77,
+            7.73
+          ]
+        },
+        {
+          "id": 79,
+          "name": "Heschl L",
+          "voxels": 225,
+          "center": [
+            -42.35,
+            -19.04,
+            9.68
+          ]
+        },
+        {
+          "id": 80,
+          "name": "Heschl R",
+          "voxels": 249,
+          "center": [
+            45.88,
+            -17.14,
+            10.04
+          ]
+        },
+        {
+          "id": 81,
+          "name": "Temporal Sup L",
+          "voxels": 2296,
+          "center": [
+            -53.44,
+            -21.01,
+            6.84
+          ]
+        },
+        {
+          "id": 82,
+          "name": "Temporal Sup R",
+          "voxels": 3141,
+          "center": [
+            57.83,
+            -22.01,
+            6.42
+          ]
+        },
+        {
+          "id": 83,
+          "name": "Temporal Pole Sup L",
+          "voxels": 1285,
+          "center": [
+            -40.15,
+            14.87,
+            -20.44
+          ]
+        },
+        {
+          "id": 84,
+          "name": "Temporal Pole Sup R",
+          "voxels": 1338,
+          "center": [
+            47.94,
+            14.46,
+            -17.19
+          ]
+        },
+        {
+          "id": 85,
+          "name": "Temporal Mid L",
+          "voxels": 4942,
+          "center": [
+            -55.87,
+            -33.98,
+            -2.58
+          ]
+        },
+        {
+          "id": 86,
+          "name": "Temporal Mid R",
+          "voxels": 4409,
+          "center": [
+            57.16,
+            -37.57,
+            -1.78
+          ]
+        },
+        {
+          "id": 87,
+          "name": "Temporal Pole Mid L",
+          "voxels": 755,
+          "center": [
+            -36.74,
+            14.3,
+            -34.37
+          ]
+        },
+        {
+          "id": 88,
+          "name": "Temporal Pole Mid R",
+          "voxels": 1187,
+          "center": [
+            44.04,
+            14.25,
+            -32.52
+          ]
+        },
+        {
+          "id": 89,
+          "name": "Temporal Inf L",
+          "voxels": 3200,
+          "center": [
+            -50.04,
+            -28.29,
+            -23.52
+          ]
+        },
+        {
+          "id": 90,
+          "name": "Temporal Inf R",
+          "voxels": 3557,
+          "center": [
+            53.38,
+            -31.14,
+            -22.73
+          ]
+        },
+        {
+          "id": 91,
+          "name": "Cerebelum Crus1 L",
+          "voxels": 2603,
+          "center": [
+            -35.39,
+            -66.94,
+            -29.26
+          ]
+        },
+        {
+          "id": 92,
+          "name": "Cerebelum Crus1 R",
+          "voxels": 2648,
+          "center": [
+            38.21,
+            -67.37,
+            -29.85
+          ]
+        },
+        {
+          "id": 93,
+          "name": "Cerebelum Crus2 L",
+          "voxels": 1894,
+          "center": [
+            -27.77,
+            -73.58,
+            -38.44
+          ]
+        },
+        {
+          "id": 94,
+          "name": "Cerebelum Crus2 R",
+          "voxels": 2117,
+          "center": [
+            32.67,
+            -69.4,
+            -40.2
+          ]
+        },
+        {
+          "id": 95,
+          "name": "Cerebelum 3 L",
+          "voxels": 136,
+          "center": [
+            -8.12,
+            -37.37,
+            -18.78
+          ]
+        },
+        {
+          "id": 96,
+          "name": "Cerebelum 3 R",
+          "voxels": 207,
+          "center": [
+            13.06,
+            -34.71,
+            -19.6
+          ]
+        },
+        {
+          "id": 97,
+          "name": "Cerebelum 4 5 L",
+          "voxels": 1125,
+          "center": [
+            -14.34,
+            -43.66,
+            -17.26
+          ]
+        },
+        {
+          "id": 98,
+          "name": "Cerebelum 4 5 R",
+          "voxels": 861,
+          "center": [
+            17.89,
+            -43.16,
+            -18.35
+          ]
+        },
+        {
+          "id": 99,
+          "name": "Cerebelum 6 L",
+          "voxels": 1694,
+          "center": [
+            -22.53,
+            -59.26,
+            -22.48
+          ]
+        },
+        {
+          "id": 100,
+          "name": "Cerebelum 6 R",
+          "voxels": 1795,
+          "center": [
+            25.43,
+            -58.54,
+            -23.94
+          ]
+        },
+        {
+          "id": 101,
+          "name": "Cerebelum 7b L",
+          "voxels": 585,
+          "center": [
+            -31.59,
+            -60.05,
+            -45.75
+          ]
+        },
+        {
+          "id": 102,
+          "name": "Cerebelum 7b R",
+          "voxels": 534,
+          "center": [
+            33.93,
+            -63.41,
+            -48.76
+          ]
+        },
+        {
+          "id": 103,
+          "name": "Cerebelum 8 L",
+          "voxels": 1887,
+          "center": [
+            -25.03,
+            -54.77,
+            -48.05
+          ]
+        },
+        {
+          "id": 104,
+          "name": "Cerebelum 8 R",
+          "voxels": 2308,
+          "center": [
+            25.77,
+            -56.63,
+            -49.8
+          ]
+        },
+        {
+          "id": 105,
+          "name": "Cerebelum 9 L",
+          "voxels": 869,
+          "center": [
+            -10.25,
+            -49.19,
+            -46.24
+          ]
+        },
+        {
+          "id": 106,
+          "name": "Cerebelum 9 R",
+          "voxels": 809,
+          "center": [
+            10.19,
+            -49.75,
+            -46.62
+          ]
+        },
+        {
+          "id": 107,
+          "name": "Cerebelum 10 L",
+          "voxels": 144,
+          "center": [
+            -21.79,
+            -34,
+            -42.07
+          ]
+        },
+        {
+          "id": 108,
+          "name": "Cerebelum 10 R",
+          "voxels": 159,
+          "center": [
+            26.81,
+            -34.02,
+            -41.64
+          ]
+        },
+        {
+          "id": 109,
+          "name": "Vermis 1 2",
+          "voxels": 53,
+          "center": [
+            1.51,
+            -39.11,
+            -20.36
+          ]
+        },
+        {
+          "id": 110,
+          "name": "Vermis 3",
+          "voxels": 228,
+          "center": [
+            2.05,
+            -40.29,
+            -11.72
+          ]
+        },
+        {
+          "id": 111,
+          "name": "Vermis 4 5",
+          "voxels": 665,
+          "center": [
+            1.83,
+            -52.59,
+            -6.4
+          ]
+        },
+        {
+          "id": 112,
+          "name": "Vermis 6",
+          "voxels": 371,
+          "center": [
+            1.77,
+            -67.35,
+            -15.39
+          ]
+        },
+        {
+          "id": 113,
+          "name": "Vermis 7",
+          "voxels": 194,
+          "center": [
+            1.87,
+            -72.2,
+            -25.35
+          ]
+        },
+        {
+          "id": 114,
+          "name": "Vermis 8",
+          "voxels": 243,
+          "center": [
+            1.81,
+            -64.65,
+            -34.35
+          ]
+        },
+        {
+          "id": 115,
+          "name": "Vermis 9",
+          "voxels": 174,
+          "center": [
+            1.61,
+            -55.17,
+            -35.3
+          ]
+        },
+        {
+          "id": 116,
+          "name": "Vermis 10",
+          "voxels": 112,
+          "center": [
+            1.14,
+            -46.12,
+            -31.88
+          ]
+        }
+      ],
+      "sha256": "284c09ae2b27566ac988abf991247e8455356dba755cc7ed1ae771e9210e3a18",
+      "source": "https://github.com/mingruixia/BrainNet-Viewer",
+      "space": "AAL MNI single-subject / historical MNI-like grid",
+      "name": "AAL 116",
+      "note": "AAL116 原始标签，按每隔一个体素采样为 2 mm；并非 MNI152 群体模板的重新分割。",
+      "license": "Retain GIN / MNI attribution; see source notice",
+      "alignmentStatus": "unverified-template",
+      "canOverlayOnTarget": false,
+      "distribution": "metadata-only",
+      "publicationNote": {
+        "zh": "公开版仅保留来源与标签目录，未分发旧版二进制。",
+        "en": "The public edition retains source and terminology metadata; legacy binary files are not distributed."
+      }
+    },
+    "aal3": {
+      "available": false,
+      "data": null,
+      "shape": [
+        91,
+        109,
+        91
+      ],
+      "affine": [
+        2,
+        0,
+        0,
+        -90,
+        0,
+        2,
+        0,
+        -126,
+        0,
+        0,
+        2,
+        -72,
+        0,
+        0,
+        0,
+        1
+      ],
+      "dtype": "uint8",
+      "order": "x-fastest",
+      "labels": [
+        {
+          "id": 1,
+          "name": "Precentral_L",
+          "voxels": 3526,
+          "center": [
+            -38.93,
+            -6.96,
+            49.64
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Precentral_R",
+          "voxels": 3381,
+          "center": [
+            41.1,
+            -9.55,
+            50.81
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Frontal_Sup_2_L",
+          "voxels": 4870,
+          "center": [
+            -20.17,
+            35.96,
+            35.24
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Frontal_Sup_2_R",
+          "voxels": 5126,
+          "center": [
+            22.55,
+            33.19,
+            37.34
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Frontal_Mid_2_L",
+          "voxels": 4507,
+          "center": [
+            -35.53,
+            32.87,
+            29.94
+          ]
+        },
+        {
+          "id": 6,
+          "name": "Frontal_Mid_2_R",
+          "voxels": 4860,
+          "center": [
+            38.77,
+            32.88,
+            29.32
+          ]
+        },
+        {
+          "id": 7,
+          "name": "Frontal_Inf_Oper_L",
+          "voxels": 1038,
+          "center": [
+            -48.8,
+            11.49,
+            17.8
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Frontal_Inf_Oper_R",
+          "voxels": 1399,
+          "center": [
+            49.93,
+            13.68,
+            20.2
+          ]
+        },
+        {
+          "id": 9,
+          "name": "Frontal_Inf_Tri_L",
+          "voxels": 2529,
+          "center": [
+            -45.89,
+            28.67,
+            12.58
+          ]
+        },
+        {
+          "id": 10,
+          "name": "Frontal_Inf_Tri_R",
+          "voxels": 2151,
+          "center": [
+            50.06,
+            28.9,
+            12.82
+          ]
+        },
+        {
+          "id": 11,
+          "name": "Frontal_Inf_Orb_2_L",
+          "voxels": 814,
+          "center": [
+            -41.37,
+            31.06,
+            -8.08
+          ]
+        },
+        {
+          "id": 12,
+          "name": "Frontal_Inf_Orb_2_R",
+          "voxels": 874,
+          "center": [
+            45.83,
+            33.42,
+            -7.99
+          ]
+        },
+        {
+          "id": 13,
+          "name": "Rolandic_Oper_L",
+          "voxels": 988,
+          "center": [
+            -47.38,
+            -9.75,
+            12.64
+          ]
+        },
+        {
+          "id": 14,
+          "name": "Rolandic_Oper_R",
+          "voxels": 1331,
+          "center": [
+            52.38,
+            -7.54,
+            13.33
+          ]
+        },
+        {
+          "id": 15,
+          "name": "Supp_Motor_Area_L",
+          "voxels": 2147,
+          "center": [
+            -5.69,
+            3.55,
+            60.06
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Supp_Motor_Area_R",
+          "voxels": 2371,
+          "center": [
+            8.25,
+            -1.09,
+            60.51
+          ]
+        },
+        {
+          "id": 17,
+          "name": "Olfactory_L",
+          "voxels": 291,
+          "center": [
+            -7.96,
+            13.93,
+            -12.33
+          ]
+        },
+        {
+          "id": 18,
+          "name": "Olfactory_R",
+          "voxels": 288,
+          "center": [
+            10.14,
+            14.66,
+            -12.59
+          ]
+        },
+        {
+          "id": 19,
+          "name": "Frontal_Sup_Medial_L",
+          "voxels": 2992,
+          "center": [
+            -5.17,
+            47.89,
+            29.64
+          ]
+        },
+        {
+          "id": 20,
+          "name": "Frontal_Sup_Medial_R",
+          "voxels": 2134,
+          "center": [
+            8.75,
+            49.53,
+            28.93
+          ]
+        },
+        {
+          "id": 21,
+          "name": "Frontal_Med_Orb_L",
+          "voxels": 719,
+          "center": [
+            -5.44,
+            52.52,
+            -8.86
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Frontal_Med_Orb_R",
+          "voxels": 856,
+          "center": [
+            7.83,
+            50.41,
+            -8.52
+          ]
+        },
+        {
+          "id": 23,
+          "name": "Rectus_L",
+          "voxels": 852,
+          "center": [
+            -5.44,
+            35.71,
+            -19.57
+          ]
+        },
+        {
+          "id": 24,
+          "name": "Rectus_R",
+          "voxels": 745,
+          "center": [
+            8,
+            34.45,
+            -19.44
+          ]
+        },
+        {
+          "id": 25,
+          "name": "OFCmed_L",
+          "voxels": 550,
+          "center": [
+            -14.24,
+            35.62,
+            -21.08
+          ]
+        },
+        {
+          "id": 26,
+          "name": "OFCmed_R",
+          "voxels": 621,
+          "center": [
+            16.42,
+            37.1,
+            -21.26
+          ]
+        },
+        {
+          "id": 27,
+          "name": "OFCant_L",
+          "voxels": 443,
+          "center": [
+            -25.04,
+            46.76,
+            -16.11
+          ]
+        },
+        {
+          "id": 28,
+          "name": "OFCant_R",
+          "voxels": 648,
+          "center": [
+            28.6,
+            48.46,
+            -16.18
+          ]
+        },
+        {
+          "id": 29,
+          "name": "OFCpost_L",
+          "voxels": 567,
+          "center": [
+            -28.66,
+            23.4,
+            -19.5
+          ]
+        },
+        {
+          "id": 30,
+          "name": "OFCpost_R",
+          "voxels": 561,
+          "center": [
+            33.03,
+            24.86,
+            -19.39
+          ]
+        },
+        {
+          "id": 31,
+          "name": "OFClat_L",
+          "voxels": 197,
+          "center": [
+            -42.53,
+            39.86,
+            -15.12
+          ]
+        },
+        {
+          "id": 32,
+          "name": "OFClat_R",
+          "voxels": 188,
+          "center": [
+            47.76,
+            36.72,
+            -16.24
+          ]
+        },
+        {
+          "id": 33,
+          "name": "Insula_L",
+          "voxels": 1858,
+          "center": [
+            -35.41,
+            5.44,
+            2.17
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Insula_R",
+          "voxels": 1770,
+          "center": [
+            38.72,
+            5.02,
+            0.81
+          ]
+        },
+        {
+          "id": 37,
+          "name": "Cingulate_Mid_L",
+          "voxels": 1941,
+          "center": [
+            -5.88,
+            -16.1,
+            40.21
+          ]
+        },
+        {
+          "id": 38,
+          "name": "Cingulate_Mid_R",
+          "voxels": 2203,
+          "center": [
+            7.66,
+            -10.2,
+            38.44
+          ]
+        },
+        {
+          "id": 39,
+          "name": "Cingulate_Post_L",
+          "voxels": 463,
+          "center": [
+            -5.21,
+            -44.17,
+            23.28
+          ]
+        },
+        {
+          "id": 40,
+          "name": "Cingulate_Post_R",
+          "voxels": 335,
+          "center": [
+            7.18,
+            -43.09,
+            20.47
+          ]
+        },
+        {
+          "id": 41,
+          "name": "Hippocampus_L",
+          "voxels": 932,
+          "center": [
+            -25.26,
+            -21.96,
+            -11.38
+          ]
+        },
+        {
+          "id": 42,
+          "name": "Hippocampus_R",
+          "voxels": 946,
+          "center": [
+            28.95,
+            -20.99,
+            -11.58
+          ]
+        },
+        {
+          "id": 43,
+          "name": "ParaHippocampal_L",
+          "voxels": 978,
+          "center": [
+            -21.49,
+            -17.29,
+            -21.92
+          ]
+        },
+        {
+          "id": 44,
+          "name": "ParaHippocampal_R",
+          "voxels": 1132,
+          "center": [
+            25.15,
+            -16.3,
+            -21.74
+          ]
+        },
+        {
+          "id": 45,
+          "name": "Amygdala_L",
+          "voxels": 220,
+          "center": [
+            -23.51,
+            -1.95,
+            -18.45
+          ]
+        },
+        {
+          "id": 46,
+          "name": "Amygdala_R",
+          "voxels": 248,
+          "center": [
+            27.06,
+            -0.57,
+            -18.81
+          ]
+        },
+        {
+          "id": 47,
+          "name": "Calcarine_L",
+          "voxels": 2258,
+          "center": [
+            -7.48,
+            -79.82,
+            5.1
+          ]
+        },
+        {
+          "id": 48,
+          "name": "Calcarine_R",
+          "voxels": 1861,
+          "center": [
+            15.71,
+            -74.45,
+            8.02
+          ]
+        },
+        {
+          "id": 49,
+          "name": "Cuneus_L",
+          "voxels": 1521,
+          "center": [
+            -6.26,
+            -81.36,
+            25.9
+          ]
+        },
+        {
+          "id": 50,
+          "name": "Cuneus_R",
+          "voxels": 1424,
+          "center": [
+            13.19,
+            -80.59,
+            26.85
+          ]
+        },
+        {
+          "id": 51,
+          "name": "Lingual_L",
+          "voxels": 2095,
+          "center": [
+            -14.86,
+            -68.86,
+            -6.01
+          ]
+        },
+        {
+          "id": 52,
+          "name": "Lingual_R",
+          "voxels": 2300,
+          "center": [
+            16.08,
+            -68.14,
+            -5.22
+          ]
+        },
+        {
+          "id": 53,
+          "name": "Occipital_Sup_L",
+          "voxels": 1366,
+          "center": [
+            -16.76,
+            -85.61,
+            26.85
+          ]
+        },
+        {
+          "id": 54,
+          "name": "Occipital_Sup_R",
+          "voxels": 1413,
+          "center": [
+            23.96,
+            -82.21,
+            29.27
+          ]
+        },
+        {
+          "id": 55,
+          "name": "Occipital_Mid_L",
+          "voxels": 3265,
+          "center": [
+            -32.65,
+            -81.99,
+            14.8
+          ]
+        },
+        {
+          "id": 56,
+          "name": "Occipital_Mid_R",
+          "voxels": 2098,
+          "center": [
+            37.13,
+            -80.99,
+            18.07
+          ]
+        },
+        {
+          "id": 57,
+          "name": "Occipital_Inf_L",
+          "voxels": 941,
+          "center": [
+            -36.48,
+            -79.57,
+            -9.16
+          ]
+        },
+        {
+          "id": 58,
+          "name": "Occipital_Inf_R",
+          "voxels": 989,
+          "center": [
+            37.87,
+            -83.19,
+            -8.99
+          ]
+        },
+        {
+          "id": 59,
+          "name": "Fusiform_L",
+          "voxels": 2309,
+          "center": [
+            -31.39,
+            -41.38,
+            -21.61
+          ]
+        },
+        {
+          "id": 60,
+          "name": "Fusiform_R",
+          "voxels": 2518,
+          "center": [
+            33.66,
+            -40.2,
+            -21.53
+          ]
+        },
+        {
+          "id": 61,
+          "name": "Postcentral_L",
+          "voxels": 3892,
+          "center": [
+            -42.9,
+            -23.78,
+            47.46
+          ]
+        },
+        {
+          "id": 62,
+          "name": "Postcentral_R",
+          "voxels": 3823,
+          "center": [
+            41.16,
+            -26.77,
+            51.25
+          ]
+        },
+        {
+          "id": 63,
+          "name": "Parietal_Sup_L",
+          "voxels": 2065,
+          "center": [
+            -23.71,
+            -60.81,
+            57.66
+          ]
+        },
+        {
+          "id": 64,
+          "name": "Parietal_Sup_R",
+          "voxels": 2222,
+          "center": [
+            25.84,
+            -60.43,
+            60.71
+          ]
+        },
+        {
+          "id": 65,
+          "name": "Parietal_Inf_L",
+          "voxels": 2447,
+          "center": [
+            -43.11,
+            -47.02,
+            45.42
+          ]
+        },
+        {
+          "id": 66,
+          "name": "Parietal_Inf_R",
+          "voxels": 1345,
+          "center": [
+            46.29,
+            -47.59,
+            48.19
+          ]
+        },
+        {
+          "id": 67,
+          "name": "SupraMarginal_L",
+          "voxels": 1256,
+          "center": [
+            -56.15,
+            -34.94,
+            29.12
+          ]
+        },
+        {
+          "id": 68,
+          "name": "SupraMarginal_R",
+          "voxels": 1974,
+          "center": [
+            57.26,
+            -32.82,
+            33.13
+          ]
+        },
+        {
+          "id": 69,
+          "name": "Angular_L",
+          "voxels": 1173,
+          "center": [
+            -44.43,
+            -62.08,
+            34.28
+          ]
+        },
+        {
+          "id": 70,
+          "name": "Angular_R",
+          "voxels": 1752,
+          "center": [
+            45.23,
+            -61.24,
+            37.32
+          ]
+        },
+        {
+          "id": 71,
+          "name": "Precuneus_L",
+          "voxels": 3528,
+          "center": [
+            -7.59,
+            -57.32,
+            46.64
+          ]
+        },
+        {
+          "id": 72,
+          "name": "Precuneus_R",
+          "voxels": 3265,
+          "center": [
+            9.69,
+            -57.31,
+            42.36
+          ]
+        },
+        {
+          "id": 73,
+          "name": "Paracentral_Lobule_L",
+          "voxels": 1349,
+          "center": [
+            -7.97,
+            -26.65,
+            68.69
+          ]
+        },
+        {
+          "id": 74,
+          "name": "Paracentral_Lobule_R",
+          "voxels": 836,
+          "center": [
+            7.13,
+            -32.94,
+            66.79
+          ]
+        },
+        {
+          "id": 75,
+          "name": "Caudate_L",
+          "voxels": 805,
+          "center": [
+            -12.63,
+            9.11,
+            10.99
+          ]
+        },
+        {
+          "id": 76,
+          "name": "Caudate_R",
+          "voxels": 861,
+          "center": [
+            15.21,
+            10.49,
+            10.52
+          ]
+        },
+        {
+          "id": 77,
+          "name": "Putamen_L",
+          "voxels": 999,
+          "center": [
+            -24.35,
+            2.53,
+            1.17
+          ]
+        },
+        {
+          "id": 78,
+          "name": "Putamen_R",
+          "voxels": 1062,
+          "center": [
+            27.51,
+            3.66,
+            1.21
+          ]
+        },
+        {
+          "id": 79,
+          "name": "Pallidum_L",
+          "voxels": 293,
+          "center": [
+            -18.06,
+            -1.36,
+            -1.04
+          ]
+        },
+        {
+          "id": 80,
+          "name": "Pallidum_R",
+          "voxels": 280,
+          "center": [
+            20.92,
+            -1.06,
+            -1.09
+          ]
+        },
+        {
+          "id": 83,
+          "name": "Heschl_L",
+          "voxels": 225,
+          "center": [
+            -42.35,
+            -20.04,
+            8.68
+          ]
+        },
+        {
+          "id": 84,
+          "name": "Heschl_R",
+          "voxels": 249,
+          "center": [
+            45.88,
+            -18.14,
+            9.04
+          ]
+        },
+        {
+          "id": 85,
+          "name": "Temporal_Sup_L",
+          "voxels": 2296,
+          "center": [
+            -53.44,
+            -22.01,
+            5.84
+          ]
+        },
+        {
+          "id": 86,
+          "name": "Temporal_Sup_R",
+          "voxels": 3141,
+          "center": [
+            57.83,
+            -23.01,
+            5.42
+          ]
+        },
+        {
+          "id": 87,
+          "name": "Temporal_Pole_Sup_L",
+          "voxels": 1285,
+          "center": [
+            -40.15,
+            13.87,
+            -21.44
+          ]
+        },
+        {
+          "id": 88,
+          "name": "Temporal_Pole_Sup_R",
+          "voxels": 1338,
+          "center": [
+            47.94,
+            13.46,
+            -18.19
+          ]
+        },
+        {
+          "id": 89,
+          "name": "Temporal_Mid_L",
+          "voxels": 4942,
+          "center": [
+            -55.87,
+            -34.98,
+            -3.58
+          ]
+        },
+        {
+          "id": 90,
+          "name": "Temporal_Mid_R",
+          "voxels": 4409,
+          "center": [
+            57.16,
+            -38.57,
+            -2.78
+          ]
+        },
+        {
+          "id": 91,
+          "name": "Temporal_Pole_Mid_L",
+          "voxels": 755,
+          "center": [
+            -36.74,
+            13.3,
+            -35.37
+          ]
+        },
+        {
+          "id": 92,
+          "name": "Temporal_Pole_Mid_R",
+          "voxels": 1187,
+          "center": [
+            44.04,
+            13.25,
+            -33.52
+          ]
+        },
+        {
+          "id": 93,
+          "name": "Temporal_Inf_L",
+          "voxels": 3200,
+          "center": [
+            -50.04,
+            -29.29,
+            -24.52
+          ]
+        },
+        {
+          "id": 94,
+          "name": "Temporal_Inf_R",
+          "voxels": 3557,
+          "center": [
+            53.38,
+            -32.14,
+            -23.73
+          ]
+        },
+        {
+          "id": 95,
+          "name": "Cerebellum_Crus1_L",
+          "voxels": 2603,
+          "center": [
+            -35.39,
+            -67.94,
+            -30.26
+          ]
+        },
+        {
+          "id": 96,
+          "name": "Cerebellum_Crus1_R",
+          "voxels": 2648,
+          "center": [
+            38.21,
+            -68.37,
+            -30.85
+          ]
+        },
+        {
+          "id": 97,
+          "name": "Cerebellum_Crus2_L",
+          "voxels": 1894,
+          "center": [
+            -27.77,
+            -74.58,
+            -39.44
+          ]
+        },
+        {
+          "id": 98,
+          "name": "Cerebellum_Crus2_R",
+          "voxels": 2117,
+          "center": [
+            32.67,
+            -70.4,
+            -41.2
+          ]
+        },
+        {
+          "id": 99,
+          "name": "Cerebellum_3_L",
+          "voxels": 136,
+          "center": [
+            -8.12,
+            -38.37,
+            -19.78
+          ]
+        },
+        {
+          "id": 100,
+          "name": "Cerebellum_3_R",
+          "voxels": 207,
+          "center": [
+            13.06,
+            -35.71,
+            -20.6
+          ]
+        },
+        {
+          "id": 101,
+          "name": "Cerebellum_4_5_L",
+          "voxels": 1125,
+          "center": [
+            -14.34,
+            -44.66,
+            -18.26
+          ]
+        },
+        {
+          "id": 102,
+          "name": "Cerebellum_4_5_R",
+          "voxels": 861,
+          "center": [
+            17.89,
+            -44.16,
+            -19.35
+          ]
+        },
+        {
+          "id": 103,
+          "name": "Cerebellum_6_L",
+          "voxels": 1694,
+          "center": [
+            -22.53,
+            -60.26,
+            -23.48
+          ]
+        },
+        {
+          "id": 104,
+          "name": "Cerebellum_6_R",
+          "voxels": 1795,
+          "center": [
+            25.43,
+            -59.54,
+            -24.94
+          ]
+        },
+        {
+          "id": 105,
+          "name": "Cerebellum_7b_L",
+          "voxels": 585,
+          "center": [
+            -31.59,
+            -61.05,
+            -46.75
+          ]
+        },
+        {
+          "id": 106,
+          "name": "Cerebellum_7b_R",
+          "voxels": 534,
+          "center": [
+            33.93,
+            -64.41,
+            -49.76
+          ]
+        },
+        {
+          "id": 107,
+          "name": "Cerebellum_8_L",
+          "voxels": 1887,
+          "center": [
+            -25.03,
+            -55.77,
+            -49.05
+          ]
+        },
+        {
+          "id": 108,
+          "name": "Cerebellum_8_R",
+          "voxels": 2308,
+          "center": [
+            25.77,
+            -57.63,
+            -50.8
+          ]
+        },
+        {
+          "id": 109,
+          "name": "Cerebellum_9_L",
+          "voxels": 869,
+          "center": [
+            -10.25,
+            -50.19,
+            -47.24
+          ]
+        },
+        {
+          "id": 110,
+          "name": "Cerebellum_9_R",
+          "voxels": 809,
+          "center": [
+            10.19,
+            -50.75,
+            -47.62
+          ]
+        },
+        {
+          "id": 111,
+          "name": "Cerebellum_10_L",
+          "voxels": 144,
+          "center": [
+            -21.79,
+            -35,
+            -43.07
+          ]
+        },
+        {
+          "id": 112,
+          "name": "Cerebellum_10_R",
+          "voxels": 159,
+          "center": [
+            26.81,
+            -35.02,
+            -42.64
+          ]
+        },
+        {
+          "id": 113,
+          "name": "Vermis_1_2",
+          "voxels": 52,
+          "center": [
+            1.46,
+            -40.19,
+            -21.38
+          ]
+        },
+        {
+          "id": 114,
+          "name": "Vermis_3",
+          "voxels": 228,
+          "center": [
+            2.05,
+            -41.29,
+            -12.72
+          ]
+        },
+        {
+          "id": 115,
+          "name": "Vermis_4_5",
+          "voxels": 665,
+          "center": [
+            1.83,
+            -53.59,
+            -7.4
+          ]
+        },
+        {
+          "id": 116,
+          "name": "Vermis_6",
+          "voxels": 371,
+          "center": [
+            1.77,
+            -68.35,
+            -16.39
+          ]
+        },
+        {
+          "id": 117,
+          "name": "Vermis_7",
+          "voxels": 194,
+          "center": [
+            1.87,
+            -73.2,
+            -26.35
+          ]
+        },
+        {
+          "id": 118,
+          "name": "Vermis_8",
+          "voxels": 243,
+          "center": [
+            1.81,
+            -65.65,
+            -35.35
+          ]
+        },
+        {
+          "id": 119,
+          "name": "Vermis_9",
+          "voxels": 174,
+          "center": [
+            1.61,
+            -56.17,
+            -36.3
+          ]
+        },
+        {
+          "id": 120,
+          "name": "Vermis_10",
+          "voxels": 112,
+          "center": [
+            1.14,
+            -47.12,
+            -32.88
+          ]
+        },
+        {
+          "id": 121,
+          "name": "Thal_AV_L",
+          "voxels": 19,
+          "center": [
+            -5.79,
+            -6.63,
+            8.63
+          ]
+        },
+        {
+          "id": 122,
+          "name": "Thal_AV_R",
+          "voxels": 25,
+          "center": [
+            5.52,
+            -5.6,
+            8.72
+          ]
+        },
+        {
+          "id": 123,
+          "name": "Thal_LP_L",
+          "voxels": 25,
+          "center": [
+            -10.08,
+            -16.88,
+            16.08
+          ]
+        },
+        {
+          "id": 124,
+          "name": "Thal_LP_R",
+          "voxels": 28,
+          "center": [
+            8.29,
+            -14.64,
+            15.14
+          ]
+        },
+        {
+          "id": 125,
+          "name": "Thal_VA_L",
+          "voxels": 84,
+          "center": [
+            -10.62,
+            -5.29,
+            4.45
+          ]
+        },
+        {
+          "id": 126,
+          "name": "Thal_VA_R",
+          "voxels": 78,
+          "center": [
+            10.33,
+            -3.77,
+            4.51
+          ]
+        },
+        {
+          "id": 127,
+          "name": "Thal_VL_L",
+          "voxels": 265,
+          "center": [
+            -13.37,
+            -12.24,
+            7.93
+          ]
+        },
+        {
+          "id": 128,
+          "name": "Thal_VL_R",
+          "voxels": 259,
+          "center": [
+            12.83,
+            -11.11,
+            7.27
+          ]
+        },
+        {
+          "id": 129,
+          "name": "Thal_VPL_L",
+          "voxels": 167,
+          "center": [
+            -17.7,
+            -21.32,
+            6.43
+          ]
+        },
+        {
+          "id": 130,
+          "name": "Thal_VPL_R",
+          "voxels": 160,
+          "center": [
+            16.85,
+            -20.35,
+            5.75
+          ]
+        },
+        {
+          "id": 131,
+          "name": "Thal_IL_L",
+          "voxels": 51,
+          "center": [
+            -9.8,
+            -18.16,
+            0.35
+          ]
+        },
+        {
+          "id": 132,
+          "name": "Thal_IL_R",
+          "voxels": 51,
+          "center": [
+            9.45,
+            -17.33,
+            0.08
+          ]
+        },
+        {
+          "id": 133,
+          "name": "Thal_Re_L",
+          "voxels": 2,
+          "center": [
+            -6,
+            -9,
+            -3
+          ]
+        },
+        {
+          "id": 134,
+          "name": "Thal_Re_R",
+          "voxels": 1,
+          "center": [
+            6,
+            -10,
+            -4
+          ]
+        },
+        {
+          "id": 135,
+          "name": "Thal_MDm_L",
+          "voxels": 117,
+          "center": [
+            -4.72,
+            -15.91,
+            5.35
+          ]
+        },
+        {
+          "id": 136,
+          "name": "Thal_MDm_R",
+          "voxels": 127,
+          "center": [
+            4.17,
+            -15.06,
+            4.65
+          ]
+        },
+        {
+          "id": 137,
+          "name": "Thal_MDl_L",
+          "voxels": 42,
+          "center": [
+            -7.67,
+            -14.62,
+            6.14
+          ]
+        },
+        {
+          "id": 138,
+          "name": "Thal_MDl_R",
+          "voxels": 36,
+          "center": [
+            7.17,
+            -13.72,
+            6.11
+          ]
+        },
+        {
+          "id": 139,
+          "name": "Thal_LGN_L",
+          "voxels": 43,
+          "center": [
+            -22.28,
+            -24.84,
+            -4.56
+          ]
+        },
+        {
+          "id": 140,
+          "name": "Thal_LGN_R",
+          "voxels": 48,
+          "center": [
+            21.83,
+            -24.58,
+            -4.08
+          ]
+        },
+        {
+          "id": 141,
+          "name": "Thal_MGN_L",
+          "voxels": 18,
+          "center": [
+            -15.56,
+            -24.89,
+            -4.56
+          ]
+        },
+        {
+          "id": 142,
+          "name": "Thal_MGN_R",
+          "voxels": 14,
+          "center": [
+            15.29,
+            -24.43,
+            -4.71
+          ]
+        },
+        {
+          "id": 143,
+          "name": "Thal_PuI_L",
+          "voxels": 34,
+          "center": [
+            -17.47,
+            -29.71,
+            0.59
+          ]
+        },
+        {
+          "id": 144,
+          "name": "Thal_PuI_R",
+          "voxels": 33,
+          "center": [
+            16.97,
+            -28.85,
+            0.67
+          ]
+        },
+        {
+          "id": 145,
+          "name": "Thal_PuM_L",
+          "voxels": 185,
+          "center": [
+            -13.34,
+            -28.31,
+            7.36
+          ]
+        },
+        {
+          "id": 146,
+          "name": "Thal_PuM_R",
+          "voxels": 178,
+          "center": [
+            12.13,
+            -27.04,
+            7.47
+          ]
+        },
+        {
+          "id": 147,
+          "name": "Thal_PuA_L",
+          "voxels": 35,
+          "center": [
+            -12.34,
+            -22.97,
+            7.71
+          ]
+        },
+        {
+          "id": 148,
+          "name": "Thal_PuA_R",
+          "voxels": 34,
+          "center": [
+            11.29,
+            -21.71,
+            7.94
+          ]
+        },
+        {
+          "id": 149,
+          "name": "Thal_PuL_L",
+          "voxels": 27,
+          "center": [
+            -18.67,
+            -25.33,
+            11.78
+          ]
+        },
+        {
+          "id": 150,
+          "name": "Thal_PuL_R",
+          "voxels": 27,
+          "center": [
+            15.93,
+            -22.81,
+            13.04
+          ]
+        },
+        {
+          "id": 151,
+          "name": "ACC_sub_L",
+          "voxels": 168,
+          "center": [
+            -4.12,
+            30.87,
+            -5.5
+          ]
+        },
+        {
+          "id": 152,
+          "name": "ACC_sub_R",
+          "voxels": 132,
+          "center": [
+            5.48,
+            31.79,
+            -4.42
+          ]
+        },
+        {
+          "id": 153,
+          "name": "ACC_pre_L",
+          "voxels": 627,
+          "center": [
+            -4.96,
+            43.67,
+            7.21
+          ]
+        },
+        {
+          "id": 154,
+          "name": "ACC_pre_R",
+          "voxels": 648,
+          "center": [
+            8.83,
+            43.27,
+            12.73
+          ]
+        },
+        {
+          "id": 155,
+          "name": "ACC_sup_L",
+          "voxels": 605,
+          "center": [
+            -3.81,
+            25.3,
+            23.06
+          ]
+        },
+        {
+          "id": 156,
+          "name": "ACC_sup_R",
+          "voxels": 533,
+          "center": [
+            7.9,
+            27.52,
+            21.17
+          ]
+        },
+        {
+          "id": 157,
+          "name": "N_Acc_L",
+          "voxels": 163,
+          "center": [
+            -7.87,
+            12.5,
+            -7.57
+          ]
+        },
+        {
+          "id": 158,
+          "name": "N_Acc_R",
+          "voxels": 143,
+          "center": [
+            9.9,
+            12.49,
+            -7.37
+          ]
+        },
+        {
+          "id": 159,
+          "name": "VTA_L",
+          "voxels": 10,
+          "center": [
+            -3,
+            -20,
+            -17
+          ]
+        },
+        {
+          "id": 160,
+          "name": "VTA_R",
+          "voxels": 9,
+          "center": [
+            4.67,
+            -20,
+            -16.89
+          ]
+        },
+        {
+          "id": 161,
+          "name": "SN_pc_L",
+          "voxels": 32,
+          "center": [
+            -7.88,
+            -19.19,
+            -14.81
+          ]
+        },
+        {
+          "id": 162,
+          "name": "SN_pc_R",
+          "voxels": 33,
+          "center": [
+            9.15,
+            -18.06,
+            -14.36
+          ]
+        },
+        {
+          "id": 163,
+          "name": "SN_pr_L",
+          "voxels": 53,
+          "center": [
+            -9.62,
+            -15.06,
+            -13.7
+          ]
+        },
+        {
+          "id": 164,
+          "name": "SN_pr_R",
+          "voxels": 60,
+          "center": [
+            10.93,
+            -14.77,
+            -14
+          ]
+        },
+        {
+          "id": 165,
+          "name": "Red_N_L",
+          "voxels": 57,
+          "center": [
+            -4.35,
+            -19.89,
+            -10.56
+          ]
+        },
+        {
+          "id": 166,
+          "name": "Red_N_R",
+          "voxels": 58,
+          "center": [
+            5.93,
+            -19.48,
+            -10.66
+          ]
+        },
+        {
+          "id": 167,
+          "name": "LC_L",
+          "voxels": 5,
+          "center": [
+            -4,
+            -34.8,
+            -26
+          ]
+        },
+        {
+          "id": 168,
+          "name": "LC_R",
+          "voxels": 5,
+          "center": [
+            6,
+            -35.2,
+            -28
+          ]
+        },
+        {
+          "id": 169,
+          "name": "Raphe_D",
+          "voxels": 18,
+          "center": [
+            0.78,
+            -27,
+            -10.44
+          ]
+        },
+        {
+          "id": 170,
+          "name": "Raphe_M",
+          "voxels": 6,
+          "center": [
+            0,
+            -30.33,
+            -22
+          ]
+        }
+      ],
+      "sha256": "6a31413b1084fcc6b32e3dd47b282e1b519c2375e431814ea829681133b733e5",
+      "source": "https://www.gin.cnrs.fr/en/tools/aal/",
+      "space": "AAL3v2 MNI",
+      "name": "AAL3 v2",
+      "note": "AAL3v2 实际标签体积，标签编号可能不连续；核团分区来自原始图谱，不代表每个 MNI152 个体的精确边界。",
+      "license": "AAL3 copyright GIN / Edmund Rolls et al.; retain attribution",
+      "alignmentStatus": "unverified-template",
+      "canOverlayOnTarget": false,
+      "distribution": "metadata-only",
+      "publicationNote": {
+        "zh": "公开版仅保留来源与标签目录，未分发旧版二进制。",
+        "en": "The public edition retains source and terminology metadata; legacy binary files are not distributed."
+      }
+    },
+    "ho": {
+      "available": true,
+      "data": "ho.bin",
+      "shape": [
+        91,
+        109,
+        91
+      ],
+      "affine": [
+        2,
+        0,
+        0,
+        -90,
+        0,
+        2,
+        0,
+        -126,
+        0,
+        0,
+        2,
+        -72,
+        0,
+        0,
+        0,
+        1
+      ],
+      "dtype": "uint8",
+      "order": "x-fastest",
+      "labels": [
+        {
+          "id": 1,
+          "name": "Left Cerebral White Matter",
+          "voxels": 27731,
+          "center": [
+            -25.12,
+            -15.99,
+            18.4
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Left Cerebral Cortex",
+          "voxels": 63653,
+          "center": [
+            -31.71,
+            -19.23,
+            17.48
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Left Lateral Ventrical",
+          "voxels": 1270,
+          "center": [
+            -12.63,
+            -13.07,
+            14.14
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Left Thalamus",
+          "voxels": 1391,
+          "center": [
+            -10.03,
+            -19.08,
+            6.37
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Left Caudate",
+          "voxels": 568,
+          "center": [
+            -12.99,
+            9.23,
+            9.69
+          ]
+        },
+        {
+          "id": 6,
+          "name": "Left Putamen",
+          "voxels": 921,
+          "center": [
+            -25.09,
+            0.32,
+            0.32
+          ]
+        },
+        {
+          "id": 7,
+          "name": "Left Pallidum",
+          "voxels": 312,
+          "center": [
+            -18.96,
+            -5.01,
+            -1.26
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Brain-Stem",
+          "voxels": 4796,
+          "center": [
+            0.54,
+            -30.99,
+            -34.24
+          ]
+        },
+        {
+          "id": 9,
+          "name": "Left Hippocampus",
+          "voxels": 815,
+          "center": [
+            -25.07,
+            -22.96,
+            -14.13
+          ]
+        },
+        {
+          "id": 10,
+          "name": "Left Amygdala",
+          "voxels": 352,
+          "center": [
+            -22.94,
+            -4.67,
+            -18.07
+          ]
+        },
+        {
+          "id": 11,
+          "name": "Left Accumbens",
+          "voxels": 108,
+          "center": [
+            -9.44,
+            11.69,
+            -7.3
+          ]
+        },
+        {
+          "id": 12,
+          "name": "Right Cerebral White Matter",
+          "voxels": 30923,
+          "center": [
+            27.01,
+            -14.52,
+            17.77
+          ]
+        },
+        {
+          "id": 13,
+          "name": "Right Cerebral Cortex",
+          "voxels": 64734,
+          "center": [
+            32.54,
+            -16.68,
+            17
+          ]
+        },
+        {
+          "id": 14,
+          "name": "Right Lateral Ventricle",
+          "voxels": 1019,
+          "center": [
+            13.29,
+            -12.42,
+            14.33
+          ]
+        },
+        {
+          "id": 15,
+          "name": "Right Thalamus",
+          "voxels": 1289,
+          "center": [
+            10.88,
+            -18.37,
+            6.54
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Right Caudate",
+          "voxels": 515,
+          "center": [
+            13.31,
+            10.2,
+            10.52
+          ]
+        },
+        {
+          "id": 17,
+          "name": "Right Putamen",
+          "voxels": 800,
+          "center": [
+            25.5,
+            1.91,
+            0.25
+          ]
+        },
+        {
+          "id": 18,
+          "name": "Right Pallidum",
+          "voxels": 266,
+          "center": [
+            19.89,
+            -3.81,
+            -1.22
+          ]
+        },
+        {
+          "id": 19,
+          "name": "Right Hippocampus",
+          "voxels": 711,
+          "center": [
+            26.3,
+            -20.73,
+            -14.53
+          ]
+        },
+        {
+          "id": 20,
+          "name": "Right Amygdala",
+          "voxels": 361,
+          "center": [
+            22.97,
+            -3.83,
+            -18.07
+          ]
+        },
+        {
+          "id": 21,
+          "name": "Right Accumbens",
+          "voxels": 86,
+          "center": [
+            9.47,
+            12.07,
+            -6.63
+          ]
+        }
+      ],
+      "sha256": "bfebf28ef1aea3758e386e0a5bafb9f4a01385c47b6faf008cc17bd6dba3e4d5",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "FSL MNI152NLin6Asym",
+      "name": "Harvard–Oxford subcortical",
+      "note": "最大概率图，25% 概率阈值，2 mm；MGH 镜像的 FreeSurfer 编号已按随附 labels 文件恢复为 HO 标准编号。含皮层及白质总区标签，深核边界随阈值改变。",
+      "license": "CC BY-SA 4.0 (current FSL atlas license); retain attribution",
+      "alignmentStatus": "published-template",
+      "canOverlayOnTarget": true
+    },
+    "jhu": {
+      "available": true,
+      "data": "jhu.bin",
+      "shape": [
+        91,
+        109,
+        91
+      ],
+      "affine": [
+        2,
+        0,
+        0,
+        -90,
+        0,
+        2,
+        0,
+        -126,
+        0,
+        0,
+        2,
+        -72,
+        0,
+        0,
+        0,
+        1
+      ],
+      "dtype": "uint8",
+      "order": "x-fastest",
+      "labels": [
+        {
+          "id": 0,
+          "name": "Unclassified",
+          "voxels": 881511,
+          "center": [
+            -0.02,
+            -18.04,
+            18.26
+          ]
+        },
+        {
+          "id": 1,
+          "name": "Middle cerebellar peduncle",
+          "voxels": 1898,
+          "center": [
+            0.58,
+            -39.83,
+            -35.37
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Pontine crossing tract (a part of MCP)",
+          "voxels": 183,
+          "center": [
+            0.31,
+            -29.31,
+            -30.89
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Genu of corpus callosum",
+          "voxels": 1131,
+          "center": [
+            0.1,
+            26.05,
+            7.5
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Body of corpus callosum",
+          "voxels": 1727,
+          "center": [
+            0.61,
+            -5.97,
+            27.4
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Splenium of corpus callosum",
+          "voxels": 1543,
+          "center": [
+            0.77,
+            -42.3,
+            17.85
+          ]
+        },
+        {
+          "id": 6,
+          "name": "Fornix (column and body of fornix)",
+          "voxels": 81,
+          "center": [
+            0.59,
+            -6.52,
+            13.16
+          ]
+        },
+        {
+          "id": 7,
+          "name": "Corticospinal tract R",
+          "voxels": 176,
+          "center": [
+            7.26,
+            -24.89,
+            -32.38
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Corticospinal tract L",
+          "voxels": 178,
+          "center": [
+            -5.96,
+            -25.15,
+            -33
+          ]
+        },
+        {
+          "id": 9,
+          "name": "Medial lemniscus R",
+          "voxels": 86,
+          "center": [
+            5.51,
+            -36.95,
+            -33.33
+          ]
+        },
+        {
+          "id": 10,
+          "name": "Medial lemniscus L",
+          "voxels": 83,
+          "center": [
+            -4.75,
+            -36.89,
+            -33.45
+          ]
+        },
+        {
+          "id": 11,
+          "name": "Inferior cerebellar peduncle R",
+          "voxels": 113,
+          "center": [
+            9.54,
+            -44.27,
+            -37.2
+          ]
+        },
+        {
+          "id": 12,
+          "name": "Inferior cerebellar peduncle L",
+          "voxels": 119,
+          "center": [
+            -8.5,
+            -44.3,
+            -37.51
+          ]
+        },
+        {
+          "id": 13,
+          "name": "Superior cerebellar peduncle R",
+          "voxels": 123,
+          "center": [
+            6.46,
+            -41.58,
+            -24.62
+          ]
+        },
+        {
+          "id": 14,
+          "name": "Superior cerebellar peduncle L",
+          "voxels": 121,
+          "center": [
+            -5.65,
+            -41.59,
+            -24.76
+          ]
+        },
+        {
+          "id": 15,
+          "name": "Cerebral peduncle R",
+          "voxels": 268,
+          "center": [
+            13.2,
+            -18.48,
+            -12.73
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Cerebral peduncle L",
+          "voxels": 263,
+          "center": [
+            -12.25,
+            -18.38,
+            -12.62
+          ]
+        },
+        {
+          "id": 17,
+          "name": "Anterior limb of internal capsule R",
+          "voxels": 407,
+          "center": [
+            18.11,
+            7.68,
+            8.15
+          ]
+        },
+        {
+          "id": 18,
+          "name": "Anterior limb of internal capsule L",
+          "voxels": 392,
+          "center": [
+            -17.45,
+            7.53,
+            8.4
+          ]
+        },
+        {
+          "id": 19,
+          "name": "Posterior limb of internal capsule R",
+          "voxels": 501,
+          "center": [
+            20.58,
+            -13.16,
+            7.99
+          ]
+        },
+        {
+          "id": 20,
+          "name": "Posterior limb of internal capsule L",
+          "voxels": 477,
+          "center": [
+            -19.37,
+            -13.01,
+            7.86
+          ]
+        },
+        {
+          "id": 21,
+          "name": "Retrolenticular part of internal capsule R",
+          "voxels": 316,
+          "center": [
+            31.41,
+            -29.63,
+            6.61
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Retrolenticular part of internal capsule L",
+          "voxels": 311,
+          "center": [
+            -30.03,
+            -29.63,
+            6.13
+          ]
+        },
+        {
+          "id": 23,
+          "name": "Anterior corona radiata R",
+          "voxels": 856,
+          "center": [
+            21.41,
+            28.05,
+            9.85
+          ]
+        },
+        {
+          "id": 24,
+          "name": "Anterior corona radiata L",
+          "voxels": 865,
+          "center": [
+            -20.61,
+            27.95,
+            9.71
+          ]
+        },
+        {
+          "id": 25,
+          "name": "Superior corona radiata R",
+          "voxels": 920,
+          "center": [
+            23.9,
+            -7.71,
+            30.2
+          ]
+        },
+        {
+          "id": 26,
+          "name": "Superior corona radiata L",
+          "voxels": 924,
+          "center": [
+            -22.87,
+            -7.82,
+            30.45
+          ]
+        },
+        {
+          "id": 27,
+          "name": "Posterior corona radiata R",
+          "voxels": 452,
+          "center": [
+            25.24,
+            -37.94,
+            28.1
+          ]
+        },
+        {
+          "id": 28,
+          "name": "Posterior corona radiata L",
+          "voxels": 446,
+          "center": [
+            -24.31,
+            -37.99,
+            28.17
+          ]
+        },
+        {
+          "id": 29,
+          "name": "Posterior thalamic radiation (include optic radiation) R",
+          "voxels": 487,
+          "center": [
+            33.81,
+            -54.8,
+            7.69
+          ]
+        },
+        {
+          "id": 30,
+          "name": "Posterior thalamic radiation (include optic radiation) L",
+          "voxels": 478,
+          "center": [
+            -32.38,
+            -55.13,
+            7.47
+          ]
+        },
+        {
+          "id": 31,
+          "name": "Sagittal stratum (include inferior longitidinal fasciculus and inferior fronto-occipital fasciculus) R",
+          "voxels": 286,
+          "center": [
+            39.64,
+            -32.2,
+            -9.09
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Sagittal stratum (include inferior longitidinal fasciculus and inferior fronto-occipital fasciculus) L",
+          "voxels": 288,
+          "center": [
+            -38.74,
+            -31.72,
+            -9.03
+          ]
+        },
+        {
+          "id": 33,
+          "name": "External capsule R",
+          "voxels": 729,
+          "center": [
+            30.64,
+            0.06,
+            1.53
+          ]
+        },
+        {
+          "id": 34,
+          "name": "External capsule L",
+          "voxels": 692,
+          "center": [
+            -29.44,
+            0.26,
+            1.88
+          ]
+        },
+        {
+          "id": 35,
+          "name": "Cingulum (cingulate gyrus) R",
+          "voxels": 294,
+          "center": [
+            8.28,
+            -10.37,
+            29.28
+          ]
+        },
+        {
+          "id": 36,
+          "name": "Cingulum (cingulate gyrus) L",
+          "voxels": 337,
+          "center": [
+            -7.29,
+            -11.53,
+            30.09
+          ]
+        },
+        {
+          "id": 37,
+          "name": "Cingulum (hippocampus) R",
+          "voxels": 153,
+          "center": [
+            21.91,
+            -29.57,
+            -13.67
+          ]
+        },
+        {
+          "id": 38,
+          "name": "Cingulum (hippocampus) L",
+          "voxels": 131,
+          "center": [
+            -19.83,
+            -31.77,
+            -13.02
+          ]
+        },
+        {
+          "id": 39,
+          "name": "Fornix (cres) / Stria terminalis (can not be resolved with current resolution) R",
+          "voxels": 137,
+          "center": [
+            29.05,
+            -24.28,
+            -6.1
+          ]
+        },
+        {
+          "id": 40,
+          "name": "Fornix (cres) / Stria terminalis (can not be resolved with current resolution) L",
+          "voxels": 147,
+          "center": [
+            -28.11,
+            -24,
+            -6.16
+          ]
+        },
+        {
+          "id": 41,
+          "name": "Superior longitudinal fasciculus R",
+          "voxels": 825,
+          "center": [
+            36.45,
+            -26.27,
+            25.69
+          ]
+        },
+        {
+          "id": 42,
+          "name": "Superior longitudinal fasciculus L",
+          "voxels": 815,
+          "center": [
+            -35.36,
+            -25.61,
+            25.97
+          ]
+        },
+        {
+          "id": 43,
+          "name": "Superior fronto-occipital fasciculus (could be a part of anterior internal capsule) R",
+          "voxels": 59,
+          "center": [
+            20.98,
+            1.9,
+            21.63
+          ]
+        },
+        {
+          "id": 44,
+          "name": "Superior fronto-occipital fasciculus (could be a part of anterior internal capsule) L",
+          "voxels": 55,
+          "center": [
+            -20.47,
+            1.71,
+            21.42
+          ]
+        },
+        {
+          "id": 45,
+          "name": "Uncinate fasciculus R",
+          "voxels": 47,
+          "center": [
+            33.87,
+            1.15,
+            -15.36
+          ]
+        },
+        {
+          "id": 46,
+          "name": "Uncinate fasciculus L",
+          "voxels": 49,
+          "center": [
+            -33.22,
+            -1.06,
+            -15.43
+          ]
+        },
+        {
+          "id": 47,
+          "name": "Tapetum R",
+          "voxels": 78,
+          "center": [
+            29.28,
+            -44.59,
+            14.87
+          ]
+        },
+        {
+          "id": 48,
+          "name": "Tapetum L",
+          "voxels": 71,
+          "center": [
+            -26.79,
+            -46.68,
+            15.01
+          ]
+        }
+      ],
+      "sha256": "1e1e55365cac9433c0181cb0993dce3def1204c7f751e90cb2ad21c0f2bb2901",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+      "space": "JHU ICBM-DTI-81 / FSL MNI grid",
+      "name": "JHU ICBM-DTI-81 white-matter labels",
+      "note": "JHU 白质区域标签图（48 个正标签），不是连续纤维追踪流线；图谱内的白质区域不等于完整纤维束。",
+      "license": "FSL non-commercial license; JHU copyright",
+      "alignmentStatus": "published-template",
+      "canOverlayOnTarget": true
+    },
+    "ba": {
+      "available": true,
+      "data": "ba-v2/talairach-ba.bin",
+      "shape": [
+        91,
+        109,
+        91
+      ],
+      "affine": [
+        2,
+        0,
+        0,
+        -90,
+        0,
+        2,
+        0,
+        -126,
+        0,
+        0,
+        2,
+        -72,
+        0,
+        0,
+        0,
+        1
+      ],
+      "dtype": "uint8",
+      "order": "x-fastest",
+      "labels": [
+        {
+          "id": 1,
+          "name": "BA1",
+          "ba": 1,
+          "voxels": 181,
+          "center": [
+            2.63,
+            -18.43,
+            47.02
+          ]
+        },
+        {
+          "id": 2,
+          "name": "BA2",
+          "ba": 2,
+          "voxels": 681,
+          "center": [
+            2.7,
+            -23.78,
+            45.97
+          ]
+        },
+        {
+          "id": 3,
+          "name": "BA3",
+          "ba": 3,
+          "voxels": 1106,
+          "center": [
+            3.01,
+            -20.23,
+            53.84
+          ]
+        },
+        {
+          "id": 4,
+          "name": "BA4",
+          "ba": 4,
+          "voxels": 1253,
+          "center": [
+            1.64,
+            -16.01,
+            52.37
+          ]
+        },
+        {
+          "id": 5,
+          "name": "BA5",
+          "ba": 5,
+          "voxels": 683,
+          "center": [
+            2.2,
+            -36.7,
+            61.62
+          ]
+        },
+        {
+          "id": 6,
+          "name": "BA6",
+          "ba": 6,
+          "voxels": 5997,
+          "center": [
+            1.51,
+            4.56,
+            50.83
+          ]
+        },
+        {
+          "id": 7,
+          "name": "BA7",
+          "ba": 7,
+          "voxels": 3797,
+          "center": [
+            2.17,
+            -58.72,
+            53.59
+          ]
+        },
+        {
+          "id": 8,
+          "name": "BA8",
+          "ba": 8,
+          "voxels": 2367,
+          "center": [
+            1.81,
+            34.81,
+            42.93
+          ]
+        },
+        {
+          "id": 9,
+          "name": "BA9",
+          "ba": 9,
+          "voxels": 3022,
+          "center": [
+            3.01,
+            37.86,
+            27.42
+          ]
+        },
+        {
+          "id": 10,
+          "name": "BA10",
+          "ba": 10,
+          "voxels": 3713,
+          "center": [
+            1.59,
+            60.08,
+            -0.18
+          ]
+        },
+        {
+          "id": 11,
+          "name": "BA11",
+          "ba": 11,
+          "voxels": 2521,
+          "center": [
+            1.22,
+            44.42,
+            -27.23
+          ]
+        },
+        {
+          "id": 13,
+          "name": "BA13",
+          "ba": 13,
+          "voxels": 2005,
+          "center": [
+            3.42,
+            -6.89,
+            6.29
+          ]
+        },
+        {
+          "id": 17,
+          "name": "BA17",
+          "ba": 17,
+          "voxels": 704,
+          "center": [
+            1.65,
+            -92.82,
+            4.06
+          ]
+        },
+        {
+          "id": 18,
+          "name": "BA18",
+          "ba": 18,
+          "voxels": 3720,
+          "center": [
+            2.07,
+            -88.47,
+            7.36
+          ]
+        },
+        {
+          "id": 19,
+          "name": "BA19",
+          "ba": 19,
+          "voxels": 3833,
+          "center": [
+            2.47,
+            -78.95,
+            19.3
+          ]
+        },
+        {
+          "id": 20,
+          "name": "BA20",
+          "ba": 20,
+          "voxels": 1787,
+          "center": [
+            3.23,
+            -22.69,
+            -28.19
+          ]
+        },
+        {
+          "id": 21,
+          "name": "BA21",
+          "ba": 21,
+          "voxels": 2137,
+          "center": [
+            1.64,
+            -17.1,
+            -14.6
+          ]
+        },
+        {
+          "id": 22,
+          "name": "BA22",
+          "ba": 22,
+          "voxels": 1888,
+          "center": [
+            -0.35,
+            -24.54,
+            4.65
+          ]
+        },
+        {
+          "id": 23,
+          "name": "BA23",
+          "ba": 23,
+          "voxels": 453,
+          "center": [
+            2.58,
+            -40.44,
+            24.61
+          ]
+        },
+        {
+          "id": 24,
+          "name": "BA24",
+          "ba": 24,
+          "voxels": 1321,
+          "center": [
+            1.89,
+            7.91,
+            30.84
+          ]
+        },
+        {
+          "id": 25,
+          "name": "BA25",
+          "ba": 25,
+          "voxels": 382,
+          "center": [
+            1.28,
+            15.52,
+            -18.71
+          ]
+        },
+        {
+          "id": 27,
+          "name": "BA27",
+          "ba": 27,
+          "voxels": 48,
+          "center": [
+            4.5,
+            -33.92,
+            -3.46
+          ]
+        },
+        {
+          "id": 28,
+          "name": "BA28",
+          "ba": 28,
+          "voxels": 312,
+          "center": [
+            0.47,
+            -7.7,
+            -27.13
+          ]
+        },
+        {
+          "id": 29,
+          "name": "BA29",
+          "ba": 29,
+          "voxels": 121,
+          "center": [
+            1.54,
+            -47.31,
+            12.63
+          ]
+        },
+        {
+          "id": 30,
+          "name": "BA30",
+          "ba": 30,
+          "voxels": 630,
+          "center": [
+            1.26,
+            -57.36,
+            9.5
+          ]
+        },
+        {
+          "id": 31,
+          "name": "BA31",
+          "ba": 31,
+          "voxels": 1720,
+          "center": [
+            2.38,
+            -45.55,
+            34.85
+          ]
+        },
+        {
+          "id": 32,
+          "name": "BA32",
+          "ba": 32,
+          "voxels": 1413,
+          "center": [
+            1.54,
+            31.38,
+            18.93
+          ]
+        },
+        {
+          "id": 33,
+          "name": "BA33",
+          "ba": 33,
+          "voxels": 27,
+          "center": [
+            2.52,
+            19.41,
+            18.96
+          ]
+        },
+        {
+          "id": 34,
+          "name": "BA34",
+          "ba": 34,
+          "voxels": 270,
+          "center": [
+            1.63,
+            -0.27,
+            -21.53
+          ]
+        },
+        {
+          "id": 35,
+          "name": "BA35",
+          "ba": 35,
+          "voxels": 208,
+          "center": [
+            3.22,
+            -22.71,
+            -22.09
+          ]
+        },
+        {
+          "id": 36,
+          "name": "BA36",
+          "ba": 36,
+          "voxels": 468,
+          "center": [
+            1.11,
+            -27.62,
+            -23.46
+          ]
+        },
+        {
+          "id": 37,
+          "name": "BA37",
+          "ba": 37,
+          "voxels": 1372,
+          "center": [
+            1.72,
+            -57.37,
+            -8.06
+          ]
+        },
+        {
+          "id": 38,
+          "name": "BA38",
+          "ba": 38,
+          "voxels": 1567,
+          "center": [
+            1.17,
+            11.76,
+            -30.51
+          ]
+        },
+        {
+          "id": 39,
+          "name": "BA39",
+          "ba": 39,
+          "voxels": 1453,
+          "center": [
+            5.24,
+            -65.03,
+            28.38
+          ]
+        },
+        {
+          "id": 40,
+          "name": "BA40",
+          "ba": 40,
+          "voxels": 3400,
+          "center": [
+            1.94,
+            -38.59,
+            42.61
+          ]
+        },
+        {
+          "id": 41,
+          "name": "BA41",
+          "ba": 41,
+          "voxels": 462,
+          "center": [
+            1.41,
+            -27.19,
+            11.59
+          ]
+        },
+        {
+          "id": 42,
+          "name": "BA42",
+          "ba": 42,
+          "voxels": 403,
+          "center": [
+            -1.71,
+            -21.77,
+            11.42
+          ]
+        },
+        {
+          "id": 43,
+          "name": "BA43",
+          "ba": 43,
+          "voxels": 254,
+          "center": [
+            -0.46,
+            -8.88,
+            14.28
+          ]
+        },
+        {
+          "id": 44,
+          "name": "BA44",
+          "ba": 44,
+          "voxels": 485,
+          "center": [
+            7.04,
+            12.9,
+            8.91
+          ]
+        },
+        {
+          "id": 45,
+          "name": "BA45",
+          "ba": 45,
+          "voxels": 642,
+          "center": [
+            7.93,
+            26.11,
+            5.64
+          ]
+        },
+        {
+          "id": 46,
+          "name": "BA46",
+          "ba": 46,
+          "voxels": 1171,
+          "center": [
+            1.41,
+            42.1,
+            10.98
+          ]
+        },
+        {
+          "id": 47,
+          "name": "BA47",
+          "ba": 47,
+          "voxels": 1706,
+          "center": [
+            2.42,
+            26.18,
+            -17.74
+          ]
+        }
+      ],
+      "sha256": "ad1c708a1b820a752f85566858d466075178bb1aa38257ab1f81b17bd6cb985b",
+      "name": "Brodmann — FSL Talairach historical labels",
+      "space": "MNI152 (FSL published Lancaster affine)",
+      "nativeSpace": "Talairach digitized atlas",
+      "alignmentStatus": "published-affine",
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/datasets.html#talairach-atlas",
+      "note": "FSL 发布的 Talairach 历史标签，经 Lancaster 2007 校正仿射映射至 MNI152。来源为单脑、粗切片数字化，不是现代组织学群体边界。",
+      "limitations": [
+        "仿射映射不消除局部解剖差异。",
+        "左右使用同一 BA 编号；按 RAS 坐标辨别侧别。",
+        "空白处表示无标签，不能由邻近标签补齐。"
+      ],
+      "canOverlayOnTarget": true
+    },
+    "ba-legacy": {
+      "available": false,
+      "data": null,
+      "shape": [
+        91,
+        109,
+        91
+      ],
+      "affine": [
+        2,
+        0,
+        0,
+        -90,
+        0,
+        2,
+        0,
+        -125,
+        0,
+        0,
+        2,
+        -71,
+        0,
+        0,
+        0,
+        1
+      ],
+      "dtype": "uint8",
+      "order": "x-fastest",
+      "labels": [
+        {
+          "id": 1,
+          "name": "Brodmann area 1",
+          "voxels": 388,
+          "center": [
+            7.15,
+            -34.29,
+            62.81
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Brodmann area 2",
+          "voxels": 1792,
+          "center": [
+            2.32,
+            -34.65,
+            49.2
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Brodmann area 3",
+          "voxels": 3120,
+          "center": [
+            0.57,
+            -26.78,
+            52.02
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Brodmann area 4",
+          "voxels": 4278,
+          "center": [
+            0.56,
+            -22.89,
+            60.61
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Brodmann area 5",
+          "voxels": 2001,
+          "center": [
+            0.66,
+            -50.31,
+            66.46
+          ]
+        },
+        {
+          "id": 6,
+          "name": "Brodmann area 6",
+          "voxels": 12230,
+          "center": [
+            0.57,
+            -3.28,
+            55.66
+          ]
+        },
+        {
+          "id": 7,
+          "name": "Brodmann area 7",
+          "voxels": 6202,
+          "center": [
+            1.31,
+            -64.91,
+            52.7
+          ]
+        },
+        {
+          "id": 8,
+          "name": "Brodmann area 8",
+          "voxels": 3147,
+          "center": [
+            -0.52,
+            23.18,
+            55.98
+          ]
+        },
+        {
+          "id": 9,
+          "name": "Brodmann area 9",
+          "voxels": 4542,
+          "center": [
+            -0.17,
+            37.28,
+            43.04
+          ]
+        },
+        {
+          "id": 10,
+          "name": "Brodmann area 10",
+          "voxels": 4626,
+          "center": [
+            0.21,
+            59.17,
+            10.11
+          ]
+        },
+        {
+          "id": 11,
+          "name": "Brodmann area 11",
+          "voxels": 8264,
+          "center": [
+            0.34,
+            41.92,
+            -12.17
+          ]
+        },
+        {
+          "id": 17,
+          "name": "Brodmann area 17",
+          "voxels": 3799,
+          "center": [
+            -0.55,
+            -79.28,
+            5.88
+          ]
+        },
+        {
+          "id": 18,
+          "name": "Brodmann area 18",
+          "voxels": 9695,
+          "center": [
+            0.08,
+            -79.96,
+            1.46
+          ]
+        },
+        {
+          "id": 19,
+          "name": "Brodmann area 19",
+          "voxels": 10321,
+          "center": [
+            0.23,
+            -73.52,
+            6.11
+          ]
+        },
+        {
+          "id": 20,
+          "name": "Brodmann area 20",
+          "voxels": 11161,
+          "center": [
+            1.79,
+            -17.75,
+            -24.99
+          ]
+        },
+        {
+          "id": 21,
+          "name": "Brodmann area 21",
+          "voxels": 5915,
+          "center": [
+            2.6,
+            -23.7,
+            -7.26
+          ]
+        },
+        {
+          "id": 22,
+          "name": "Brodmann area 22",
+          "voxels": 2836,
+          "center": [
+            4.38,
+            -28.16,
+            7.49
+          ]
+        },
+        {
+          "id": 23,
+          "name": "Brodmann area 23",
+          "voxels": 2355,
+          "center": [
+            0,
+            -37.55,
+            31.07
+          ]
+        },
+        {
+          "id": 24,
+          "name": "Brodmann area 24",
+          "voxels": 1298,
+          "center": [
+            -0.01,
+            18.12,
+            30.46
+          ]
+        },
+        {
+          "id": 25,
+          "name": "Brodmann area 25",
+          "voxels": 1689,
+          "center": [
+            -0.03,
+            16.2,
+            -4.88
+          ]
+        },
+        {
+          "id": 26,
+          "name": "Brodmann area 26",
+          "voxels": 221,
+          "center": [
+            0.05,
+            -41.32,
+            22.9
+          ]
+        },
+        {
+          "id": 27,
+          "name": "Brodmann area 27",
+          "voxels": 917,
+          "center": [
+            0.48,
+            -36.66,
+            -0.54
+          ]
+        },
+        {
+          "id": 28,
+          "name": "Brodmann area 28",
+          "voxels": 622,
+          "center": [
+            -0.52,
+            1.66,
+            -25.68
+          ]
+        },
+        {
+          "id": 29,
+          "name": "Brodmann area 29",
+          "voxels": 363,
+          "center": [
+            0.1,
+            -43.37,
+            12.05
+          ]
+        },
+        {
+          "id": 30,
+          "name": "Brodmann area 30",
+          "voxels": 2464,
+          "center": [
+            -0.19,
+            -36.22,
+            -12.42
+          ]
+        },
+        {
+          "id": 32,
+          "name": "Brodmann area 32",
+          "voxels": 3999,
+          "center": [
+            -0.03,
+            34.14,
+            29.98
+          ]
+        },
+        {
+          "id": 34,
+          "name": "Brodmann area 34",
+          "voxels": 587,
+          "center": [
+            0.21,
+            -0.1,
+            -14.54
+          ]
+        },
+        {
+          "id": 35,
+          "name": "Brodmann area 35",
+          "voxels": 861,
+          "center": [
+            -0.56,
+            -12.32,
+            -23.87
+          ]
+        },
+        {
+          "id": 36,
+          "name": "Brodmann area 36",
+          "voxels": 1852,
+          "center": [
+            -1.65,
+            1.58,
+            -34.3
+          ]
+        },
+        {
+          "id": 37,
+          "name": "Brodmann area 37",
+          "voxels": 10218,
+          "center": [
+            -0.39,
+            -51.72,
+            -10.09
+          ]
+        },
+        {
+          "id": 38,
+          "name": "Brodmann area 38",
+          "voxels": 3437,
+          "center": [
+            2.73,
+            18.02,
+            -20.83
+          ]
+        },
+        {
+          "id": 39,
+          "name": "Brodmann area 39",
+          "voxels": 3595,
+          "center": [
+            1.68,
+            -63.18,
+            29.51
+          ]
+        },
+        {
+          "id": 40,
+          "name": "Brodmann area 40",
+          "voxels": 4081,
+          "center": [
+            2.68,
+            -44.7,
+            44.39
+          ]
+        },
+        {
+          "id": 41,
+          "name": "Brodmann area 41",
+          "voxels": 1019,
+          "center": [
+            0.44,
+            -39.5,
+            17.34
+          ]
+        },
+        {
+          "id": 42,
+          "name": "Brodmann area 42",
+          "voxels": 805,
+          "center": [
+            -0.41,
+            -35.77,
+            17.16
+          ]
+        },
+        {
+          "id": 43,
+          "name": "Brodmann area 43",
+          "voxels": 836,
+          "center": [
+            6.55,
+            -8.01,
+            26.52
+          ]
+        },
+        {
+          "id": 44,
+          "name": "Brodmann area 44",
+          "voxels": 2364,
+          "center": [
+            -0.46,
+            15,
+            30.97
+          ]
+        },
+        {
+          "id": 45,
+          "name": "Brodmann area 45",
+          "voxels": 3561,
+          "center": [
+            1,
+            33.76,
+            14.1
+          ]
+        },
+        {
+          "id": 46,
+          "name": "Brodmann area 46",
+          "voxels": 3583,
+          "center": [
+            -0.25,
+            44.76,
+            21.74
+          ]
+        },
+        {
+          "id": 47,
+          "name": "Brodmann area 47",
+          "voxels": 4316,
+          "center": [
+            0.36,
+            34.89,
+            -4.82
+          ]
+        },
+        {
+          "id": 48,
+          "name": "Brodmann area 48",
+          "voxels": 19760,
+          "center": [
+            0.3,
+            -3.9,
+            12.91
+          ]
+        }
+      ],
+      "sha256": "58c50825e4b4b4446dbbbc709e59b76a578680e9979633bccddd28e52087316d",
+      "source": "https://github.com/mingruixia/BrainNet-Viewer",
+      "space": "Historical MRIcroN MNI-like Brodmann approximation",
+      "name": "Brodmann historical digitization",
+      "note": "保留 BrainNet 旧版 BA 41 个编号，原始 MNI 变体未核实，未执行解剖配准。不能直接视为主模板的精确边界。",
+      "license": "Retain MRIcroN / Chris Rorden / Brodmann attribution; see BrainNet notice",
+      "alignmentStatus": "legacy",
+      "canOverlayOnTarget": false,
+      "distribution": "metadata-only",
+      "publicationNote": {
+        "zh": "公开版仅保留来源与标签目录，未分发旧版二进制。",
+        "en": "The public edition retains source and terminology metadata; legacy binary files are not distributed."
+      }
+    },
+    "ba-histology": {
+      "available": true,
+      "data": "ba-v2/juelich-ba.bin",
+      "shape": [
+        91,
+        109,
+        91
+      ],
+      "affine": [
+        2,
+        0,
+        0,
+        -90,
+        0,
+        2,
+        0,
+        -126,
+        0,
+        0,
+        2,
+        -72,
+        0,
+        0,
+        0,
+        1
+      ],
+      "dtype": "uint8",
+      "order": "x-fastest",
+      "labels": [
+        {
+          "id": 13,
+          "name": "GM Broca's area BA44 L",
+          "ba": 44,
+          "subdivision": "",
+          "hemisphere": "L",
+          "probabilityChannel": 12,
+          "voxels": 1533,
+          "center": [
+            -50.79,
+            12.18,
+            19.32
+          ]
+        },
+        {
+          "id": 14,
+          "name": "GM Broca's area BA44 R",
+          "ba": 44,
+          "subdivision": "",
+          "hemisphere": "R",
+          "probabilityChannel": 13,
+          "voxels": 1087,
+          "center": [
+            53.89,
+            12.35,
+            17.28
+          ]
+        },
+        {
+          "id": 15,
+          "name": "GM Broca's area BA45 L",
+          "ba": 45,
+          "subdivision": "",
+          "hemisphere": "L",
+          "probabilityChannel": 14,
+          "voxels": 1101,
+          "center": [
+            -51.14,
+            28.24,
+            14.67
+          ]
+        },
+        {
+          "id": 16,
+          "name": "GM Broca's area BA45 R",
+          "ba": 45,
+          "subdivision": "",
+          "hemisphere": "R",
+          "probabilityChannel": 15,
+          "voxels": 1292,
+          "center": [
+            52.91,
+            27.75,
+            11.64
+          ]
+        },
+        {
+          "id": 47,
+          "name": "GM Primary motor cortex BA4a L",
+          "ba": 4,
+          "subdivision": "a",
+          "hemisphere": "L",
+          "probabilityChannel": 46,
+          "voxels": 1065,
+          "center": [
+            -13.82,
+            -29.49,
+            62.68
+          ]
+        },
+        {
+          "id": 48,
+          "name": "GM Primary motor cortex BA4a R",
+          "ba": 4,
+          "subdivision": "a",
+          "hemisphere": "R",
+          "probabilityChannel": 47,
+          "voxels": 927,
+          "center": [
+            16.86,
+            -27.8,
+            63.85
+          ]
+        },
+        {
+          "id": 49,
+          "name": "GM Primary motor cortex BA4p L",
+          "ba": 4,
+          "subdivision": "p",
+          "hemisphere": "L",
+          "probabilityChannel": 48,
+          "voxels": 360,
+          "center": [
+            -35.16,
+            -21.17,
+            47.3
+          ]
+        },
+        {
+          "id": 50,
+          "name": "GM Primary motor cortex BA4p R",
+          "ba": 4,
+          "subdivision": "p",
+          "hemisphere": "R",
+          "probabilityChannel": 49,
+          "voxels": 320,
+          "center": [
+            35.5,
+            -21.11,
+            48.5
+          ]
+        },
+        {
+          "id": 51,
+          "name": "GM Primary somatosensory cortex BA1 L",
+          "ba": 1,
+          "subdivision": "",
+          "hemisphere": "L",
+          "probabilityChannel": 50,
+          "voxels": 894,
+          "center": [
+            -44.28,
+            -26,
+            56.45
+          ]
+        },
+        {
+          "id": 52,
+          "name": "GM Primary somatosensory cortex BA1 R",
+          "ba": 1,
+          "subdivision": "",
+          "hemisphere": "R",
+          "probabilityChannel": 51,
+          "voxels": 853,
+          "center": [
+            46.08,
+            -24.85,
+            56.69
+          ]
+        },
+        {
+          "id": 53,
+          "name": "GM Primary somatosensory cortex BA2 L",
+          "ba": 2,
+          "subdivision": "",
+          "hemisphere": "L",
+          "probabilityChannel": 52,
+          "voxels": 854,
+          "center": [
+            -39.56,
+            -34.63,
+            51.19
+          ]
+        },
+        {
+          "id": 54,
+          "name": "GM Primary somatosensory cortex BA2 R",
+          "ba": 2,
+          "subdivision": "",
+          "hemisphere": "R",
+          "probabilityChannel": 53,
+          "voxels": 912,
+          "center": [
+            36.93,
+            -34.79,
+            52.78
+          ]
+        },
+        {
+          "id": 55,
+          "name": "GM Primary somatosensory cortex BA3a L",
+          "ba": 3,
+          "subdivision": "a",
+          "hemisphere": "L",
+          "probabilityChannel": 54,
+          "voxels": 403,
+          "center": [
+            -34.76,
+            -22.17,
+            39.5
+          ]
+        },
+        {
+          "id": 56,
+          "name": "GM Primary somatosensory cortex BA3a R",
+          "ba": 3,
+          "subdivision": "a",
+          "hemisphere": "R",
+          "probabilityChannel": 55,
+          "voxels": 404,
+          "center": [
+            32.97,
+            -22.39,
+            41.49
+          ]
+        },
+        {
+          "id": 57,
+          "name": "GM Primary somatosensory cortex BA3b L",
+          "ba": 3,
+          "subdivision": "b",
+          "hemisphere": "L",
+          "probabilityChannel": 56,
+          "voxels": 576,
+          "center": [
+            -40.61,
+            -22.53,
+            45.94
+          ]
+        },
+        {
+          "id": 58,
+          "name": "GM Primary somatosensory cortex BA3b R",
+          "ba": 3,
+          "subdivision": "b",
+          "hemisphere": "R",
+          "probabilityChannel": 57,
+          "voxels": 853,
+          "center": [
+            39.79,
+            -22.24,
+            47.01
+          ]
+        },
+        {
+          "id": 81,
+          "name": "GM Visual cortex V1 BA17 L",
+          "ba": 17,
+          "subdivision": "",
+          "hemisphere": "L",
+          "probabilityChannel": 80,
+          "voxels": 1998,
+          "center": [
+            -8.25,
+            -84.98,
+            4.24
+          ]
+        },
+        {
+          "id": 82,
+          "name": "GM Visual cortex V1 BA17 R",
+          "ba": 17,
+          "subdivision": "",
+          "hemisphere": "R",
+          "probabilityChannel": 81,
+          "voxels": 2385,
+          "center": [
+            13.81,
+            -81.89,
+            3.79
+          ]
+        },
+        {
+          "id": 83,
+          "name": "GM Visual cortex V2 BA18 L",
+          "ba": 18,
+          "subdivision": "",
+          "hemisphere": "L",
+          "probabilityChannel": 82,
+          "voxels": 1694,
+          "center": [
+            -11.62,
+            -86.55,
+            7.09
+          ]
+        },
+        {
+          "id": 84,
+          "name": "GM Visual cortex V2 BA18 R",
+          "ba": 18,
+          "subdivision": "",
+          "hemisphere": "R",
+          "probabilityChannel": 83,
+          "voxels": 1874,
+          "center": [
+            15.7,
+            -81.78,
+            7.82
+          ]
+        },
+        {
+          "id": 91,
+          "name": "GM Premotor cortex BA6 L",
+          "ba": 6,
+          "subdivision": "",
+          "hemisphere": "L",
+          "probabilityChannel": 90,
+          "voxels": 4958,
+          "center": [
+            -19.93,
+            -6.16,
+            60.25
+          ]
+        },
+        {
+          "id": 92,
+          "name": "GM Premotor cortex BA6 R",
+          "ba": 6,
+          "subdivision": "",
+          "hemisphere": "R",
+          "probabilityChannel": 91,
+          "voxels": 4950,
+          "center": [
+            21.33,
+            -6.43,
+            60.14
+          ]
+        }
+      ],
+      "sha256": "37cbaa98a78fa017d109badf0433f2627e441d6dbe6ba39fcdccf7e4c61c9998",
+      "name": "Jülich histological BA subset (FSL 5.0.1)",
+      "space": "MNI152 (FSL Juelich distribution)",
+      "alignmentStatus": "published-template",
+      "probability": "ba-v2/juelich-ba-probability.bin",
+      "thresholdPercent": 25,
+      "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/julich.html",
+      "note": "Jülich 尸检组织学概率图的明确 BA 子集，使用 FSL 最大概率图（25% 阈值），保留左右与 3a/3b、4a/4p 亚区。未收录的编号不以脑回推断。",
+      "limitations": [
+        "仅明确含 BA 名称的已发布区域；不等于全部人类细胞构筑学分区。",
+        "其他非 BA 名称的 Jülich 区域不自动改名为 BA。",
+        "最大概率标签与群体概率不代表个体边界。",
+        "该旧版 FSL 数据的精确 MNI152 模板变体未从原始元数据独立确认。"
+      ],
+      "probabilitySha256": "22ecb295a28278af403763a82abc2b420778e70a8e04bb0193c9d046df296801",
+      "canOverlayOnTarget": true
+    }
+  },
+  "template": {
+    "shape": [
+      91,
+      109,
+      91
+    ],
+    "affine": [
+      2,
+      0,
+      0,
+      -90,
+      0,
+      2,
+      0,
+      -126,
+      0,
+      0,
+      2,
+      -72,
+      0,
+      0,
+      0,
+      1
+    ],
+    "data": "t1.bin",
+    "dtype": "uint8",
+    "order": "x-fastest",
+    "name": "FSL MNI152 T1 2 mm brain",
+    "space": "MNI152NLin6Asym",
+    "resolutionMm": 2,
+    "source": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/standard/MNI152_T1_2mm_brain.nii.gz",
+    "normalization": "Intensity scaled to 0–255 with 99.6th percentile upper clipping for display only.",
+    "sourceSha256": "09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+    "sha256": "1008af54b83b1c74fa82ec5eab851b93c64a2affcd33a4b797ae97f72990e780"
+  },
+  "counts": {
+    "dk": 70,
+    "aal": 116,
+    "aal3": 166,
+    "ho": 21,
+    "jhu": 48,
+    "ba": 41
+  },
+  "anatomy": "anatomy/manifest.json",
+  "baCoverage": "ba-v2/manifest.json",
+  "alignment": "space/alignment.json",
+  "edition": "public-teaching",
+  "version": "3.0.0",
+  "dataLicenseNotice": "/data/licenses/NOTICE-DATA.md"
+}

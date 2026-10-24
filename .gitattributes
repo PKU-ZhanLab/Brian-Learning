@@ -1,0 +1,7 @@
+* text=auto eol=lf
+public/data/** -text
+data-sources/** -text
+*.png -text
+*.ico -text
+*.gz -text
+*.bin -text

@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>WU-Minn HCP Consortium Open Access Data Use Terms - Connectome</title>
+  <meta name="description" content="I request access to data collected by the Washington University - University of Minnesota Consortium of the Human Connectome Project (WU-Minn HCP), and I agree to the following:
+
+
+	I will not attempt to establish the identity of or attempt to cont">
+  <meta name="title" content="WU-Minn HCP Consortium Open Access Data Use Terms - Connectome">
+  <meta name="author" content="UpAndRunning">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="sXEDA0XI8wTWSziV6AaW1VIG7jKBFig4BVK4Kuij">
+  <!--<link rel="icon" type="image/png" href="https://www.humanconnectome.org/themes/uar_washu/assets/images/october.png">-->
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700,900,400italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,700,900,700italic,400italic,300italic' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&subset=latin-ext" rel="stylesheet">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+  <link href="https://www.humanconnectome.org/combine/ba0d282fc4d4e1acd5debb902cabac17-1553806956" rel="stylesheet">
+
+  </head>
+
+<body class="study-layout">
+
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse"
+              data-target="#navbar-ex-collapse">
+        <span class="sr-only">Toggle navigationx</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">
+        <img class="logo-main" alt="Human Connectome Project" src="https://www.humanconnectome.org/themes/uar_washu/assets/images/logos/ccf-logo.png">
+        <img class="logo-small" alt="Human Connectome Project" src="https://www.humanconnectome.org/themes/uar_washu/assets/images/logos/ccf-logo-mobile.png">
+      </a>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar-ex-collapse">
+
+
+
+      <ul class="nav navbar-nav navbar-right">
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+             aria-expanded="false">Studies &nbsp;<i class="fa fa-angle-down"></i></a>
+
+          <ul class="dropdown-menu" role="menu">
+            
+                            <li class="dropdown-submenu">
+                <a href="/study/hcp-young-adult" role="button">Healthy Adult Connectomes</a>
+                <ul class="dropdown-menu" role="menu">
+
+                                                            <li>
+                        <a href="/study/hcp-young-adult">HCP Young Adult</a>
+                      </li>
+                                                      </ul>
+              </li>
+
+                            <li class="dropdown-submenu">
+                <a href="/lifespan-studies" role="button">Lifespan Connectome Data</a>
+                <ul class="dropdown-menu" role="menu">
+
+                                                            <li>
+                        <a href="/study/hcp-lifespan-aging">HCP Aging / Aging Adult Brain Connectome (AABC)</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/hcp-lifespan-development">HCP Development</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/lifespan-baby-connectome-project">Lifespan Baby Connectome Project</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/lifespan-developing-human-connectome-project">Lifespan Developing Human Connectome Project</a>
+                      </li>
+                                                      </ul>
+              </li>
+
+                            <li class="dropdown-submenu">
+                <a href="/disease-studies" role="button">Connectomes Related To Human Disease</a>
+                <ul class="dropdown-menu" role="menu">
+
+                                                            <li>
+                        <a href="/study/alzheimers-disease-connectome-project">Alzheimer&#039;s Disease Connectome Project</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/amish-connectome-project">Amish Connectome Project</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/connectomes-related-anxiety-depression">BANDA: Connectomes Related to Anxiety &amp; Depression</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/changes-visual-cortical-connectivity-following-central-visual-field-loss">Changes in Visual Cortical Connectivity Following Central Visual Field Loss</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/connectomic-imaging-familial-sporadic-frontotemporal-degeneration">Connectomic Imaging in Familial &amp; Sporadic Frontotemporal Degeneration</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/connectomics-brain-aging-and-dementia">Connectomics in Brain Aging and Dementia</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/crhd-dimensional-connectomics-anxious-misery">Dimensional Connectomics of Anxious Misery</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/epilepsy-connectome-project">Epilepsy Connectome Project</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/human-connectome-project-for-early-psychosis">Human Connectome Project for Early Psychosis</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/crhd-human-connectomes-low-vision-blindness-and-sight-restoration">Human Connectomes for Low Vision, Blindness, and Sight Restoration</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/crhd-mapping-connectomes-disordered-mental-states">Mapping Connectomes for Disordered Emotional States (HCP-DES)</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/crhd-neural-disconnection-errant-visual-perception-psychotic-psychopathology">Neural Disconnection &amp; Errant Visual Perception in Psychotic Psychopathology</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/crhd-perturbation-treatment-resistant-depression-connectome-fast-acting-therapies">Perturbation of the Treatment of Resistant Depression Connectome by Fast-Acting Therapies (PDC)</a>
+                      </li>
+                                                                                <li>
+                        <a href="/study/structural-functional-connectome-across-ad-subtypes">The Structural &amp; Functional Connectome across AD Subtypes</a>
+                      </li>
+                                                      </ul>
+              </li>
+
+                            <li class="dropdown-submenu">
+                <a href="/related-studies" role="button">Related Connectome Studies</a>
+                <ul class="dropdown-menu" role="menu">
+
+                                                            <li>
+                        <a href="/study/dual-mechanisms-cognitive-control">Dual Mechanisms of Cognitive Control</a>
+                      </li>
+                                                      </ul>
+              </li>
+
+              
+                      </ul>
+        </li>
+
+                    <li class="dropdown">
+            <a href="https://www.humanconnectome.org/software" class="dropdown-toggle" data-toggle="dropdown" role="button"
+               aria-expanded="false">Software &nbsp;<i class="fa fa-angle-down"></i></a>
+
+            <ul class="dropdown-menu" role="menu">
+                
+  <li>
+        <a href="https://www.humanconnectome.org/software/connectome-workbench" role="button">Connectome Workbench</a>
+      </li>
+
+
+  <li>
+        <a href="https://www.humanconnectome.org/software/get-connectome-workbench" role="button">Download Connectome Workbench</a>
+      </li>
+
+
+  <li>
+        <a href="https://www.humanconnectome.org/software/workbench-command" role="button">Workbench Command</a>
+      </li>
+
+
+  <li>
+        <a href="https://www.humanconnectome.org/software/hcp-mr-pipelines" role="button">HCP MR Pipelines</a>
+      </li>
+
+
+  <li>
+        <a href="https://www.humanconnectome.org/software/hcp-meg-pipelines" role="button">HCP MEG Pipelines</a>
+      </li>
+
+
+  <li>
+        <a href="https://www.humanconnectome.org/software/connectomedb" role="button">Using ConnectomeDB</a>
+      </li>
+
+            </ul>
+        </li>
+                <li>
+            <a href="https://db.humanconnectome.org/" role="button">ConnectomeDB</a>
+        </li>
+                <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+               aria-expanded="false">Resources &nbsp;<i class="fa fa-angle-down"></i></a>
+
+            <ul class="dropdown-menu" role="menu">
+                
+  <li>
+        <a href="https://www.humanconnectome.org/tutorials" role="button">Tutorials</a>
+      </li>
+
+
+  <li>
+        <a href="/hcp-protocols" role="button">HCP-style Protocols</a>
+      </li>
+
+
+  <li>
+        <a href="https://humanconnectome.github.io/HCP-Wiki/" role="button" target="_blank">CCF Wiki</a>
+      </li>
+
+            </ul>
+        </li>
+                <li class="dropdown">
+            <a href="/news" class="dropdown-toggle" data-toggle="dropdown" role="button"
+               aria-expanded="false">News &amp; Events &nbsp;<i class="fa fa-angle-down"></i></a>
+
+            <ul class="dropdown-menu" role="menu">
+                
+  <li>
+        <a href="/news" role="button">Latest News</a>
+      </li>
+
+
+  <li>
+        <a href="https://store.humanconnectome.org/courses" role="button" target="_blank">HCP Courses</a>
+      </li>
+
+            </ul>
+        </li>
+                <li class="dropdown">
+            <a href="https://www.humanconnectome.org/about-ccf" class="dropdown-toggle" data-toggle="dropdown" role="button"
+               aria-expanded="false">About CCF &nbsp;<i class="fa fa-angle-down"></i></a>
+
+            <ul class="dropdown-menu" role="menu">
+                
+  <li>
+        <a href="https://www.humanconnectome.org/about-ccf" role="button">CCF Overview</a>
+      </li>
+
+
+  <li>
+        <a href="https://www.humanconnectome.org/ccf-services" role="button">CCF Services</a>
+      </li>
+
+
+  <li>
+        <a href="https://www.humanconnectome.org/contact-us" role="button">Contact Us</a>
+      </li>
+
+            </ul>
+        </li>
+                <li>
+            <a href="https://www.humanconnectome.org/ccf-staff" role="button">CCF Staff</a>
+        </li>
+    
+        <li class="navbar-search-toggle">
+          <a href="#"><i class="fa fa-search"></i></a>
+        </li>
+
+      </ul>
+      <gcse:search></gcse:search>
+
+    </div>
+  </div>
+</nav>
+<div class="modal fade" id="gsModal" tabindex="-1" role="dialog" aria-labelledby="google_search_modal"></div>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 study-header-wrapper">
+  <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+    <div class="row">
+      <h1 class="study-title" onclick="window.location.assign('/study/hcp-young-adult')">HCP Young Adult</a></h1>
+    </div>
+  </div>
+
+  <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 study-header-info">
+    <div class="row">
+
+      <div class="btn-group pull-right header-get-data">
+
+                        
+      
+      </div>
+    </div>
+
+  </div>
+</div>
+  </div>
+</div>
+
+<div class="navbar collapse navbar-collapse" id="navbar-ex-collapse-2">
+    <div class="container">
+        <div class="row">
+                                                            
+                                                
+                                                                                
+                                                            
+                                                                                                                                    
+                                                                                                
+                                                                                                
+                                                            
+                                                                                                                                    
+                                                                                                
+                                                            
+                                                                                                                                    
+                                                                                                
+                                                                                                
+                                                            
+                                                                                                
+                                                                                                                                    
+                                                                                                
+                                                                                                
+                                                            
+                                                                                                                                    
+                                                            
+                                                                                                                                    
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                            
+                                                                                                                                    
+                                                                                                
+                                                                                                
+                                                            
+                                                                                                                                    
+                                                                                                
+                                                                                                
+                                                                                                
+                                                            
+                                                                                                                                    
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                            
+
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+
+            <ul class="nav navbar-nav desktop-subnavigation">
+                <li><a href="/study/hcp-young-adult" class="desktop-subnav-link">Study Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle desktop-subnav-link" data-toggle="dropdown" role="button"
+                       aria-expanded="false">About This Study &nbsp;<i class="fa fa-angle-down"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <a href="/study/hcp-young-adult/overview" class="">Study Overview &amp; Components</a>
+                        </li>
+
+                                                <li>
+                            <a href="/study/hcp-young-adult/investigators" class="">Investigators</a>
+                        </li>
+                        
+                                                  <li>
+                            <a href="/study/hcp-young-adult/operational-teams" class="">Operational Teams</a>
+                          </li>
+                        
+                                                <li>
+                            <a href="/study/hcp-young-adult/advisors" class="">External Advisory Panel</a>
+                        </li>
+                        
+                                                <li>
+                            <a href="/study/hcp-young-adult/publications" class="">Publications</a>
+                        </li>
+                        
+                                                <li>
+                            <a href="/study/hcp-young-adult/project-protocols" class="">Study Protocols</a>
+                        </li>
+                        
+                        <li>
+                            <a href="/study/hcp-young-adult/news" class="">News</a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                
+                                <li class="dropdown">
+                    <a href="/study/hcp-young-adult/data-releases" class="dropdown-toggle desktop-subnav-link" data-toggle="dropdown" role="button"
+                       aria-expanded="false">Data &nbsp;<i class="fa fa-angle-down"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                                                <li>
+                            <a href="/study/hcp-young-adult/data-releases" class="" role="button">Data Releases</a>
+                        </li>
+                        
+                                                    <li>
+                                <a href="/study/hcp-young-adult/data-use-terms" class="" role="button">Data Use Terms</a>
+                            </li>
+                        
+                        
+                        
+                                            </ul>
+                </li>
+                
+                                <li>
+                    <a href="/study/hcp-young-adult/documentation" class="desktop-subnav-link">Documentation</a>
+                </li>
+                
+                                <li>
+                    <a href="/study/hcp-young-adult/contact" class="desktop-subnav-link">Contact</a>
+                </li>
+                
+            </ul>
+
+            <ul class="nav navbar-nav mobile-subnavigation">
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle first" data-toggle="dropdown" role="button"
+                       aria-expanded="false">About &nbsp;<i class="fa fa-angle-down"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li>
+                            <a href="/study/hcp-young-adult" class="">Study Home</a>
+                        </li>
+                        <li>
+                            <a href="/study/hcp-young-adult/overview" class="">Study Overview &amp; Components</a>
+                        </li>
+                        
+                                                    <li>
+                                <a href="/study/hcp-young-adult/investigators" class="">Investigators</a>
+                            </li>
+                        
+                                                    <li>
+                                <a href="/study/hcp-young-adult/advisors" class="">External Advisory Panel</a>
+                            </li>
+                        
+                                                    <li>
+                                <a href="/study/hcp-young-adult/publications" class="">Publications</a>
+                            </li>
+                        
+                                                    <li>
+                                <a href="/study/hcp-young-adult/project-protocols" class="">Study Protocols</a>
+                            </li>
+                        
+                        <li>
+                            <a href="/study/hcp-young-adult/news" class="">News</a>
+                        </li>
+
+                    </ul>
+                </li>
+
+
+
+
+                                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-expanded="false">Data &nbsp;<i class="fa fa-angle-down"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                                                    <li>
+                                <a href="/study/hcp-young-adult/data-releases" class="" role="button">Data Releases</a>
+                            </li>
+                        
+                                                    <li>
+                                <a href="/study/hcp-young-adult/data-use-terms" class="" role="button">Data Use Terms</a>
+                            </li>
+                        
+                        
+                        
+                                            </ul>
+                </li>
+                
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                       aria-expanded="false" data-submenu>More &nbsp;<i class="fa fa-angle-down"></i>
+                    </a>
+
+                    <ul class="dropdown-menu" role="menu">
+                                                    <li>
+                                <a href="/study/hcp-young-adult/documentation" class="desktop-subnav-link">Documentation</a>
+                            </li>
+                        
+                                                    <li>
+                                <a href="/study/hcp-young-adult/contact">Contact</a>
+                            </li>
+                        
+                        
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container">
+  <div class="row">
+                
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bredcrumbs">
+        <ul>
+            <li><a href="/"><strong> &gt;&gt; </strong></a>&nbsp;</li>             <li><a href="/study/hcp-young-adult"><strong>Healthy Adult Studies</strong></a>&nbsp;</li>             <li><a href="/study/hcp-young-adult">HCP Young Adult</a></li>
+                        <li class="active">
+                Documentation Detail
+            </li>
+        </ul>
+    </div>
+
+    <div class="content-default">
+
+  <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 col-md-offset-1">
+
+    <div class="row">
+      <div class="news-detail docs-detail">
+  <h1>WU-Minn HCP Consortium Open Access Data Use Terms</h1>
+
+      <div class="news-publish-date"><strong>Release Date</strong>: Apr 26, 2013</div>
+    <div class="news-author doc-type"><strong>Type</strong>: Software</div>
+
+  <div class="news-content">
+    <p>I request access to data collected by the Washington University - University of Minnesota Consortium of the Human Connectome Project (WU-Minn HCP), and I agree to the following:</p>
+
+<ol>
+	<li>I will not attempt to establish the identity of or attempt to contact any of the included human subjects.</li>
+	<li>I understand that under no circumstances will the code that would link these data to Protected Health Information be given to me, nor will any additional information about individual human subjects be released to me under these Open Access Data Use Terms.</li>
+	<li>I will comply with all relevant rules and regulations imposed by my institution. This may mean that I need my research to be approved or declared exempt by a committee that oversees research on human subjects, e.g. my IRB or Ethics Committee. The released HCP data are not considered de-identified, insofar as certain combinations of HCP Restricted Data (available through a separate process) might allow identification of individuals. &nbsp;Different committees operate under different national, state and local laws and may interpret regulations differently, so it is important to ask about this. If needed and upon request, the HCP will provide a certificate stating that you have accepted the HCP Open Access Data Use Terms.</li>
+	<li>I may redistribute original WU-Minn HCP Open Access data and any derived data as long as the data are redistributed under these same Data Use Terms.</li>
+	<li>I will acknowledge the use of WU-Minn HCP data and data derived from WU-Minn HCP data when publicly presenting any results or algorithms that benefitted from their use.
+
+		<ol>
+			<li>Papers, book chapters, books, posters, oral presentations, and all other printed and digital presentations of results derived from HCP data should contain the following wording in the acknowledgments section: "Data were provided [in part] by the Human Connectome Project, WU-Minn Consortium (Principal Investigators: David Van Essen and Kamil Ugurbil; 1U54MH091657) funded by the 16 NIH Institutes and Centers that support the NIH Blueprint for Neuroscience Research; and by the McDonnell Center for Systems Neuroscience at Washington University."</li>
+			<li>Authors of publications or presentations using WU-Minn HCP data should cite relevant publications describing the methods used by the HCP to acquire and process the data. The specific publications that are appropriate to cite in any given study will depend on what HCP data were used and for what purposes. An annotated and appropriately up-to-date list of publications that may warrant consideration is available at
+				<a href="http://www.humanconnectome.org/about/acknowledgehcp.html"></a><a href="/study/hcp-young-adult/document/hcp-citations">http://www.humanconnectome.org/about/acknowledgehcp.html</a></li>
+			<li>The WU-Minn HCP Consortium as a whole should not be included as an author of publications or presentations if this authorship would be based solely on the use of WU-Minn HCP data.</li>
+		</ol>
+	</li>
+	<li>Failure to abide by these guidelines will result in termination of my privileges to access WU-Minn HCP data.</li>
+</ol>
+  </div>
+</div>
+
+    </div>
+
+  </div>
+
+  <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12 col-md-offset-1 col-sm-offset-1 sb-wrapper">
+  	<div class="row">
+      
+
+
+    <aside class="custom-sidebar">
+        <div class="sidebar-wrapper">
+            <h3>Sign up for Open Access Data</h3>
+
+            <div class="sidebar-content">
+                <p><img src="/storage/app/media/art/icon-signature.png" height="205" alt="Sign terms" class="fr-dii fr-draggable" style="width: 256px;"></p>
+
+<p>Create a free account at <strong><a href="https://db.humanconnectome.org/" target="_blank">db.humanconnectome.org</a></strong></p>
+
+<p>Terms updated Apr 26, 2013.
+	<br><a href="/study/hcp-young-adult/document/wu-minn-hcp-consortium-open-access-data-use-terms">View online</a> | <a class="fr-file" href="/storage/app/media/data_use_terms/DataUseTerms-HCP-Open-Access-26Apr2013.pdf">Download PDF</a></p>
+            </div>
+
+                    </div>
+    </aside>
+
+    <aside class="custom-sidebar">
+        <div class="sidebar-wrapper">
+            <h3>Data Use Resources</h3>
+
+            <div class="sidebar-content">
+                <p>Need help using HCP data?</p>
+
+<ul>
+	<li><a href="/contact-us">Sign up for the HCP-Users email forum</a></li>
+	<li><a href="https://wiki.humanconnectome.org/docs/HCP%20Users%20FAQ.html" rel="noopener noreferrer" target="_blank">HCP-Users FAQ</a></li>
+	<li><a href="https://wiki.humanconnectome.org/docs/MEG%20Data%20FAQ.html" rel="noopener noreferrer" target="_blank">MEG Data FAQ</a></li>
+	<li><a href="https://wiki.humanconnectome.org/docs/HCP-YA%20Data%20Dictionary-%20Updated%20for%20the%201200%20Subject%20Release.html" rel="noopener noreferrer" target="_blank">HCP Data Dictionary for Behavioral and Individual Difference Measures</a></li>
+	<li><a href="https://wiki.humanconnectome.org" rel="noopener noreferrer" target="_blank">HCP Data Public Resources Wiki</a></li>
+	<li><a href="/study/hcp-young-adult/document/hcp-citations">How to Cite HCP Data Use</a>
+		<br>
+	</li>
+</ul>
+            </div>
+
+                    </div>
+    </aside>
+
+    <aside class="custom-sidebar">
+        <div class="sidebar-wrapper">
+            <h3>Apply for Restricted Data</h3>
+
+            <div class="sidebar-content">
+                <p><img src="/storage/app/media/uploaded-files/icon-signature-red.png" alt="Sign terms" class="fr-dii" style="width: 256px;" data-result="success" height="205"></p>
+
+<p><strong>Download the Restricted Data Use Terms and application.</strong></p>
+
+<p>Terms updated Feb 11, 2022
+	<br><a href="/study/hcp-young-adult/document/restricted-data-usage">Usage overview</a> | <a href="/study/hcp-young-adult/document/wu-minn-hcp-consortium-restricted-data-use-terms">View terms online</a>&nbsp;
+	<br><a class="fr-file" href="/storage/app/media/data_use_terms/DataUseTerms_HCP_RestrictedAccess_11Feb2022.pdf">Download PDF Application</a>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href="https://powerforms.docusign.net/529d1170-118c-4736-8ed9-f2b5c7e4d359?env=na3&amp;acct=600054d6-8634-4a0d-9bc7-6aa8c5c97d49&amp;accountId=600054d6-8634-4a0d-9bc7-6aa8c5c97d49">Fill out Electronic Application</a></p>
+
+<p>
+	<br>
+</p>
+            </div>
+
+                    </div>
+    </aside>
+
+
+
+
+
+
+      
+
+
+    <aside class="custom-sidebar">
+        <div class="sidebar-wrapper">
+            <h3>Understanding the Mound and Moat Effect</h3>
+
+            <div class="sidebar-content">
+                <p><img class="fr-dib fr-draggable" src="/storage/app/media/art/mound-and-moat.jpg" style="width: 230px;"></p>
+
+<p>
+	<br>What to do if you see an unusual ring of lower or negative correlation in seed-based group connectivity data.<span>&nbsp;</span><a href="/study/hcp-young-adult/document/mound-and-moat"><strong>Documentation</strong></a>.</p>
+            </div>
+
+                    </div>
+    </aside>
+
+    <aside class="custom-sidebar">
+        <div class="sidebar-wrapper">
+            <h3>More Useful Documentation</h3>
+
+            <div class="sidebar-content">
+                <ul>
+	<li><a href="/software/get-connectome-workbench">Connectome Workbench Tutorial</a></li>
+	<li><a href="/study/hcp-young-adult/document/quick-reference-open-access-vs-restricted-data">Restricted Data vs Open Access Data: a Quick Reference Guide</a></li>
+	<li><a href="https://wiki.humanconnectome.org/display/PublicData/How+to+Access+Data+on+ConnectomeDB">ConnectomeDB Help</a></li>
+	<li><a href="/study/hcp-young-adult/overview">HCP Project Overview</a></li>
+</ul>
+            </div>
+
+                    </div>
+    </aside>
+
+
+
+
+
+
+    </div>
+  </div>
+
+</div>  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <footer>
+  <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12">
+    <div class="row">
+      <h2>
+        <img src="https://www.humanconnectome.org/themes/uar_washu/assets/images/NIH-logo-trans.png" alt="NIH-logo-trans.png" /> NIH Blueprint for Neuroscience Research
+      </h2>
+    </div>
+  </div>
+
+  <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12">
+    <div class="row">
+      <p>The Human Connectome Project and Connectome Coordination Facility are funded by the National Institutes of Health,
+        and all information in this site is available to the public domain. No Protected Health Information has been
+        published on this site. </p>
+    </div>
+  </div>
+
+  <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12">
+    <div class="row">
+      <ul class="footer-links">
+	<li><a data-target="#privacy-modal" data-toggle="modal" href="#">Privacy Statement</a></li>
+	<li>   <li><a href="/sitemap">Site Map</a></li>
+  <li><a href="/contact-us">Contact Us</a></li>
+ </li>
+</ul>    </div>
+  </div>
+
+</footer>  </div>
+</div>
+
+<!-- privacy statement -->
+<div id="privacy-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Privacy Statement for the Human Connectome Project and Connectome Coordination Facility</h4>
+            </div>
+            <div class="modal-body">
+                <h2>Privacy Statement</h2>
+                <p>The member universities of the Human Connectome Project take privacy very seriously, whether dealing with participant data or the data of those visiting this website. </p>
+                <p>The participant data from our research into the Human Connectome that is stored in our XNAT server is de-identified, and contains no personal health information (PHI). </p>
+                <p>Our website collects names and email addresses via our contact form. This information is used solely by the administrators and members of the HCP website and is not shared, traded or sold to third parties under any circumstances. </p>
+                <p>Our website may also collect non-personal data about site visits, sessions, and IP addresses. This information is only used for diagnostic or debugging purposes, to help us optimize our website's performance, and is not shared externally. This is a standard practice for most websites, and this data is never linked with personally identifiable information. </p>
+                <p>This website contains links to other websites whose content we think is relevant. However, the HCP website is not responsible for maintaining or updating the content of these other sites. If any of these sites are found to contain irrelevant or offensive information, please <a href="/contact-us">contact us</a>. </p>
+                <p>By using humanconnectome.org, you signify your agreement to our privacy policy as stated above. Note that this policy may be revised periodically without notice. Please re-read this policy prior to submitting any personal information if you have concerns about how your information is being collected and used.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://www.humanconnectome.org/combine/4378bf6f3e443b6ebb03f4de58920346-1519368461"></script>
+
+<script type="text/javascript" src="https://www.humanconnectome.org/themes/uar_washu/assets/js/app.js"></script>
+<script type="text/javascript" src="https://www.humanconnectome.org/themes/uar_washu/assets/js/lightGallery.min.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-18630139-1"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-18630139-1');
+</script>
+
+
+<script src="/modules/system/assets/js/framework.js"></script>
+<script src="/modules/system/assets/js/framework.extras.js"></script>
+<link rel="stylesheet" property="stylesheet" href="/modules/system/assets/css/framework.extras.css">
+
+<script src="https://www.humanconnectome.org/plugins/uardev/contactform/assets/js/jquery-validation/dist/jquery.validate.js"></script>
+<script src="https://www.humanconnectome.org/plugins/uardev/contactform/assets/js/app.js"></script>
+</body>
+</html>

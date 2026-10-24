@@ -1,0 +1,155 @@
+{
+  "verifiedAt": "2026-10-25",
+  "figures": [
+    {
+      "referenceId": "cichy2014",
+      "figureId": "F1",
+      "label": {
+        "zh": "图 1",
+        "en": "Figure 1"
+      },
+      "caption": {
+        "zh": "MEG 图像解码的流程和随时间变化的可区分信息。",
+        "en": "MEG image-decoding workflow and time-varying discriminability."
+      },
+      "license": "Nature author-manuscript terms; link only",
+      "licenseUrl": "https://www.nature.com/authors/editorial_policies/license.html#terms",
+      "pmcid": "PMC4261693",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4261693/#F1",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4261693/#F1",
+      "canEmbed": false,
+      "verifiedAt": "2026-10-25",
+      "verification": {
+        "source": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4261693/fullTextXML",
+        "sha256": "a5ce52751ff71137fd43cffab763d097cb4dff71a0f56789def22be524908bc6",
+        "retrievedAt": "2026-10-24T19:37:53.981Z"
+      },
+      "verificationScope": "Figure identifier, article identity and article license checked in source XML; captions are short editorial paraphrases. No figure asset is redistributed."
+    },
+    {
+      "referenceId": "cichy2014",
+      "figureId": "F4",
+      "label": {
+        "zh": "图 4",
+        "en": "Figure 4"
+      },
+      "caption": {
+        "zh": "比较 MEG 的时间表征与 V1、IT 的 fMRI 表征相似性。",
+        "en": "Comparison of time-resolved MEG representations with fMRI representations in V1 and IT."
+      },
+      "license": "Nature author-manuscript terms; link only",
+      "licenseUrl": "https://www.nature.com/authors/editorial_policies/license.html#terms",
+      "pmcid": "PMC4261693",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4261693/#F4",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4261693/#F4",
+      "canEmbed": false,
+      "verifiedAt": "2026-10-25",
+      "verification": {
+        "source": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4261693/fullTextXML",
+        "sha256": "a5ce52751ff71137fd43cffab763d097cb4dff71a0f56789def22be524908bc6",
+        "retrievedAt": "2026-10-24T19:37:53.981Z"
+      },
+      "verificationScope": "Figure identifier, article identity and article license checked in source XML; captions are short editorial paraphrases. No figure asset is redistributed."
+    },
+    {
+      "referenceId": "herbet2018",
+      "figureId": "F2",
+      "label": {
+        "zh": "图 2",
+        "en": "Figure 2"
+      },
+      "caption": {
+        "zh": "下纵束的候选功能通路综述图；作者将其标为假说性示意。",
+        "en": "A review schematic of proposed ILF functional pathways, explicitly presented as putative."
+      },
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "pmcid": "PMC6156142",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6156142/#F2",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6156142/#F2",
+      "canEmbed": false,
+      "verifiedAt": "2026-10-25",
+      "verification": {
+        "source": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6156142/fullTextXML",
+        "sha256": "d2c6baa5b263094e383f8c2287a008a40a030b0e96955da5f42443a0632fa9f3",
+        "retrievedAt": "2026-10-24T19:38:07.164Z"
+      },
+      "verificationScope": "Figure identifier, article identity and article license checked in source XML; captions are short editorial paraphrases. No figure asset is redistributed."
+    },
+    {
+      "referenceId": "romano2019",
+      "figureId": "Fig1",
+      "label": {
+        "zh": "图 1",
+        "en": "Figure 1"
+      },
+      "caption": {
+        "zh": "正常颅神经脑池段的多幅 MRI 图像，覆盖不同神经对。",
+        "en": "MRI panels of normal cisternal cranial-nerve segments across different nerve pairs."
+      },
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "pmcid": "PMC6420596",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6420596/#Fig1",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6420596/#Fig1",
+      "canEmbed": false,
+      "verifiedAt": "2026-10-25",
+      "verification": {
+        "source": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6420596/fullTextXML",
+        "sha256": "3f603a11248fe52bbd7b9299266d44ceec94fde8bff0dda4cf5708414105ba67",
+        "retrievedAt": "2026-10-24T19:40:04.061Z"
+      },
+      "verificationScope": "Figure identifier, article identity and article license checked in source XML; captions are short editorial paraphrases. No figure asset is redistributed."
+    },
+    {
+      "referenceId": "romano2019",
+      "figureId": "Fig3",
+      "label": {
+        "zh": "图 3",
+        "en": "Figure 3"
+      },
+      "caption": {
+        "zh": "颅神经运动、感觉与自主核群的纵向组织示意。",
+        "en": "A schematic of longitudinal motor, sensory and autonomic cranial-nerve nuclear organization."
+      },
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "pmcid": "PMC6420596",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6420596/#Fig3",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6420596/#Fig3",
+      "canEmbed": false,
+      "verifiedAt": "2026-10-25",
+      "verification": {
+        "source": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC6420596/fullTextXML",
+        "sha256": "3f603a11248fe52bbd7b9299266d44ceec94fde8bff0dda4cf5708414105ba67",
+        "retrievedAt": "2026-10-24T19:40:04.061Z"
+      },
+      "verificationScope": "Figure identifier, article identity and article license checked in source XML; captions are short editorial paraphrases. No figure asset is redistributed."
+    },
+    {
+      "referenceId": "seghier2013",
+      "figureId": "fig2-1073858412440596",
+      "label": {
+        "zh": "图 2",
+        "en": "Figure 2"
+      },
+      "caption": {
+        "zh": "角回相关白质联系的简化综述示意；不表示精确通路范围。",
+        "en": "A simplified review schematic of angular-gyrus white-matter connections, not their exact extent."
+      },
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "pmcid": "PMC4107834",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4107834/#fig2-1073858412440596",
+      "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4107834/#fig2-1073858412440596",
+      "canEmbed": false,
+      "verifiedAt": "2026-10-25",
+      "verification": {
+        "source": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4107834/fullTextXML",
+        "sha256": "21c20095c2dca9ac557b2efc245e976cf0bfbb6ade3a100f21d174ba44754921",
+        "retrievedAt": "2026-10-24T19:40:07.423Z"
+      },
+      "verificationScope": "Figure identifier, article identity and article license checked in source XML; captions are short editorial paraphrases. No figure asset is redistributed."
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "checked": "2026-10-25",
+  "files": [
+    {
+      "scope": "CBIG-provided component; does not replace upstream data terms",
+      "file": "CBIG-MIT.txt",
+      "bytes": 1084,
+      "sha256": "0e38f0e8b304f13de2ce2911320faaa08ced178e031d3bbebc3e4769762e5f50",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/LICENSE.md"
+    },
+    {
+      "scope": "MGH software and data rights expressly licensed under Part B; third-party rights preserved",
+      "file": "FreeSurfer-Software-License-2011.txt",
+      "bytes": 10297,
+      "sha256": "632d404ea17b9101d9ac87cf8f09e651d18eb20d2cc0ba8dbee77e85b8516307",
+      "url": "https://raw.githubusercontent.com/freesurfer/freesurfer/dev/LICENSE.txt"
+    },
+    {
+      "scope": "Current FSL main license and named atlas-specific terms",
+      "file": "FSL-license-20261025.html.txt",
+      "bytes": 95772,
+      "sha256": "1260bd30fdff9fe1e750a76a7cb1b1129ea549cba9ae55fed021ad6bb9b08742",
+      "url": "https://fsl.fmrib.ox.ac.uk/fsl/docs/license.html"
+    },
+    {
+      "scope": "License included with source FSL 5.0.1 mirror; text itself identifies Release 4.1 (c) 2008",
+      "file": "FSL-5.0.1-license.html.txt",
+      "bytes": 5107,
+      "sha256": "cc1d18954e7412fdf291f3c48131ee34953ed3bc2f1f45eee4b66195b253d1aa",
+      "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/doc/fsl/licence.html"
+    },
+    {
+      "scope": "Full Creative Commons license legal text",
+      "file": "CC-BY-SA-4.0.txt",
+      "bytes": 20138,
+      "sha256": "28a9529c7d0bb4dc51f4bf5c116a3d16ef247a052f7591466768ddf563fd1cf5",
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/legalcode.txt"
+    },
+    {
+      "scope": "Exact source template 2009aAsym license retained by TemplateFlow",
+      "file": "MNI-2009a-TemplateFlow-LICENSE.txt",
+      "bytes": 682,
+      "sha256": "46e280fe1a24c6f37feef2445ed288435e0ad063504a06030b206b12fdd2629d",
+      "url": "https://raw.githubusercontent.com/templateflow/tpl-MNI152NLin2009aAsym/7a07138ba04c9e7289637a7a9221dd34535748df/LICENSE"
+    },
+    {
+      "scope": "Template identity only; See LICENSE file metadata is not treated as an independent permission grant",
+      "file": "MNI152NLin6Asym-template-license-metadata.json",
+      "bytes": 1850,
+      "sha256": "4ae55cb140b6f3c38f5e48d50931d599c3bec49750173d8e2a589104e15acb07",
+      "url": "https://raw.githubusercontent.com/templateflow/tpl-MNI152NLin6Asym/master/template_description.json"
+    }
+  ],
+  "derivedNotices": [
+    {
+      "operation": "Extracted preformatted license text, HTML tags removed and entities decoded; no license wording rewritten",
+      "derivedFrom": "FSL-license-20261025.html.txt",
+      "file": "FSL-License-current.txt"
+    },
+    {
+      "operation": "Extracted preformatted license text, HTML tags removed and entities decoded; no license wording rewritten",
+      "derivedFrom": "FSL-5.0.1-license.html.txt",
+      "file": "FSL-License-bundled-5.0.1.txt"
+    },
+    {
+      "operation": "All of Part B with the introductory notice required by B1(b)",
+      "derivedFrom": "FreeSurfer-Software-License-2011.txt",
+      "file": "FreeSurfer-Part-B-NOTICE.txt"
+    }
+  ],
+  "purpose": "Noncommercial public teaching distribution; source-specific conditions remain separate"
+}

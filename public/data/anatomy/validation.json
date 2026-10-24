@@ -1,0 +1,421 @@
+{
+  "passed": true,
+  "checkedAt": "2026-10-24T19:29:59.027Z",
+  "realStructureCount": 67,
+  "pam50Meshes": 36,
+  "hcp1065Bundles": 31,
+  "cranialNerveBundles": 10,
+  "spinalLevels": 30,
+  "transformedStreamlinePoints": 283000,
+  "checkedFiles": 150,
+  "roundTripMm": {
+    "median": 0.007976511045706762,
+    "percentile95": 0.03622370446140094,
+    "max": 0.26553710301840194
+  },
+  "scope": "File integrity, finite and consistent geometry, source hashes, coordinate metadata, laterality, coverage and recorded registration QA. This is not individual anatomical validation.",
+  "structures": [
+    {
+      "id": "spinal-C1",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-C1.json",
+      "sha256": "e7b0115f66739e0e9d0a10774ff21f374392849c8aac67e43954c72e8e6fb8e7"
+    },
+    {
+      "id": "spinal-C2",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-C2.json",
+      "sha256": "f41e36450405d372007c2ee82c0ef45ccb4b37ec5deacfd469c35aa51e9117fc"
+    },
+    {
+      "id": "spinal-C3",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-C3.json",
+      "sha256": "aaa52a3129999b4da7e9521d693a62830b97ba0a296a72f420ff6e34bec4e087"
+    },
+    {
+      "id": "spinal-C4",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-C4.json",
+      "sha256": "dc423930f141695f2ed0ba74fc8abb62ced7fb84757903deb7a36ce124b5f8d9"
+    },
+    {
+      "id": "spinal-C5",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-C5.json",
+      "sha256": "1e99dbdf45b7401745fe5e2da18ea949ff78958d728a37f256d63dba13950970"
+    },
+    {
+      "id": "spinal-C6",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-C6.json",
+      "sha256": "01361b1b983776fc8cd82b3cbfea28205fc6168e2ddb9e1405cc14d5432f5c3f"
+    },
+    {
+      "id": "spinal-C7",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-C7.json",
+      "sha256": "0b402950222d54a3d6216fef8cb79c5cdeea4ca12bb5dce9edb52dad972a0d25"
+    },
+    {
+      "id": "spinal-C8",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-C8.json",
+      "sha256": "bd56c3ebf535b30860ed5dca1af9a95d92ca5f5011f305f11c34cf8e2da1b278"
+    },
+    {
+      "id": "spinal-T1",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T1.json",
+      "sha256": "5667a50b3b45bbe3a4d49adf85be9c03beb927354f9a66247899095233b7a6e5"
+    },
+    {
+      "id": "spinal-T2",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T2.json",
+      "sha256": "4d6d0f0c774b3e79ffc00374e8bbf1145521e268d93afd9014acb39a72009fae"
+    },
+    {
+      "id": "spinal-T3",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T3.json",
+      "sha256": "5e5002c9cd7c9361c234642ba00700f7341a10244f950e5dc6d12dcf01c94cce"
+    },
+    {
+      "id": "spinal-T4",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T4.json",
+      "sha256": "7acbf6261af558019cc72ee9f94553e704c978564be1ad285695d94efedd1d2a"
+    },
+    {
+      "id": "spinal-T5",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T5.json",
+      "sha256": "5077238215067f3fd2da6eb7166c338f6433168627367cdf81d4768f17523a87"
+    },
+    {
+      "id": "spinal-T6",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T6.json",
+      "sha256": "fd0510761cc05e221e13594b9e78d60fcf395428feaa744fd642646bfd7f6912"
+    },
+    {
+      "id": "spinal-T7",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T7.json",
+      "sha256": "60c492dc7e7664b3cdbd723b010f9e93bbe1e54a61f02448c750d5e01339c85a"
+    },
+    {
+      "id": "spinal-T8",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T8.json",
+      "sha256": "00235f68749729899fe2ef2b0dbcdddeb4f88fea41c098b30af202c82a3b1e24"
+    },
+    {
+      "id": "spinal-T9",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T9.json",
+      "sha256": "b395ed21545a0fe6e3f184facd222d90b23a06e2d0c99bc93d2cee811f66e22b"
+    },
+    {
+      "id": "spinal-T10",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T10.json",
+      "sha256": "c10e4208584b1ad018ad88e601d1778fed12519bbf4e49630d1a277442eb5f47"
+    },
+    {
+      "id": "spinal-T11",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T11.json",
+      "sha256": "e08b8c145d59b521e439cc809532766a4e844530f0f96c56d3326c2a7f31fe7f"
+    },
+    {
+      "id": "spinal-T12",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-T12.json",
+      "sha256": "07387622f7be5d11c977ae9488f100ac8b7d1463301bee6bb462c59d2c29da5e"
+    },
+    {
+      "id": "spinal-L1",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-L1.json",
+      "sha256": "f272a30126376c99f026956ea7cc5a5dc1a4621a535a3aad5e2340100fa479c1"
+    },
+    {
+      "id": "spinal-L2",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-L2.json",
+      "sha256": "7cd227b40fced28858fd5b276c5ef51c6d7864d7a19f8ffae0dec91182bbeaa7"
+    },
+    {
+      "id": "spinal-L3",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-L3.json",
+      "sha256": "095722318aa345f5afeabbd58f1ee7b8021891dc1b00f0ac47c4a028ed73b9a4"
+    },
+    {
+      "id": "spinal-L4",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-L4.json",
+      "sha256": "8abd32d8796fa810b9b6c013ea8b3457c87bd86cc464466ff1c679f5e40187b8"
+    },
+    {
+      "id": "spinal-L5",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-L5.json",
+      "sha256": "0b7b87a96c95aef6f3ba6860a9a13a891c19dca9feb5a3ef23ca84dba0cebaef"
+    },
+    {
+      "id": "spinal-S1",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-S1.json",
+      "sha256": "fd9e38bd1f2e4c3bc13208bcaabd942a48a48f41ad9230525307eefc9d9be71e"
+    },
+    {
+      "id": "spinal-S2",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-S2.json",
+      "sha256": "4db5da2de6803beccb5d235f2f2a36f9a61d4786f36a908e63ab3bb35b847014"
+    },
+    {
+      "id": "spinal-S3",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-S3.json",
+      "sha256": "3b2dafb6f0027ff2fee80799c255e2bd0d32fd5ad1cd383e7d9ecf2508eb3180"
+    },
+    {
+      "id": "spinal-S4",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-S4.json",
+      "sha256": "5d5349daab6772b169888b11e161d8d19efea90825bbbec0acc25f22627cd36b"
+    },
+    {
+      "id": "spinal-S5",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-S5.json",
+      "sha256": "6426f7947d60e765ca7d467f75961ae940101482f1953d476a67e3ccf75f9abf"
+    },
+    {
+      "id": "spinal-gray",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-spinal-gray.json",
+      "sha256": "144a255eaea648e805c3dd3b4ae074ea45de717bea84b11f64e55a6a9cdaa58a"
+    },
+    {
+      "id": "spinal-white",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-spinal-white.json",
+      "sha256": "4b1d294ef65a8f90f6b2eed27f34d968b9f988b66ee0a05ec76e306832da5f36"
+    },
+    {
+      "id": "spinal-anterior-horn-l",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-spinal-anterior-horn-l.json",
+      "sha256": "d2da260ed876a03782fe2ed5eaafc4a3c382f9c7e3f2e02360157eeb4f22843c"
+    },
+    {
+      "id": "spinal-anterior-horn-r",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-spinal-anterior-horn-r.json",
+      "sha256": "66f8b403f95fb4994a8e5c7c751c7b2fabf69f101aee468752b8f08bb92fa913"
+    },
+    {
+      "id": "spinal-posterior-horn-l",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-spinal-posterior-horn-l.json",
+      "sha256": "45d89e10219587a3e00f9a37f681c2bd871b7c29b12dd4704d8c3a743d93bb92"
+    },
+    {
+      "id": "spinal-posterior-horn-r",
+      "kind": "mesh",
+      "geometry": "/data/anatomy/pam-spinal-posterior-horn-r.json",
+      "sha256": "0e80632f2cc31050af4555ea481df8a139fef242fb1817986b5c2f9556b15b2a"
+    },
+    {
+      "id": "arcuate-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-arcuate-l.json",
+      "sha256": "ddecbbb419263b501a23aaf6d1890c930718a4d4e5203629c537302e23ca49ce"
+    },
+    {
+      "id": "arcuate-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-arcuate-r.json",
+      "sha256": "4d82269dba0836347c1af3faab1e1fa47083ebc6b46645734d2c43128599da72"
+    },
+    {
+      "id": "uncinate-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-uncinate-l.json",
+      "sha256": "dbe47e91a1373fc1a97ce0da16eca4898fe9e9df20b09f8db3609bd4505145a6"
+    },
+    {
+      "id": "uncinate-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-uncinate-r.json",
+      "sha256": "0f8b2ec44d4c5fe474a1a7a377cac8319cea4b1392f6e6cf874bff416e36dbf9"
+    },
+    {
+      "id": "inferior-longitudinal-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-inferior-longitudinal-l.json",
+      "sha256": "f2d7bfcfbade9b53f2c76f507cb0f16a248f85deb70c7e5acae654305b3f79ee"
+    },
+    {
+      "id": "inferior-longitudinal-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-inferior-longitudinal-r.json",
+      "sha256": "892427a34d2ea0be89fcc2edb6182674d7fd77166e75a112e0c517d57595890e"
+    },
+    {
+      "id": "inferior-fronto-occipital-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-inferior-fronto-occipital-l.json",
+      "sha256": "58ca779bbd7afddbccaceb7670b1cb44b53b7039c06c942fb8eab444d84256cc"
+    },
+    {
+      "id": "inferior-fronto-occipital-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-inferior-fronto-occipital-r.json",
+      "sha256": "d61fc73b456a0cb2095c12f26a90053da442386ac95dc6a5a48b5c477e47c6e3"
+    },
+    {
+      "id": "corticospinal-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-corticospinal-l.json",
+      "sha256": "4f74c637add0090c9f11c6a9ff2953fb2f0068c833aea34c0b8edd22e63f9381"
+    },
+    {
+      "id": "corticospinal-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-corticospinal-r.json",
+      "sha256": "cd6b095a29e3d740092f614dd9ab6c47cb7f040da774b2411c2a6ba75e4510d6"
+    },
+    {
+      "id": "fornix-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-fornix-l.json",
+      "sha256": "32f914f16836b73de8200dc4908708c6267dcce5c363c591c3243d71660ca122"
+    },
+    {
+      "id": "fornix-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-fornix-r.json",
+      "sha256": "e29803e59e91c4e2ef20e727b952510186b66979b11f2ee95bda52931dd06536"
+    },
+    {
+      "id": "medial-lemniscus-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-medial-lemniscus-l.json",
+      "sha256": "c1d6a633d155d9bd80b00ad8df84cd6c866f62873e888204de7c27a66b1f9347"
+    },
+    {
+      "id": "medial-lemniscus-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-medial-lemniscus-r.json",
+      "sha256": "89e20115e1bb96b9f5bb15e54021f09ce8d45dbaf6be58d0bfc6a1a22b1a5ca9"
+    },
+    {
+      "id": "optic-radiation-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-optic-radiation-l.json",
+      "sha256": "a0f6fcd4941693861fd21c32ab2b2bc217de1d85d67f748ba71b64d241bcc848"
+    },
+    {
+      "id": "optic-radiation-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-optic-radiation-r.json",
+      "sha256": "a89b037f35fc478ec41cdacb423dd651a6f00e0f4fd5e2a6f35afe74f9dd19de"
+    },
+    {
+      "id": "superior-longitudinal-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-superior-longitudinal-l.json",
+      "sha256": "0eb81e82eca2bc50b1a093aa02c393372bbb589a79d4cc833ff97dde7c514e5a"
+    },
+    {
+      "id": "superior-longitudinal-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-superior-longitudinal-r.json",
+      "sha256": "4842001cc6db54f3f2927232cb793c89d32cae612b449ead2b34025dd52487b5"
+    },
+    {
+      "id": "cingulum-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cingulum-l.json",
+      "sha256": "b7028e083fe17ccae8649d5359540cc60633da8b1ac21b7be7ae062609133c2b"
+    },
+    {
+      "id": "cingulum-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cingulum-r.json",
+      "sha256": "cbf86d6512733dcf133764ebb0a4e540679151fd8eea0dbc243424e5eb40124d"
+    },
+    {
+      "id": "cn-optic-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cn-optic-l.json",
+      "sha256": "cb618a45102ca76d5e30d7c63f91bf8aa03f56d41ac91299c8242aee294a3e8b"
+    },
+    {
+      "id": "cn-optic-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cn-optic-r.json",
+      "sha256": "ace447db7fca5dcace183aeac10cbd8ea3689532b6d2b01741b1352fedc072e3"
+    },
+    {
+      "id": "cn-oculomotor-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cn-oculomotor-l.json",
+      "sha256": "c5012082d848363602f7149c0b80d3c2fa575560d994d0dd1ef30764d271c776"
+    },
+    {
+      "id": "cn-oculomotor-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cn-oculomotor-r.json",
+      "sha256": "d2c4bc3e9b725d76c87c740fff0c8e05854ddc17882a7adc28761f4e21103bcd"
+    },
+    {
+      "id": "cn-trigeminal-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cn-trigeminal-l.json",
+      "sha256": "dbe24b678f878e016d5ccd9a7c20573e7ba51adf09538fd1dc4bd0deebee4b95"
+    },
+    {
+      "id": "cn-trigeminal-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cn-trigeminal-r.json",
+      "sha256": "dd1c0a79dd2242dee15417ea0f7080cb7582b0737d42853c168a1e783a118b8f"
+    },
+    {
+      "id": "cn-facial-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cn-facial-l.json",
+      "sha256": "8fecbe87762ca277559402aa28329798653827a7a8d30f3fbfac933ee709b9ce"
+    },
+    {
+      "id": "cn-facial-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cn-facial-r.json",
+      "sha256": "2d77b08d4a0201c989c6157157edf1059e3c74c15500eb8439b49efee13a22ee"
+    },
+    {
+      "id": "cn-vestibulocochlear-l",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cn-vestibulocochlear-l.json",
+      "sha256": "c8b7b37076e9b8b2eec7eeec978a36ee9b6e790fe7f08b5555428249bc125aff"
+    },
+    {
+      "id": "cn-vestibulocochlear-r",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-cn-vestibulocochlear-r.json",
+      "sha256": "99eef49e666a450f958cbd134620b9e34a9388478d4c898851f1aa96e48c8d7e"
+    },
+    {
+      "id": "corpus-callosum",
+      "kind": "streamlines",
+      "geometry": "/data/anatomy/registered-nlin6/hcp-corpus-callosum.json",
+      "sha256": "434deb52e8aeccd923d7da18c4872c96661a712ca7c63dd1e1106cbf103edb58"
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+[
+  {
+    "file": "BrainMesh_ICBM152Left.nv",
+    "url": "https://raw.githubusercontent.com/mingruixia/BrainNet-Viewer/master/src/matlab/BrainNetViewer/Data/SurfTemplate/BrainMesh_ICBM152Left.nv",
+    "sha256": "12c37dc6eb02b4bd037ff9783d47a9748ae3541a54a0609da0e703fa189ab061",
+    "bytes": 2817035
+  },
+  {
+    "file": "BrainMesh_ICBM152Right.nv",
+    "url": "https://raw.githubusercontent.com/mingruixia/BrainNet-Viewer/master/src/matlab/BrainNetViewer/Data/SurfTemplate/BrainMesh_ICBM152Right.nv",
+    "sha256": "cd94c0719e1f7f8c1a521147167a2552cc3854bbcd3b9092d0a2c1c947a0aabe",
+    "bytes": 2776058
+  },
+  {
+    "file": "AAL3v2.nii.gz",
+    "url": "https://raw.githubusercontent.com/mingruixia/BrainNet-Viewer/master/resources/atlases/AAL3v2/AAL3v2.nii.gz",
+    "sha256": "5fbc211ffa4e97a69768e1343da93de30799a7e8b3867d2b2cb41baf852452a1",
+    "bytes": 39157
+  },
+  {
+    "file": "AAL3v2_labels.txt",
+    "url": "https://raw.githubusercontent.com/mingruixia/BrainNet-Viewer/master/resources/atlases/AAL3v2/AAL3v2_labels.txt",
+    "sha256": "5c643d5bef449948af5d92f116cc2eeb670777a500882ce6e523a033837ffd08",
+    "bytes": 3313
+  },
+  {
+    "file": "BrainNet_AAL_Label.mat",
+    "url": "https://raw.githubusercontent.com/mingruixia/BrainNet-Viewer/master/src/matlab/BrainNetViewer/BrainNet_AAL_Label.mat",
+    "sha256": "1fe217ef443cff395884e3c5f672891085cb10858a028048b454d02591316ec9",
+    "bytes": 185282
+  },
+  {
+    "file": "BrainNet_Brodmann_Label.mat",
+    "url": "https://raw.githubusercontent.com/mingruixia/BrainNet-Viewer/master/src/matlab/BrainNetViewer/BrainNet_Brodmann_Label.mat",
+    "sha256": "ed057cd513391e3aefae46e4ade5dea5b23b72da5b7cdb0064b7ebb44f347f8e",
+    "bytes": 192157
+  },
+  {
+    "file": "Desikan.nii.gz",
+    "url": "https://raw.githubusercontent.com/neurodata/neuroparc/master/atlases/label/Human/Desikan_space-MNI152NLin6_res-2x2x2.nii.gz",
+    "sha256": "c82866702cdafed74e053f5dca193f95c180d49693a0f38537bb2307ad932c5d",
+    "bytes": 58395
+  },
+  {
+    "file": "Desikan.csv",
+    "url": "https://raw.githubusercontent.com/neurodata/neuroparc/master/atlases/label/Human/Anatomical-labels-csv/Desikan.csv",
+    "sha256": "3745f9e175858236f7518ce0a8ec46a9fa205dbdc062d73b853a45c97939d835",
+    "bytes": 1929
+  },
+  {
+    "file": "Desikan-metadata.json",
+    "url": "https://raw.githubusercontent.com/neurodata/neuroparc/master/atlases/label/Human/Metadata-json/Desikan_space-MNI152NLin6_res-2x2x2.json",
+    "sha256": "06e383a8da49f535b98b871ac711e1576c5cf550ecc0ad9e5849476569655e51",
+    "bytes": 17686
+  },
+  {
+    "file": "Neuroparc-LICENSE.md",
+    "url": "https://raw.githubusercontent.com/neurodata/neuroparc/master/LICENSE.md",
+    "sha256": "85e3db4a482cf530c46a7eee14a094584f37aff2f6a2b11945b5fd6b51cb315d",
+    "bytes": 556
+  },
+  {
+    "file": "JHU.nii.gz",
+    "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/JHU/JHU-ICBM-labels-2mm.nii.gz",
+    "sha256": "974a0fd72d1214a29e58ccf33cf5aec989d937d999ae65f389dd6b3e1ffdbbad",
+    "bytes": 9611
+  },
+  {
+    "file": "JHU-labels.xml",
+    "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/JHU-labels.xml",
+    "sha256": "2d76ce80d1b0a50dccda2698d5eec55c8984a7f1bb438f79111d67a26fc4dc1c",
+    "bytes": 4594
+  },
+  {
+    "file": "HarvardOxford-sub.nii.gz",
+    "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/HarvardOxford/HarvardOxford-sub-maxprob-thr25-2mm.nii.gz",
+    "sha256": "02a69ed80d75876de8237c59320587efdf832c9334d16ba45618e45a0e05b774",
+    "bytes": 26686
+  },
+  {
+    "file": "HarvardOxford-Subcortical.xml",
+    "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/HarvardOxford-Subcortical.xml",
+    "sha256": "902088b2ce0f005861084190fbf494c4a65a0201a08f7e44f15dfb351e172cd3",
+    "bytes": 1968
+  },
+  {
+    "file": "HarvardOxford-fs-labels.txt",
+    "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/HarvardOxford/labels",
+    "sha256": "c9659394b6252949e44aebe2a8a8d4fceb18f25bb933367d876adb84989ce80f",
+    "bytes": 60
+  },
+  {
+    "file": "HarvardOxford-relabel.sh",
+    "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/HarvardOxford/relabel",
+    "sha256": "367f47c1ecfa537ba1163cbf0ce8de6a970e3ff5d119e454fa53513e78ed598d",
+    "bytes": 209
+  },
+  {
+    "file": "Cerebellum.nii.gz",
+    "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/Cerebellum/Cerebellum-MNIfnirt-maxprob-thr25-2mm.nii.gz",
+    "sha256": "bf7321a7d4419dede04d83a214eb42976b5f84cd3b6cebb3ae8b2295e0fadd74",
+    "bytes": 6681
+  },
+  {
+    "file": "Cerebellum.xml",
+    "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/Cerebellum_MNIfnirt.xml",
+    "sha256": "fdd4c176ea97e4783737e38321cfcbf53cd80c3615cc807463380b81c682c2bd",
+    "bytes": 2271
+  },
+  {
+    "file": "MNI152_T1_2mm_brain.nii.gz",
+    "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/standard/MNI152_T1_2mm_brain.nii.gz",
+    "sha256": "09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+    "bytes": 414185
+  }
+]

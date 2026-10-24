@@ -1,0 +1,15 @@
+NeuroAtlas is a collection of independently licensed software and data.
+
+Original application code and project-authored documentation are distributed under
+the MIT license in LICENSE-MIT. Third-party libraries retain their own licenses.
+
+This grant does not relicense third-party anatomical atlases, templates, images,
+streamlines, article figures, or publications. See public/data/licenses/NOTICE-DATA.md
+and the individual notices linked there. In particular, some distributed FSL atlas
+and template files carry non-commercial conditions. CC BY-SA datasets retain their
+own permission for commercial reuse subject to the applicable license; the FSL
+restriction is not added to those separately licensed datasets.
+
+Source article figures are linked, not republished. PAM50 data and precomputed
+PAM50 meshes are not part of the public package; optional client-side loading
+accesses the declared official source directly.

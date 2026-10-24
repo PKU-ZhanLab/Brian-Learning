@@ -1,0 +1,37 @@
+// Combine versioned source manifests without overwriting preserved raw data.
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+const root=path.resolve(import.meta.dirname,'..'),data=path.join(root,'public/data');
+const read=p=>JSON.parse(fs.readFileSync(path.join(data,p),'utf8'));
+const write=(p,v)=>fs.writeFileSync(path.join(data,p),JSON.stringify(v,null,2));
+const file='manifest.json',m=read(file);
+if(!fs.existsSync(path.join(data,'legacy-manifest-v1.json')))write('legacy-manifest-v1.json',m);
+const legacy=read('legacy-manifest-v1.json');
+const dk=read('dk-v2/metadata.json'),ba=read('ba-v2/manifest.json');
+m.schemaVersion=2;m.generated='2026-10-25';
+m.atlases.dk=dk;
+m.atlases['ba-legacy']={...legacy.atlases.ba,alignmentStatus:'legacy',canOverlayOnTarget:false,note:'保留 BrainNet 旧版 BA 41 个编号，原始 MNI 变体未核实，未执行解剖配准。不能直接视为主模板的精确边界。'};
+Object.assign(m.atlases,ba.atlases);
+m.meshes=m.meshes.filter(x=>!x.id.startsWith('cortex-'));
+m.meshes.unshift(...dk.meshes.filter(x=>x.id.startsWith('cortex-')));
+const hoStructure={3:'lateral-ventricle-l',4:'thalamus-l',5:'caudate-l',6:'putamen-l',7:'pallidum-l',9:'hippocampus-l',10:'amygdala-l',11:'accumbens-l',14:'lateral-ventricle-r',15:'thalamus-r',16:'caudate-r',17:'putamen-r',18:'pallidum-r',19:'hippocampus-r',20:'amygdala-r',21:'accumbens-r'};
+for(const mesh of m.meshes){if(hoStructure[mesh.label])mesh.structureIds=[hoStructure[mesh.label]];}
+m.registrationNote='脑内主参考为 FSL MNI152NLin6Asym。DK 分区与配对表面已核对同源模板；其余数据分别记录原作者映射、后续配准或未验证状态。相同 RAS 轴或相同体素网格不能证明解剖配准。';
+m.schematicNote='PAM50 脊髓使用原生直化参考，未与脑模板联合配准。真实形态与教学示意分开标注；无数据的示意默认隐藏。';
+if(fs.existsSync(path.join(data,'space/alignment.json'))){
+  const a=read('space/alignment.json');m.alignment='space/alignment.json';
+  const entries=a.atlases||a.datasets||{};
+  for(const [id,item] of Object.entries(entries))if(m.atlases[id]){
+    m.atlases[id].alignmentStatus=item.status||item.alignmentStatus||m.atlases[id].alignmentStatus;
+    if(typeof item.canOverlayOnTarget==='boolean')m.atlases[id].canOverlayOnTarget=item.canOverlayOnTarget;
+  }
+}
+for(const id of ['aal','aal3']){m.atlases[id].alignmentStatus??='unverified-template';m.atlases[id].canOverlayOnTarget??=false;}
+m.atlases.ho.alignmentStatus??='published-template';m.atlases.jhu.alignmentStatus??='published-template';
+m.anatomy='anatomy/manifest.json';m.baCoverage='ba-v2/manifest.json';
+write(file,m);
+const hashes={generated:'2026-10-25',algorithm:'SHA-256',files:{}};
+function scan(dir){for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,entry.name);if(entry.isDirectory())scan(p);else if(entry.name!=='asset-checksums.json')hashes.files[path.relative(data,p).replaceAll('\\','/')]=crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');}}
+scan(data);write('asset-checksums.json',hashes);
+console.log(`Integrated DK ${dk.labels.length}, BA historical ${ba.historicalNumbers.length}, BA histology ${ba.histologicalNumbers.length} parents; ${Object.keys(hashes.files).length} asset hashes`);

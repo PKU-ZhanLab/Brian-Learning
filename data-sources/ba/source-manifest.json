@@ -1,0 +1,36 @@
+{
+  "downloaded": "2026-10-25",
+  "files": [
+    {
+      "file": "Talairach.xml",
+      "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/Talairach.xml",
+      "sha256": "67ea3980a2c9a2c40caface44452003cb6c38091baa87fcc8211784b0768a183",
+      "bytes": 121710
+    },
+    {
+      "file": "Talairach-labels-2mm.nii.gz",
+      "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/Talairach/Talairach-labels-2mm.nii.gz",
+      "sha256": "95c192a1911faf4eb43c8c2c2df0cfb5a3f395db04a73d9ef0f55e5e479bd9b2",
+      "bytes": 60463
+    },
+    {
+      "file": "Juelich.xml",
+      "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/Juelich.xml",
+      "sha256": "2db19453d3f993cb44c8614b309c5298a9152e28e0ca3433881cbee6f949476b",
+      "bytes": 10346
+    },
+    {
+      "file": "Juelich-maxprob-thr25-2mm.nii.gz",
+      "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/Juelich/Juelich-maxprob-thr25-2mm.nii.gz",
+      "sha256": "83a54685e6d4ea733145ec5c613c5c2e9c2f4e56e8ba5a2505f62aa11b31be09",
+      "bytes": 28807
+    },
+    {
+      "file": "Juelich-prob-2mm.nii.gz",
+      "url": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/atlases/Juelich/Juelich-prob-2mm.nii.gz",
+      "sha256": "e7dc0c83e8029296ee5c62aba158ad5ff198cc58573d942eeebd88e69897c218",
+      "bytes": 581690
+    }
+  ],
+  "license": "FSL atlas-specific terms: see https://fsl.fmrib.ox.ac.uk/fsl/docs/license.html"
+}

@@ -1,0 +1,90 @@
+{
+  "repository": "ThomasYeoLab/CBIG",
+  "commit": "634f676630929a71297852d01dd92a287103e861",
+  "files": [
+    {
+      "file": "mri/aparc+aseg.mgz",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/mri/aparc+aseg.mgz",
+      "bytes": 422994,
+      "sha256": "eb0a5d49deeea2e145d3fb5038fb2c782d6c6803c0818aeea1075b783eac59fb"
+    },
+    {
+      "file": "mri/aparc+aseg_182x218x182.nii.gz",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/mri/aparc+aseg_182x218x182.nii.gz",
+      "bytes": 352224,
+      "sha256": "a93978f91fb119ac57fa173cfbbc2f2c2bf631015ceac8750b67e277f3fb89ca"
+    },
+    {
+      "file": "mri/orig.mgz",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/mri/orig.mgz",
+      "bytes": 4533765,
+      "sha256": "d845b4d81a61c4163fc4322e8fb6fd88be11610febbc1448bf04ae43e062825f"
+    },
+    {
+      "file": "mri/norm2mm.nii.gz",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/mri/norm2mm.nii.gz",
+      "bytes": 242156,
+      "sha256": "f08fb15782fab8d120bbe6037df67db69ed9982e0310ce3c87cfd3d9a60aef63"
+    },
+    {
+      "file": "surf/lh.pial",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/surf/lh.pial",
+      "bytes": 5327027,
+      "sha256": "4ff8f8a4b9d4e06dcf89ab02f37ebbf99da1b18068c47a453ab60ef295c1b6a3"
+    },
+    {
+      "file": "surf/rh.pial",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/surf/rh.pial",
+      "bytes": 5317667,
+      "sha256": "7e373de50a8b1982b0539ef1de7d79b1e8ed218e83e5b980620662ff90ba9f91"
+    },
+    {
+      "file": "surf/lh.white",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/surf/lh.white",
+      "bytes": 5327027,
+      "sha256": "79c8a150554aed223be890f5f1fd53c9a34ad2ff5e17a060a2cb635528bf0741"
+    },
+    {
+      "file": "surf/rh.white",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/surf/rh.white",
+      "bytes": 5317667,
+      "sha256": "7d8cfadbec87689aae9a71d71a60c3c904d2e1c61a52604f18619e9ef3820598"
+    },
+    {
+      "file": "label/lh.aparc.annot",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/lh.aparc.annot",
+      "bytes": 1185052,
+      "sha256": "e10f78fdb77eb6724152de1798e5acdaffbde5edfda05b30156c6a627fe89516"
+    },
+    {
+      "file": "label/rh.aparc.annot",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/rh.aparc.annot",
+      "bytes": 1182972,
+      "sha256": "ee2ef69ef1fee83680576181f491fd26d3bf0e1104ab3f010cfa2939d6139689"
+    },
+    {
+      "file": "label/aparc.annot.ctab",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "bytes": 1944,
+      "sha256": "a43af4cbe595e60829a72fa223725098abbea7bc40e18aad87eb4e626e6d9972"
+    },
+    {
+      "file": "scripts/recon-all.cmd",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/scripts/recon-all.cmd",
+      "bytes": 14628,
+      "sha256": "0cbfe76ef0190ceb316a173c0aa9f2769629a9985dcd4296956efcb740658f66"
+    },
+    {
+      "file": "scripts/recon-all.log",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/scripts/recon-all.log",
+      "bytes": 671020,
+      "sha256": "5417ae3f600fb82a4bf98fcd02d8961919060ea7e9dcfb8552cecddc260fb68b"
+    },
+    {
+      "file": "LICENSE-CBIG.md",
+      "url": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/LICENSE.md",
+      "bytes": 1084,
+      "sha256": "0e38f0e8b304f13de2ce2911320faaa08ced178e031d3bbebc3e4769762e5f50"
+    }
+  ]
+}
