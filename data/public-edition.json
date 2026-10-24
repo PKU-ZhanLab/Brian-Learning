@@ -1,0 +1,23 @@
+{
+  "edition": "public-teaching",
+  "generatedAt": "2026-10-24T20:09:14.569Z",
+  "excludedBundledFiles": [
+    "aal.bin",
+    "aal3.bin",
+    "ba.bin",
+    "cortex-left.json",
+    "cortex-right.json",
+    "dk.bin",
+    "legacy-manifest-v1.json"
+  ],
+  "bundledPAM50Geometry": 0,
+  "onDemandPAM50Structures": 36,
+  "metadataOnlyAtlases": [
+    "aal",
+    "aal3",
+    "ba-legacy"
+  ],
+  "licenseNotice": "licenses/NOTICE-DATA.md",
+  "licenseEvidenceFormat": "Original fetched HTML bytes retained as inert .html.txt files",
+  "sourceRepository": "https://github.com/PKU-ZhanLab/Brian-Learning"
+}

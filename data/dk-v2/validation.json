@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "labelCount": 68,
+  "labelsPerHemisphere": 34,
+  "insulaVoxels": {
+    "L": 968,
+    "R": 959
+  },
+  "sourceHashesVerified": 14,
+  "outputHashesVerified": 8,
+  "meshes": [
+    {
+      "file": "dk-v2/cortex-left.json",
+      "vertices": 41425,
+      "triangles": 82846,
+      "presentLabels": 34,
+      "maxDistanceToOriginalVertexMm": 0.0008539528572468638,
+      "sha256": "369852e06a75642df7b8b63911e9690b826e121de3d5d41f77c90b72ccec1967"
+    },
+    {
+      "file": "dk-v2/white-left.json",
+      "vertices": 41425,
+      "triangles": 82846,
+      "presentLabels": 34,
+      "maxDistanceToOriginalVertexMm": 0.0008531317638608279,
+      "sha256": "6c6a3dca2154660c87460a3f9ac181bcd1545031e1682e86d797461b5e3de895"
+    },
+    {
+      "file": "dk-v2/cortex-right.json",
+      "vertices": 41352,
+      "triangles": 82700,
+      "presentLabels": 34,
+      "maxDistanceToOriginalVertexMm": 0.0008539751260037766,
+      "sha256": "d68f99621222eb537270d8ac1578da89566d136ae42ca6f4f89b65348016d746"
+    },
+    {
+      "file": "dk-v2/white-right.json",
+      "vertices": 41352,
+      "triangles": 82700,
+      "presentLabels": 34,
+      "maxDistanceToOriginalVertexMm": 0.0008557820591488731,
+      "sha256": "3f30ff73da984ad91cef06c27e769594d65b41fafe3a613e5db476d2714a9d22"
+    }
+  ],
+  "checks": [
+    "Exact voxel counts and centroids",
+    "Hemisphere consistency",
+    "All 68 labels nonempty",
+    "Both insulae present",
+    "No degenerate triangles",
+    "All mesh vertices match paired original surfaces",
+    "Header-derived tkRAS-to-scannerRAS",
+    "Source template intensity agreement recorded separately"
+  ],
+  "scope": "Data integrity and source agreement; not clinical or expert anatomical certification."
+}

@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "sourceSpace": "MNI152NLin2009aAsym",
+  "targetSpace": "MNI152NLin6Asym",
+  "status": "registered",
+  "method": "DIPY 1.7.0 mutual-information translation/rigid/affine then symmetric diffeomorphic CC registration",
+  "gridResolutionMm": 2,
+  "sourceT1": "data-sources/space/tpl-MNI152NLin2009aAsym_res-1_T1w.nii.gz",
+  "sourceT1Sha256": "a12fa7be3c02762e14ec770e940a46ce57dc6d7e4953c5228e4da646301b9fe1",
+  "sourceMaskSha256": "17afe7c0696e788aeceb656e16bb5e907e8d22cf8871e088e31b31c9a1941b67",
+  "targetT1Sha256": "09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+  "sourceHeader": {
+    "shape": [
+      197,
+      233,
+      189
+    ],
+    "affine": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        -98.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        -134.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -72.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "targetHeader": {
+    "shape": [
+      91,
+      109,
+      91
+    ],
+    "affine": [
+      [
+        2.0,
+        0.0,
+        0.0,
+        -90.0
+      ],
+      [
+        0.0,
+        2.0,
+        0.0,
+        -126.0
+      ],
+      [
+        0.0,
+        0.0,
+        2.0,
+        -72.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "fieldFile": "data-sources/space/MNI152NLin2009aAsym_to_MNI152NLin6Asym_dipy.npz",
+  "fieldSha256": "c1515f7c471180eb0c4b3f25f9b585355010a304603b4f2e6cf2c2a94773afe2",
+  "affineTargetToSource": [
+    [
+      1.0147281527624548,
+      -0.001856536300022133,
+      0.0016632711802170095,
+      -0.8690695505045304
+    ],
+    [
+      0.00131630888732523,
+      1.0096183840140485,
+      0.00455661943680981,
+      -0.274658959521629
+    ],
+    [
+      -0.0037195701836684,
+      -0.01054351063647558,
+      1.0207776541333928,
+      -0.34410875108701827
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "before": {
+    "brainMaskDice": 0.9679878869593124,
+    "pearsonWithinCommonBrain": 0.8092068628208322,
+    "pearsonWithinBrainUnion": 0.742280210622543,
+    "brainMaskVolumesMm3": [
+      1827624,
+      1886720
+    ]
+  },
+  "afterAffine": {
+    "brainMaskDice": 0.975917421044714,
+    "pearsonWithinCommonBrain": 0.8935785087046711,
+    "pearsonWithinBrainUnion": 0.8542126511776901,
+    "brainMaskVolumesMm3": [
+      1827624,
+      1788600
+    ]
+  },
+  "afterNonlinear": {
+    "brainMaskDice": 0.984418101841497,
+    "pearsonWithinCommonBrain": 0.95796828378607,
+    "pearsonWithinBrainUnion": 0.9292875639527859,
+    "brainMaskVolumesMm3": [
+      1827624,
+      1820712
+    ]
+  },
+  "jacobianTargetToSourceWithinBrain": {
+    "min": 0.2822688486577688,
+    "max": 3.0448864262082784,
+    "percentile1": 0.5815616026352047,
+    "percentile99": 1.6285673547863109,
+    "nonPositiveVoxels": 0
+  },
+  "sourceToTargetRoundTripMm": {
+    "points": 4450,
+    "median": 0.012069306713897422,
+    "percentile95": 0.054756843130239416,
+    "max": 0.17995279140429227
+  },
+  "pointDisplacementMm": {
+    "median": 1.96022477950567,
+    "percentile95": 4.674688030256063,
+    "max": 9.322531885494035
+  },
+  "coordinateRampDirectionCheckMaxErrorMm": [
+    1.9141138025702276e-05,
+    1.7513870886887162e-05,
+    1.507813379930667e-05
+  ],
+  "pointConvention": "Input source RAS millimetres. Output target RAS millimetres. Use transform_points_inverse; image transform() is a pull map.",
+  "estimatedHere": true,
+  "notAnOfficialTransform": true,
+  "limitations": "Template-to-template estimate for educational visualization. 2 mm registration cannot validate individual cranial nerve positions or tract endpoints. No clinical validation.",
+  "references": [
+    "https://brain.labsolver.org/hcp_trk_atlas.html",
+    "https://github.com/templateflow/tpl-MNI152NLin2009aAsym",
+    "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/datasets.html"
+  ]
+}
