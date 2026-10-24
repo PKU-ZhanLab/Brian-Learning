@@ -33,3 +33,13 @@
 ## 科学解释范围
 
 没有将无坐标论文绘制成精确激活点。跨研究结论比较保留任务、物种、测量和区域定义差异。ROI 指标描述指定二值图谱的空间重叠，不证明功能等同。PAM50 不与脑模板联合配准；AAL/AAL3 和旧版 BA 保留目录但停用叠加。详见 [空间说明](SPACE_ALIGNMENT.md)、[文献范围](LITERATURE_RESEARCH.md)和[公开数据许可](PUBLIC_DATA_LICENSES.md)。
+
+## 线上发布验收
+
+正式地址：<https://pku-zhanlab.github.io/Brian-Learning/>。GitHub Pages 已确认从 `gh-pages` 根目录发布完成，并启用 HTTPS。
+
+- `main` 初始发布：`545f595cdf50203ebd2fc2951475509fa8a53ad3`。
+- 网站构建：`90928167fce749f1272c663b15e2ab1053a56c8f`，Pages 状态 `built`，无构建错误。
+- 公网首页、主脚本、React/Three 分块、样式、ROI Worker、PAM50 Worker 均返回 HTTP 200，内容类型正确。
+- 独立下载并校验全部 130 个在线数据文件，共 34,861,903 字节，SHA-256 全部一致。
+- 在正式 URL 实际加载中文页面和三维画布，初始控制台无警告或错误。上表的完整交互检查在相同构建的本地公开路径预览上完成。
