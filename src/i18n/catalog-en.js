@@ -112,7 +112,7 @@ const statusEn = {
   '解剖命名可追溯；功能为教学概括，尚未对每条陈述建立分区特异的原始证据链。': 'Anatomical terminology is traceable. Functions are teaching summaries; not every statement has a parcel-specific chain of primary evidence.',
   '经典损伤研究与综述；三维标记位置为教学锚点。': 'Classic lesion studies and reviews; the 3D marker is a teaching anchor.',
   '教材级解剖概括；颅外走行采用示意线，未建立逐神经原始病例链。': 'Textbook anatomical summary. Extracranial courses are schematic; primary case evidence has not been established separately for every nerve.',
-  '脊髓全段采用独立教学比例示意，未配准到 MNI152 或 PAM50；所列毫米数不是可用于定位的脊髓坐标。': 'The full cord uses a separately scaled teaching schematic, not registration to MNI152 or PAM50. Displayed millimeter values are not spinal-localization coordinates.',
+  '脊髓全段采用独立教学比例示意，未配准到 MNI152 或 PAM50；所列毫米数不是可用于定位的脊髓坐标。': 'The full cord uses a separately scaled schematic structure, not registration to MNI152 or PAM50. Displayed millimeter values are not spinal-localization coordinates.',
   '可选血管走行示意；不包含个体血管变异或完整脑血管树。': 'Optional schematic vessel course; individual vascular variation and the complete cerebral vascular tree are not included.',
 };
 const extraAliases = {'初级运动皮层': 'Primary motor cortex', '初级躯体感觉皮层': 'Primary somatosensory cortex', '初级视觉皮层': 'Primary visual cortex', '颈髓': 'Cervical cord', '胸髓': 'Thoracic cord', '腰髓': 'Lumbar cord', '骶髓': 'Sacral cord', '尾髓': 'Coccygeal cord', '脊髓': 'Spinal cord'};
@@ -133,7 +133,7 @@ export function localizeStructure(structure, lang = 'zh') {
   })])];
   return {
     ...structure, ...localized, name: structure.en, aliases,
-    atlasLabels: Object.fromEntries(Object.entries(structure.atlasLabels || {}).map(([id, value]) => [id, value.replace('（大致教学关联）', ' (approximate teaching association)')])),
+    atlasLabels: Object.fromEntries(Object.entries(structure.atlasLabels || {}).map(([id, value]) => [id, value.replace('（大致解剖关联）', ' (approximate teaching association)')])),
     evidenceStatus: statusEn[structure.evidenceStatus] ?? (hasCjk(structure.evidenceStatus || '') ? 'Evidence scope is under review.' : structure.evidenceStatus),
     evidence: localizeEvidence(structure.evidence, structure.id, lang),
   };

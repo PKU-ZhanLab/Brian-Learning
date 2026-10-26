@@ -1,0 +1,93 @@
+{
+  "id": "bosco2008",
+  "doi": "10.1523/JNEUROSCI.2869-08.2008",
+  "checkedAt": "2026-10-26T08:16:58.512Z",
+  "crossrefURL": "https://api.crossref.org/works/10.1523%2FJNEUROSCI.2869-08.2008",
+  "europeURL": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A10.1523%2FJNEUROSCI.2869-08.2008&format=json&resultType=core",
+  "sourceURL": "https://www.jneurosci.org/content/28/46/12071",
+  "tableURL": "https://www.jneurosci.org/highwire/markup/500688/expansion?postprocessors=highwire_tables%2Chighwire_reclass%2Chighwire_figures%2Chighwire_math%2Chighwire_inline_linked_media%2Chighwire_embed&table-expand-inline=1",
+  "crossref": {
+    "title": [
+      "Contributions of the Human Temporoparietal Junction and MT/V5+ to the Timing of Interception Revealed by Transcranial Magnetic Stimulation"
+    ],
+    "author": [
+      {
+        "given": "Gianfranco",
+        "family": "Bosco",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Mauro",
+        "family": "Carrozzo",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Francesco",
+        "family": "Lacquaniti",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2008,
+          11,
+          12
+        ]
+      ]
+    },
+    "journal": [
+      "The Journal of Neuroscience"
+    ],
+    "volume": "28",
+    "issue": "46",
+    "page": "12071-12084",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2009,
+              5,
+              12
+            ]
+          ],
+          "date-time": "2009-05-12T00:00:00Z",
+          "timestamp": 1242086400000
+        },
+        "content-version": "vor",
+        "delay-in-days": 181,
+        "URL": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+      }
+    ]
+  },
+  "europepmc": {
+    "title": "Contributions of the human temporoparietal junction and MT/V5+ to the timing of interception revealed by transcranial magnetic stimulation.",
+    "authorString": "Bosco G, Carrozzo M, Lacquaniti F.",
+    "pubYear": "2008",
+    "id": "19005072",
+    "pmcid": "PMC6671632",
+    "doi": "10.1523/jneurosci.2869-08.2008"
+  }
+}

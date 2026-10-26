@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-26",
+  "reviewer": "Root AI agent",
+  "humanValidated": false,
+  "status": "registered-estimate",
+  "canOverlayOnTarget": true,
+  "fieldSha256": "93ed27791cfceacba0f1caf609bc145193a5df6f03c2ecfa331b5b9e6fbb21ea",
+  "labelResamplingReportSha256": "3c2f31419ebc22737880e1ae8a71ccbc2e3a15e02bd30bc18093c587be9d11f6",
+  "observedQcFile": "registration-qc.png",
+  "observedQcSha256": "17fb3353b5a49f60dc58ca2cb9030e00cfc618766521e57c175a3438749dadaf",
+  "scope": "Three central orthogonal planes in the registration QC figure plus recorded numerical metrics. Not a full-volume or individual-nucleus anatomical validation.",
+  "observations": [
+    "Registered outer contour, midline and ventricles improve in all three shown planes.",
+    "No obvious left-right flip or gross displacement in reviewed planes.",
+    "Source single-subject gyral differences remain."
+  ],
+  "limitations": [
+    "Project estimated transform, not an official GIN/FSL transform.",
+    "1mm label grid uses a field estimated at2mm; output spacing does not imply spatial accuracy.",
+    "2mm output loses label134; 1mm output retains all116/166 labels.",
+    "Exploratory reference/ROI view only; individual small nuclei need independent anatomical review."
+  ]
+}

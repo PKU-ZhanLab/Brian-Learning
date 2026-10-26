@@ -1,0 +1,159 @@
+{
+  "checkedAt": "2026-10-26",
+  "method": "AI-assisted comparison against primary full-text tables; not human certification",
+  "metadataSources": [
+    {
+      "referenceId": "schaum2021",
+      "doi": "10.7554/eLife.61679",
+      "file": "schaum2021-metadata.json",
+      "sha256": "4842a93cad97148f70db5f1857f50031103fa65c928c6603161e01097431e55f"
+    },
+    {
+      "referenceId": "axelrod2015",
+      "doi": "10.1371/journal.pone.0117126",
+      "file": "axelrod2015-metadata.json",
+      "sha256": "66d6cb047acc0167fe935cdc18dae62f09c4ab5a928e2b2147591e74af936c8f"
+    },
+    {
+      "referenceId": "bosco2008",
+      "doi": "10.1523/JNEUROSCI.2869-08.2008",
+      "file": "bosco2008-metadata.json",
+      "sha256": "24513f05d497c8afb6fd8bbe4864ac0c9065f54e69b205e0df1900231c0c1c1f"
+    }
+  ],
+  "coordinates": [
+    {
+      "referenceId": "schaum2021",
+      "resultId": "schaum2021-meg-stop",
+      "id": "schaum-rifg",
+      "sourceTable": "Table 1",
+      "sourceRow": "Inferior frontal gyrus BA44/45 R",
+      "sourceURL": "https://elifesciences.org/articles/61679#table1",
+      "space": "MNI-unspecified",
+      "kind": "peak",
+      "xyz": [
+        50,
+        20,
+        20
+      ]
+    },
+    {
+      "referenceId": "schaum2021",
+      "resultId": "schaum2021-meg-stop",
+      "id": "schaum-lifg",
+      "sourceTable": "Table 1",
+      "sourceRow": "Inferior frontal gyrus BA44/45 L",
+      "sourceURL": "https://elifesciences.org/articles/61679#table1",
+      "space": "MNI-unspecified",
+      "kind": "peak",
+      "xyz": [
+        -50,
+        10,
+        20
+      ]
+    },
+    {
+      "referenceId": "schaum2021",
+      "resultId": "schaum2021-meg-stop",
+      "id": "schaum-insula",
+      "sourceTable": "Table 1",
+      "sourceRow": "Anterior insula/left IFG",
+      "sourceURL": "https://elifesciences.org/articles/61679#table1",
+      "space": "MNI-unspecified",
+      "kind": "peak",
+      "xyz": [
+        -40,
+        30,
+        0
+      ]
+    },
+    {
+      "referenceId": "schaum2021",
+      "resultId": "schaum2021-meg-stop",
+      "id": "schaum-presma",
+      "sourceTable": "Table 1",
+      "sourceRow": "Pre-supplementary motor area",
+      "sourceURL": "https://elifesciences.org/articles/61679#table1",
+      "space": "MNI-unspecified",
+      "kind": "peak",
+      "xyz": [
+        0,
+        20,
+        60
+      ]
+    },
+    {
+      "referenceId": "axelrod2015",
+      "resultId": "axelrod2015-rffa",
+      "id": "axelrod-rffa",
+      "sourceTable": "Table 1",
+      "sourceRow": "right FFA; n=16",
+      "sourceURL": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+      "space": "MNI-unspecified",
+      "kind": "roi-mean",
+      "xyz": [
+        39,
+        -52,
+        -16
+      ]
+    },
+    {
+      "referenceId": "axelrod2015",
+      "resultId": "axelrod2015-lffa",
+      "id": "axelrod-lffa",
+      "sourceTable": "Table 1",
+      "sourceRow": "left FFA; n=13",
+      "sourceURL": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+      "space": "MNI-unspecified",
+      "kind": "roi-mean",
+      "xyz": [
+        -41,
+        -53,
+        -18
+      ]
+    },
+    {
+      "referenceId": "bosco2008",
+      "resultId": "bosco2008-tms-protocol1",
+      "id": "bosco-tpj",
+      "sourceTable": "Table 1",
+      "sourceRow": "Protocol 1 — TPJ",
+      "sourceURL": "https://www.jneurosci.org/content/28/46/12071#T1",
+      "space": "MNI-unspecified",
+      "kind": "stimulation-target",
+      "xyz": [
+        65,
+        -36.6,
+        30.1
+      ]
+    },
+    {
+      "referenceId": "bosco2008",
+      "resultId": "bosco2008-tms-protocol1",
+      "id": "bosco-mt",
+      "sourceTable": "Table 1",
+      "sourceRow": "Protocol 1 — hMT/V5+",
+      "sourceURL": "https://www.jneurosci.org/content/28/46/12071#T1",
+      "space": "MNI-unspecified",
+      "kind": "stimulation-target",
+      "xyz": [
+        55,
+        -67.8,
+        1.8
+      ]
+    }
+  ],
+  "frameDecision": "All eight values are reported as MNI without an established NLin6Asym variant. No transform or atlas-space relabeling was applied.",
+  "figureDecision": "Only external URLs are stored; no article figure bytes are copied to the repository.",
+  "apiProbe": {
+    "crossref": {
+      "status": 200,
+      "accessControlAllowOrigin": "*"
+    },
+    "europepmc": {
+      "status": 200,
+      "accessControlAllowOrigin": "*"
+    },
+    "note": "Live HTTP and imported-record check; browser request verification is separate."
+  }
+}

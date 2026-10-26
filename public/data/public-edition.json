@@ -1,6 +1,7 @@
 {
-  "edition": "public-teaching",
-  "generatedAt": "2026-10-26T07:28:13.992Z",
+  "edition": "brain-evidence",
+  "version": "4.0.0",
+  "generatedAt": "2026-10-26T08:51:34.696Z",
   "excludedBundledFiles": [
     "aal.bin",
     "aal3.bin",
@@ -49,10 +50,17 @@
   "bundledPAM50Geometry": 0,
   "onDemandPAM50Structures": 36,
   "metadataOnlyAtlases": [
-    "aal",
-    "aal3",
     "ba-legacy"
   ],
+  "nativeAalAtlases": [
+    "aal",
+    "aal3"
+  ],
+  "estimatedRegisteredAalAtlases": [
+    "aal-registered",
+    "aal3-registered"
+  ],
+  "aalLicenseNotice": "aal-v3/licenses/AAL-NOTICE.md",
   "licenseNotice": "licenses/NOTICE-DATA.md",
   "licenseEvidenceFormat": "Original fetched HTML bytes retained as inert .html.txt files",
   "sourceRepository": "https://github.com/PKU-ZhanLab/Brian-Learning"

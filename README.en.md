@@ -1,34 +1,38 @@
 # NeuroAtlas · Anatomy and Research Evidence
 
-[中文](README.md) · [User guide](docs/USER_GUIDE.md#english) · [Feature audit (Chinese)](docs/FEATURE_AUDIT_20261026.md)
+[中文](README.md) · [User guide](docs/USER_GUIDE.md#english) · [Finding curation workflow](docs/RESULTS_WORKFLOW.md)
 
-A bilingual 3D workspace for neuroscience and medical teaching. Find studies from anatomical structures, return from papers to linked regions, and compare the actual spatial overlap of atlas ROIs.
+A bilingual research workspace connecting 3D brain structures, atlas parcels, and published findings. Explore actual atlas labels, compare ROIs and statistical maps, curate findings with provenance, and save work in local project files.
 
-**GitHub Pages address: [NeuroAtlas](https://pku-zhanlab.github.io/Brian-Learning/)**
+**Online entry: [NeuroAtlas](https://pku-zhanlab.github.io/Brian-Learning/)** · This documentation describes the v4 workflow; check the site's version label for the deployed version.
 
 ## Start exploring
 
-1. Select **中文 / EN** to switch the interface and knowledge content.
-2. Select a structure in the model or catalog. Read its anatomy, physiology, cognition, and clinical associations; expand **Evidence and scope** for sources and limitations.
-3. Choose **Explore papers for this region**, or open the **Evidence library** and filter by topic, method, author, or DOI. Open a paper to locate linked regions and compare up to three studies.
-4. Open **ROI comparison**, choose two eligible atlas labels, and compute their intersection, exclusive regions, Dice, and Jaccard. Adjust opacity and inspect linked slices to check interior overlap.
+1. **Anatomy / Slices:** select structures, inspect anatomy and functional evidence, and move between the 3D model and orthogonal slices.
+2. **Atlas label explorer:** browse labels present in a volume, search, isolate a parcel, or combine labels. Native atlases use an independent viewer. Single parcels show original voxel boundaries; overview rendering may be sampled.
+3. **Evidence library:** find papers from regions, filter by topic and modality, look up DOI / title metadata, and edit structured findings, coordinate provenance, figures, and relations between findings.
+4. **ROI comparison:** import local NIfTI labels, masks, probability maps, or statistical maps. Choose label unions, thresholds and tails; export overlap metrics and NIfTI masks.
+5. **Projects & views:** save named views, export or open project files, and share a URL that reconstructs settings for public data.
 
-The collection contains **150 brain structures, 115 sources, 21 topics, 18 method categories, 3 research debates, and 6 verified source-figure links**. Figure links open the original publication. Region links support discovery and anatomical orientation; exact experimental locations require verified coordinates and reference spaces.
+The knowledge catalog contains **150 macroscopic structures, 118 sources, 21 topics, and 18 method categories**. A selected subset of **3 primary papers has 4 structured findings and 8 reported coordinates**, covering MEG, fMRI, and TMS. All retain an unspecified MNI variant as reported; source checking was AI-assisted, not human certification. Other papers can be extended with findings. Catalog entries and actual atlas labels are separate inventories.
 
-Notes stay in the current browser and can be imported or exported. Export views as PNG and references as BibTeX or GB/T 7714 text. **Share view** preserves language, atlas, selected structure, and workspace mode; the link does not save camera position, ROI selections, or notes.
+## Space and evidence
 
-## Data scope
+The main brain reference is **FSL MNI152NLin6Asym**. Volumes, surfaces, streamlines, and paper coordinates retain their own provenance and spatial notes. AAL / AAL3 native data are distinct from derivatives registered with a transform estimated in this project; see the [AAL integration notes](docs/AAL_INTEGRATION.md).
 
-- **Brain reference:** FSL MNI152NLin6Asym. DK68 surfaces and labels come from a matched reconstruction. The 31 HCP1065 pathway / cranial-nerve entries use a template transform estimated in this project.
-- **ROI comparison:** Actual binary label masks are sampled on a shared 2 mm grid using their existing affines and nearest-neighbor sampling. This does not estimate new anatomical registration. Comparisons use built-in atlas labels; arbitrary NIfTI import is not provided.
-- **Viewer scope:** The spinal module has been removed. Whole-brain, cortical, deep-nuclei, brainstem, and cerebellar views remain.
-- **Unaligned atlases:** The public package retains catalog and provenance metadata for AAL, AAL3, and legacy BA. Their volumes are unavailable for overlay or overlap calculation. Uncovered structures retain knowledge entries; teaching schematics are hidden by default.
+- ROI comparison requires a shared reference frame. Labels and masks use nearest-neighbor sampling; continuous maps use trilinear sampling before thresholding. Resampling does not perform new anatomical registration.
+- For an image with unverified alignment, use **ROI comparison → Import → View native volume**. An affine or the name “MNI” alone does not establish compatibility with the main template.
+- Bibliographic metadata, literature summaries, structured findings, and source coordinates are separate. Metadata imports do not create conclusions or coordinates. Region links and figure clicks use explicitly recorded anatomical associations.
 
-Functional regions, gyri, BA areas, lesions, and animal recording sites have different definitions. Spatial overlap does not establish shared function. Bibliographic verification is not full-text review or clinical certification. See the [user guide](docs/USER_GUIDE.md#english), [literature scope](docs/LITERATURE_RESEARCH.md), [regional evidence](docs/EVIDENCE_COVERAGE.md), and [spatial documentation](docs/SPACE_ALIGNMENT.md).
+## Save and share
+
+No account is required. Notes, local paper edits, and named views stay in the current browser. A project file also contains view state, notes, local evidence, and recoverable imported volume data. Share a project file to transfer custom images between devices.
+
+View links preserve camera, display, slice, ROI, and filter settings for public data. They do not contain notes, free-text queries, local paper content, or image files. Evidence JSON merges paper and finding records; BibTeX supports reference management. See [Save and share](docs/USER_GUIDE.md#save-and-share).
 
 ## Run locally
 
-With Node.js installed, run these commands in the project directory:
+With Node.js installed:
 
 ```sh
 npm ci
@@ -37,17 +41,8 @@ npm run build
 npm run preview
 ```
 
-Open the address shown in the terminal. Use `npm run dev` for development. Running the app does not require Python.
-
-Build the public GitHub Pages package with:
-
-```sh
-npm run build:public
-```
-
-This applies the `/Brian-Learning/` deployment path and public-data packaging rules. The ordinary local build and public package have different data coverage.
+Open the address shown in the terminal. Use `npm run dev` for development. Running the app does not require Python. Build the GitHub Pages package with `npm run build:public`, using the `/Brian-Learning/` deployment path.
 
 ## Data licenses
 
-This teaching package is assembled for noncommercial use. Third-party assets retain their respective upstream terms, attribution, and modification notices; the project’s code license cannot replace those data licenses. Before reuse or redistribution, read the [data notice](public/data/licenses/NOTICE-DATA.md) and [public-data scope](docs/PUBLIC_DATA_LICENSES.md).
-
+Third-party assets retain their upstream licenses, attribution, and modification records. Some assets have noncommercial-use conditions; the code license cannot replace data licenses. See the [data notice](public/data/licenses/NOTICE-DATA.md), [public-data scope](docs/PUBLIC_DATA_LICENSES.md), and [spatial documentation](docs/SPACE_ALIGNMENT.md).

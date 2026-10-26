@@ -1,0 +1,256 @@
+{
+  "schemaVersion": 1,
+  "status": "registered-unreviewed",
+  "canOverlayOnTarget": false,
+  "sourceSpace": "SPM12 canonical Colin27",
+  "targetSpace": "MNI152NLin6Asym",
+  "pairingEvidence": "AAL3 paper identifies Colin27; SPM canonical single_subj_T1 is Colin27. SPM T1 matches original MNI1998 Colin27 after measured 1mm origin shift (r=0.999941). Exact atlas-to-specific-Colin27 release pairing still requires boundary review. See source-template-identity.json.",
+  "method": "DIPY mutual-information translation, rigid, affine; symmetric diffeomorphic cross-correlation",
+  "software": {
+    "python": "3.11.7",
+    "numpy": "1.26.4",
+    "nibabel": "5.2.0",
+    "dipy": "1.7.0"
+  },
+  "parameters": {
+    "affineIterations": [
+      500,
+      100,
+      30
+    ],
+    "sdrIterations": [
+      50,
+      25,
+      10
+    ],
+    "sdrStepLength": 0.25,
+    "labelInterpolation": "nearest"
+  },
+  "sourceHeader": {
+    "shape": [
+      91,
+      109,
+      91
+    ],
+    "affine": [
+      [
+        2.0,
+        0.0,
+        0.0,
+        -90.0
+      ],
+      [
+        0.0,
+        2.0,
+        0.0,
+        -126.0
+      ],
+      [
+        0.0,
+        0.0,
+        2.0,
+        -72.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "labelHeader": {
+    "shape": [
+      181,
+      217,
+      181
+    ],
+    "affine": [
+      [
+        1.0,
+        -0.0,
+        -0.0,
+        -90.0
+      ],
+      [
+        -0.0,
+        1.0,
+        -0.0,
+        -126.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        -72.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "targetHeader": {
+    "shape": [
+      91,
+      109,
+      91
+    ],
+    "affine": [
+      [
+        2.0,
+        0.0,
+        0.0,
+        -90.0
+      ],
+      [
+        0.0,
+        2.0,
+        0.0,
+        -126.0
+      ],
+      [
+        0.0,
+        0.0,
+        2.0,
+        -72.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "inputs": {
+    "moving_t1": {
+      "path": "F:\\project\\brain-model\\data-sources\\aal-official\\spm12-single_subj_T1.nii",
+      "sha256": "6e58e76e05eb5fef5d2260f6c762a57b4947a571d47f2479d892d6d29b20ced1"
+    },
+    "moving_labels": {
+      "path": "F:\\project\\brain-model\\data-sources\\aal-official\\AAL3_dist\\AAL3v1_1mm.nii",
+      "sha256": "53e86a6d0db7d9d375da9936d62437e92c8e6d54aab7b6d3393d9cc43ae0f732"
+    },
+    "fixed_t1": {
+      "path": "F:\\project\\brain-model\\data-sources\\raw\\MNI152_T1_2mm_brain.nii.gz",
+      "sha256": "09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53"
+    },
+    "moving_mask": {
+      "path": "F:\\project\\brain-model\\data-sources\\aal-official\\spm12-colin27-brain-mask-verified-shift.nii.gz",
+      "sha256": "0286057225899d2c951e1b4105138a749e3d44723a14238bdfda29d4d63bc406"
+    }
+  },
+  "affineTargetToSource": [
+    [
+      1.0078938325779214,
+      0.0030250424234687227,
+      -0.003231099033698059,
+      1.2321239856333082
+    ],
+    [
+      -0.01379825888451655,
+      1.002866962983816,
+      -0.004374235151643981,
+      0.8727026070636801
+    ],
+    [
+      -0.007665967979749882,
+      -0.005096026797421288,
+      1.0135369747174903,
+      0.9611375077094017
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "before": {
+    "brainMaskDice": 0.9272111108614431,
+    "pearsonWithinCommonBrain": 0.6282745240847432,
+    "pearsonWithinBrainUnion": 0.7279107330734969,
+    "maskVolumesMm3": [
+      1827623.9999999995,
+      2088687.9999999995
+    ]
+  },
+  "afterAffine": {
+    "brainMaskDice": 0.943555462015016,
+    "pearsonWithinCommonBrain": 0.7284691697077746,
+    "pearsonWithinBrainUnion": 0.7781483893032063,
+    "maskVolumesMm3": [
+      1827623.9999999995,
+      2011471.9999999995
+    ]
+  },
+  "afterNonlinear": {
+    "brainMaskDice": 0.9655577689665633,
+    "pearsonWithinCommonBrain": 0.9136711682712819,
+    "pearsonWithinBrainUnion": 0.9152116176568171,
+    "maskVolumesMm3": [
+      1827623.9999999995,
+      1943327.9999999995
+    ]
+  },
+  "qc": {
+    "jacobianTargetToSourceWithinMask": {
+      "minimum": 0.2847443598006798,
+      "maximum": 3.7748181654665176,
+      "nonPositiveVoxels": 0,
+      "percentile1": 0.503464483010668,
+      "percentile99": 1.9985957043707285
+    },
+    "sourceToTargetRoundTripMm": {
+      "points": 12433,
+      "median": 0.025008749842626663,
+      "percentile95": 0.08417501824108142,
+      "maximum": 0.387376933731756
+    },
+    "coordinateRampDirectionCheckMaxErrorMm": [
+      1.4675715405587653e-05,
+      2.088732452421027e-05,
+      1.5371406291819767e-05
+    ],
+    "coordinateRampCheckedVoxels": 228452
+  },
+  "lostPositiveLabelIds": [
+    134
+  ],
+  "qualityFlags": [
+    "one or more source labels absent on output grid"
+  ],
+  "numericalChecksPassed": false,
+  "humanReview": {
+    "performed": false,
+    "required": [
+      "T1 and label pairing provenance",
+      "brain extraction",
+      "multi-slice boundaries and laterality",
+      "small nuclei and label loss"
+    ]
+  },
+  "pointConvention": "RAS mm; target-to-source = transform_points; source-to-target = transform_points_inverse. Image transform is target-to-source pull.",
+  "limitations": "Numerical QC does not establish anatomical truth, label provenance, or subject-specific localization. Template registration does not measure intersubject variability. Small parcels can disappear at the fixed-grid resolution.",
+  "outputs": {
+    "labels-on-fixed.nii.gz": {
+      "sha256": "518dbe7800941891439fbc53979c12b6a46cb2b8c2fc9da88964e5c2a0fe7453",
+      "bytes": 85032
+    },
+    "mapping.npz": {
+      "sha256": "93ed27791cfceacba0f1caf609bc145193a5df6f03c2ecfa331b5b9e6fbb21ea",
+      "bytes": 18866365
+    },
+    "moving-on-fixed.nii.gz": {
+      "sha256": "873de59f77d686262201f04891d01e67c337e0442f6ac32e40dc138a080578f1",
+      "bytes": 946157
+    },
+    "registration-qc.png": {
+      "sha256": "17fb3353b5a49f60dc58ca2cb9030e00cfc618766521e57c175a3438749dadaf",
+      "bytes": 330198
+    }
+  }
+}

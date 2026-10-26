@@ -1,0 +1,470 @@
+{
+  "schema": "brain-evidence-v1",
+  "references": [
+    {
+      "id": "schaum2021",
+      "title": "Right inferior frontal gyrus implements motor inhibitory control via beta-band oscillations in humans",
+      "authors": "Michael Schaum, Edoardo Pinzuti, Alexandra Sebastian, Klaus Lieb, Pascal Fries, Arian Mobascher, Patrick Jung, Michael Wibral, Oliver Tüscher",
+      "fullAuthorList": [
+        "Michael Schaum",
+        "Edoardo Pinzuti",
+        "Alexandra Sebastian",
+        "Klaus Lieb",
+        "Pascal Fries",
+        "Arian Mobascher",
+        "Patrick Jung",
+        "Michael Wibral",
+        "Oliver Tüscher"
+      ],
+      "year": 2021,
+      "journal": "eLife",
+      "doi": "10.7554/eLife.61679",
+      "pmid": "33755019",
+      "pmcid": "PMC8096430",
+      "volume": "10",
+      "pages": "e61679",
+      "type": "physiology",
+      "url": "https://doi.org/10.7554/eLife.61679",
+      "verified": "2026-10-26",
+      "verificationStatus": "cross-verified",
+      "metadataSources": [
+        "https://api.crossref.org/works/10.7554%2FeLife.61679",
+        "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A10.7554%2FeLife.61679&format=json&resultType=core"
+      ]
+    },
+    {
+      "id": "axelrod2015",
+      "title": "Successful Decoding of Famous Faces in the Fusiform Face Area",
+      "authors": "Vadim Axelrod, Galit Yovel",
+      "fullAuthorList": [
+        "Vadim Axelrod",
+        "Galit Yovel"
+      ],
+      "year": 2015,
+      "journal": "PLOS ONE",
+      "doi": "10.1371/journal.pone.0117126",
+      "pmid": "25714434",
+      "pmcid": "PMC4340964",
+      "volume": "10(2)",
+      "pages": "e0117126",
+      "type": "fmri",
+      "url": "https://doi.org/10.1371/journal.pone.0117126",
+      "verified": "2026-10-26",
+      "verificationStatus": "cross-verified",
+      "metadataSources": [
+        "https://api.crossref.org/works/10.1371%2Fjournal.pone.0117126",
+        "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A10.1371%2Fjournal.pone.0117126&format=json&resultType=core"
+      ]
+    },
+    {
+      "id": "bosco2008",
+      "title": "Contributions of the Human Temporoparietal Junction and MT/V5+ to the Timing of Interception Revealed by Transcranial Magnetic Stimulation",
+      "authors": "Gianfranco Bosco, Mauro Carrozzo, Francesco Lacquaniti",
+      "fullAuthorList": [
+        "Gianfranco Bosco",
+        "Mauro Carrozzo",
+        "Francesco Lacquaniti"
+      ],
+      "year": 2008,
+      "journal": "Journal of Neuroscience",
+      "doi": "10.1523/JNEUROSCI.2869-08.2008",
+      "pmid": "19005072",
+      "pmcid": "PMC6671632",
+      "volume": "28(46)",
+      "pages": "12071–12084",
+      "type": "intervention",
+      "url": "https://doi.org/10.1523/JNEUROSCI.2869-08.2008",
+      "verified": "2026-10-26",
+      "verificationStatus": "cross-verified",
+      "metadataSources": [
+        "https://api.crossref.org/works/10.1523%2FJNEUROSCI.2869-08.2008",
+        "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A10.1523%2FJNEUROSCI.2869-08.2008&format=json&resultType=core"
+      ]
+    }
+  ],
+  "results": [
+    {
+      "curationStatus": "source-checked",
+      "annotator": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "checkedAt": "2026-10-26",
+      "curationNote": {
+        "zh": "已对照开放原文表格及方法核对选定记录；属于 AI 辅助整理，不代表人工认证或研究质量评级。",
+        "en": "Selected records checked against the open primary table and methods with AI assistance; not human certification or a study-quality rating."
+      },
+      "id": "schaum2021-meg-stop",
+      "referenceId": "schaum2021",
+      "topics": [
+        "attention"
+      ],
+      "modalities": [
+        "MEG"
+      ],
+      "finding": {
+        "zh": "成功停止相对注意捕获后继续反应，在右额下回等区域出现更高的 beta 源功率。选取表 1 的四个皮层峰值。",
+        "en": "Successful stopping versus continuing after attentional capture increased beta source power in right inferior frontal and related cortical areas. Four cortical peaks from Table 1 are included."
+      },
+      "condition": {
+        "zh": "sSTOP > cAC-GO；刺激选择性停止任务，beta 源功率",
+        "en": "sSTOP > cAC-GO; stimulus-selective stopping, beta source power"
+      },
+      "sample": {
+        "zh": "59 名健康成人（62 名入组，3 名排除）",
+        "en": "59 healthy adults (62 enrolled, 3 excluded)"
+      },
+      "roiDefinition": {
+        "zh": "MEG beamformer 源重建，1 cm 网格；表 1 组水平对比峰值",
+        "en": "MEG beamformer reconstruction on a 1 cm grid; group contrast peaks in Table 1"
+      },
+      "direction": {
+        "zh": "sSTOP beta 功率更高",
+        "en": "Higher beta power for sSTOP"
+      },
+      "regionIds": [
+        "pars-opercularis-r",
+        "pars-opercularis-l",
+        "insula-l"
+      ],
+      "sourceUrl": "https://elifesciences.org/articles/61679",
+      "limitations": {
+        "zh": "源定位依赖模型和网格；这些是统计峰值而非电极位置。表 1 未明确 MNI 模板变体，不能直接贴到当前解剖模板。",
+        "en": "Source estimates depend on the model and grid; these are statistical peaks, not electrodes. The table does not specify the MNI template variant."
+      },
+      "coordinates": [
+        {
+          "id": "schaum-rifg",
+          "label": "rIFG BA44/45",
+          "x": 50,
+          "y": 20,
+          "z": 20,
+          "space": "MNI-unspecified",
+          "kind": "peak",
+          "sourceTable": "Table 1",
+          "sourceRow": "Inferior frontal gyrus BA44/45 R",
+          "sourceUrl": "https://elifesciences.org/articles/61679#table1",
+          "status": "source-checked",
+          "frameNote": {
+            "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
+            "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
+          }
+        },
+        {
+          "id": "schaum-lifg",
+          "label": "lIFG BA44/45",
+          "x": -50,
+          "y": 10,
+          "z": 20,
+          "space": "MNI-unspecified",
+          "kind": "peak",
+          "sourceTable": "Table 1",
+          "sourceRow": "Inferior frontal gyrus BA44/45 L",
+          "sourceUrl": "https://elifesciences.org/articles/61679#table1",
+          "status": "source-checked",
+          "frameNote": {
+            "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
+            "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
+          }
+        },
+        {
+          "id": "schaum-insula",
+          "label": "Left anterior insula / IFG",
+          "x": -40,
+          "y": 30,
+          "z": 0,
+          "space": "MNI-unspecified",
+          "kind": "peak",
+          "sourceTable": "Table 1",
+          "sourceRow": "Anterior insula/left IFG",
+          "sourceUrl": "https://elifesciences.org/articles/61679#table1",
+          "status": "source-checked",
+          "frameNote": {
+            "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
+            "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
+          }
+        },
+        {
+          "id": "schaum-presma",
+          "label": "pre-SMA",
+          "x": 0,
+          "y": 20,
+          "z": 60,
+          "space": "MNI-unspecified",
+          "kind": "peak",
+          "sourceTable": "Table 1",
+          "sourceRow": "Pre-supplementary motor area",
+          "sourceUrl": "https://elifesciences.org/articles/61679#table1",
+          "status": "source-checked",
+          "frameNote": {
+            "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
+            "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
+          }
+        }
+      ],
+      "figures": [
+        {
+          "id": "schaum-fig2",
+          "label": "Figure 2",
+          "url": "https://elifesciences.org/articles/61679#fig2",
+          "sourceUrl": "https://elifesciences.org/articles/61679",
+          "imageUrl": "https://iiif.elifesciences.org/lax/61679%2Felife-61679-fig2-v2.tif/full/,1500/0/default.jpg",
+          "license": "CC BY 4.0 · Schaum et al., 2021",
+          "caption": {
+            "zh": "图 2：停止任务的 MEG / fMRI 来源图与重叠显示。点击图像仅导航到整理者指定的宏观脑区。",
+            "en": "Figure 2: sources associated with stopping in MEG and fMRI. Image clicks navigate only to the curator-assigned anatomical region links."
+          },
+          "regionIds": [
+            "pars-opercularis-r",
+            "pars-opercularis-l",
+            "insula-l"
+          ]
+        }
+      ]
+    },
+    {
+      "curationStatus": "source-checked",
+      "annotator": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "checkedAt": "2026-10-26",
+      "curationNote": {
+        "zh": "已对照开放原文表格及方法核对选定记录；属于 AI 辅助整理，不代表人工认证或研究质量评级。",
+        "en": "Selected records checked against the open primary table and methods with AI assistance; not human certification or a study-quality rating."
+      },
+      "id": "axelrod2015-rffa",
+      "referenceId": "axelrod2015",
+      "topics": [
+        "face"
+      ],
+      "modalities": [
+        "fMRI"
+      ],
+      "finding": {
+        "zh": "在 20 体素 ROI 主分析中，右 FFA 的著名人物身份解码高于随机水平，并通过 12 个 ROI 的 Bonferroni 校正。",
+        "en": "In the primary 20-voxel ROI analysis, famous-face identity decoding in right FFA exceeded chance after Bonferroni correction across 12 ROIs."
+      },
+      "condition": {
+        "zh": "两名著名人物，每人 8 张图；独立首轮定位，其余轮次身份解码",
+        "en": "Two famous identities, 8 images each; first run used for localization, remaining runs for decoding"
+      },
+      "sample": {
+        "zh": "17 名纳入；右 FFA 可定位者 16 名",
+        "en": "17 included; right FFA localized in 16"
+      },
+      "roiDefinition": {
+        "zh": "首轮 face > cup 定位；20 个连续选择性体素，160 mm³；坐标是 ROI 的跨被试平均位置",
+        "en": "First-run face > cup localizer; 20 contiguous selective voxels, 160 mm³; coordinate is the across-subject average ROI location"
+      },
+      "direction": {
+        "zh": "解码高于 50%：t(15)=4.29，p<.001",
+        "en": "Decoding above 50%: t(15)=4.29, p<.001"
+      },
+      "regionIds": [
+        "fusiform-r"
+      ],
+      "sourceUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+      "limitations": {
+        "zh": "局部扫描覆盖；ROI 均值不是组水平解码峰值，也不代表全部面孔身份编码位置。",
+        "en": "Limited scan coverage. The ROI mean is not a group decoding peak and does not identify every site coding face identity."
+      },
+      "coordinates": [
+        {
+          "id": "axelrod-rffa",
+          "label": "Right FFA mean ROI",
+          "x": 39,
+          "y": -52,
+          "z": -16,
+          "space": "MNI-unspecified",
+          "kind": "roi-mean",
+          "sourceTable": "Table 1",
+          "sourceRow": "right FFA; n=16",
+          "sourceUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+          "status": "source-checked",
+          "frameNote": {
+            "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
+            "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
+          }
+        }
+      ],
+      "figures": [
+        {
+          "id": "axelrod-fig3",
+          "label": "Figure 3",
+          "url": "https://doi.org/10.1371/journal.pone.0117126.g003",
+          "sourceUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "imageUrl": "https://journals.plos.org/plosone/article/figure/image?size=large&id=10.1371/journal.pone.0117126.g003",
+          "license": "CC BY 4.0 · Axelrod & Yovel, 2015",
+          "caption": {
+            "zh": "图 3：单变量反应与身份解码。图像关联只指向手工指定的右梭状回。",
+            "en": "Figure 3: univariate responses and identity decoding. The image has a manually assigned right-fusiform region link."
+          },
+          "regionIds": [
+            "fusiform-r"
+          ]
+        }
+      ]
+    },
+    {
+      "curationStatus": "source-checked",
+      "annotator": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "checkedAt": "2026-10-26",
+      "curationNote": {
+        "zh": "已对照开放原文表格及方法核对选定记录；属于 AI 辅助整理，不代表人工认证或研究质量评级。",
+        "en": "Selected records checked against the open primary table and methods with AI assistance; not human certification or a study-quality rating."
+      },
+      "id": "axelrod2015-lffa",
+      "referenceId": "axelrod2015",
+      "topics": [
+        "face"
+      ],
+      "modalities": [
+        "fMRI"
+      ],
+      "finding": {
+        "zh": "同一 20 体素主分析中，左 FFA 解码在未校正水平高于随机，但未通过 12 个 ROI 的校正。",
+        "en": "In the same 20-voxel analysis, left FFA decoding exceeded chance without correction but did not survive correction across 12 ROIs."
+      },
+      "condition": {
+        "zh": "两名著名人物身份解码，与右 FFA 使用相同任务",
+        "en": "Famous-face identity decoding, same task as right FFA"
+      },
+      "sample": {
+        "zh": "17 名纳入；左 FFA 可定位者 13 名",
+        "en": "17 included; left FFA localized in 13"
+      },
+      "roiDefinition": {
+        "zh": "首轮独立 face > cup 定位，20 体素；跨被试 ROI 平均坐标",
+        "en": "Independent first-run face > cup localizer, 20 voxels; across-subject mean ROI coordinate"
+      },
+      "direction": {
+        "zh": "未通过多重比较校正：t(12)=2.57，p=.012（正文）",
+        "en": "Not significant after multiple-comparison correction: t(12)=2.57, p=.012 (main text)"
+      },
+      "regionIds": [
+        "fusiform-l"
+      ],
+      "sourceUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+      "limitations": {
+        "zh": "未显著不能证明左 FFA 不含身份信息；样本量与右 FFA 不同。正文 p=.012，表 2 将 p 四舍五入为 .01。",
+        "en": "A nonsignificant corrected result does not establish absence of identity information. Sample sizes differ. Main text p=.012; Table 2 rounds to .01."
+      },
+      "coordinates": [
+        {
+          "id": "axelrod-lffa",
+          "label": "Left FFA mean ROI",
+          "x": -41,
+          "y": -53,
+          "z": -18,
+          "space": "MNI-unspecified",
+          "kind": "roi-mean",
+          "sourceTable": "Table 1",
+          "sourceRow": "left FFA; n=13",
+          "sourceUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+          "status": "source-checked",
+          "frameNote": {
+            "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
+            "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
+          }
+        }
+      ],
+      "figures": []
+    },
+    {
+      "curationStatus": "source-checked",
+      "annotator": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "checkedAt": "2026-10-26",
+      "curationNote": {
+        "zh": "已对照开放原文表格及方法核对选定记录；属于 AI 辅助整理，不代表人工认证或研究质量评级。",
+        "en": "Selected records checked against the open primary table and methods with AI assistance; not human certification or a study-quality rating."
+      },
+      "id": "bosco2008-tms-protocol1",
+      "referenceId": "bosco2008",
+      "topics": [
+        "motor"
+      ],
+      "modalities": [
+        "TMS",
+        "behavior"
+      ],
+      "finding": {
+        "zh": "协议 1 采用右侧 TPJ 或 hMT/V5+ 的 rTMS 检验下落目标拦截的时间控制。坐标为实际刺激点的组均值。",
+        "en": "Protocol 1 used right TPJ or hMT/V5+ rTMS to examine interception timing for descending targets. Coordinates summarize the actual stimulation sites."
+      },
+      "condition": {
+        "zh": "协议 1：rTMS 前后比较；自然重力或反重力下落目标；反应时控制任务",
+        "en": "Protocol 1: before/after rTMS; gravity-consistent or reversed-gravity descent; reaction-time control"
+      },
+      "sample": {
+        "zh": "协议 1 共 12 名，TPJ 与 hMT/V5+ 各 6 名；其中 6 名也接受另一靶点刺激",
+        "en": "Protocol 1: 12 participants, 6 per initial target; 6 also received stimulation of the other target"
+      },
+      "roiDefinition": {
+        "zh": "根据既往 fMRI 设置靶点并以个体 MRI 导航；表 1 报告实际刺激位置的 MNI 均值",
+        "en": "Targets based on prior fMRI and navigated using individual MRI; Table 1 reports mean actual MNI stimulation positions"
+      },
+      "direction": {
+        "zh": "拦截反应提前；TPJ 效应依赖重力一致性，hMT/V5+ 的效应更广",
+        "en": "Earlier interception responses; TPJ effects depended on gravity consistency, hMT/V5+ effects were broader"
+      },
+      "regionIds": [
+        "supramarginal-r",
+        "lateral-occipital-r"
+      ],
+      "sourceUrl": "https://www.jneurosci.org/content/28/46/12071",
+      "limitations": {
+        "zh": "刺激范围与网络效应不能由单一坐标表示；这些是刺激位置而非 BOLD 激活峰值。区域关联是宏观阅读线索。",
+        "en": "Stimulation spread and network effects cannot be represented by a single point. These are stimulation positions, not BOLD peaks; anatomical links are broad reading associations."
+      },
+      "coordinates": [
+        {
+          "id": "bosco-tpj",
+          "label": "Right TPJ stimulation mean",
+          "x": 65,
+          "y": -36.6,
+          "z": 30.1,
+          "space": "MNI-unspecified",
+          "kind": "stimulation-target",
+          "sourceTable": "Table 1",
+          "sourceRow": "Protocol 1 — TPJ",
+          "sourceUrl": "https://www.jneurosci.org/content/28/46/12071#T1",
+          "status": "source-checked",
+          "frameNote": {
+            "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
+            "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
+          }
+        },
+        {
+          "id": "bosco-mt",
+          "label": "Right hMT/V5+ stimulation mean",
+          "x": 55,
+          "y": -67.8,
+          "z": 1.8,
+          "space": "MNI-unspecified",
+          "kind": "stimulation-target",
+          "sourceTable": "Table 1",
+          "sourceRow": "Protocol 1 — hMT/V5+",
+          "sourceUrl": "https://www.jneurosci.org/content/28/46/12071#T1",
+          "status": "source-checked",
+          "frameNote": {
+            "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
+            "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
+          }
+        }
+      ],
+      "figures": [
+        {
+          "id": "bosco-fig1",
+          "label": "Figure 1",
+          "url": "https://www.jneurosci.org/content/28/46/12071#F1",
+          "sourceUrl": "https://www.jneurosci.org/content/28/46/12071",
+          "license": "Source publisher rights; external link only",
+          "caption": {
+            "zh": "图 1：TPJ 与 hMT/V5+ 刺激位置。仅提供原文图链接。",
+            "en": "Figure 1: TPJ and hMT/V5+ stimulation positions. Source link only."
+          },
+          "regionIds": [
+            "supramarginal-r",
+            "lateral-occipital-r"
+          ]
+        }
+      ]
+    }
+  ],
+  "relations": []
+}

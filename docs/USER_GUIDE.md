@@ -1,100 +1,144 @@
 # NeuroAtlas 使用指南 / User Guide
 
-[中文说明](#中文) · [English](#english) · [在线地址 / Online address](https://pku-zhanlab.github.io/Brian-Learning/)
+[中文](#中文) · [English](#english) · [在线入口](https://pku-zhanlab.github.io/Brian-Learning/)
+
+本文对应 v4 研究工作流；在线部署版本以页面标识为准。
 
 ## 中文
 
-### 选择结构与切换语言
+### 在结构、切片和图谱之间定位
 
-右上角 **中文 / EN** 同时切换界面、知识卡和文献解读。点击三维模型或左侧目录选择结构，也可搜索中英文名称、功能、疾病或 BA 编号；按 `/` 聚焦搜索。
+用右上角 **中文 / EN** 切换界面和内容。点击三维模型或左侧目录选择结构；也可搜索中英文名称、功能、疾病或 BA 编号。按 `/` 聚焦搜索。
 
-左键拖动旋转，滚轮缩放，右键拖动平移。Shift + 点击可多选；眼睛按钮控制显隐，工具栏提供重置、定位与框选。教学预设可切换全脑概览、皮层、深部核团、脑干与小脑等视图。
+左键拖动旋转，滚轮缩放，右键拖动平移；Shift + 点击可多选。眼睛按钮控制显隐，工具栏提供重置、定位和框选。“常用视图”可切换皮层、深部结构、脑干与小脑等观察范围。
 
-知识卡分别展示解剖、生理、认知与临床关联。展开每项“依据与适用范围”，查看支撑文献、研究对象和解释限制。临床扩展默认关闭；未覆盖结构保留知识条目，教学示意需手动开启。
+知识卡区分解剖、生理、认知和临床关联。“依据与适用范围”列出来源、研究对象和解释限制。目录中的 150 个宏观结构是知识索引，不等同于任一图谱的全部标签；缺少几何数据的条目仍可阅读知识内容。
 
-### 在脑区与文献之间往返
+**切片工作台** 提供三正交 MRI。拖动滑块或点击切片移动交点；开启三维切片平面后，可按住 Alt 拖动切面。切片采用放射学显示，以 R/L/A/P/S/I 标记辨认方向。
 
-选中结构后点击 **按脑区查文献**。在 **文献工作台** 中取消“仅当前脑区”，可检索整个库；主题、方法和关键词筛选同时生效。现有 115 篇来源覆盖 21 个主题和 18 类方法，包括 fMRI、MEG、EEG、颅内记录和单细胞记录。
+**图谱分区** 读取所选体积实际包含的全部非零标签：
 
-打开论文查看结果、样本、研究设计及定位依据，点击区域标签定位三维结构。最多选择三篇并列阅读，先比较任务、物种、样本、方法和 ROI 定义，再解释结果异同。库内三组研究讨论提供进一步对照；这是入门精选库，不是穷尽性综述。
+- 点击标签名称单独显示，勾选可组合显示；搜索后点击“显示筛选结果”显示匹配标签。
+- 点击三维分区查看标签、原始体素数、体积和质心。质心是几何统计，不是论文激活坐标。
+- 单选分区使用原始体素边界。多区概览可能抽样显示；若小区被抽样漏掉，按提示单独选择。
+- 原生空间图谱和未确认配准的导入影像使用独立视图；符合当前参考空间条件的标签可“送入 ROI 对比”。
 
-六个已核验原文图链接直接打开出版来源，并附简短释义。图链接不表示网站转载了图片。论文关联高亮表示阅读关联；未给出已核验空间坐标的论文不会显示为精确激活点。
+脑内主参考为 FSL MNI152NLin6Asym。DK68 使用同源重建的曲面、体素和顶点标签；HCP1065 通路使用本项目估计的模板变换。流线是群体弥散 MRI 的估计，不是单根轴突。
 
-可导出所选或当前筛选文献的 BibTeX、单篇证据 JSON，以及参考文献总目录的 GB/T 7714 文本。
+AAL116 与 AAL3 的原生标签、项目估计配准到 FSL 的衍生标签分开标识。选择时查看来源、空间和变换说明；配准衍生数据不是原作者直接发布的 FSL 版本。详见 [AAL 接入说明](AAL_INTEGRATION.md)。
 
-### 比较 ROI 的实际重叠
+### 从脑区阅读论文结果
 
-1. 打开 **ROI 对比**，分别为 A、B 选择允许比较的图谱及区域标签。
-2. 点击 **计算重叠**。计算使用实际标签掩模，在共同的 2 mm 脑模板网格上按已有仿射最近邻采样。
-3. 查看 A 全部、B 全部、交集、仅 A、仅 B、并集的体素数和体积，以及双向覆盖率。
-4. 在“三部分”“只看交集”“A 全部”“B 全部”之间切换；分别调整 A、B、交集的不透明度。内部区域被遮挡时，降低皮层不透明度或使用“穿透查看”，再用三正交切片核对。
-5. 点击 **导出指标 CSV** 保存指标、标签、网格与来源信息。更换图谱或标签后需重新计算。
+选中结构后点击 **按脑区查文献**，或直接进入 **文献工作台**。取消“仅当前脑区”可检索整个库；关键词、主题与模态筛选同时生效。
 
-**Dice = 2 × 交集 / (A + B)**；**Jaccard = 交集 / 并集**。同一互斥图谱的不同标签通常没有交集。最大概率标签按二值掩模比较，其重叠不等于概率分布重叠，也不证明功能相同。重采样不进行新的解剖配准；当前不提供任意 NIfTI 导入。
+现有 118 篇来源覆盖 21 个主题和 18 类方法，包括 fMRI、MEG、EEG、颅内记录和单细胞记录。精选库不代表穷尽性综述。勾选 **仅显示含结构化结果的论文**，可查看当前 3 篇原始研究中的 4 条结果和 8 个表格坐标。
 
-### 切片与脑图谱
+打开论文后，宏观脑区标签可定位对应结构。结构化结果分别列出任务与对比、样本、ROI 定义、效应方向、限制、原文来源与整理者。**查看论文结果坐标**保留峰值、ROI 均值或刺激靶点等不同含义。当前八个坐标的 MNI 模板变体未明确，因此在独立坐标视图查看，不推断其与主模板的精确对应。
 
-“切片工作台”展示三正交 MRI。拖动滑块或点击切片移动交点；开启三维切片平面后，可按住 Alt 拖动切面。切片采用放射学显示，以 R/L/A/P/S/I 标记辨认方向。
+在论文卡片或详情中加入比较，可并列查看最多三篇论文。比较表保留任务、样本、模态、ROI 定义和未提取字段；不能用论文数量替代证据判断。比较页可手工标注两条结果的一致、不同、互补或不可直接比较关系，并填写理由、标注者和来源。
 
-脑内主参考为 FSL MNI152NLin6Asym。DK68 的曲面、体素与顶点标签来自同源重建；31 个 HCP1065 通路 / 颅神经条目经过本项目估计的模板变换。流线是群体弥散 MRI 估计，不是单根轴突或个体临床定位。
+### 添加论文、结果与图片
 
-脊髓模块已移除。选择 Harvard–Oxford 或 JHU 时会自动打开切片，显示当前图谱的彩色体素标签；JHU 是白质标签，不能当作皮层分区或纤维流线。DK 和 BA 也可通过“切片工作台”查看叠加。
+1. 在 **在线查找 DOI / 标题并导入元数据** 中输入查询，选择 Crossref 或 Europe PMC。网络失败可切换来源，或使用 **添加论文** 手工录入。
+2. 元数据导入只创建书目记录，不创建结论、脑区关联或坐标。打开论文后选择 **添加研究结果**，填写任务、样本、方法和原始来源。
+3. 手工添加脑区关联。坐标需填写数值、空间、原文表 / 段、行与定位限制。仅报告“MNI”时选 `MNI-unspecified`。
+4. 结果图可填写原文页、外部图片地址、图注、许可与署名。点击图像使用手工脑区关联，不从图像像素推断坐标；图像载入失败时仍可打开原文链接。
+5. 完成原文核对后再选择“已对照来源”。编辑结论或坐标后会恢复为待核对。书目核对、结果核对和研究质量分别判断；AI 辅助整理不等于人工认证。
 
-公开版的 AAL、AAL3 和旧版 BA 仅提供目录与来源说明，菜单标为“暂不可用”，体积叠加与 ROI 比较停用。各结构的“几何来源”和“数据说明”列出实际覆盖、未覆盖部分与空间状态。
+**导出证据 JSON** 可备份整个结构化结果库；**导出本篇结构化证据**仅包含当前论文与其结果。导入先校验再按 ID 更新，DOI 相同的论文合并。BibTeX 导出所选比较论文，未选择时导出筛选结果。完整字段说明和可导入示例见[结果整理流程](RESULTS_WORKFLOW.md)。
+
+### 导入影像与比较 ROI
+
+进入 **ROI 对比 → 导入本地 NIfTI**。支持单个三维 NIfTI-1 `.nii` / `.nii.gz`：整数标签、0/1 掩膜、0–1 概率图或统计图；可另附 CSV / JSON 标签名。单文件上限 128 MiB、6400 万体素；四维数据需先提取单个三维图。文件在浏览器中读取，不上传。
+
+填写确切空间和来源。有效 sform / qform 只说明文件的坐标映射，不能证明与 FSL MNI152NLin6Asym 模板配准一致。两者不一致时界面提示并使用 sform。
+
+- **空间未确认**：导入后选择 **查看原生影像**，进入独立图谱查看器，可查看标签、掩膜或阈值后的连续图。与主模板的重叠计算保持禁用。
+- **已对齐主模板**：填写处理步骤 / 变换等依据，并明确确认后方可参与比较；界面保留“用户声明，未独立验证”的状态。
+
+比较步骤：
+
+1. 为 A、B 选择可比较数据。标签图可以多选构成并集；统计图设置阈值和正值 / 负值 / 绝对值方向，概率图设置 0–1 阈值。
+2. 点击 **计算重叠**。共同网格为当前 2 mm 脑模板；标签和掩膜最近邻采样，连续图三线性采样后阈值化。没有估计新的解剖配准。
+3. 查看 A、B、交集、独占部分、并集的体素数、体积、双向覆盖率、Dice 和 Jaccard。若两份输入都是概率图，还报告完整概率权重的 Fuzzy Dice / Jaccard，独立于二值阈值。
+4. 调整 A、B 和交集的不透明度，切换显示范围；用“穿透查看”和三正交切片核对内部重叠。较大的表面可能因显示上限而省略，数值指标、切片与掩膜导出仍可用。
+5. 导出指标 CSV，或导出 A、B、交集、并集的 NIfTI 掩膜。更换数据、标签或阈值后重新计算。
+
+Dice = 2 × 交集 / (A + B)，Jaccard = 交集 / 并集。空间重叠不等于功能相同；概率权重重叠也不是独立事件的联合概率。
 
 ### 保存与分享
 
-批注保存在当前浏览器，导出 JSON 可备份或转移。导出视图生成 PNG；测验提供结构名称与功能题。分享链接保存语言、图谱、所选结构和工作区模式，不保存相机位姿、ROI 选择或批注。
+无需账号。**项目与视图** 提供以下方式：
+
+| 方式 | 保存内容 | 跨设备使用 |
+| --- | --- | --- |
+| 命名视图 | 相机、显示、切片、ROI 和工作区设置；本浏览器最多 30 个 | 自定义影像仍需项目文件 |
+| 完整项目文件 | 当前视图、批注、本地证据和导入影像的可恢复数据 | 将项目文件交给对方并“打开项目文件” |
+| 视图链接 | 公开数据的相机、显隐、透明度、切片、ROI 与公共筛选设置 | 对方需能访问相同公开数据；不包含批注、自由检索词、本地论文内容或影像文件 |
+| 证据 JSON | 论文元数据、结构化结果及关系 | 导入时校验并合并 |
+
+打开项目文件会恢复其中视图，并用文件中的批注和本地证据替换当前内容；切换前可先导出当前项目。浏览器存储按浏览器与网站地址隔离，清理浏览器数据会删除本地记录。导入影像仅在当前会话中可用，离开前导出项目以便恢复。图片视图可另存 PNG。
 
 ## English
 
-### Select structures and switch language
+### Navigate structures, slices, and atlas parcels
 
-Use **中文 / EN** to switch the interface, structure cards, and literature explanations together. Select a structure in the model or left catalog, or search Chinese/English names, functions, conditions, or BA numbers. Press `/` to focus search.
+Use **中文 / EN** to switch language. Select structures in the 3D model or catalog, or search names, functions, conditions, or BA IDs. Press `/` to focus search. Left-drag rotates, scrolling zooms, right-drag pans, and Shift + click adds a selection. Visibility controls, focus, reset, box selection, and common views support exploration.
 
-Drag with the left mouse button to rotate, scroll to zoom, and drag with the right button to pan. Shift + click selects multiple structures. Eye buttons control visibility; the toolbar provides reset, focus, and box selection. Teaching presets switch among brain, brainstem, and CNS overview displays.
+Structure cards separate anatomy, physiology, cognition, and clinical associations. **Evidence and scope** records sources, populations, and interpretation limits. The 150 macroscopic catalog entries are a knowledge index, distinct from the labels in any particular atlas.
 
-Structure cards separate anatomy, physiology, cognition, and clinical associations. Expand **Evidence and scope** for sources, study populations, and interpretation limits. Clinical extensions are off by default. Uncovered structures retain knowledge entries; teaching schematics must be enabled explicitly.
+**Slices** provides three orthogonal MRI views. Move the crosshair with sliders or slice clicks. With 3D slice planes enabled, Alt-drag moves a plane. Read the R/L/A/P/S/I orientation markers; slices use radiological display convention.
 
-### Move between regions and papers
+**Atlas label explorer** reads every nonzero label present in the selected volume. Click a label name to isolate it, check multiple labels to combine them, or show search matches. The detail panel reports source voxel counts, volume, and geometric centroid; a centroid is not a published activation coordinate. Single parcels use source voxel boundaries. Overviews may be sampled, with warnings for omitted small labels; isolate a small label to inspect it fully.
 
-Select a structure and choose **Explore papers for this region**. In the **Evidence library**, clear **Current region only** to search the full collection. Topic, modality, and keyword filters combine. The 115 sources cover 21 topics and 18 method categories, including fMRI, MEG, EEG, intracranial recording, and single-cell recording.
+Native atlases and images without confirmed alignment appear in an independent viewer. Eligible labels can be sent to **ROI comparison**. The main brain reference is FSL MNI152NLin6Asym. DK68 surfaces and labels use a matched reconstruction; HCP1065 pathways use a transform estimated in this project. Native AAL / AAL3 and estimated FSL derivatives are separate datasets; consult their source and transform notes in [AAL integration](AAL_INTEGRATION.md).
 
-Open a paper for findings, samples, study design, and localization basis. Click a region tag to locate its structure in 3D. Compare up to three papers, first checking tasks, species, samples, methods, and ROI definitions. Three curated debates support further comparison. This is an introductory collection, not an exhaustive review.
+### Move between regions and findings
 
-Six verified figure links open the original publication and include brief explanations. Figures are linked, not reproduced. Highlighted structures indicate reading associations; papers without verified spatial coordinates are not plotted as exact activations.
+Select **Explore papers for this region**, or open **Evidence library**. Clear **Current region only** to search the complete collection. Keyword, topic, and modality filters combine. The 118 sources span 21 topics and 18 method categories; the collection is not exhaustive.
 
-Export selected or filtered papers as BibTeX, an individual evidence record as JSON, or the reference catalog as GB/T 7714 text.
+Select **Only papers with structured findings** to see the current 4 findings and 8 table coordinates from 3 primary papers. Finding cards preserve tasks, samples, ROI definitions, effect direction, limitations, sources, and annotators. Coordinate meanings distinguish statistical peaks, ROI means, and stimulation targets. The eight initial coordinates report MNI without an established template variant, so they use an independent coordinate view rather than a precise placement on the main anatomy.
 
-### Compare actual ROI overlap
+Compare up to three papers using the matrix. Missing extractions remain unavailable. An explicit relation between two findings can record agreement, disagreement, complementary evidence, or noncomparability, together with conditions, rationale, annotator, and source. Relations do not constitute an automatic meta-analysis.
 
-1. Open **ROI comparison** and select an eligible atlas and region label for A and B.
-2. Choose **Compute overlap**. Actual label masks are sampled on the shared 2 mm brain-template grid using their existing affines and nearest-neighbor sampling.
-3. Inspect voxel counts and volumes for all of A, all of B, intersection, A only, B only, and union, together with both coverage percentages.
-4. Switch among **Three parts**, **Intersection only**, **All of A**, and **All of B**. Adjust A, B, and intersection opacity separately. For hidden internal regions, lower cortex opacity or enable **X-ray view**, then check the linked orthogonal slices.
-5. Choose **Export metrics CSV** to save metrics, labels, grid, and provenance. Changing the atlas or label requires a new calculation.
+### Add papers, findings, and figures
 
-**Dice = 2 × intersection / (A + B)**; **Jaccard = intersection / union**. Different labels in one exclusive parcellation usually do not intersect. Maximum-probability labels are compared as binary masks; their overlap is not overlap of probability distributions or proof of shared function. Resampling does not estimate new anatomical registration. Arbitrary NIfTI import is not provided.
+Use **Look up DOI / title and import metadata** with Crossref or Europe PMC, or **Add paper** for manual entry. Metadata import never creates a conclusion, region link, or coordinate. Open a paper and choose **Add finding** to record the experimental conditions and evidence.
 
-### Slices and brain atlases
+Coordinates require values in millimetres, frame, original table or paragraph, row, source URL, and localization notes. Choose `MNI-unspecified` for an unqualified MNI report. Figures can use a source page and optional external image URL with caption, attribution, and license. Figure clicks follow manual region links, not inferred pixel coordinates; failed images retain source links.
 
-The **Slices** workspace shows three orthogonal MRI views. Move their intersection with sliders or by clicking a slice. With 3D slice planes enabled, hold Alt while dragging a plane to move it. Slices follow radiological convention; use the R/L/A/P/S/I markers for orientation.
+Select **Source-checked** only after comparing the record with its source. Editing findings or coordinates resets their curation status. Metadata checks, source checks, and study quality remain distinct; AI-assisted source extraction is not human certification.
 
-The main brain reference is FSL MNI152NLin6Asym. DK68 surfaces, voxels, and vertex labels come from a matched reconstruction. The 31 HCP1065 pathway / cranial-nerve entries use a template transform estimated in this project. Streamlines are population diffusion-MRI estimates, not individual axons or clinical localization.
+Export evidence JSON for the full structured library or the current paper. Imports validate before merging matching IDs and DOI records. BibTeX exports comparison selections or, if none are selected, the filtered papers. See the [finding workflow and importable example](RESULTS_WORKFLOW.md).
 
-The spinal module has been removed. Selecting Harvard–Oxford or JHU opens slices with coloured atlas labels. JHU contains white-matter labels, not cortical parcels or streamline tracts. DK and BA overlays are also available through the slice workspace.
+### Import images and compare ROIs
 
-AAL, AAL3, and legacy BA provide catalog and provenance metadata only in the public package; volume overlays and ROI comparison are disabled. **Geometry source** and the data panel describe actual coverage, gaps, and spatial status.
+Open **ROI comparison → Import local NIfTI**. Supported inputs are single 3D NIfTI-1 `.nii` / `.nii.gz` label maps, 0/1 masks, 0–1 probability maps, or statistical maps, optionally with CSV / JSON label names. Limits are 128 MiB and 64 million voxels per file. Extract one 3D map from 4D data first. Files are read locally in the browser.
+
+Provide the exact reference space and provenance. An affine, sform, qform, or generic “MNI” name alone cannot establish alignment with FSL MNI152NLin6Asym. A conflicting sform / qform is flagged, and sform is used.
+
+Images with unverified alignment can be opened with **View native volume** for independent label, mask, or thresholded-map inspection. Comparison with the main template remains disabled. Already aligned images require an explicit declaration and processing / transform evidence; their status remains user-declared, not independently verified.
+
+Choose datasets A and B, label unions or continuous-map thresholds, and a positive / negative / absolute tail where applicable. **Compute overlap** samples a shared 2 mm template grid: nearest-neighbor for labels and masks, trilinear followed by thresholding for continuous maps. It does not estimate anatomical registration.
+
+Inspect counts, volumes, coverage, Dice, and Jaccard for A, B, intersection, exclusive parts, and union. Two probability maps additionally receive full probability-weight Fuzzy Dice / Jaccard metrics independent of binary thresholds. Use opacity, X-ray viewing, and orthogonal slices to inspect interior overlap. Oversized surfaces can be omitted while metrics, slices, and mask exports remain available.
+
+Export metrics CSV or NIfTI masks for A, B, intersection, and union. Recompute after changing inputs, labels, or thresholds. Spatial overlap does not establish shared function; probability-weight overlap is not an event joint probability.
 
 ### Save and share
 
-Notes stay in the current browser; export JSON for backup or transfer. Export views as PNG, or use the name/function quizzes for teaching. Share links preserve language, atlas, selected structure, and workspace mode. They do not preserve camera pose, ROI selections, or notes.
+No account is required. **Projects & views** provides:
 
-## 范围与许可 / Scope and licenses
+- **Named views:** up to 30 in this browser, retaining camera, display, slice, ROI, and workspace settings.
+- **Project files:** view state, notes, local evidence, and recoverable imported volume data. Transfer the file to restore custom images on another device.
+- **View links:** camera, visibility, opacity, slices, ROI, and public filters for public data. Notes, free-text queries, local paper content, and image files are excluded.
+- **Evidence JSON:** portable paper, finding, and relation records that validate and merge on import.
 
-本教学包按非商业用途组织；第三方数据按各自上游条款使用。题录核验、空间指标和教学说明不等于全文审定或临床认证。
+Opening a project restores its view and replaces the current notes and local evidence with the file's contents; export the current project first if needed. Browser storage is separate for each browser and site address and is lost when that data is cleared. Imported images are available in the current session; export a project before leaving to restore them later. Views can also be saved as PNG.
 
-This package is assembled for noncommercial teaching; each third-party dataset retains its upstream terms. Bibliographic checks, spatial metrics, and teaching descriptions do not constitute full-text review or clinical certification.
+## 数据来源与许可 / Sources and licenses
 
-[数据许可 / Data notice](../public/data/licenses/NOTICE-DATA.md) · [数据来源 / Data sources](DATA_SOURCES.md) · [空间说明 / Spatial alignment](SPACE_ALIGNMENT.md) · [文献范围 / Literature scope](LITERATURE_RESEARCH.md) · [逐区证据 / Regional evidence](EVIDENCE_COVERAGE.md)
+各数据资产保留其上游许可、署名和修改记录；部分数据受非商业使用条件约束。 / Assets retain their upstream licenses, attribution, and modification records; some have noncommercial-use conditions.
+
+[数据许可 / Data notice](../public/data/licenses/NOTICE-DATA.md) · [空间说明 / Spatial alignment](SPACE_ALIGNMENT.md) · [AAL / AAL3](AAL_INTEGRATION.md) · [结果整理 / Findings](RESULTS_WORKFLOW.md) · [逐区证据 / Regional evidence](EVIDENCE_COVERAGE.md)
 

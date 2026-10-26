@@ -1,0 +1,84 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {encodeView,decodeView,validateViewState,validateCamera,serializeProject,parseProject,assertProjectVolumePayloadSize} from './workspace-project.js';
+import {MAX_NIFTI_FILE_BYTES} from './nifti.js';
+test('public link preserves camera opacity ROI and filters without custom data',()=>{const state={atlas:'jhu',language:'en',opacity:.12,camera:{position:[1,2,3],target:[0,0,0],zoom:2},roi:{aAtlas:'dk',bAtlas:'jhu',aLabels:[1,2],bLabels:[5],display:{opacityA:0},computed:true},literature:{modality:'meg',query:'private note'},atlasExplorer:{atlas:'dk',selected:[2,3]}};const restored=decodeView(encodeView(state).encoded);assert.deepEqual(restored.camera,state.camera);assert.equal(restored.opacity,.12);assert.equal(restored.roi.display.opacityA,0);assert.deepEqual(restored.roi.aLabels,[1,2]);assert.equal(restored.literature.modality,'meg');assert.equal(restored.literature.query,'');});
+test('custom volumes are omitted from links and malformed input rejected',()=>{const v=encodeView({atlas:'custom-a',roi:{aAtlas:'custom-a'},mode:'roi'});assert.deepEqual(v.omitted,['atlas','ROI']);assert.equal(decodeView(v.encoded).atlas,'dk');assert.throws(()=>decodeView('!!'));assert.equal(validateViewState({camera:{position:[NaN,0,0]}}).camera,null);});
+test('project round trip preserves binary data, notes, and user-declared frame',async()=>{const volume={id:'custom-example',data:new Uint16Array([0,1,3,4]),shape:[2,2,1],affine:[-2,0,0,12,0,2,0,-8,0,0,2,2,0,0,0,1],space:'MNI152NLin6Asym',kind:'label',name:'my labels',provenance:'My registered FSL image',metadata:{affineConflict:true},alignmentStatus:'user-declared',canOverlayOnTarget:true,labels:[{id:3,name:'three'}]};const value=await parseProject(await serializeProject({view:{atlas:'dk'},notes:[{text:'keep my note'}],volumes:[volume]}));assert.deepEqual([...value.volumes[0].data],[0,1,3,4]);assert.deepEqual(value.volumes[0].affine,volume.affine);assert.equal(value.volumes[0].canOverlayOnTarget,true);assert.equal(value.notes[0].text,'keep my note');assert.equal(value.volumes[0].labels[0].name,'three');assert.equal(value.volumes[0].metadata.sourceImport.affineConflict,true);});
+
+const fixture=()=>({id:'custom-fixture',data:Uint8Array.of(0,1,1,0),shape:[2,2,1],affine:[2,0,0,0,0,2,0,0,0,0,2,0,0,0,0,1],kind:'mask',space:'MNI152NLin6Asym',name:'Fixture',source:'original.nii.gz',provenance:'Source DOI/example; aligned by pipeline',alignmentStatus:'user-declared',canOverlayOnTarget:true,labels:[{id:1,name:'Mask',zh:'掩膜'}],metadata:{affineConflict:true,qformCode:1,sformCode:4,originalSpatialUnits:1,description:'original header',geometryDoesNotVerifySpace:true}});
+
+test('optional camera extent and up restore while legacy snapshots remain unchanged',()=>{
+  const legacy={position:[1,2,3],target:[0,0,0],zoom:2};
+  assert.deepEqual(validateCamera(legacy),legacy);
+  const current={...legacy,frameExtent:157.25,up:[0,1,0]};
+  assert.deepEqual(decodeView(encodeView({camera:current}).encoded).camera,current);
+  assert.equal(validateCamera({...current,frameExtent:-1}),null);
+  assert.equal(validateCamera({...current,up:[0,0,0]}),null);
+  assert.equal(validateCamera({...current,up:[0,Infinity,0]}),null);
+});
+
+test('links keep only explicitly public reference IDs and strip every free-text query',()=>{
+  const input={literature:{paperId:'private-without-local-prefix',query:'private patient note',compared:['public-paper','secret-file','local-looking-public'],showCompare:true},atlasExplorer:{atlas:'dk',query:'confidential lookup',selected:[1]}};
+  const shared=encodeView(input,{publicReferenceIds:new Set(['public-paper','local-looking-public'])});
+  const restored=decodeView(shared.encoded);
+  assert.equal(restored.literature.paperId,null);assert.equal(restored.literature.query,'');assert.equal(restored.atlasExplorer.query,'');
+  assert.deepEqual(restored.literature.compared,['public-paper','local-looking-public']);assert.equal(restored.literature.showCompare,true);assert.ok(shared.omitted.includes('literature'));
+  const defaultPrivate=decodeView(encodeView(input).encoded);
+  assert.deepEqual(defaultPrivate.literature.compared,[]);assert.equal(defaultPrivate.literature.showCompare,false);
+  assert.equal(decodeView(encodeView({literature:{paperId:'public-paper'}},{publicReferenceIds:['public-paper']}).encoded).literature.paperId,'public-paper');
+});
+
+test('project files retain local queries and full provenance without sending them to links',async()=>{
+  const project=await parseProject(await serializeProject({view:{literature:{query:'local note'},atlasExplorer:{query:'local label'}},volumes:[fixture()]}));
+  assert.equal(project.view.literature.query,'local note');assert.equal(project.view.atlasExplorer.query,'local label');
+  assert.equal(project.volumes[0].source,'original.nii.gz');assert.equal(project.volumes[0].provenance,fixture().provenance);assert.equal(project.volumes[0].kind,'mask');assert.equal(project.volumes[0].canOverlayOnTarget,true);
+});
+
+test('malformed label and display metadata fail before a restored volume reaches React',async()=>{
+  const text=await serializeProject({view:{},volumes:[fixture()]});
+  const changes=[
+    metadata=>{metadata.labels[0].name={unsafe:'object'};},
+    metadata=>{metadata.labels[0].zh=['not text'];},
+    metadata=>{metadata.labels.push({...metadata.labels[0]});},
+    metadata=>{metadata.labels[0].id=-1;},
+    metadata=>{metadata.source={url:'https://example.org'};},
+    metadata=>{metadata.provenance={statement:'not text'};},
+    metadata=>{metadata.note={text:'not text'};},
+    metadata=>{metadata.license=[];},
+    metadata=>{metadata.limitations=[{text:'not text'}];},
+    metadata=>{metadata.canOverlayOnTarget='true';},
+    metadata=>{metadata.metadata.affineConflict='true';},
+    metadata=>{metadata.kind='arbitrary';},
+  ];
+  for(const change of changes){const p=JSON.parse(text);change(p.volumes[0].metadata);await assert.rejects(parseProject(JSON.stringify(p)),/Invalid/);}
+  await assert.rejects(parseProject('null'),/Unsupported project/);
+});
+
+test('unknown metadata is not restored or allowed to override geometry and capabilities',async()=>{
+  const project=JSON.parse(await serializeProject({view:{},volumes:[fixture()]}));
+  Object.assign(project.volumes[0].metadata,{affine:new Array(16).fill(0),shape:[99,99,99],sampleRAS:'malicious function text',probabilityData:{},unexpectedPrivateBlob:'not a supported field'});
+  project.volumes[0].metadata.labels[0].unsafeHtml='<script>no</script>';
+  project.volumes[0].metadata.metadata.arbitraryNested={secret:'do not propagate'};
+  const restored=(await parseProject(JSON.stringify(project))).volumes[0];
+  assert.deepEqual(restored.shape,[2,2,1]);assert.deepEqual(restored.affine,fixture().affine);assert.equal(restored.sampleRAS,undefined);assert.equal(restored.probabilityData,undefined);assert.equal(restored.unexpectedPrivateBlob,undefined);assert.equal(restored.labels[0].unsafeHtml,undefined);assert.equal(restored.metadata.sourceImport.arbitraryNested,undefined);
+});
+
+test('original NIfTI warning survives repeated saves without nesting header history',async()=>{
+  let volumes=[fixture()];
+  for(let i=0;i<4;i++)volumes=(await parseProject(await serializeProject({view:{},volumes}))).volumes;
+  const metadata=volumes[0].metadata;
+  assert.equal(metadata.affineConflict,true);assert.equal(metadata.sourceImport.affineConflict,true);assert.equal(metadata.sourceImport.qformCode,1);assert.equal(metadata.sourceImport.originalSpatialUnits,1);assert.equal(metadata.sourceImport.sourceImport,undefined);assert.equal(metadata.userDeclaredAligned,true);
+});
+
+test('project eligibility never grants overlay to missing evidence or another template',async()=>{
+  for(const patch of [{provenance:''},{space:'MNI152NLin2009cAsym'},{alignmentStatus:'unverified'},{canOverlayOnTarget:false}]){
+    const result=(await parseProject(await serializeProject({view:{},volumes:[{...fixture(),...patch}]}))).volumes[0];
+    assert.equal(result.canOverlayOnTarget,false);assert.equal(result.alignmentStatus,'unverified');assert.equal(result.metadata.userDeclaredAligned,false);
+  }
+});
+
+test('export payload bound matches the NIfTI import limit',()=>{
+  assert.doesNotThrow(()=>assertProjectVolumePayloadSize(MAX_NIFTI_FILE_BYTES));
+  for(const size of [MAX_NIFTI_FILE_BYTES+1,-1,NaN,Infinity])assert.throws(()=>assertProjectVolumePayloadSize(size),/128 MiB/);
+});

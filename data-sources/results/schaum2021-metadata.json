@@ -1,0 +1,247 @@
+{
+  "id": "schaum2021",
+  "doi": "10.7554/eLife.61679",
+  "checkedAt": "2026-10-26T08:16:54.127Z",
+  "crossrefURL": "https://api.crossref.org/works/10.7554%2FeLife.61679",
+  "europeURL": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A10.7554%2FeLife.61679&format=json&resultType=core",
+  "sourceURL": "https://elifesciences.org/articles/61679",
+  "crossref": {
+    "title": [
+      "Right inferior frontal gyrus implements motor inhibitory control via beta-band oscillations in humans"
+    ],
+    "author": [
+      {
+        "ORCID": "https://orcid.org/0000-0002-6589-4530",
+        "authenticated-orcid": true,
+        "given": "Michael",
+        "family": "Schaum",
+        "sequence": "first",
+        "affiliation": [
+          {
+            "name": "Systemic Mechanisms of Resilience, Leibniz Institute for Resilience Research, Mainz, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-5113-723X",
+        "authenticated-orcid": true,
+        "given": "Edoardo",
+        "family": "Pinzuti",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Systemic Mechanisms of Resilience, Leibniz Institute for Resilience Research, Mainz, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-8381-8312",
+        "authenticated-orcid": true,
+        "given": "Alexandra",
+        "family": "Sebastian",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Psychiatry and Psychotherapy, University Medical Center of the Johannes Gutenberg University, Mainz, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Klaus",
+        "family": "Lieb",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Psychiatry and Psychotherapy, University Medical Center of the Johannes Gutenberg University, Mainz, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4270-1468",
+        "authenticated-orcid": true,
+        "given": "Pascal",
+        "family": "Fries",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Ernst Strüngmann Institute (ESI) for Neuroscience in Cooperation with Max Planck Society, Frankfurt, Germany"
+          },
+          {
+            "name": "Donders Institute for Brain, Cognition and Behaviour, Radboud University Nijmegen, Nijmegen, Netherlands"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Arian",
+        "family": "Mobascher",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Psychiatry and Psychotherapy, University Medical Center of the Johannes Gutenberg University, Mainz, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0003-1242-2844",
+        "authenticated-orcid": true,
+        "given": "Patrick",
+        "family": "Jung",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Psychiatry and Psychotherapy, University Medical Center of the Johannes Gutenberg University, Mainz, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0001-8010-5862",
+        "authenticated-orcid": true,
+        "given": "Michael",
+        "family": "Wibral",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Campus Institute Dynamics of Biological Networks, Georg-August University, Göttingen, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "ORCID": "https://orcid.org/0000-0002-4023-5301",
+        "authenticated-orcid": true,
+        "given": "Oliver",
+        "family": "Tüscher",
+        "sequence": "additional",
+        "affiliation": [
+          {
+            "name": "Department of Psychiatry and Psychotherapy, University Medical Center of the Johannes Gutenberg University, Mainz, Germany"
+          }
+        ],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2021,
+          3,
+          23
+        ]
+      ]
+    },
+    "journal": [
+      "eLife"
+    ],
+    "volume": "10",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2021,
+              3,
+              23
+            ]
+          ],
+          "date-time": "2021-03-23T00:00:00Z",
+          "timestamp": 1616457600000
+        },
+        "content-version": "vor",
+        "delay-in-days": 0,
+        "URL": "http://creativecommons.org/licenses/by/4.0/"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2021,
+              3,
+              23
+            ]
+          ],
+          "date-time": "2021-03-23T00:00:00Z",
+          "timestamp": 1616457600000
+        },
+        "content-version": "am",
+        "delay-in-days": 0,
+        "URL": "http://creativecommons.org/licenses/by/4.0/"
+      },
+      {
+        "start": {
+          "date-parts": [
+            [
+              2021,
+              3,
+              23
+            ]
+          ],
+          "date-time": "2021-03-23T00:00:00Z",
+          "timestamp": 1616457600000
+        },
+        "content-version": "tdm",
+        "delay-in-days": 0,
+        "URL": "http://creativecommons.org/licenses/by/4.0/"
+      }
+    ]
+  },
+  "europepmc": {
+    "title": "Right inferior frontal gyrus implements motor inhibitory control via beta-band oscillations in humans.",
+    "authorString": "Schaum M, Pinzuti E, Sebastian A, Lieb K, Fries P, Mobascher A, Jung P, Wibral M, Tüscher O.",
+    "pubYear": "2021",
+    "id": "33755019",
+    "pmcid": "PMC8096430",
+    "doi": "10.7554/elife.61679"
+  }
+}

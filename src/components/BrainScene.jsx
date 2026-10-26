@@ -225,7 +225,8 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     focusROI: () => stateRef.current?.focusROI(),
     retryRemoteAnatomy: () => stateRef.current?.retryRemoteAnatomy(),
     zoom: delta => { const s = stateRef.current; if (s) { s.autoOverview = false; s.camera.zoom = THREE.MathUtils.clamp(s.camera.zoom * (delta > 0 ? 1.22 : 0.82), 0.12, 18); s.camera.updateProjectionMatrix(); s.invalidate(); } },
-    getCameraState: () => { const s = stateRef.current; return s ? { position: s.camera.position.toArray(), target: s.controls.target.toArray(), zoom: s.camera.zoom } : null; },
+    getCameraState: () => { const s = stateRef.current; return s ? { position: s.camera.position.toArray(), target: s.controls.target.toArray(), zoom: s.camera.zoom, up: s.camera.up.toArray(), frameExtent: s.frameExtent } : null; },
+    setCameraState: value => { const s=stateRef.current;if(!s||!value?.position?.every(Number.isFinite)||!value?.target?.every(Number.isFinite)||value.position.length!==3||value.target.length!==3)return;s.autoOverview=false;if(Number.isFinite(value.frameExtent)&&value.frameExtent>0){s.frameExtent=value.frameExtent;const aspect=s.width/s.height||1;s.camera.left=-s.frameExtent*aspect;s.camera.right=s.frameExtent*aspect;s.camera.top=s.frameExtent;s.camera.bottom=-s.frameExtent;}if(value.up?.length===3&&value.up.every(Number.isFinite)&&Math.hypot(...value.up)>0)s.camera.up.fromArray(value.up).normalize();s.camera.position.fromArray(value.position);s.controls.target.fromArray(value.target);s.camera.zoom=THREE.MathUtils.clamp(Number(value.zoom)||1,.12,18);s.camera.updateProjectionMatrix();s.controls.update();s.invalidate(); },
   }), []);
 
   useEffect(() => {
@@ -388,10 +389,10 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       context.fillStyle = '#f4f6f3'; context.fillRect(0, 0, output.width, output.height); context.drawImage(renderer.domElement, 0, 0);
       const scale = exportScale;
       context.fillStyle = '#283f37'; context.font = `${17 * scale}px "Microsoft YaHei", sans-serif`;
-      context.fillText(sceneText('NEUROATLAS · 脑结构教学模型', 'NEUROATLAS · Brain anatomy'), 28 * scale, 35 * scale);
+      context.fillText(sceneText('NEUROATLAS · 脑结构与研究证据', 'NEUROATLAS · Brain anatomy'), 28 * scale, 35 * scale);
       context.font = `${11 * scale}px "Microsoft YaHei", sans-serif`;
       context.fillStyle = '#61756d';
-      context.fillText(sceneText(`RAS · 单位 mm · ${propsRef.current.atlas?.toUpperCase() || 'ATLAS'} · 模板/群体图谱教学显示；空间关系与覆盖见来源`, `RAS · mm · ${propsRef.current.atlas?.toUpperCase() || 'ATLAS'} · Template/population atlas; see source alignment and coverage`), 28 * scale, 57 * scale);
+      context.fillText(sceneText(`RAS · 单位 mm · ${propsRef.current.atlas?.toUpperCase() || 'ATLAS'} · 模板/群体图谱显示；空间关系与覆盖见来源`, `RAS · mm · ${propsRef.current.atlas?.toUpperCase() || 'ATLAS'} · Template/population atlas; see source alignment and coverage`), 28 * scale, 57 * scale);
       const comparison = propsRef.current.roiComparison;
       if (comparison) {
         context.fillText(`ROI A: ${comparison.A.atlasId} #${comparison.A.labelId} · ROI B: ${comparison.B.atlasId} #${comparison.B.labelId} · Dice ${comparison.metrics.dice?.toFixed(4) ?? '—'} · Jaccard ${comparison.metrics.jaccard?.toFixed(4) ?? '—'}`, 28 * scale, 75 * scale);
@@ -606,7 +607,8 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         roiGroup.children.forEach(disposeObject); roiGroup.clear(); status.roiObjects.clear();
         status.roiComparisonId = comparison?.id || null;
         if (comparison) for (const key of ['aOnly', 'bOnly', 'intersection', 'A', 'B']) {
-          const surface = comparison.surfaces?.[key] || voxelMaskSurface(comparison, key);
+          const surface = comparison.surfaces?.[key] || (comparison.surfaceWarnings?.some(w=>w.part===key)?null:voxelMaskSurface(comparison, key));
+          if(!surface)continue;
           if (!surface.positions.length) continue;
           const geometry = new THREE.BufferGeometry(); geometry.setAttribute('position', new THREE.BufferAttribute(surface.positions, 3)); geometry.setAttribute('normal', new THREE.BufferAttribute(surface.normals, 3)); geometry.computeBoundingSphere();
           const mesh = new THREE.Mesh(geometry, material(ROI_COLORS[key], { side: THREE.DoubleSide, roughness: 0.92 }));
@@ -854,7 +856,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
               if (structure.id === 'midbrain' ? z > -22 : structure.id === 'pons' ? z <= -22 && z > -47 : structure.id === 'medulla' ? z <= -47 : false) indices.push(a, b, c);
             }
             if (!indices.length) continue;
-            applyActualAsset(structure.id, { ...data, indices }, { ...brainstem, representation: 'atlas-segmentation', schematic: true, actualEnvelope: true, note: 'HO 脑干真实外表面；中脑、脑桥和延髓界线为教学几何分段，并非核验后的解剖分割', noteEn: 'Real HO brainstem envelope; midbrain, pons and medulla boundaries are illustrative geometric divisions, not validated anatomical subdivisions' }, false);
+            applyActualAsset(structure.id, { ...data, indices }, { ...brainstem, representation: 'atlas-segmentation', schematic: true, actualEnvelope: true, note: 'HO 脑干真实外表面；中脑、脑桥和延髓界线为示意几何分段，并非核验后的解剖分割', noteEn: 'Real HO brainstem envelope; midbrain, pons and medulla boundaries are illustrative geometric divisions, not validated anatomical subdivisions' }, false);
           }
           updateMaterials();
         } catch (error) { if (!destroyed) { propsRef.current.structures.filter(s => s.category === 'brainstem').forEach(s => status.anatomyFailures.add(s.id)); console.warn('[NeuroAtlas anatomical asset]', 'brainstem', error); } }
@@ -915,13 +917,13 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       if (stateRef.current !== state || generation !== state.atlasGeneration) return;
       state.atlasOverlayBlocked = volume?.canOverlayOnTarget === false;
       state.atlasVolume = state.atlasOverlayBlocked ? null : volume; state.colorCortex(); state.updateSlices();
-      propsRef.current.onReady?.({ loaded: state.loaded, method: state.atlasOverlayBlocked ? 'independent' : volume ? 'atlas' : 'teaching', overlayBlocked: state.atlasOverlayBlocked, message: state.atlasOverlayBlocked ? sceneText(`${volume.space || '原生图谱'} 未配准到当前模板 · 已停止表面叠加和坐标查询`, `${volume.space || 'Native atlas'} alignment is unverified · Surface overlay and coordinate queries are disabled`) : volume ? sceneText(`${volume.space || 'MNI'} · 图谱体素采样`, `${volume.space || 'MNI'} · Atlas voxel sampling`) : sceneText('图谱体素数据未接入 · 教学定位', 'Atlas voxel data unavailable · Teaching locations only') });
+      propsRef.current.onReady?.({ loaded: state.loaded, method: state.atlasOverlayBlocked ? 'independent' : volume ? 'atlas' : 'teaching', overlayBlocked: state.atlasOverlayBlocked, message: state.atlasOverlayBlocked ? sceneText(`${volume.space || '原生图谱'} 未配准到当前模板 · 已停止表面叠加和坐标查询`, `${volume.space || 'Native atlas'} alignment is unverified · Surface overlay and coordinate queries are disabled`) : volume ? sceneText(`${volume.space || 'MNI'} · 图谱体素采样`, `${volume.space || 'MNI'} · Atlas voxel sampling`) : sceneText('图谱体素数据未接入 · 结构定位', 'Atlas voxel data unavailable · Structure locations only') });
     }).catch(() => {
       if (stateRef.current !== state || generation !== state.atlasGeneration) return;
       state.atlasVolume = null; state.colorCortex(); state.updateSlices();
       propsRef.current.onReady?.({ loaded: state.loaded, method: 'unavailable', message: sceneText('图谱体素数据加载失败 · 体素标签查询不可用', 'Atlas data failed to load · Voxel-label queries are unavailable') });
     });
-  }, [props.atlas]);
+  }, [props.atlas, props.volumeRevision]);
 
   return <div className="brain-scene" style={{ position: 'relative', width: '100%', height: '100%', minHeight: 0, overflow: 'hidden' }}>
     <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />

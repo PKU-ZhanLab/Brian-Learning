@@ -1,6 +1,7 @@
 import { Matrix4, Vector3 } from 'three';
 import { dataURL } from './assets.js';
 import { roiSliceStyle, sampleComparisonRAS } from './roi.js';
+import {getCustomVolume} from './custom-volumes.js';
 
 const cache = new Map();
 const pending = new Map();
@@ -71,6 +72,8 @@ export async function loadAnatomyVolume() {
 }
 
 export async function loadAtlas(atlasId) {
+  const custom=getCustomVolume(atlasId);
+  if(custom)return prepareVolume(custom.data,custom);
   if (cache.has(atlasId)) return cache.get(atlasId);
   const key = `atlas-${atlasId}`;
   if (!pending.has(key)) pending.set(key, loadManifest().then(async manifest => {

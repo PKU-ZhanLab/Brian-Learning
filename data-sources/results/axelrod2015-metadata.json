@@ -1,0 +1,80 @@
+{
+  "id": "axelrod2015",
+  "doi": "10.1371/journal.pone.0117126",
+  "checkedAt": "2026-10-26T08:17:00.776Z",
+  "crossrefURL": "https://api.crossref.org/works/10.1371%2Fjournal.pone.0117126",
+  "europeURL": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A10.1371%2Fjournal.pone.0117126&format=json&resultType=core",
+  "sourceURL": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4340964/fullTextXML",
+  "crossref": {
+    "title": [
+      "Successful Decoding of Famous Faces in the Fusiform Face Area"
+    ],
+    "author": [
+      {
+        "given": "Vadim",
+        "family": "Axelrod",
+        "sequence": "first",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      },
+      {
+        "given": "Galit",
+        "family": "Yovel",
+        "sequence": "additional",
+        "affiliation": [],
+        "role": [
+          {
+            "vocabulary": "crossref",
+            "role": "author"
+          }
+        ]
+      }
+    ],
+    "published": {
+      "date-parts": [
+        [
+          2015,
+          2,
+          25
+        ]
+      ]
+    },
+    "journal": [
+      "PLOS ONE"
+    ],
+    "volume": "10",
+    "issue": "2",
+    "page": "e0117126",
+    "license": [
+      {
+        "start": {
+          "date-parts": [
+            [
+              2015,
+              2,
+              25
+            ]
+          ],
+          "date-time": "2015-02-25T00:00:00Z",
+          "timestamp": 1424822400000
+        },
+        "content-version": "vor",
+        "delay-in-days": 0,
+        "URL": "http://creativecommons.org/licenses/by/4.0/"
+      }
+    ]
+  },
+  "europepmc": {
+    "title": "Successful decoding of famous faces in the fusiform face area.",
+    "authorString": "Axelrod V, Yovel G.",
+    "pubYear": "2015",
+    "id": "25714434",
+    "pmcid": "PMC4340964",
+    "doi": "10.1371/journal.pone.0117126"
+  }
+}

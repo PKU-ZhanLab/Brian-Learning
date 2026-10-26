@@ -16,3 +16,4 @@
 .remote-anatomy-copy{flex:1;min-width:220px}.remote-anatomy-copy strong{display:block;font-size:12px;color:#315c48}.remote-anatomy-copy small{margin-top:4px;color:#647867;line-height:1.5}.overview-panel .scene-wrap{min-height:460px}
 
 .atlas-availability-note{font-size:11px;line-height:1.5;color:var(--muted);margin:8px 0 0}.atlas-view-note{font-size:12px;line-height:1.6;color:#4b6258;background:#edf2eb;border:1px solid #dce5d7;border-radius:8px;padding:10px 12px;margin:0 0 10px}
+.atlas-explorer-entry{display:flex;align-items:center;justify-content:center;gap:7px;margin:0 15px 14px;padding:10px 8px;border:1px solid #cbd9d0;border-radius:7px;background:#edf4eb;color:#356b55;font-size:11px;cursor:pointer}.header-actions{flex-wrap:wrap}.main-nav{flex-wrap:wrap}@media(max-width:750px){.topbar{flex-wrap:wrap}.main-nav{order:3;width:100%;justify-content:center}.workspace-heading{gap:12px;flex-wrap:wrap}.header-actions .text-button{padding:6px;font-size:11px}}

@@ -1,5 +1,179 @@
-const HOST_LITTLE_ENDIAN = new Uint8Array(new Uint16Array([1]).buffer)[0] === 1;
+// NIfTI-1 single-file reader/writer. Header geometry never establishes template identity.
+export const MAX_NIFTI_VOXELS = 64_000_000;
+export const MAX_NIFTI_FILE_BYTES = 128 * 1024 * 1024;
+const MAX_DECODED_BYTES = MAX_NIFTI_VOXELS * 8 + 1024 * 1024;
 const TYPES = {
+  2: [Uint8Array, 'getUint8', 'setUint8', 1, 'uint8'],
+  4: [Int16Array, 'getInt16', 'setInt16', 2, 'int16'],
+  8: [Int32Array, 'getInt32', 'setInt32', 4, 'int32'],
+  16: [Float32Array, 'getFloat32', 'setFloat32', 4, 'float32'],
+  64: [Float64Array, 'getFloat64', 'setFloat64', 8, 'float64'],
+  256: [Int8Array, 'getInt8', 'setInt8', 1, 'int8'],
+  512: [Uint16Array, 'getUint16', 'setUint16', 2, 'uint16'],
+  768: [Uint32Array, 'getUint32', 'setUint32', 4, 'uint32'],
+};
+
+function fail(code) { throw new Error(code); }
+function geometry(shape, affine) {
+  if (shape?.length !== 3 || !shape.every(n => Number.isInteger(n) && n > 0 && n <= 32767)) fail('nifti-invalid-dimensions');
+  const count = shape.reduce((a, b) => a * b, 1);
+  if (count > MAX_NIFTI_VOXELS) fail('nifti-too-many-voxels');
+  if (affine?.length !== 16 || !affine.every(Number.isFinite) || affine.slice(12).some((v, i) => v !== (i === 3 ? 1 : 0))) fail('nifti-invalid-affine');
+  const a = affine;
+  const det = a[0] * (a[5]*a[10]-a[6]*a[9]) - a[1]*(a[4]*a[10]-a[6]*a[8]) + a[2]*(a[4]*a[9]-a[5]*a[8]);
+  if (!Number.isFinite(det) || Math.abs(det) < 1e-12) fail('nifti-invalid-affine');
+  for (let c = 0; c < 3; c++) {
+    const scale = Math.hypot(a[c], a[4+c], a[8+c]);
+    if (scale < 1e-6 || scale > 1e6) fail('nifti-invalid-affine');
+  }
+  for (const x of [0, shape[0]-1]) for (const y of [0, shape[1]-1]) for (const z of [0, shape[2]-1]) {
+    for (let r = 0; r < 3; r++) if (Math.abs(a[r*4]*x+a[r*4+1]*y+a[r*4+2]*z+a[r*4+3]) > 1e7) fail('nifti-invalid-affine');
+  }
+  return count;
+}
+
+async function unpack(bytes) {
+  if (bytes.byteLength > MAX_NIFTI_FILE_BYTES) fail('nifti-file-too-large');
+  if (bytes[0] !== 31 || bytes[1] !== 139) return bytes;
+  if (typeof DecompressionStream === 'undefined') fail('nifti-gzip-unavailable');
+  const reader = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')).getReader();
+  const chunks = []; let length = 0;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      length += value.length;
+      if (length > MAX_DECODED_BYTES) { await reader.cancel(); fail('nifti-decoded-too-large'); }
+      chunks.push(value);
+    }
+  } catch (error) { if (error.message.startsWith('nifti-')) throw error; fail('nifti-invalid-gzip'); }
+  const result = new Uint8Array(length); let offset = 0;
+  for (const chunk of chunks) { result.set(chunk, offset); offset += chunk.length; }
+  return result;
+}
+
+function qform(view, little, factor) {
+  const f = offset => view.getFloat32(offset, little);
+  let b=f(256), c=f(260), d=f(264), norm=b*b+c*c+d*d;
+  if (![b,c,d,norm].every(Number.isFinite) || norm > 1.0001) fail('nifti-invalid-qform');
+  let a;
+  if (norm > 1-1e-7) { const s=1/Math.sqrt(norm); b*=s; c*=s; d*=s; a=0; } else a=Math.sqrt(1-norm);
+  const spacing=[f(80),f(84),f(88)];
+  if (!spacing.every(value => Number.isFinite(value) && value > 0) || ![0,1,-1].includes(f(76))) fail('nifti-invalid-qform');
+  const dx=spacing[0]*factor, dy=spacing[1]*factor, dz=spacing[2]*factor*(f(76)<0?-1:1);
+  return [
+    (a*a+b*b-c*c-d*d)*dx,2*(b*c-a*d)*dy,2*(b*d+a*c)*dz,f(268)*factor,
+    2*(b*c+a*d)*dx,(a*a+c*c-b*b-d*d)*dy,2*(c*d-a*b)*dz,f(272)*factor,
+    2*(b*d-a*c)*dx,2*(c*d+a*b)*dy,(a*a+d*d-c*c-b*b)*dz,f(276)*factor,
+    0,0,0,1,
+  ];
+}
+
+export async function parseNifti(input, options = {}) {
+  if (!(input instanceof ArrayBuffer) && !(input instanceof Uint8Array)) fail('nifti-invalid-input');
+  const bytes = await unpack(input instanceof Uint8Array ? input : new Uint8Array(input));
+  if (bytes.length < 352) fail('nifti-truncated-header');
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const little = view.getInt32(0, true) === 348;
+  if (!little && view.getInt32(0, false) !== 348) fail('nifti-unsupported-header');
+  if (String.fromCharCode(...bytes.slice(344,348)) !== 'n+1\0') fail('nifti-single-file-required');
+  const i16 = offset => view.getInt16(offset,little), f32=offset=>view.getFloat32(offset,little);
+  const ndim=i16(40);
+  if (ndim !== 3) fail(ndim >= 4 ? 'nifti-4d-unsupported' : 'nifti-invalid-dimensions');
+  const shape=[i16(42),i16(44),i16(46)];
+  const type=TYPES[i16(70)];
+  if (!type || i16(72)!==type[3]*8) fail('nifti-unsupported-datatype');
+  const units=bytes[123]&7, factor=({1:1000,2:1,3:0.001})[units];
+  if (!factor) fail('nifti-unknown-spatial-units');
+  const qcode=i16(252), scode=i16(254);
+  if (qcode<0 || scode<0 || (!qcode && !scode)) fail('nifti-missing-affine');
+  const sa=scode>0 ? [...Array.from({length:12},(_,i)=>f32(280+i*4)*factor),0,0,0,1] : null;
+  const qa=qcode>0 ? qform(view,little,factor) : null;
+  if (qa) geometry(shape,qa);
+  const affine=sa||qa, count=geometry(shape,affine);
+  const offset=f32(108);
+  if (!Number.isInteger(offset) || offset<352 || offset>1024*1024 || offset%16!==0) fail('nifti-invalid-offset');
+  if (offset+count*type[3]>bytes.length) fail('nifti-truncated-data');
+  if (bytes[348]) {
+    for (let at=352; at<offset;) {
+      if (at+8>offset) fail('nifti-invalid-extension');
+      const size=view.getInt32(at,little);
+      if (size<16 || size%16 || at+size>offset) fail('nifti-invalid-extension');
+      at+=size;
+    }
+  }
+  const slope=f32(112), intercept=f32(116);
+  if (!Number.isFinite(slope) || (slope!==0 && !Number.isFinite(intercept))) fail('nifti-invalid-scaling');
+  const scaled=slope!==0 && (slope!==1 || intercept!==0);
+  const data = new (scaled ? Float64Array : type[0])(count);
+  const kind=({stat:'statistic',prob:'probability',labels:'label'})[options.kind]||options.kind||'label';
+  if (!['label','mask','statistic','probability'].includes(kind)) fail('nifti-invalid-kind');
+  let min=Infinity,max=-Infinity,nonzero=0;
+  for (let i=0;i<count;i++) {
+    const raw=view[type[1]](offset+i*type[3],little), value=scaled?raw*slope+intercept:raw;
+    if (!Number.isFinite(value) || Math.abs(value)>1e30) fail('nifti-nonfinite-data');
+    if (kind==='label' && (!Number.isSafeInteger(value)||value<0)) fail('nifti-invalid-labels');
+    if (kind==='mask' && value!==0 && value!==1) fail('nifti-not-binary');
+    if (kind==='probability' && (value<0||value>1)) fail('nifti-probability-range');
+    data[i]=value; min=Math.min(min,value); max=Math.max(max,value); if(value!==0)nonzero++;
+  }
+  const conflict=!!(sa&&qa&&sa.some((v,i)=>Math.abs(v-qa[i])>1e-3));
+  return { data, dataTypedArray:data, shape, affine, order:'x-fastest', dtype:scaled?'float64':type[4], space:options.space||'native-unverified', kind, name:options.name||'Imported NIfTI', canOverlayOnTarget:false, alignmentStatus:'unverified', metadata:{ format:'NIfTI-1', littleEndian:little, datatype:i16(70), qformCode:qcode, sformCode:scode, affineSource:sa?'sform':'qform', qformAffine:qa, sformAffine:sa, affineConflict:conflict, originalSpatialUnits:units, spatialUnits:'mm', scaling:{slope,intercept}, min,max,nonzero, description:new TextDecoder().decode(bytes.slice(148,228)).replace(/\0.*$/s,''), geometryDoesNotVerifySpace:true } };
+}
+
+/** Writes a 3D, little-endian .nii with mm units and the supplied affine as sform. */
+export function exportNifti(volume) {
+  const affine=Array.isArray(volume.affine?.[0])?volume.affine.flat():volume.affine;
+  const count=geometry(volume.shape,affine), data=volume.data||volume.dataTypedArray;
+  if (data?.length!==count) fail('nifti-invalid-data-length');
+  const entry=Object.entries(TYPES).find(([,type])=>data instanceof type[0]);
+  if (!entry) fail('nifti-unsupported-datatype');
+  const [code,type]=entry, bytes=new Uint8Array(352+count*type[3]), view=new DataView(bytes.buffer);
+  view.setInt32(0,348,true); view.setInt16(40,3,true);
+  for(let i=0;i<7;i++)view.setInt16(42+2*i,volume.shape[i]||1,true);
+  view.setInt16(70,+code,true);view.setInt16(72,type[3]*8,true);view.setFloat32(76,1,true);
+  for(let c=0;c<3;c++)view.setFloat32(80+4*c,Math.hypot(affine[c],affine[c+4],affine[c+8]),true);
+  view.setFloat32(108,352,true);view.setFloat32(112,1,true);bytes[123]=2;
+  // Code 2 means aligned coordinates; it intentionally does not claim verified MNI space.
+  view.setInt16(254,2,true);
+  for(let i=0;i<12;i++)view.setFloat32(280+i*4,affine[i],true);
+  bytes.set(new TextEncoder().encode(String(volume.name||'ROI mask; reference details in companion CSV')).slice(0,79),148);
+  bytes.set([110,43,49,0],344);
+  const [nx,ny,nz]=volume.shape;
+  for(let i=0;i<count;i++) {
+    const index=volume.order==='z-fastest'?(i%nx*ny+Math.floor(i/nx)%ny)*nz+Math.floor(i/(nx*ny)):i;
+    if(!Number.isFinite(data[index]))fail('nifti-nonfinite-data');
+    view[type[2]](352+i*type[3],data[index],true);
+  }
+  return bytes;
+}
+
+export function parseLabelTable(text, format='csv') {
+  let rows;
+  if(format==='json') {
+    const value=JSON.parse(text);
+    rows=Array.isArray(value)?value:Object.entries(value).map(([id,label])=>({id,...(typeof label==='string'?{name:label}:label)}));
+  } else {
+    const records=[];let row=[],field='',quoted=false;
+    text=text.replace(/^\uFEFF/,'');
+    for(let i=0;i<=text.length;i++) {
+      const ch=text[i];
+      if(ch==='"') {if(quoted&&text[i+1]==='"'){field+='"';i++;}else quoted=!quoted;}
+      else if(!quoted&&(ch===','||ch==='\n'||ch===undefined)) {row.push(field.replace(/\r$/,''));field='';if(ch!==','){if(row.some(v=>v.trim()))records.push(row);row=[];}}
+      else field+=ch;
+    }
+    if(quoted)fail('labels-invalid-table');
+    const header=records.shift()?.map(v=>v.trim().toLowerCase())||[];
+    if(!header.includes('id')||!header.includes('name'))fail('labels-invalid-table');
+    rows=records.map(values=>Object.fromEntries(header.map((key,i)=>[key,values[i]||''])));
+  }
+  const ids=new Set();
+  return rows.map(row=>{const id=Number(row.id),name=String(row.name||'').trim();if(!Number.isSafeInteger(id)||id<=0||!name||ids.has(id))fail('labels-invalid-table');ids.add(id);return{id,name,...(row.zh?{zh:String(row.zh)}:{})};});
+}
+
+// Preserved pinned-source PAM50 reader and cropping API.
+const HOST_LITTLE_ENDIAN = new Uint8Array(new Uint16Array([1]).buffer)[0] === 1;
+const PAM50_TYPES = {
   2: { bytes: 1, ArrayType: Uint8Array, getter: 'getUint8' },
   4: { bytes: 2, ArrayType: Int16Array, getter: 'getInt16' },
   8: { bytes: 4, ArrayType: Int32Array, getter: 'getInt32' },
@@ -23,7 +197,7 @@ export function parseNifti1(buffer, { spatialUnitsIfMissing } = {}) {
   if (ndim < 3 || ndim > 7 || shape.some(n => n <= 0) || Array.from({ length: Math.max(0, ndim - 3) }, (_, axis) => view.getInt16(48 + axis * 2, little)).some(n => n !== 1)) throw new Error('nifti-dimensions');
   const count = shape.reduce((a, b) => a * b, 1);
   if (count > 50_000_000) throw new Error('nifti-too-large');
-  const datatype = view.getInt16(70, little), type = TYPES[datatype], bitpix = view.getInt16(72, little);
+  const datatype = view.getInt16(70, little), type = PAM50_TYPES[datatype], bitpix = view.getInt16(72, little);
   if (!type || bitpix !== type.bytes * 8) throw new Error('nifti-datatype');
   const offset = view.getFloat32(108, little);
   if (!Number.isInteger(offset) || offset < 352 || offset + count * type.bytes > buffer.byteLength) throw new Error('nifti-data-length');

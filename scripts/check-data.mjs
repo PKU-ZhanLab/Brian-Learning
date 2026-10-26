@@ -15,7 +15,7 @@ const networkIds=new Set(networks.map(n=>n.id));
 assert.equal(ids.size,structures.length,'Structure IDs must be unique');
 assert.equal(refs.size,references.length,'Reference IDs must be unique');
 for(const s of structures){
-  assert(s.name&&s.en&&s.anatomy&&s.function&&s.cognition&&s.clinical,`Missing teaching fields: ${s.id}`);
+  assert(s.name&&s.en&&s.anatomy&&s.function&&s.cognition&&s.clinical,`Missing structure fields: ${s.id}`);
   assert(s.position.length===3&&s.position.every(Number.isFinite),`Invalid anchor: ${s.id}`);
   assert(categoryIds.has(s.category),`Invalid category: ${s.id}`);
   assert(s.references.length>0,`Uncited structure: ${s.id}`);
@@ -35,16 +35,23 @@ for(const mesh of manifest.meshes){
   const model=JSON.parse(bytes);assert.equal(model.positions.length%3,0);assert.equal(model.indices.length%3,0);
   assert(model.positions.every(Number.isFinite));assert(model.indices.every(i=>i>=0&&i<model.positions.length/3));
 }
-for(const option of atlasOptions){
-  const atlas=manifest.atlases[option.id];assert(atlas,`Missing atlas metadata ${option.id}`);if(!atlas.available)continue;
+for(const option of atlasOptions)assert(manifest.atlases[option.id],`Missing atlas metadata ${option.id}`);
+for(const [id,atlas] of Object.entries(manifest.atlases)){
+  if(!atlas.available)continue;
+  assert(['uint8','uint16'].includes(atlas.dtype),`Unsupported atlas dtype ${id}`);
+  assert.equal(atlas.order,'x-fastest',`Unsupported array layout ${id}`);
+  assert(atlas.shape.length===3&&atlas.shape.every(v=>Number.isInteger(v)&&v>0),`Invalid atlas dimensions ${id}`);
+  assert(atlas.affine.length===16&&atlas.affine.every(Number.isFinite),`Invalid atlas affine ${id}`);
   const bytes=fs.readFileSync(path.join(data,atlas.data));
-  if(atlas.sha256)assert.equal(sha(bytes),atlas.sha256,`Atlas hash mismatch ${option.id}`);
+  if(atlas.sha256)assert.equal(sha(bytes),atlas.sha256,`Atlas hash mismatch ${id}`);
   const arr=atlas.dtype==='uint16'?new Uint16Array(bytes.buffer,bytes.byteOffset,bytes.byteLength/2):new Uint8Array(bytes.buffer,bytes.byteOffset,bytes.byteLength);
   assert.equal(arr.length,atlas.shape.reduce((a,b)=>a*b,1));
-  const labels=new Set(atlas.labels.map(l=>l.id));for(const value of new Set(arr))assert(value===0||labels.has(value),`Undocumented label ${value} in ${option.id}`);
+  const labels=new Set(atlas.labels.map(l=>l.id)),present=new Set(arr);
+  for(const value of present)assert(value===0||labels.has(value),`Undocumented label ${value} in ${id}`);
+  if(Number.isInteger(atlas.positiveLabelCount))assert.equal([...present].filter(v=>v>0).length,atlas.positiveLabelCount,`Positive label coverage ${id}`);
   const volume=prepareVolume(arr,atlas);let tested=0;
-  for(let index=0;index<arr.length;index+=173){if(!arr[index])continue;const [nx,ny]=atlas.shape;const x=index%nx,y=Math.floor(index/nx)%ny,z=Math.floor(index/nx/ny);const a=atlas.affine;const world=[a[0]*x+a[1]*y+a[2]*z+a[3],a[4]*x+a[5]*y+a[6]*z+a[7],a[8]*x+a[9]*y+a[10]*z+a[11]];assert.equal(volume.sampleRAS(...world),arr[index],`Affine sampling ${option.id}`);assert(atlasLabelAt(volume,world)?.name);tested++;}
-  assert(tested>0);console.log(`PASS ${option.id}: ${labels.size} labels; ${tested} affine samples; SHA256 verified`);
+  for(let index=0;index<arr.length;index+=173){if(!arr[index])continue;const [nx,ny]=atlas.shape;const x=index%nx,y=Math.floor(index/nx)%ny,z=Math.floor(index/nx/ny);const a=atlas.affine;const world=[a[0]*x+a[1]*y+a[2]*z+a[3],a[4]*x+a[5]*y+a[6]*z+a[7],a[8]*x+a[9]*y+a[10]*z+a[11]];assert.equal(volume.sampleRAS(...world),arr[index],`Affine sampling ${id}`);assert(atlasLabelAt(volume,world)?.name);tested++;}
+  assert(tested>0);console.log(`PASS ${id}: ${labels.size} labels; ${tested} affine samples; SHA256 verified`);
 }
 assert(sliceWorldPoint('z',0,0,.5,true)[0]>0,'Radiological left screen must be R');
 assert(sliceWorldPoint('z',0,1,.5,true)[0]<0,'Radiological right screen must be L');
@@ -72,7 +79,29 @@ assert.equal(histBytes.length,probabilities.length);
 assert.equal(sha(probabilities),histology.probabilitySha256);
 for(let i=0;i<histBytes.length;i++)if(histBytes[i])assert(probabilities[i]>=25&&probabilities[i]<=100,'Histological label must meet published threshold');
 assert.equal(new Set(histology.labels.map(l=>l.ba)).size,9);
-for(const id of ['aal','aal3','ba-legacy'])assert.equal(manifest.atlases[id].canOverlayOnTarget,false,'Unverified templates must not be overlaid as registered');
+for(const id of ['aal','aal3']){
+  const atlas=manifest.atlases[id];assert(atlas.available&&atlas.canViewInNativeSpace,`Native atlas must remain usable: ${id}`);
+  assert.equal(atlas.canOverlayOnTarget,false,'Native Colin27 must not be treated as FSL');
+  assert.equal(atlas.alignmentStatus,'native-space');
+}
+for(const [id,count] of [['aal',116],['aal3',166],['aal-registered',116],['aal3-registered',166]]){
+  const atlas=manifest.atlases[id];assert.equal(atlas.positiveLabelCount,count);assert.equal(atlas.labels.length,count);
+  assert(atlas.labels.every(label=>label.voxels>0),`Empty AAL label: ${id}`);
+  assert(atlas.publicRedistributionReady&&atlas.licenseNotice,`Missing AAL publication evidence: ${id}`);
+  if(id.endsWith('-registered')){
+    assert.equal(atlas.canOverlayOnTarget,true);assert.equal(atlas.alignmentStatus,'registered-estimate');
+    assert.equal(atlas.registeredSpace,'MNI152NLin6Asym');assert.equal(atlas.fieldResolutionMm,2);assert.equal(atlas.outputGridResolutionMm,1);
+    assert(atlas.limitations?.length&&atlas.review,`Missing estimated-registration limits: ${id}`);
+  }
+}
+const aalReview=JSON.parse(fs.readFileSync(path.join(data,'aal-v3/root-review.json'),'utf8'));
+assert.equal(aalReview.humanValidated,false,'AI visual review is not human anatomical certification');
+assert.equal(sha(fs.readFileSync(path.join(data,'aal-v3/sources/colin27-to-fsl-dipy.npz'))),aalReview.fieldSha256);
+assert.equal(sha(fs.readFileSync(path.join(data,'aal-v3/registration-qc.png'))),aalReview.observedQcSha256);
+assert.equal(sha(fs.readFileSync(path.join(data,'aal-v3/label-resampling-report.json'))),aalReview.labelResamplingReportSha256);
+assert.equal(manifest.atlases['ba-legacy'].canOverlayOnTarget,false);assert.equal(manifest.atlases['ba-legacy'].available,false);
+for(const file of ['AAL-NOTICE.md','GNU-GPL-3.0.txt','readme_aal_for_SPM12.txt','AAL3-GPL-EVIDENCE.json','SPM12-LICENCE.txt','Colin27-LICENSE.txt'])assert(fs.statSync(path.join(data,'aal-v3/licenses',file)).size>0);
+console.log('PASS AAL: native116/166 and estimated FSL116/166, source notices, unchanged reviewed field and explicit limits');
 const anatomyFile=path.join(data,'anatomy/manifest.json');
 if(fs.existsSync(anatomyFile)){
   const anatomy=JSON.parse(fs.readFileSync(anatomyFile,'utf8'));let genuine=0,schematic=0,remote=0;
@@ -104,6 +133,6 @@ assert(structures.every(s=>s.evidence),'Every catalog structure must have an exp
   }
   console.log(`PASS evidence: ${structures.length} structures have four claim-level fields with valid reference links`);
 }
-console.log('PASS precision: DK68 paired annotations, BA probability thresholds, unregistered overlay guards');
+console.log('PASS precision: DK68 paired annotations, AAL native/estimated-space guards, BA probability thresholds and unavailable legacy BA');
 console.log(`PASS catalog: ${structures.length} structures, ${references.length} references, 31 cord segments, all cross-references and hemispheres valid`);
 console.log(`PASS geometry: ${manifest.meshes.length} mesh assets, T1 size/hash, RAS/radiological conventions`);

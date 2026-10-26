@@ -20,11 +20,11 @@ function Slice({plane,volume,atlasVolume,slices,onChange,onCoordinate,language='
     <div className="slice-label" title={labelName||emptyLabel}>{label?`${label.value} · ${labelName}`:`— ${en?'No atlas label at this coordinate':'当前坐标无图谱标签'}`}</div>
   </div>;
 }
-export default function SliceViews({slices,onChange,atlas,onCoordinate,independentSpace=false,onReturnToBrain,language='zh'}){
+export default function SliceViews({slices,onChange,atlas,onCoordinate,independentSpace=false,onReturnToBrain,language='zh',volumeRevision}){
   const en=language==='en';
   const [volume,setVolume]=useState(null),[atlasVolume,setAtlasVolume]=useState(null),[error,setError]=useState('');
   useEffect(()=>{let alive=true;loadAnatomyVolume().then(value=>alive&&setVolume(value)).catch(value=>alive&&setError(value.message));return()=>{alive=false;};},[]);
-  useEffect(()=>{let alive=true;setAtlasVolume(null);loadAtlas(atlas).then(value=>alive&&setAtlasVolume(value?.canOverlayOnTarget===false?null:value)).catch(()=>{});return()=>{alive=false;};},[atlas]);
+  useEffect(()=>{let alive=true;setAtlasVolume(null);loadAtlas(atlas).then(value=>alive&&setAtlasVolume(value?.canOverlayOnTarget===false?null:value)).catch(()=>{});return()=>{alive=false;};},[atlas,volumeRevision]);
   if(error)return <div className="slice-error">{en?`Unable to load MRI. ${/[\u3400-\u9fff]/.test(error)?'':error+' '}Check that the data directory is complete, then refresh and retry.`:`${error}。请检查 data 目录是否完整，刷新后重试。`}</div>;
   if(independentSpace)return <div className="slice-error">{en?'The current coordinate belongs to an independent spinal reference; brain MRI slices do not follow this position.':'当前坐标属于独立脊髓参考；脑 MRI 切片不与该位置联动。'}<button className="text-button" onClick={onReturnToBrain}>{en?'Return to brain-template slices':'返回脑模板切片'}</button></div>;
   return <div className="slice-views">{PLANES.map(plane=><Slice key={plane.axis} plane={plane} volume={volume} atlasVolume={atlasVolume} slices={slices} onChange={onChange} onCoordinate={onCoordinate} language={language}/>)}</div>;

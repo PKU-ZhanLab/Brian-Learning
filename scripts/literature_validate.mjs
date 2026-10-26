@@ -8,17 +8,22 @@ import {references} from '../src/data/references.js';
 import {additionalReferences} from '../src/data/references-expanded.js';
 import {evidenceByStructureId,atlasEvidence} from '../src/data/evidence.js';
 import {additionalLiteratureReferences,literaturePapers,literatureTopics,literatureModalities,literatureDebates,literatureByReferenceId} from '../src/data/literature.js';
+import {additionalResultsReferences,curatedResults} from '../src/data/results.js';
+import {emptyEvidence,validateEvidence} from '../src/lib/evidence-workspace.js';
+import {structures as allStructures} from '../src/data/catalog.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dir=path.join(root,'data-sources/literature-upgrade');
 const sha=s=>createHash('sha256').update(s).digest('hex');
-const refs=[...references,...additionalReferences,...additionalLiteratureReferences];
+const legacyRefs=[...references,...additionalReferences,...additionalLiteratureReferences];
+const refs=[...legacyRefs,...additionalResultsReferences];
 const refIds=new Set(refs.map(r=>r.id));
 const topics=new Set(literatureTopics.map(t=>t.id));
 const modalities=new Set(literatureModalities.map(t=>t.id));
 const bilingual=(x,name)=>assert(x&&typeof x.zh==='string'&&x.zh.trim()&&typeof x.en==='string'&&x.en.trim(),`Missing bilingual text: ${name}`);
 const url=(s,name)=>assert(/^https?:\/\//.test(s),`Missing source URL: ${name}`);
 assert.equal(refIds.size,refs.length,'Duplicate reference IDs');
-assert.equal(literaturePapers.length,refs.length,'Every reference must have one paper record');
+assert.equal(literaturePapers.length,legacyRefs.length,'Every legacy reference must have one reading record');
+assert.equal(refs.length,118,'Expected 118 references in the current release');
 assert.equal(new Set(literaturePapers.map(p=>p.id)).size,literaturePapers.length,'Duplicate paper IDs');
 const doiSet=new Set();
 for(const r of refs)if(r.doi){const d=r.doi.toLowerCase();assert(!doiSet.has(d),`Duplicate DOI: ${d}`);doiSet.add(d);}
@@ -83,4 +88,40 @@ for(const f of figureAudit.figures){
   assert(literatureByReferenceId[f.referenceId].figures.some(x=>x.url===f.url&&x.license===f.license));
 }
 assert.equal(mappedIds.size,Object.keys(evidenceByStructureId).length,'Some structures have no reading links');
-console.log(JSON.stringify({status:'passed',papers:literaturePapers.length,structuresWithReadingLinks:mappedIds.size,regionLinks:links,topics:topics.size,modalities:modalities.size,comparisons:literatureDebates.length,figureLinks:figures,rawHashChecks:checkedHashes,unavailableRawCaches,verifiedCoordinates:0},null,2));
+// Structured extraction is a separate layer from the legacy reading annotations.
+// These checks lock provenance and numeric transcription; they do not re-review the paper.
+const structured={...emptyEvidence(),references:additionalResultsReferences,results:curatedResults};
+const structuredReport=validateEvidence(structured,{knownReferences:refs,knownRegions:Object.keys(evidenceByStructureId)});
+assert(structuredReport.valid,structuredReport.errors.join('\n'));
+assert.equal(additionalResultsReferences.length,3,'Expected three primary papers with structured results');
+assert.equal(curatedResults.length,4,'Expected four structured findings');
+const sourceCheckedCoordinates=curatedResults.flatMap(r=>r.coordinates);
+assert.equal(sourceCheckedCoordinates.length,8,'Expected eight source-checked coordinates');
+for(const r of curatedResults){
+  assert(refIds.has(r.referenceId),`Unknown structured-result paper: ${r.id}`);
+  assert.equal(r.curationStatus,'source-checked');
+  for(const key of ['finding','condition','sample','roiDefinition','direction','limitations','curationNote'])bilingual(r[key],`${r.id}.${key}`);
+  r.topics.forEach(t=>assert(topics.has(t),`Unknown result topic: ${r.id}/${t}`));
+  r.modalities.forEach(m=>assert(modalities.has(m),`Unknown result modality: ${r.id}/${m}`));
+  for(const c of r.coordinates){assert.equal(c.space,'MNI-unspecified',`Do not infer a precise MNI variant: ${c.id}`);assert.equal(c.status,'source-checked');bilingual(c.frameNote,`${c.id}.frameNote`);}
+  for(const f of r.figures){bilingual(f.caption,`${r.id}/${f.id}`);assert(!f.rehosted,'Source figures must remain external');if(f.imageUrl)assert(/^CC BY 4\.0/.test(f.license),'External source image requires recorded open license');}
+}
+const resultsDir=path.join(root,'data-sources/results');
+const audit=JSON.parse(await readFile(path.join(resultsDir,'source-audit.json'),'utf8'));
+assert.equal(audit.metadataSources.length,3);assert.equal(audit.coordinates.length,8);
+let resultMetadataHashChecks=0;
+for(const record of audit.metadataSources){
+  assert(additionalResultsReferences.some(r=>r.id===record.referenceId));
+  assert.equal(path.basename(record.file),record.file,'Metadata audit path must stay in results directory');
+  const raw=await readFile(path.join(resultsDir,record.file));assert.equal(sha(raw),record.sha256,`Changed results metadata: ${record.referenceId}`);resultMetadataHashChecks++;
+  const parsed=JSON.parse(raw);const ref=additionalResultsReferences.find(r=>r.id===record.referenceId);
+  assert.equal(parsed.crossref.title[0],ref.title);assert.equal(parsed.europepmc.doi.toLowerCase(),ref.doi.toLowerCase());assert.equal(Number(parsed.europepmc.pubYear),ref.year);
+  assert.deepEqual(parsed.crossref.author.map(a=>[a.given,a.family].filter(Boolean).join(' ')),ref.fullAuthorList);
+}
+for(const source of audit.coordinates){const c=sourceCheckedCoordinates.find(c=>c.id===source.id);assert(c,`Missing audited coordinate ${source.id}`);assert.deepEqual([c.x,c.y,c.z],source.xyz);assert.equal(c.space,source.space);assert.equal(c.sourceRow,source.sourceRow);assert.equal(c.sourceTable,source.sourceTable);assert.equal(c.sourceUrl,source.sourceURL);assert.equal(c.kind,source.kind);}
+const portable=JSON.parse(await readFile(path.join(resultsDir,'curated-results.json'),'utf8'));
+assert.deepEqual(portable,structured,'Portable example must match the built-in structured findings');
+const frames=Object.fromEntries([...new Set(sourceCheckedCoordinates.map(c=>c.space))].map(space=>[space,sourceCheckedCoordinates.filter(c=>c.space===space).length]));
+const activeBrainStructuresWithReadingLinks=allStructures.filter(s=>s.category!=='spinal'&&mappedIds.has(s.id)).length;
+assert.equal(activeBrainStructuresWithReadingLinks,150,'Expected 150 active brain catalog structures');
+console.log(JSON.stringify({status:'passed',papers:refs.length,legacyReadingRecords:literaturePapers.length,legacyStructureRecordsWithReadingLinks:mappedIds.size,activeBrainStructuresWithReadingLinks,regionLinks:links,topics:topics.size,modalities:modalities.size,comparisons:literatureDebates.length,figureLinks:figures+curatedResults.reduce((n,r)=>n+r.figures.length,0),externalSourceImages:curatedResults.flatMap(r=>r.figures).filter(f=>f.imageUrl).length,rawHashChecks:checkedHashes,unavailableRawCaches,resultMetadataHashChecks,structuredPapers:additionalResultsReferences.length,structuredFindings:curatedResults.length,sourceCheckedCoordinates:sourceCheckedCoordinates.length,coordinateFrames:frames},null,2));

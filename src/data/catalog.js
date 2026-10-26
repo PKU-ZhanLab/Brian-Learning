@@ -87,7 +87,7 @@ const bilateral = (base) => ['L','R'].map(side=>{
 const cortical=cortexRows.flatMap(([id,name,en,position,lobe,net,anatomy,fun,cognition,clinical,ba,refs])=>bilateral({
   id,name,en,position,category:'cortex',lobe,color:colors[lobe],size:[10,10,8],networks:net,
   anatomy,function:fun,cognition,clinical,aliases:[...ba.map(n=>`BA${n}`),...(id==='precentral'?['M1','初级运动皮层']:[]),...(id==='postcentral'?['S1','初级躯体感觉皮层']:[]),...(id==='pericalcarine'?['V1','初级视觉皮层']:[])],
-  references:['desikan2006',...refs],atlasLabels:{dk:id.replaceAll('-',''),...(ba.length?{ba:ba.map(n=>`BA${n}`).join(' / ')+'（大致教学关联）'}:{})},
+  references:['desikan2006',...refs],atlasLabels:{dk:id.replaceAll('-',''),...(ba.length?{ba:ba.map(n=>`BA${n}`).join(' / ')+'（大致解剖关联）'}:{})},
 }));
 
 const deepRows=[
@@ -195,6 +195,6 @@ export const teachingNotes={
  coordinates:'脑内空间采用 RAS 毫米坐标：x 向右、y 向前、z 向上为正。RAS 坐标与放射学切片显示习惯是不同概念。',
  atlas:'术语关联不等于图谱空间映射。坐标标签应查询各图谱实际体素和仿射矩阵；无空间数据的图谱仅提供知识索引。',
  networks:'网络筛选表示教学关联，脑回与功能网络不一一对应；同一结构可参与多个网络。',
- spinal:'脊髓与颅神经采用教学示意，完整脊髓不包含在 MNI152 脑模板中。脊髓节段与椎骨节段不能混用。',
+ spinal:'脊髓与颅神经采用结构示意，完整脊髓不包含在 MNI152 脑模板中。脊髓节段与椎骨节段不能混用。',
  evidence:'损伤症状是常见教学例子，取决于侧别、病变范围、连接及个体差异；临床扩展默认关闭。',
 };

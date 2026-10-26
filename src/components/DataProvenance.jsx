@@ -10,6 +10,8 @@ const statusNames = {
   registered: ['已配准并校验', 'Registered and validated'],
   'registered-affine': ['仿射配准', 'Affine registration'],
   'registered-nonlinear': ['非线性配准', 'Nonlinear registration'],
+  'registered-estimate': ['项目估计配准', 'Project-estimated registration'],
+  'user-declared': ['用户声明已对齐', 'User-declared alignment'],
   'resampled-only': ['仅重采样，未解剖配准', 'Resampled only; no anatomical registration'],
   unverified: ['空间关系待确认', 'Spatial relationship unverified'],
   independent: ['独立参考空间', 'Independent reference space'],
@@ -84,14 +86,14 @@ export function GeometryProvenance({ selected, anatomy, manifest, showSchematic,
       body += t(' 公开站点不镜像 PAM50 文件。加载后显示源体素分辨率下的单元边界，未平滑。', ' The public site does not mirror PAM50 files. Once loaded, source-resolution voxel-cell boundaries are shown without smoothing.');
     }
     if (data.representation === 'schematic') body = showSchematic
-      ? t('尚无可独立映射的真实几何；当前只显示教学示意。', 'No independently mappable measured geometry is available; a teaching schematic is displayed.')
+      ? t('尚无可独立映射的真实几何；当前只显示结构示意。', 'No independently mappable measured geometry is available; a schematic structure is displayed.')
       : t('尚无可独立映射的真实几何；示意默认隐藏。', 'No independently mappable measured geometry is available; the schematic is hidden by default.');
     if (typeof body === 'object') body = JSON.stringify(body);
     if (en) body = englishMetadata(body, 'Geometry comes from the named source dataset. Its coverage and registration status must be interpreted separately; the display does not establish individual anatomical boundaries.');
   } else {
     const geometricPartition = ['brainstem', 'cerebellum'].includes(selected.category);
     const mesh = manifest?.meshes?.find(m => m.id === selected.id || m.structureIds?.includes(selected.id) || (selected.category === 'brainstem' && m.id === 'ho-8') || (selected.category === 'cerebellum' && m.id === 'cerebellum'));
-    title = mesh ? (geometricPartition ? t('真实外表面 + 教学切分', 'Measured outer surface + teaching partition') : t('标签提取网格', 'Label-derived mesh')) : t('教学示意 / 尚无独立实测几何', 'Teaching schematic / no independent measured geometry');
+    title = mesh ? (geometricPartition ? t('真实外表面 + 示意切分', 'Measured outer surface + illustrative partition') : t('标签提取网格', 'Label-derived mesh')) : t('结构示意 / 尚无独立实测几何', 'Schematic structure / no independent measured geometry');
     body = mesh ? (geometricPartition
       ? t('整体表面来自真实标签；脑干三部分或小脑中线带的边界为几何切分，尚未得到独立解剖分区验证。', 'The outer surface comes from measured labels. Boundaries between the three brainstem divisions or the cerebellar midline band are geometric cuts, not independently validated anatomical parcels.')
       : t('由公开解剖标签提取。', 'Extracted from public anatomical labels.'))
@@ -137,7 +139,7 @@ export default function DataProvenance({ manifest, atlasOptions, alignment, anat
       return ref ? <p key={item.refId}><a href={ref.url} target="_blank" rel="noreferrer">{ref.authors.split(',')[0]} · {ref.year} · {ref.title}</a><small>{item.scope}</small></p> : null;
     })}</div>)}</details>
     <h3>{t('真实形态与未覆盖结构', 'Measured morphology and uncovered structures')}</h3>
-    <p className="data-copy">{t('DK 使用配套皮层曲面。HCP1065 流线为弥散 MRI 图谱估计，不是逐根神经轴突。每个结构卡片列出具体范围。无真实几何的颅神经等条目，只有打开“显示教学示意”才显示相应示意。', 'DK uses paired cortical surfaces. HCP1065 streamlines are diffusion-MRI atlas estimates, not individual axons. Structure cards state specific coverage. Entries without measured geometry, including some cranial nerves, show illustrative shapes only when teaching schematics are enabled.')}</p>
+    <p className="data-copy">{t('DK 使用配套皮层曲面。HCP1065 流线为弥散 MRI 图谱估计，不是逐根神经轴突。每个结构卡片列出具体范围。无真实几何的颅神经等条目，只有打开“显示结构示意”才显示相应示意。', 'DK uses paired cortical surfaces. HCP1065 streamlines are diffusion-MRI atlas estimates, not individual axons. Structure cards state specific coverage. Entries without measured geometry, including some cranial nerves, show illustrative shapes only when schematic structures are enabled.')}</p>
     {anatomy?.datasets && <p className="data-copy">{en
       ? `Connected geometry: ${anatomy.datasets.HCP1065?.realMappedStructureCount || 0} brain-tract/cranial-nerve entries.`
       : `已接入 ${anatomy.datasets.HCP1065?.realMappedStructureCount || 0} 项脑纤维/颅神经几何。`}</p>}

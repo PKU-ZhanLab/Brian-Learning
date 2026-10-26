@@ -1,0 +1,2 @@
+import {atlasLabelSummary,buildAtlasSurfaces} from './atlas-explorer.js';
+self.onmessage=({data})=>{try{const result=data.action==='summary'?atlasLabelSummary(data.volume):buildAtlasSurfaces(data.volume,data.ids,data.options);const transfers=data.action==='summary'?[]:result.meshes.flatMap(m=>[m.positions.buffer,m.normals.buffer]);self.postMessage({requestId:data.requestId,result},transfers);}catch(error){self.postMessage({requestId:data.requestId,error:error.message});}};
