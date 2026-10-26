@@ -35,7 +35,7 @@ export async function preparePublicData(source,target){
     entry.available=false;entry.canOverlayOnTarget=false;entry.data=null;delete entry.metadata;delete entry.file;
     entry.distribution='metadata-only';entry.publicationNote={zh:'公开版仅保留来源与标签目录，未分发旧版二进制。',en:'The public edition retains source and terminology metadata; legacy binary files are not distributed.'};
   }
-  manifest.edition='public-teaching';manifest.version='3.0.1';
+  manifest.edition='public-teaching';manifest.version='3.0.2';
   manifest.dataLicenseNotice='/data/licenses/NOTICE-DATA.md';
   anatomy.edition='public-teaching';anatomy.datasets.PAM50.distribution='on-demand-official-source';
   anatomy.datasets.PAM50.bundledGeometryCount=0;anatomy.datasets.PAM50.remoteGeometryCount=remoteCount;

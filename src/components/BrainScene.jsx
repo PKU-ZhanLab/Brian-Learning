@@ -240,7 +240,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     renderer.toneMappingExposure = 0.98;
     renderer.localClippingEnabled = true;
     renderer.domElement.style.cssText = 'width:100%;height:100%;display:block;touch-action:none;outline:none;';
-    renderer.domElement.setAttribute('aria-label', 'Interactive 3D central nervous system: drag to rotate, right-drag to pan, scroll to zoom, click a structure for details');
+    renderer.domElement.setAttribute('aria-label', 'Interactive 3D brain: drag to rotate, right-drag to pan, scroll to zoom, click a structure for details');
     renderer.domElement.tabIndex = 0;
     container.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
@@ -388,7 +388,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       context.fillStyle = '#f4f6f3'; context.fillRect(0, 0, output.width, output.height); context.drawImage(renderer.domElement, 0, 0);
       const scale = exportScale;
       context.fillStyle = '#283f37'; context.font = `${17 * scale}px "Microsoft YaHei", sans-serif`;
-      context.fillText(sceneText('NEUROATLAS · 中枢神经系统教学模型', 'NEUROATLAS · Central nervous system'), 28 * scale, 35 * scale);
+      context.fillText(sceneText('NEUROATLAS · 脑结构教学模型', 'NEUROATLAS · Brain anatomy'), 28 * scale, 35 * scale);
       context.font = `${11 * scale}px "Microsoft YaHei", sans-serif`;
       context.fillStyle = '#61756d';
       context.fillText(sceneText(`RAS · 单位 mm · ${propsRef.current.atlas?.toUpperCase() || 'ATLAS'} · 模板/群体图谱教学显示；空间关系与覆盖见来源`, `RAS · mm · ${propsRef.current.atlas?.toUpperCase() || 'ATLAS'} · Template/population atlas; see source alignment and coverage`), 28 * scale, 57 * scale);
@@ -586,7 +586,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         const geometry = new THREE.PlaneGeometry(h[1] - h[0], v[1] - v[0]);
         let map;
         if (status.anatomyVolume) {
-          const canvas = makeSliceCanvas(status.anatomyVolume, axis, slices[axis], { size: 192, radiological: false, transparent: true, roiComparison: propsRef.current.exploded ? null : propsRef.current.roiComparison, roiDisplay: propsRef.current.roiDisplay });
+          const canvas = makeSliceCanvas(status.anatomyVolume, axis, slices[axis], { size: 192, atlasVolume: status.atlasVolume, radiological: false, transparent: true, roiComparison: propsRef.current.exploded ? null : propsRef.current.roiComparison, roiDisplay: propsRef.current.roiDisplay });
           map = new THREE.CanvasTexture(canvas); map.colorSpace = THREE.SRGBColorSpace;
         }
         const mat = new THREE.MeshBasicMaterial({ map, color: map ? '#ffffff' : axisColors[axis], side: THREE.DoubleSide, transparent: true, opacity: map ? 0.82 : 0.12, depthWrite: false });
@@ -866,11 +866,11 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       }
     }).catch(error => { if (!destroyed) setError(sceneText(`解剖表面清单加载失败：${error.message}`, 'The anatomical surface manifest could not be loaded.')); });
     fetch(dataURL('anatomy/manifest.json')).then(response => {
-      if (!response.ok) throw new Error(sceneText('真实脊髓和纤维图谱清单加载失败', 'The spinal and tractography manifest could not be loaded'));
+      if (!response.ok) throw new Error(sceneText('真实纤维图谱清单加载失败', 'The tractography manifest could not be loaded'));
       return response.json();
     }).then(async manifest => {
       if (destroyed) return;
-      status.anatomyEntries = manifest.structures || {};
+      status.anatomyEntries = Object.fromEntries(Object.entries(manifest.structures || {}).filter(([id])=>propsRef.current.structures.some(s=>s.id===id)));
       updateRemoteAnatomy();
       const entries = Object.entries(status.anatomyEntries).filter(([, entry]) => entry.geometry);
       await Promise.all(entries.map(async ([id, entry]) => {
@@ -914,11 +914,11 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     loadAtlas(props.atlas).then(volume => {
       if (stateRef.current !== state || generation !== state.atlasGeneration) return;
       state.atlasOverlayBlocked = volume?.canOverlayOnTarget === false;
-      state.atlasVolume = state.atlasOverlayBlocked ? null : volume; state.colorCortex();
+      state.atlasVolume = state.atlasOverlayBlocked ? null : volume; state.colorCortex(); state.updateSlices();
       propsRef.current.onReady?.({ loaded: state.loaded, method: state.atlasOverlayBlocked ? 'independent' : volume ? 'atlas' : 'teaching', overlayBlocked: state.atlasOverlayBlocked, message: state.atlasOverlayBlocked ? sceneText(`${volume.space || '原生图谱'} 未配准到当前模板 · 已停止表面叠加和坐标查询`, `${volume.space || 'Native atlas'} alignment is unverified · Surface overlay and coordinate queries are disabled`) : volume ? sceneText(`${volume.space || 'MNI'} · 图谱体素采样`, `${volume.space || 'MNI'} · Atlas voxel sampling`) : sceneText('图谱体素数据未接入 · 教学定位', 'Atlas voxel data unavailable · Teaching locations only') });
     }).catch(() => {
       if (stateRef.current !== state || generation !== state.atlasGeneration) return;
-      state.atlasVolume = null; state.colorCortex();
+      state.atlasVolume = null; state.colorCortex(); state.updateSlices();
       propsRef.current.onReady?.({ loaded: state.loaded, method: 'unavailable', message: sceneText('图谱体素数据加载失败 · 体素标签查询不可用', 'Atlas data failed to load · Voxel-label queries are unavailable') });
     });
   }, [props.atlas]);

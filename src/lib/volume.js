@@ -6,6 +6,7 @@ const cache = new Map();
 const pending = new Map();
 export const SLICE_BOUNDS = { x: [-100, 100], y: [-140, 100], z: [-80, 120] };
 const assetPath = dataURL;
+const ATLAS_RGB = ['9ebdb2','e4bcaa','b6b7d3','b8cbb0','d9c797','a6becf','d5b0ba','b8c5d5','c9c1a7','98bfbf','d7c4b9','c2b5ca'].map(hex=>hex.match(/../g).map(value=>parseInt(value,16)));
 
 export async function loadManifest() {
   if (!pending.has('manifest')) pending.set('manifest', fetch(dataURL('manifest.json')).then(response => {
@@ -112,6 +113,14 @@ export function makeSliceCanvas(volume, axis, value, options = {}) {
     const q = (py * canvas.width + px) * 4;
     pixels.data[q] = pixels.data[q + 1] = pixels.data[q + 2] = intensity;
     pixels.data[q + 3] = options.transparent && intensity < 5 ? 0 : 255;
+    if (!options.roiComparison && options.atlasVolume?.canOverlayOnTarget === true) {
+      const label = options.atlasVolume.sampleRAS(...point);
+      if (label > 0) {
+        const rgb = ATLAS_RGB[(label * 7) % ATLAS_RGB.length];
+        for (let channel = 0; channel < 3; channel++) pixels.data[q + channel] = Math.round(intensity * .45 + rgb[channel] * .55);
+        pixels.data[q + 3] = 255;
+      }
+    }
     if (options.roiComparison) {
       const style = roiSliceStyle(sampleComparisonRAS(options.roiComparison, ...point), options.roiDisplay || options.roiComparison.display);
       if (style) {

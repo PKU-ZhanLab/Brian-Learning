@@ -7418,6 +7418,6 @@
   "baCoverage": "ba-v2/manifest.json",
   "alignment": "space/alignment.json",
   "edition": "public-teaching",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "dataLicenseNotice": "/data/licenses/NOTICE-DATA.md"
 }

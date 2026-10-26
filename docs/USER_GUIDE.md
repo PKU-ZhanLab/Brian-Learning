@@ -8,7 +8,7 @@
 
 右上角 **中文 / EN** 同时切换界面、知识卡和文献解读。点击三维模型或左侧目录选择结构，也可搜索中英文名称、功能、疾病或 BA 编号；按 `/` 聚焦搜索。
 
-左键拖动旋转，滚轮缩放，右键拖动平移。Shift + 点击可多选；眼睛按钮控制显隐，工具栏提供重置、定位与框选。教学预设可切换脑、脑干及全中枢概览。
+左键拖动旋转，滚轮缩放，右键拖动平移。Shift + 点击可多选；眼睛按钮控制显隐，工具栏提供重置、定位与框选。教学预设可切换全脑概览、皮层、深部核团、脑干与小脑等视图。
 
 知识卡分别展示解剖、生理、认知与临床关联。展开每项“依据与适用范围”，查看支撑文献、研究对象和解释限制。临床扩展默认关闭；未覆盖结构保留知识条目，教学示意需手动开启。
 
@@ -32,15 +32,15 @@
 
 **Dice = 2 × 交集 / (A + B)**；**Jaccard = 交集 / 并集**。同一互斥图谱的不同标签通常没有交集。最大概率标签按二值掩模比较，其重叠不等于概率分布重叠，也不证明功能相同。重采样不进行新的解剖配准；当前不提供任意 NIfTI 导入。
 
-### 切片、脑与脊髓空间
+### 切片与脑图谱
 
 “切片工作台”展示三正交 MRI。拖动滑块或点击切片移动交点；开启三维切片平面后，可按住 Alt 拖动切面。切片采用放射学显示，以 R/L/A/P/S/I 标记辨认方向。
 
 脑内主参考为 FSL MNI152NLin6Asym。DK68 的曲面、体素与顶点标签来自同源重建；31 个 HCP1065 通路 / 颅神经条目经过本项目估计的模板变换。流线是群体弥散 MRI 估计，不是单根轴突或个体临床定位。
 
-公开版脊髓按需从固定版本的官方 GitHub 源加载 PAM50，由浏览器 Worker 生成 0.5 mm 体素边界表面；网站不镜像源数据。首次加载需要网络。PAM50 保持独立直化参考，脑切片不随其坐标联动。它不表示正常脊髓曲率，节段不能等同于同名椎骨；全中枢概览不构成联合配准的人体模板。
+脊髓模块已移除。选择 Harvard–Oxford 或 JHU 时会自动打开切片，显示当前图谱的彩色体素标签；JHU 是白质标签，不能当作皮层分区或纤维流线。DK 和 BA 也可通过“切片工作台”查看叠加。
 
-公开版的 AAL、AAL3 和旧版 BA 仅提供目录与来源说明，体积叠加与 ROI 比较停用。各结构的“几何来源”和“数据说明”列出实际覆盖、未覆盖部分与空间状态。
+公开版的 AAL、AAL3 和旧版 BA 仅提供目录与来源说明，菜单标为“暂不可用”，体积叠加与 ROI 比较停用。各结构的“几何来源”和“数据说明”列出实际覆盖、未覆盖部分与空间状态。
 
 ### 保存与分享
 
@@ -76,13 +76,13 @@ Export selected or filtered papers as BibTeX, an individual evidence record as J
 
 **Dice = 2 × intersection / (A + B)**; **Jaccard = intersection / union**. Different labels in one exclusive parcellation usually do not intersect. Maximum-probability labels are compared as binary masks; their overlap is not overlap of probability distributions or proof of shared function. Resampling does not estimate new anatomical registration. Arbitrary NIfTI import is not provided.
 
-### Slices, brain space, and spinal space
+### Slices and brain atlases
 
 The **Slices** workspace shows three orthogonal MRI views. Move their intersection with sliders or by clicking a slice. With 3D slice planes enabled, hold Alt while dragging a plane to move it. Slices follow radiological convention; use the R/L/A/P/S/I markers for orientation.
 
 The main brain reference is FSL MNI152NLin6Asym. DK68 surfaces, voxels, and vertex labels come from a matched reconstruction. The 31 HCP1065 pathway / cranial-nerve entries use a template transform estimated in this project. Streamlines are population diffusion-MRI estimates, not individual axons or clinical localization.
 
-The public app loads PAM50 on demand from a pinned official GitHub source. A browser Worker generates boundary surfaces from 0.5 mm voxels; the site does not mirror the source data. Initial loading requires network access. PAM50 retains an independent straightened reference, and brain slices do not track its coordinates. It does not represent normal cord curvature; neurological segments are not same-named vertebrae. The CNS overview is not a jointly registered human template.
+The spinal module has been removed. Selecting Harvard–Oxford or JHU opens slices with coloured atlas labels. JHU contains white-matter labels, not cortical parcels or streamline tracts. DK and BA overlays are also available through the slice workspace.
 
 AAL, AAL3, and legacy BA provide catalog and provenance metadata only in the public package; volume overlays and ROI comparison are disabled. **Geometry source** and the data panel describe actual coverage, gaps, and spatial status.
 

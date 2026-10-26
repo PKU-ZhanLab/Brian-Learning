@@ -116,14 +116,14 @@ export default function DataProvenance({ manifest, atlasOptions, alignment, anat
   return <>
     <p className="intro-text">{t('以 FSL MNI152NLin6Asym 为脑内主参考，逐项显示空间、来源与尚未解决的差异。', 'FSL MNI152NLin6Asym is the main intracranial reference. Space, provenance, and unresolved differences are shown for each dataset.')}</p>
     <div className="notice"><Info size={18}/><p>{en
-      ? 'Matching RAS axes across templates does not establish anatomical alignment. Data are marked aligned only when supported by provenance or transformation evidence. The spinal cord retains its native PAM50 reference; the CNS overview is not one jointly registered human template.'
-      : `${manifest?.registrationNote || '不同模板的 RAS 轴一致不等于解剖对齐。只有有来源或转换证据的数据才标记为对齐。'} 脊髓保留 PAM50 原生参考；全中枢概览不构成一套联合配准的人体模板。`}</p></div>
+      ? 'Matching RAS axes across templates does not establish anatomical alignment. Data are marked aligned only when supported by provenance or transformation evidence. The viewer now focuses on the brain; the spinal module has been removed.'
+      : `${manifest?.registrationNote || '不同模板的 RAS 轴一致不等于解剖对齐。只有有来源或转换证据的数据才标记为对齐。'} 当前查看器聚焦脑结构，脊髓模块已移除。`}</p></div>
     <h3>{t('图谱与空间', 'Atlases and spaces')}</h3><div className="atlas-table">{atlasOptions.map(atlas => {
       const data = manifest?.atlases?.[atlas.id];
       const aligned = alignment?.atlases?.[atlas.id] || alignment?.datasets?.[atlas.id];
       return <div key={atlas.id}><div><strong>{en ? atlasNamesEn[atlas.id] || englishMetadata(atlas.label, atlas.id) : atlas.label}</strong><span className={`data-badge ${data?.available ? 'available' : ''}`}>{alignmentLabel(data?.alignmentStatus || aligned?.status, language)}</span></div>
         <p>{en ? atlasNotesEn[atlas.id] || 'Atlas labels must be interpreted in their documented native space and coverage.' : data?.note || atlas.description}</p>
-        <small>{data?.positiveLabelCount || data?.labels?.filter(label => label.id > 0).length || 0} {t('个体素标签', 'voxel labels')} · {data?.space || t('空间未确认', 'Space unverified')}</small>
+        <small>{data?.positiveLabelCount || data?.labels?.filter(label => label.id > 0).length || 0} {data?.available?t('个体素标签', 'voxel labels'):t('条目录标签 · 无可用影像', 'catalog labels · no available volume')} · {data?.space || t('空间未确认', 'Space unverified')}</small>
         {data?.limitations?.map((limit, i) => <p className="data-limit" key={i}>{en ? englishMetadata(limit, 'Additional source coverage limits apply; see the original dataset and the alignment status above.') : limit}</p>)}
         {data?.source && <a href={typeof data.source === 'string' ? data.source : data.source.url} target="_blank" rel="noreferrer">{t('来源', 'Source')} <ExternalLink size={11}/></a>}
       </div>;
@@ -137,10 +137,10 @@ export default function DataProvenance({ manifest, atlasOptions, alignment, anat
       return ref ? <p key={item.refId}><a href={ref.url} target="_blank" rel="noreferrer">{ref.authors.split(',')[0]} · {ref.year} · {ref.title}</a><small>{item.scope}</small></p> : null;
     })}</div>)}</details>
     <h3>{t('真实形态与未覆盖结构', 'Measured morphology and uncovered structures')}</h3>
-    <p className="data-copy">{t('DK 使用配套皮层曲面。HCP1065 流线为弥散 MRI 图谱估计，不是逐根神经轴突；PAM50 为直化脊髓模板，节段边界有估计性质。每个结构卡片列出具体范围。无数据的颅神经、尾髓或灰质亚结构保留知识条目，只有打开“显示教学示意”才显示相应示意。', 'DK uses paired cortical surfaces. HCP1065 streamlines are diffusion-MRI atlas estimates, not individual axons. PAM50 is a straightened spinal template with estimated segment boundaries. Structure cards state specific coverage. Cranial nerves, coccygeal cord, or gray-matter subdivisions without data retain knowledge entries; their schematics appear only when teaching schematics are enabled.')}</p>
+    <p className="data-copy">{t('DK 使用配套皮层曲面。HCP1065 流线为弥散 MRI 图谱估计，不是逐根神经轴突。每个结构卡片列出具体范围。无真实几何的颅神经等条目，只有打开“显示教学示意”才显示相应示意。', 'DK uses paired cortical surfaces. HCP1065 streamlines are diffusion-MRI atlas estimates, not individual axons. Structure cards state specific coverage. Entries without measured geometry, including some cranial nerves, show illustrative shapes only when teaching schematics are enabled.')}</p>
     {anatomy?.datasets && <p className="data-copy">{en
-      ? `Connected geometry: ${anatomy.datasets.HCP1065?.realMappedStructureCount || 0} brain-tract/cranial-nerve entries and ${anatomy.datasets.PAM50?.realMappedStructureCount || 0} spinal segmentation entries.`
-      : `已接入 ${anatomy.datasets.HCP1065?.realMappedStructureCount || 0} 项脑纤维/颅神经几何、${anatomy.datasets.PAM50?.realMappedStructureCount || 0} 项脊髓分割几何。`}</p>}
+      ? `Connected geometry: ${anatomy.datasets.HCP1065?.realMappedStructureCount || 0} brain-tract/cranial-nerve entries.`
+      : `已接入 ${anatomy.datasets.HCP1065?.realMappedStructureCount || 0} 项脑纤维/颅神经几何。`}</p>}
     <p className="data-copy">{t('毫米坐标用于读取相应图谱。解剖图谱命名、功能关联与损伤证据分别列出，区域论文不自动证明整个脑回或所有侧别具有同一功能。', 'Millimeter coordinates query the corresponding atlas. Anatomical labels, functional associations, and lesion evidence are listed separately. A regional paper does not establish one uniform function across an entire gyrus or both hemispheres.')}</p>
   </>;
 }

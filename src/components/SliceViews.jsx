@@ -7,7 +7,7 @@ function Slice({plane,volume,atlasVolume,slices,onChange,onCoordinate,language='
   const title=en?plane.en:plane.title;
   const canvas=useRef(null),[label,setLabel]=useState(null);
   const outside=slices[plane.axis]<SLICE_BOUNDS[plane.axis][0]||slices[plane.axis]>SLICE_BOUNDS[plane.axis][1];
-  useEffect(()=>{if(!volume||!canvas.current)return;const rendered=makeSliceCanvas(volume,plane.axis,slices[plane.axis],{size:224,radiological:true,crosshair:[slices.x,slices.y,slices.z],crosshairColor:plane.color});const target=canvas.current;target.width=rendered.width;target.height=rendered.height;target.getContext('2d').drawImage(rendered,0,0);setLabel(atlasLabelAt(atlasVolume,[slices.x,slices.y,slices.z]));},[volume,atlasVolume,slices.x,slices.y,slices.z,plane]);
+  useEffect(()=>{if(!volume||!canvas.current)return;const rendered=makeSliceCanvas(volume,plane.axis,slices[plane.axis],{size:224,atlasVolume,radiological:true,crosshair:[slices.x,slices.y,slices.z],crosshairColor:plane.color});const target=canvas.current;target.width=rendered.width;target.height=rendered.height;target.getContext('2d').drawImage(rendered,0,0);setLabel(atlasLabelAt(atlasVolume,[slices.x,slices.y,slices.z]));},[volume,atlasVolume,slices.x,slices.y,slices.z,plane]);
   const pick=e=>{const rect=e.currentTarget.getBoundingClientRect();const point=sliceWorldPoint(plane.axis,slices[plane.axis],(e.clientX-rect.left)/rect.width,(e.clientY-rect.top)/rect.height,true).map(Math.round);onCoordinate(point);};
   const labelName=en?label?.name?.replace(/^标签\s*/, 'Label '):label?.name;
   const emptyLabel=en?'No atlas label at this coordinate':'当前坐标没有图谱标签';
