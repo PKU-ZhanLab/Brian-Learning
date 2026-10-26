@@ -1,0 +1,21 @@
+{
+  "source": "TemplateFlow original1998 MNI Colin27",
+  "target": "SPM12 canonical single_subj_T1",
+  "mniOriginalToSpmRasTranslationMm": [
+    1,
+    1,
+    1
+  ],
+  "correlationAfterShift": 0.9999412398516787,
+  "linearIntensityScaleAndOffset": [
+    8.114294533896946e-05,
+    -4.876868137659439e-06
+  ],
+  "absoluteIntensityError95": 0.001855606413086519,
+  "sourceSha256": "811416b120cca98d28762a5ca3fd9ecbed6c02c1bf0bac8b0ff037518089da3b",
+  "spmSha256": "6e58e76e05eb5fef5d2260f6c762a57b4947a571d47f2479d892d6d29b20ced1",
+  "sourceMaskSha256": "21f4de9826077b54c991ec8d91109a0768f928de6ac40f70a8d63bd7650150eb",
+  "preparedMaskSha256": "0286057225899d2c951e1b4105138a749e3d44723a14238bdfda29d4d63bc406",
+  "maskMethod": "Apply measured +1mm header shift then nearest-neighbour sampling to SPM grid",
+  "limitation": "Establishes T1 and brain-mask pairing only. Atlas-to-specific-Colin27 release pairing still requires source and boundary review."
+}

@@ -9170,5 +9170,5 @@
     }
   },
   "coordinatePolicy": "Mesh and streamline vertices are in each source native RAS mm. Identity placement does not prove registration between different templates. Display transformations are declared per record.",
-  "edition": "public-teaching"
+  "edition": "brain-evidence"
 }

@@ -1,0 +1,20 @@
+{
+  "sourceUrl": "https://www.gin.cnrs.fr/wp-content/uploads/AAL3_UserGuide_April2024.pdf",
+  "sourceTitle": "AAL3 User Guide, 5 April 2024",
+  "observedOn": "2026-10-26",
+  "access": "Search-indexed primary PDF text; direct PDF/archive retrieval failed (TLS EOF/HTTP502)",
+  "downloadedOriginalPdf": false,
+  "authorLicenseQuote": "available to the scientific community as copyright freeware under the terms of the GNU General Public License",
+  "versionGeometryQuote": "no modification of the atlas",
+  "facts": [
+    "2024 v2 release adds GPL notice to README.",
+    "The author guide says atlas filenames remain AAL3v1.",
+    "Exact2024 README bytes were not acquired; they are not represented as downloaded."
+  ],
+  "distributionUsed": "https://afni.nimh.nih.gov/pub/dist/atlases/aal/AAL3_dist.tgz",
+  "distributionSha256": "c5ca83864e49687564a0d785884d6365a5aed987c96dbaebfc93771b718c72ca",
+  "chosenGplVersion": 3,
+  "fullLicenseFile": "GNU-GPL-3.0.txt",
+  "fullLicenseSha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+  "fullLicenseSource": "https://raw.githubusercontent.com/emacs-mirror/emacs/master/COPYING"
+}

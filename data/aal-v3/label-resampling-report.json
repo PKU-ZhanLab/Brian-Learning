@@ -1,0 +1,2284 @@
+{
+  "fieldResolutionMm": 2,
+  "outputGridResolutionMm": 1,
+  "targetSpace": "MNI152NLin6Asym",
+  "method": "Saved 2mm affine+SDR field; single nearest-neighbour sampling of original labels onto 1mm grid",
+  "status": "registered-unreviewed",
+  "canOverlayOnTarget": false,
+  "atlases": {
+    "aal": {
+      "sourceSha256": "3df7662d4ea3adbed45a8eefc21ce97085ef773c85ab86e4ce0e3906e6994dbb",
+      "outputSha256": "bb6e4c723de2a4063baa8b0d422421b4f1180c6591b0abd0a012fd58e4186f17",
+      "positiveLabels": 116,
+      "lostPositiveLabelIds": [],
+      "perLabelVolumes": [
+        {
+          "id": 2001,
+          "sourceVoxels": 3526,
+          "sourceVolumeMm3": 28207.999999999993,
+          "targetVoxels": 30577,
+          "targetVolumeMm3": 30577,
+          "volumeRatio": 1.0839832671582532
+        },
+        {
+          "id": 2002,
+          "sourceVoxels": 3381,
+          "sourceVolumeMm3": 27047.999999999993,
+          "targetVoxels": 27798,
+          "targetVolumeMm3": 27798,
+          "volumeRatio": 1.0277284826974271
+        },
+        {
+          "id": 2101,
+          "sourceVoxels": 3599,
+          "sourceVolumeMm3": 28791.999999999993,
+          "targetVoxels": 25180,
+          "targetVolumeMm3": 25180,
+          "volumeRatio": 0.8745484856904698
+        },
+        {
+          "id": 2102,
+          "sourceVoxels": 4056,
+          "sourceVolumeMm3": 32447.999999999993,
+          "targetVoxels": 28207,
+          "targetVolumeMm3": 28207,
+          "volumeRatio": 0.8692985700197241
+        },
+        {
+          "id": 2111,
+          "sourceVoxels": 963,
+          "sourceVolumeMm3": 7703.999999999998,
+          "targetVoxels": 6576,
+          "targetVolumeMm3": 6576,
+          "volumeRatio": 0.8535825545171342
+        },
+        {
+          "id": 2112,
+          "sourceVoxels": 997,
+          "sourceVolumeMm3": 7975.999999999998,
+          "targetVoxels": 7066,
+          "targetVolumeMm3": 7066,
+          "volumeRatio": 0.8859077231695087
+        },
+        {
+          "id": 2201,
+          "sourceVoxels": 4863,
+          "sourceVolumeMm3": 38903.99999999999,
+          "targetVoxels": 38952,
+          "targetVolumeMm3": 38952,
+          "volumeRatio": 1.0012338062924122
+        },
+        {
+          "id": 2202,
+          "sourceVoxels": 5104,
+          "sourceVolumeMm3": 40831.99999999999,
+          "targetVoxels": 37466,
+          "targetVolumeMm3": 37466,
+          "volumeRatio": 0.9175646551724139
+        },
+        {
+          "id": 2211,
+          "sourceVoxels": 888,
+          "sourceVolumeMm3": 7103.999999999998,
+          "targetVoxels": 6307,
+          "targetVolumeMm3": 6307,
+          "volumeRatio": 0.8878096846846849
+        },
+        {
+          "id": 2212,
+          "sourceVoxels": 1015,
+          "sourceVolumeMm3": 8119.999999999998,
+          "targetVoxels": 8002,
+          "targetVolumeMm3": 8002,
+          "volumeRatio": 0.9854679802955667
+        },
+        {
+          "id": 2301,
+          "sourceVoxels": 1038,
+          "sourceVolumeMm3": 8303.999999999998,
+          "targetVoxels": 7511,
+          "targetVolumeMm3": 7511,
+          "volumeRatio": 0.9045038535645474
+        },
+        {
+          "id": 2302,
+          "sourceVoxels": 1399,
+          "sourceVolumeMm3": 11191.999999999998,
+          "targetVoxels": 8666,
+          "targetVolumeMm3": 8666,
+          "volumeRatio": 0.7743030736240173
+        },
+        {
+          "id": 2311,
+          "sourceVoxels": 2529,
+          "sourceVolumeMm3": 20231.999999999996,
+          "targetVoxels": 18448,
+          "targetVolumeMm3": 18448,
+          "volumeRatio": 0.9118228548833532
+        },
+        {
+          "id": 2312,
+          "sourceVoxels": 2151,
+          "sourceVolumeMm3": 17207.999999999996,
+          "targetVoxels": 14648,
+          "targetVolumeMm3": 14648,
+          "volumeRatio": 0.8512319851231986
+        },
+        {
+          "id": 2321,
+          "sourceVoxels": 1690,
+          "sourceVolumeMm3": 13519.999999999996,
+          "targetVoxels": 13375,
+          "targetVolumeMm3": 13375,
+          "volumeRatio": 0.9892751479289944
+        },
+        {
+          "id": 2322,
+          "sourceVoxels": 1707,
+          "sourceVolumeMm3": 13655.999999999996,
+          "targetVoxels": 13727,
+          "targetVolumeMm3": 13727,
+          "volumeRatio": 1.0051991798476863
+        },
+        {
+          "id": 2331,
+          "sourceVoxels": 990,
+          "sourceVolumeMm3": 7919.999999999998,
+          "targetVoxels": 8860,
+          "targetVolumeMm3": 8860,
+          "volumeRatio": 1.118686868686869
+        },
+        {
+          "id": 2332,
+          "sourceVoxels": 1331,
+          "sourceVolumeMm3": 10647.999999999998,
+          "targetVoxels": 11376,
+          "targetVolumeMm3": 11376,
+          "volumeRatio": 1.0683696468820438
+        },
+        {
+          "id": 2401,
+          "sourceVoxels": 2147,
+          "sourceVolumeMm3": 17175.999999999996,
+          "targetVoxels": 17369,
+          "targetVolumeMm3": 17369,
+          "volumeRatio": 1.0112366092221707
+        },
+        {
+          "id": 2402,
+          "sourceVoxels": 2371,
+          "sourceVolumeMm3": 18967.999999999996,
+          "targetVoxels": 17795,
+          "targetVolumeMm3": 17795,
+          "volumeRatio": 0.9381590046393928
+        },
+        {
+          "id": 2501,
+          "sourceVoxels": 280,
+          "sourceVolumeMm3": 2239.9999999999995,
+          "targetVoxels": 2109,
+          "targetVolumeMm3": 2109,
+          "volumeRatio": 0.9415178571428573
+        },
+        {
+          "id": 2502,
+          "sourceVoxels": 289,
+          "sourceVolumeMm3": 2311.9999999999995,
+          "targetVoxels": 2193,
+          "targetVolumeMm3": 2193,
+          "volumeRatio": 0.9485294117647061
+        },
+        {
+          "id": 2601,
+          "sourceVoxels": 2992,
+          "sourceVolumeMm3": 23935.999999999996,
+          "targetVoxels": 21994,
+          "targetVolumeMm3": 21994,
+          "volumeRatio": 0.9188669786096259
+        },
+        {
+          "id": 2602,
+          "sourceVoxels": 2134,
+          "sourceVolumeMm3": 17071.999999999996,
+          "targetVoxels": 13367,
+          "targetVolumeMm3": 13367,
+          "volumeRatio": 0.782977975632615
+        },
+        {
+          "id": 2611,
+          "sourceVoxels": 719,
+          "sourceVolumeMm3": 5751.999999999999,
+          "targetVoxels": 5697,
+          "targetVolumeMm3": 5697,
+          "volumeRatio": 0.9904381084840057
+        },
+        {
+          "id": 2612,
+          "sourceVoxels": 856,
+          "sourceVolumeMm3": 6847.999999999998,
+          "targetVoxels": 7118,
+          "targetVolumeMm3": 7118,
+          "volumeRatio": 1.0394275700934583
+        },
+        {
+          "id": 2701,
+          "sourceVoxels": 852,
+          "sourceVolumeMm3": 6815.999999999998,
+          "targetVoxels": 5661,
+          "targetVolumeMm3": 5661,
+          "volumeRatio": 0.8305457746478876
+        },
+        {
+          "id": 2702,
+          "sourceVoxels": 745,
+          "sourceVolumeMm3": 5959.999999999999,
+          "targetVoxels": 5044,
+          "targetVolumeMm3": 5044,
+          "volumeRatio": 0.8463087248322149
+        },
+        {
+          "id": 3001,
+          "sourceVoxels": 1858,
+          "sourceVolumeMm3": 14863.999999999996,
+          "targetVoxels": 14034,
+          "targetVolumeMm3": 14034,
+          "volumeRatio": 0.9441603875134555
+        },
+        {
+          "id": 3002,
+          "sourceVoxels": 1770,
+          "sourceVolumeMm3": 14159.999999999996,
+          "targetVoxels": 13751,
+          "targetVolumeMm3": 13751,
+          "volumeRatio": 0.9711158192090398
+        },
+        {
+          "id": 4001,
+          "sourceVoxels": 1400,
+          "sourceVolumeMm3": 11199.999999999998,
+          "targetVoxels": 11968,
+          "targetVolumeMm3": 11968,
+          "volumeRatio": 1.0685714285714287
+        },
+        {
+          "id": 4002,
+          "sourceVoxels": 1313,
+          "sourceVolumeMm3": 10503.999999999998,
+          "targetVoxels": 12742,
+          "targetVolumeMm3": 12742,
+          "volumeRatio": 1.2130616907844634
+        },
+        {
+          "id": 4011,
+          "sourceVoxels": 1941,
+          "sourceVolumeMm3": 15527.999999999996,
+          "targetVoxels": 16198,
+          "targetVolumeMm3": 16198,
+          "volumeRatio": 1.0431478619268422
+        },
+        {
+          "id": 4012,
+          "sourceVoxels": 2203,
+          "sourceVolumeMm3": 17623.999999999996,
+          "targetVoxels": 18417,
+          "targetVolumeMm3": 18417,
+          "volumeRatio": 1.044995460735361
+        },
+        {
+          "id": 4021,
+          "sourceVoxels": 463,
+          "sourceVolumeMm3": 3703.999999999999,
+          "targetVoxels": 2909,
+          "targetVolumeMm3": 2909,
+          "volumeRatio": 0.7853671706263501
+        },
+        {
+          "id": 4022,
+          "sourceVoxels": 335,
+          "sourceVolumeMm3": 2679.9999999999995,
+          "targetVoxels": 2084,
+          "targetVolumeMm3": 2084,
+          "volumeRatio": 0.7776119402985076
+        },
+        {
+          "id": 4101,
+          "sourceVoxels": 932,
+          "sourceVolumeMm3": 7455.999999999998,
+          "targetVoxels": 7397,
+          "targetVolumeMm3": 7397,
+          "volumeRatio": 0.9920869098712449
+        },
+        {
+          "id": 4102,
+          "sourceVoxels": 946,
+          "sourceVolumeMm3": 7567.999999999998,
+          "targetVoxels": 7336,
+          "targetVolumeMm3": 7336,
+          "volumeRatio": 0.9693446088794928
+        },
+        {
+          "id": 4111,
+          "sourceVoxels": 978,
+          "sourceVolumeMm3": 7823.999999999998,
+          "targetVoxels": 8974,
+          "targetVolumeMm3": 8974,
+          "volumeRatio": 1.1469836400817999
+        },
+        {
+          "id": 4112,
+          "sourceVoxels": 1132,
+          "sourceVolumeMm3": 9055.999999999998,
+          "targetVoxels": 9345,
+          "targetVolumeMm3": 9345,
+          "volumeRatio": 1.0319125441696115
+        },
+        {
+          "id": 4201,
+          "sourceVoxels": 220,
+          "sourceVolumeMm3": 1759.9999999999995,
+          "targetVoxels": 1853,
+          "targetVolumeMm3": 1853,
+          "volumeRatio": 1.0528409090909094
+        },
+        {
+          "id": 4202,
+          "sourceVoxels": 248,
+          "sourceVolumeMm3": 1983.9999999999995,
+          "targetVoxels": 2010,
+          "targetVolumeMm3": 2010,
+          "volumeRatio": 1.0131048387096777
+        },
+        {
+          "id": 5001,
+          "sourceVoxels": 2258,
+          "sourceVolumeMm3": 18063.999999999996,
+          "targetVoxels": 16016,
+          "targetVolumeMm3": 16016,
+          "volumeRatio": 0.8866253321523474
+        },
+        {
+          "id": 5002,
+          "sourceVoxels": 1861,
+          "sourceVolumeMm3": 14887.999999999996,
+          "targetVoxels": 15526,
+          "targetVolumeMm3": 15526,
+          "volumeRatio": 1.0428533046749062
+        },
+        {
+          "id": 5011,
+          "sourceVoxels": 1526,
+          "sourceVolumeMm3": 12207.999999999998,
+          "targetVoxels": 11793,
+          "targetVolumeMm3": 11793,
+          "volumeRatio": 0.966005897771953
+        },
+        {
+          "id": 5012,
+          "sourceVoxels": 1424,
+          "sourceVolumeMm3": 11391.999999999998,
+          "targetVoxels": 12597,
+          "targetVolumeMm3": 12597,
+          "volumeRatio": 1.1057759831460676
+        },
+        {
+          "id": 5021,
+          "sourceVoxels": 2095,
+          "sourceVolumeMm3": 16759.999999999996,
+          "targetVoxels": 15022,
+          "targetVolumeMm3": 15022,
+          "volumeRatio": 0.8963007159904537
+        },
+        {
+          "id": 5022,
+          "sourceVoxels": 2300,
+          "sourceVolumeMm3": 18399.999999999996,
+          "targetVoxels": 17495,
+          "targetVolumeMm3": 17495,
+          "volumeRatio": 0.9508152173913046
+        },
+        {
+          "id": 5101,
+          "sourceVoxels": 1366,
+          "sourceVolumeMm3": 10927.999999999998,
+          "targetVoxels": 11442,
+          "targetVolumeMm3": 11442,
+          "volumeRatio": 1.0470351390922403
+        },
+        {
+          "id": 5102,
+          "sourceVoxels": 1413,
+          "sourceVolumeMm3": 11303.999999999998,
+          "targetVoxels": 11897,
+          "targetVolumeMm3": 11897,
+          "volumeRatio": 1.0524593064401984
+        },
+        {
+          "id": 5201,
+          "sourceVoxels": 3270,
+          "sourceVolumeMm3": 26159.999999999993,
+          "targetVoxels": 25908,
+          "targetVolumeMm3": 25908,
+          "volumeRatio": 0.9903669724770645
+        },
+        {
+          "id": 5202,
+          "sourceVoxels": 2098,
+          "sourceVolumeMm3": 16783.999999999996,
+          "targetVoxels": 16766,
+          "targetVolumeMm3": 16766,
+          "volumeRatio": 0.9989275500476646
+        },
+        {
+          "id": 5301,
+          "sourceVoxels": 941,
+          "sourceVolumeMm3": 7527.999999999998,
+          "targetVoxels": 7796,
+          "targetVolumeMm3": 7796,
+          "volumeRatio": 1.0356004250797026
+        },
+        {
+          "id": 5302,
+          "sourceVoxels": 989,
+          "sourceVolumeMm3": 7911.999999999998,
+          "targetVoxels": 8587,
+          "targetVolumeMm3": 8587,
+          "volumeRatio": 1.0853134479271995
+        },
+        {
+          "id": 5401,
+          "sourceVoxels": 2310,
+          "sourceVolumeMm3": 18479.999999999996,
+          "targetVoxels": 19999,
+          "targetVolumeMm3": 19999,
+          "volumeRatio": 1.08219696969697
+        },
+        {
+          "id": 5402,
+          "sourceVoxels": 2518,
+          "sourceVolumeMm3": 20143.999999999996,
+          "targetVoxels": 18214,
+          "targetVolumeMm3": 18214,
+          "volumeRatio": 0.9041898332009533
+        },
+        {
+          "id": 6001,
+          "sourceVoxels": 3892,
+          "sourceVolumeMm3": 31135.999999999993,
+          "targetVoxels": 28429,
+          "targetVolumeMm3": 28429,
+          "volumeRatio": 0.9130588386433712
+        },
+        {
+          "id": 6002,
+          "sourceVoxels": 3823,
+          "sourceVolumeMm3": 30583.999999999993,
+          "targetVoxels": 26903,
+          "targetVolumeMm3": 26903,
+          "volumeRatio": 0.8796429505623857
+        },
+        {
+          "id": 6101,
+          "sourceVoxels": 2065,
+          "sourceVolumeMm3": 16519.999999999996,
+          "targetVoxels": 17944,
+          "targetVolumeMm3": 17944,
+          "volumeRatio": 1.0861985472154967
+        },
+        {
+          "id": 6102,
+          "sourceVoxels": 2222,
+          "sourceVolumeMm3": 17775.999999999996,
+          "targetVoxels": 18135,
+          "targetVolumeMm3": 18135,
+          "volumeRatio": 1.020195769576958
+        },
+        {
+          "id": 6201,
+          "sourceVoxels": 2447,
+          "sourceVolumeMm3": 19575.999999999996,
+          "targetVoxels": 17692,
+          "targetVolumeMm3": 17692,
+          "volumeRatio": 0.9037597057621579
+        },
+        {
+          "id": 6202,
+          "sourceVoxels": 1345,
+          "sourceVolumeMm3": 10759.999999999998,
+          "targetVoxels": 12800,
+          "targetVolumeMm3": 12800,
+          "volumeRatio": 1.1895910780669148
+        },
+        {
+          "id": 6211,
+          "sourceVoxels": 1256,
+          "sourceVolumeMm3": 10047.999999999998,
+          "targetVoxels": 8720,
+          "targetVolumeMm3": 8720,
+          "volumeRatio": 0.8678343949044588
+        },
+        {
+          "id": 6212,
+          "sourceVoxels": 1974,
+          "sourceVolumeMm3": 15791.999999999996,
+          "targetVoxels": 14336,
+          "targetVolumeMm3": 14336,
+          "volumeRatio": 0.9078014184397165
+        },
+        {
+          "id": 6221,
+          "sourceVoxels": 1173,
+          "sourceVolumeMm3": 9383.999999999998,
+          "targetVoxels": 10276,
+          "targetVolumeMm3": 10276,
+          "volumeRatio": 1.095055413469736
+        },
+        {
+          "id": 6222,
+          "sourceVoxels": 1752,
+          "sourceVolumeMm3": 14015.999999999996,
+          "targetVoxels": 16988,
+          "targetVolumeMm3": 16988,
+          "volumeRatio": 1.2120433789954341
+        },
+        {
+          "id": 6301,
+          "sourceVoxels": 3528,
+          "sourceVolumeMm3": 28223.999999999993,
+          "targetVoxels": 26056,
+          "targetVolumeMm3": 26056,
+          "volumeRatio": 0.9231859410430842
+        },
+        {
+          "id": 6302,
+          "sourceVoxels": 3265,
+          "sourceVolumeMm3": 26119.999999999993,
+          "targetVoxels": 25146,
+          "targetVolumeMm3": 25146,
+          "volumeRatio": 0.9627105666156205
+        },
+        {
+          "id": 6401,
+          "sourceVoxels": 1349,
+          "sourceVolumeMm3": 10791.999999999998,
+          "targetVoxels": 10462,
+          "targetVolumeMm3": 10462,
+          "volumeRatio": 0.9694217939214235
+        },
+        {
+          "id": 6402,
+          "sourceVoxels": 836,
+          "sourceVolumeMm3": 6687.999999999998,
+          "targetVoxels": 6275,
+          "targetVolumeMm3": 6275,
+          "volumeRatio": 0.9382476076555026
+        },
+        {
+          "id": 7001,
+          "sourceVoxels": 962,
+          "sourceVolumeMm3": 7695.999999999998,
+          "targetVoxels": 7387,
+          "targetVolumeMm3": 7387,
+          "volumeRatio": 0.9598492723492725
+        },
+        {
+          "id": 7002,
+          "sourceVoxels": 994,
+          "sourceVolumeMm3": 7951.999999999998,
+          "targetVoxels": 7719,
+          "targetVolumeMm3": 7719,
+          "volumeRatio": 0.9706991951710264
+        },
+        {
+          "id": 7011,
+          "sourceVoxels": 1009,
+          "sourceVolumeMm3": 8071.999999999998,
+          "targetVoxels": 8024,
+          "targetVolumeMm3": 8024,
+          "volumeRatio": 0.9940535183349853
+        },
+        {
+          "id": 7012,
+          "sourceVoxels": 1064,
+          "sourceVolumeMm3": 8511.999999999998,
+          "targetVoxels": 8436,
+          "targetVolumeMm3": 8436,
+          "volumeRatio": 0.9910714285714288
+        },
+        {
+          "id": 7021,
+          "sourceVoxels": 293,
+          "sourceVolumeMm3": 2343.9999999999995,
+          "targetVoxels": 2535,
+          "targetVolumeMm3": 2535,
+          "volumeRatio": 1.0814846416382256
+        },
+        {
+          "id": 7022,
+          "sourceVoxels": 280,
+          "sourceVolumeMm3": 2239.9999999999995,
+          "targetVoxels": 2367,
+          "targetVolumeMm3": 2367,
+          "volumeRatio": 1.0566964285714289
+        },
+        {
+          "id": 7101,
+          "sourceVoxels": 1100,
+          "sourceVolumeMm3": 8799.999999999998,
+          "targetVoxels": 8535,
+          "targetVolumeMm3": 8535,
+          "volumeRatio": 0.9698863636363638
+        },
+        {
+          "id": 7102,
+          "sourceVoxels": 1057,
+          "sourceVolumeMm3": 8455.999999999998,
+          "targetVoxels": 8509,
+          "targetVolumeMm3": 8509,
+          "volumeRatio": 1.0062677388836332
+        },
+        {
+          "id": 8101,
+          "sourceVoxels": 225,
+          "sourceVolumeMm3": 1799.9999999999995,
+          "targetVoxels": 2420,
+          "targetVolumeMm3": 2420,
+          "volumeRatio": 1.3444444444444448
+        },
+        {
+          "id": 8102,
+          "sourceVoxels": 249,
+          "sourceVolumeMm3": 1991.9999999999995,
+          "targetVoxels": 1638,
+          "targetVolumeMm3": 1638,
+          "volumeRatio": 0.8222891566265063
+        },
+        {
+          "id": 8111,
+          "sourceVoxels": 2296,
+          "sourceVolumeMm3": 18367.999999999996,
+          "targetVoxels": 23557,
+          "targetVolumeMm3": 23557,
+          "volumeRatio": 1.2825021777003487
+        },
+        {
+          "id": 8112,
+          "sourceVoxels": 3141,
+          "sourceVolumeMm3": 25127.999999999993,
+          "targetVoxels": 23374,
+          "targetVolumeMm3": 23374,
+          "volumeRatio": 0.930197389366444
+        },
+        {
+          "id": 8121,
+          "sourceVoxels": 1285,
+          "sourceVolumeMm3": 10279.999999999998,
+          "targetVoxels": 11977,
+          "targetVolumeMm3": 11977,
+          "volumeRatio": 1.1650778210116735
+        },
+        {
+          "id": 8122,
+          "sourceVoxels": 1338,
+          "sourceVolumeMm3": 10703.999999999998,
+          "targetVoxels": 12420,
+          "targetVolumeMm3": 12420,
+          "volumeRatio": 1.1603139013452917
+        },
+        {
+          "id": 8201,
+          "sourceVoxels": 4942,
+          "sourceVolumeMm3": 39535.99999999999,
+          "targetVoxels": 35817,
+          "targetVolumeMm3": 35817,
+          "volumeRatio": 0.9059338324564955
+        },
+        {
+          "id": 8202,
+          "sourceVoxels": 4409,
+          "sourceVolumeMm3": 35271.99999999999,
+          "targetVoxels": 34899,
+          "targetVolumeMm3": 34899,
+          "volumeRatio": 0.9894250396915403
+        },
+        {
+          "id": 8211,
+          "sourceVoxels": 755,
+          "sourceVolumeMm3": 6039.999999999999,
+          "targetVoxels": 6696,
+          "targetVolumeMm3": 6696,
+          "volumeRatio": 1.108609271523179
+        },
+        {
+          "id": 8212,
+          "sourceVoxels": 1187,
+          "sourceVolumeMm3": 9495.999999999998,
+          "targetVoxels": 11110,
+          "targetVolumeMm3": 11110,
+          "volumeRatio": 1.1699663016006743
+        },
+        {
+          "id": 8301,
+          "sourceVoxels": 3200,
+          "sourceVolumeMm3": 25599.999999999993,
+          "targetVoxels": 22917,
+          "targetVolumeMm3": 22917,
+          "volumeRatio": 0.8951953125000003
+        },
+        {
+          "id": 8302,
+          "sourceVoxels": 3557,
+          "sourceVolumeMm3": 28455.999999999993,
+          "targetVoxels": 24743,
+          "targetVolumeMm3": 24743,
+          "volumeRatio": 0.8695178521225754
+        },
+        {
+          "id": 9001,
+          "sourceVoxels": 2603,
+          "sourceVolumeMm3": 20823.999999999996,
+          "targetVoxels": 19229,
+          "targetVolumeMm3": 19229,
+          "volumeRatio": 0.9234056857472149
+        },
+        {
+          "id": 9002,
+          "sourceVoxels": 2648,
+          "sourceVolumeMm3": 21183.999999999996,
+          "targetVoxels": 17217,
+          "targetVolumeMm3": 17217,
+          "volumeRatio": 0.8127360271903324
+        },
+        {
+          "id": 9011,
+          "sourceVoxels": 1894,
+          "sourceVolumeMm3": 15151.999999999996,
+          "targetVoxels": 13389,
+          "targetVolumeMm3": 13389,
+          "volumeRatio": 0.8836457233368534
+        },
+        {
+          "id": 9012,
+          "sourceVoxels": 2117,
+          "sourceVolumeMm3": 16935.999999999996,
+          "targetVoxels": 14872,
+          "targetVolumeMm3": 14872,
+          "volumeRatio": 0.8781294284364669
+        },
+        {
+          "id": 9021,
+          "sourceVoxels": 136,
+          "sourceVolumeMm3": 1087.9999999999998,
+          "targetVoxels": 1118,
+          "targetVolumeMm3": 1118,
+          "volumeRatio": 1.027573529411765
+        },
+        {
+          "id": 9022,
+          "sourceVoxels": 207,
+          "sourceVolumeMm3": 1655.9999999999995,
+          "targetVoxels": 1419,
+          "targetVolumeMm3": 1419,
+          "volumeRatio": 0.8568840579710147
+        },
+        {
+          "id": 9031,
+          "sourceVoxels": 1125,
+          "sourceVolumeMm3": 8999.999999999998,
+          "targetVoxels": 8179,
+          "targetVolumeMm3": 8179,
+          "volumeRatio": 0.9087777777777779
+        },
+        {
+          "id": 9032,
+          "sourceVoxels": 861,
+          "sourceVolumeMm3": 6887.999999999998,
+          "targetVoxels": 5453,
+          "targetVolumeMm3": 5453,
+          "volumeRatio": 0.7916666666666669
+        },
+        {
+          "id": 9041,
+          "sourceVoxels": 1694,
+          "sourceVolumeMm3": 13551.999999999996,
+          "targetVoxels": 10334,
+          "targetVolumeMm3": 10334,
+          "volumeRatio": 0.7625442739079105
+        },
+        {
+          "id": 9042,
+          "sourceVoxels": 1795,
+          "sourceVolumeMm3": 14359.999999999996,
+          "targetVoxels": 11710,
+          "targetVolumeMm3": 11710,
+          "volumeRatio": 0.8154596100278554
+        },
+        {
+          "id": 9051,
+          "sourceVoxels": 585,
+          "sourceVolumeMm3": 4679.999999999999,
+          "targetVoxels": 4799,
+          "targetVolumeMm3": 4799,
+          "volumeRatio": 1.0254273504273506
+        },
+        {
+          "id": 9052,
+          "sourceVoxels": 534,
+          "sourceVolumeMm3": 4271.999999999999,
+          "targetVoxels": 3756,
+          "targetVolumeMm3": 3756,
+          "volumeRatio": 0.8792134831460676
+        },
+        {
+          "id": 9061,
+          "sourceVoxels": 1887,
+          "sourceVolumeMm3": 15095.999999999996,
+          "targetVoxels": 13176,
+          "targetVolumeMm3": 13176,
+          "volumeRatio": 0.8728139904610495
+        },
+        {
+          "id": 9062,
+          "sourceVoxels": 2308,
+          "sourceVolumeMm3": 18463.999999999996,
+          "targetVoxels": 15932,
+          "targetVolumeMm3": 15932,
+          "volumeRatio": 0.8628682842287697
+        },
+        {
+          "id": 9071,
+          "sourceVoxels": 869,
+          "sourceVolumeMm3": 6951.999999999998,
+          "targetVoxels": 6166,
+          "targetVolumeMm3": 6166,
+          "volumeRatio": 0.8869390103567321
+        },
+        {
+          "id": 9072,
+          "sourceVoxels": 809,
+          "sourceVolumeMm3": 6471.999999999998,
+          "targetVoxels": 5538,
+          "targetVolumeMm3": 5538,
+          "volumeRatio": 0.8556860321384427
+        },
+        {
+          "id": 9081,
+          "sourceVoxels": 144,
+          "sourceVolumeMm3": 1151.9999999999998,
+          "targetVoxels": 1031,
+          "targetVolumeMm3": 1031,
+          "volumeRatio": 0.8949652777777779
+        },
+        {
+          "id": 9082,
+          "sourceVoxels": 159,
+          "sourceVolumeMm3": 1271.9999999999998,
+          "targetVoxels": 1070,
+          "targetVolumeMm3": 1070,
+          "volumeRatio": 0.8411949685534593
+        },
+        {
+          "id": 9100,
+          "sourceVoxels": 53,
+          "sourceVolumeMm3": 423.9999999999999,
+          "targetVoxels": 306,
+          "targetVolumeMm3": 306,
+          "volumeRatio": 0.7216981132075474
+        },
+        {
+          "id": 9110,
+          "sourceVoxels": 228,
+          "sourceVolumeMm3": 1823.9999999999995,
+          "targetVoxels": 1480,
+          "targetVolumeMm3": 1480,
+          "volumeRatio": 0.81140350877193
+        },
+        {
+          "id": 9120,
+          "sourceVoxels": 665,
+          "sourceVolumeMm3": 5319.999999999999,
+          "targetVoxels": 4542,
+          "targetVolumeMm3": 4542,
+          "volumeRatio": 0.8537593984962407
+        },
+        {
+          "id": 9130,
+          "sourceVoxels": 371,
+          "sourceVolumeMm3": 2967.9999999999995,
+          "targetVoxels": 2607,
+          "targetVolumeMm3": 2607,
+          "volumeRatio": 0.8783692722371969
+        },
+        {
+          "id": 9140,
+          "sourceVoxels": 194,
+          "sourceVolumeMm3": 1551.9999999999995,
+          "targetVoxels": 1267,
+          "targetVolumeMm3": 1267,
+          "volumeRatio": 0.8163659793814435
+        },
+        {
+          "id": 9150,
+          "sourceVoxels": 243,
+          "sourceVolumeMm3": 1943.9999999999995,
+          "targetVoxels": 1440,
+          "targetVolumeMm3": 1440,
+          "volumeRatio": 0.7407407407407409
+        },
+        {
+          "id": 9160,
+          "sourceVoxels": 174,
+          "sourceVolumeMm3": 1391.9999999999998,
+          "targetVoxels": 1307,
+          "targetVolumeMm3": 1307,
+          "volumeRatio": 0.9389367816091956
+        },
+        {
+          "id": 9170,
+          "sourceVoxels": 112,
+          "sourceVolumeMm3": 895.9999999999998,
+          "targetVoxels": 582,
+          "targetVolumeMm3": 582,
+          "volumeRatio": 0.6495535714285716
+        }
+      ]
+    },
+    "aal3": {
+      "sourceSha256": "53e86a6d0db7d9d375da9936d62437e92c8e6d54aab7b6d3393d9cc43ae0f732",
+      "outputSha256": "451111c1850b01cdda46c6e3244d3ba13ab93e10b2b0ebaaa1426fd8ee0c4ebe",
+      "positiveLabels": 166,
+      "lostPositiveLabelIds": [],
+      "perLabelVolumes": [
+        {
+          "id": 1,
+          "sourceVoxels": 28208,
+          "sourceVolumeMm3": 28208.0,
+          "targetVoxels": 30718,
+          "targetVolumeMm3": 30718,
+          "volumeRatio": 1.0889818491208167
+        },
+        {
+          "id": 2,
+          "sourceVoxels": 27048,
+          "sourceVolumeMm3": 27048.0,
+          "targetVoxels": 27911,
+          "targetVolumeMm3": 27911,
+          "volumeRatio": 1.0319062407571724
+        },
+        {
+          "id": 3,
+          "sourceVoxels": 38960,
+          "sourceVolumeMm3": 38960.0,
+          "targetVoxels": 35089,
+          "targetVolumeMm3": 35089,
+          "volumeRatio": 0.9006416837782341
+        },
+        {
+          "id": 4,
+          "sourceVoxels": 41008,
+          "sourceVolumeMm3": 41008.0,
+          "targetVoxels": 37162,
+          "targetVolumeMm3": 37162,
+          "volumeRatio": 0.9062134217713617
+        },
+        {
+          "id": 5,
+          "sourceVoxels": 36056,
+          "sourceVolumeMm3": 36056.0,
+          "targetVoxels": 36598,
+          "targetVolumeMm3": 36598,
+          "volumeRatio": 1.0150321721766142
+        },
+        {
+          "id": 6,
+          "sourceVoxels": 38880,
+          "sourceVolumeMm3": 38880.0,
+          "targetVoxels": 35699,
+          "targetVolumeMm3": 35699,
+          "volumeRatio": 0.9181841563786008
+        },
+        {
+          "id": 7,
+          "sourceVoxels": 8304,
+          "sourceVolumeMm3": 8304.0,
+          "targetVoxels": 7475,
+          "targetVolumeMm3": 7475,
+          "volumeRatio": 0.9001685934489403
+        },
+        {
+          "id": 8,
+          "sourceVoxels": 11192,
+          "sourceVolumeMm3": 11192.0,
+          "targetVoxels": 8717,
+          "targetVolumeMm3": 8717,
+          "volumeRatio": 0.7788598999285203
+        },
+        {
+          "id": 9,
+          "sourceVoxels": 20232,
+          "sourceVolumeMm3": 20232.0,
+          "targetVoxels": 18431,
+          "targetVolumeMm3": 18431,
+          "volumeRatio": 0.9109826018189008
+        },
+        {
+          "id": 10,
+          "sourceVoxels": 17208,
+          "sourceVolumeMm3": 17208.0,
+          "targetVoxels": 14519,
+          "targetVolumeMm3": 14519,
+          "volumeRatio": 0.8437354718735471
+        },
+        {
+          "id": 11,
+          "sourceVoxels": 6512,
+          "sourceVolumeMm3": 6512.0,
+          "targetVoxels": 6332,
+          "targetVolumeMm3": 6332,
+          "volumeRatio": 0.9723587223587223
+        },
+        {
+          "id": 12,
+          "sourceVoxels": 6992,
+          "sourceVolumeMm3": 6992.0,
+          "targetVoxels": 6718,
+          "targetVolumeMm3": 6718,
+          "volumeRatio": 0.960812356979405
+        },
+        {
+          "id": 13,
+          "sourceVoxels": 7904,
+          "sourceVolumeMm3": 7904.0,
+          "targetVoxels": 8926,
+          "targetVolumeMm3": 8926,
+          "volumeRatio": 1.1293016194331984
+        },
+        {
+          "id": 14,
+          "sourceVoxels": 10648,
+          "sourceVolumeMm3": 10648.0,
+          "targetVoxels": 11267,
+          "targetVolumeMm3": 11267,
+          "volumeRatio": 1.0581329827197596
+        },
+        {
+          "id": 15,
+          "sourceVoxels": 17176,
+          "sourceVolumeMm3": 17176.0,
+          "targetVoxels": 17420,
+          "targetVolumeMm3": 17420,
+          "volumeRatio": 1.0142058686539357
+        },
+        {
+          "id": 16,
+          "sourceVoxels": 18968,
+          "sourceVolumeMm3": 18968.0,
+          "targetVoxels": 17834,
+          "targetVolumeMm3": 17834,
+          "volumeRatio": 0.9402150991142978
+        },
+        {
+          "id": 17,
+          "sourceVoxels": 2449,
+          "sourceVolumeMm3": 2449.0,
+          "targetVoxels": 2314,
+          "targetVolumeMm3": 2314,
+          "volumeRatio": 0.9448754593711719
+        },
+        {
+          "id": 18,
+          "sourceVoxels": 2283,
+          "sourceVolumeMm3": 2283.0,
+          "targetVoxels": 2146,
+          "targetVolumeMm3": 2146,
+          "volumeRatio": 0.9399912395970215
+        },
+        {
+          "id": 19,
+          "sourceVoxels": 23936,
+          "sourceVolumeMm3": 23936.0,
+          "targetVoxels": 22126,
+          "targetVolumeMm3": 22126,
+          "volumeRatio": 0.9243816844919787
+        },
+        {
+          "id": 20,
+          "sourceVoxels": 17072,
+          "sourceVolumeMm3": 17072.0,
+          "targetVoxels": 13702,
+          "targetVolumeMm3": 13702,
+          "volumeRatio": 0.8026007497656982
+        },
+        {
+          "id": 21,
+          "sourceVoxels": 5752,
+          "sourceVolumeMm3": 5752.0,
+          "targetVoxels": 5645,
+          "targetVolumeMm3": 5645,
+          "volumeRatio": 0.9813977746870653
+        },
+        {
+          "id": 22,
+          "sourceVoxels": 6848,
+          "sourceVolumeMm3": 6848.0,
+          "targetVoxels": 7063,
+          "targetVolumeMm3": 7063,
+          "volumeRatio": 1.0313960280373833
+        },
+        {
+          "id": 23,
+          "sourceVoxels": 6816,
+          "sourceVolumeMm3": 6816.0,
+          "targetVoxels": 5553,
+          "targetVolumeMm3": 5553,
+          "volumeRatio": 0.8147007042253521
+        },
+        {
+          "id": 24,
+          "sourceVoxels": 5960,
+          "sourceVolumeMm3": 5960.0,
+          "targetVoxels": 5063,
+          "targetVolumeMm3": 5063,
+          "volumeRatio": 0.849496644295302
+        },
+        {
+          "id": 25,
+          "sourceVoxels": 4400,
+          "sourceVolumeMm3": 4400.0,
+          "targetVoxels": 3616,
+          "targetVolumeMm3": 3616,
+          "volumeRatio": 0.8218181818181818
+        },
+        {
+          "id": 26,
+          "sourceVoxels": 4968,
+          "sourceVolumeMm3": 4968.0,
+          "targetVoxels": 4099,
+          "targetVolumeMm3": 4099,
+          "volumeRatio": 0.8250805152979066
+        },
+        {
+          "id": 27,
+          "sourceVoxels": 3544,
+          "sourceVolumeMm3": 3544.0,
+          "targetVoxels": 3160,
+          "targetVolumeMm3": 3160,
+          "volumeRatio": 0.891647855530474
+        },
+        {
+          "id": 28,
+          "sourceVoxels": 5184,
+          "sourceVolumeMm3": 5184.0,
+          "targetVoxels": 5188,
+          "targetVolumeMm3": 5188,
+          "volumeRatio": 1.0007716049382716
+        },
+        {
+          "id": 29,
+          "sourceVoxels": 4536,
+          "sourceVolumeMm3": 4536.0,
+          "targetVoxels": 4982,
+          "targetVolumeMm3": 4982,
+          "volumeRatio": 1.0983245149911816
+        },
+        {
+          "id": 30,
+          "sourceVoxels": 4488,
+          "sourceVolumeMm3": 4488.0,
+          "targetVoxels": 4671,
+          "targetVolumeMm3": 4671,
+          "volumeRatio": 1.0407754010695187
+        },
+        {
+          "id": 31,
+          "sourceVoxels": 1576,
+          "sourceVolumeMm3": 1576.0,
+          "targetVoxels": 1376,
+          "targetVolumeMm3": 1376,
+          "volumeRatio": 0.8730964467005076
+        },
+        {
+          "id": 32,
+          "sourceVoxels": 1504,
+          "sourceVolumeMm3": 1504.0,
+          "targetVoxels": 1614,
+          "targetVolumeMm3": 1614,
+          "volumeRatio": 1.0731382978723405
+        },
+        {
+          "id": 33,
+          "sourceVoxels": 14864,
+          "sourceVolumeMm3": 14864.0,
+          "targetVoxels": 14148,
+          "targetVolumeMm3": 14148,
+          "volumeRatio": 0.9518299246501615
+        },
+        {
+          "id": 34,
+          "sourceVoxels": 14160,
+          "sourceVolumeMm3": 14160.0,
+          "targetVoxels": 13992,
+          "targetVolumeMm3": 13992,
+          "volumeRatio": 0.988135593220339
+        },
+        {
+          "id": 37,
+          "sourceVoxels": 15528,
+          "sourceVolumeMm3": 15528.0,
+          "targetVoxels": 16109,
+          "targetVolumeMm3": 16109,
+          "volumeRatio": 1.0374162802679032
+        },
+        {
+          "id": 38,
+          "sourceVoxels": 17624,
+          "sourceVolumeMm3": 17624.0,
+          "targetVoxels": 18757,
+          "targetVolumeMm3": 18757,
+          "volumeRatio": 1.0642873354516569
+        },
+        {
+          "id": 39,
+          "sourceVoxels": 3704,
+          "sourceVolumeMm3": 3704.0,
+          "targetVoxels": 2745,
+          "targetVolumeMm3": 2745,
+          "volumeRatio": 0.7410907127429806
+        },
+        {
+          "id": 40,
+          "sourceVoxels": 2680,
+          "sourceVolumeMm3": 2680.0,
+          "targetVoxels": 2137,
+          "targetVolumeMm3": 2137,
+          "volumeRatio": 0.7973880597014925
+        },
+        {
+          "id": 41,
+          "sourceVoxels": 7456,
+          "sourceVolumeMm3": 7456.0,
+          "targetVoxels": 7567,
+          "targetVolumeMm3": 7567,
+          "volumeRatio": 1.014887339055794
+        },
+        {
+          "id": 42,
+          "sourceVoxels": 7568,
+          "sourceVolumeMm3": 7568.0,
+          "targetVoxels": 7370,
+          "targetVolumeMm3": 7370,
+          "volumeRatio": 0.9738372093023255
+        },
+        {
+          "id": 43,
+          "sourceVoxels": 7824,
+          "sourceVolumeMm3": 7824.0,
+          "targetVoxels": 8709,
+          "targetVolumeMm3": 8709,
+          "volumeRatio": 1.1131134969325154
+        },
+        {
+          "id": 44,
+          "sourceVoxels": 9056,
+          "sourceVolumeMm3": 9056.0,
+          "targetVoxels": 9257,
+          "targetVolumeMm3": 9257,
+          "volumeRatio": 1.0221952296819787
+        },
+        {
+          "id": 45,
+          "sourceVoxels": 1760,
+          "sourceVolumeMm3": 1760.0,
+          "targetVoxels": 1866,
+          "targetVolumeMm3": 1866,
+          "volumeRatio": 1.0602272727272728
+        },
+        {
+          "id": 46,
+          "sourceVoxels": 1984,
+          "sourceVolumeMm3": 1984.0,
+          "targetVoxels": 2006,
+          "targetVolumeMm3": 2006,
+          "volumeRatio": 1.0110887096774193
+        },
+        {
+          "id": 47,
+          "sourceVoxels": 18064,
+          "sourceVolumeMm3": 18064.0,
+          "targetVoxels": 15947,
+          "targetVolumeMm3": 15947,
+          "volumeRatio": 0.8828055801594331
+        },
+        {
+          "id": 48,
+          "sourceVoxels": 14888,
+          "sourceVolumeMm3": 14888.0,
+          "targetVoxels": 15629,
+          "targetVolumeMm3": 15629,
+          "volumeRatio": 1.049771628156905
+        },
+        {
+          "id": 49,
+          "sourceVoxels": 12168,
+          "sourceVolumeMm3": 12168.0,
+          "targetVoxels": 11701,
+          "targetVolumeMm3": 11701,
+          "volumeRatio": 0.961620644312952
+        },
+        {
+          "id": 50,
+          "sourceVoxels": 11392,
+          "sourceVolumeMm3": 11392.0,
+          "targetVoxels": 12594,
+          "targetVolumeMm3": 12594,
+          "volumeRatio": 1.1055126404494382
+        },
+        {
+          "id": 51,
+          "sourceVoxels": 16760,
+          "sourceVolumeMm3": 16760.0,
+          "targetVoxels": 14592,
+          "targetVolumeMm3": 14592,
+          "volumeRatio": 0.8706443914081146
+        },
+        {
+          "id": 52,
+          "sourceVoxels": 18400,
+          "sourceVolumeMm3": 18400.0,
+          "targetVoxels": 17645,
+          "targetVolumeMm3": 17645,
+          "volumeRatio": 0.9589673913043478
+        },
+        {
+          "id": 53,
+          "sourceVoxels": 10928,
+          "sourceVolumeMm3": 10928.0,
+          "targetVoxels": 11319,
+          "targetVolumeMm3": 11319,
+          "volumeRatio": 1.0357796486090776
+        },
+        {
+          "id": 54,
+          "sourceVoxels": 11304,
+          "sourceVolumeMm3": 11304.0,
+          "targetVoxels": 11741,
+          "targetVolumeMm3": 11741,
+          "volumeRatio": 1.0386588818117481
+        },
+        {
+          "id": 55,
+          "sourceVoxels": 26120,
+          "sourceVolumeMm3": 26120.0,
+          "targetVoxels": 25791,
+          "targetVolumeMm3": 25791,
+          "volumeRatio": 0.9874042879019909
+        },
+        {
+          "id": 56,
+          "sourceVoxels": 16784,
+          "sourceVolumeMm3": 16784.0,
+          "targetVoxels": 16774,
+          "targetVolumeMm3": 16774,
+          "volumeRatio": 0.9994041944709247
+        },
+        {
+          "id": 57,
+          "sourceVoxels": 7528,
+          "sourceVolumeMm3": 7528.0,
+          "targetVoxels": 8051,
+          "targetVolumeMm3": 8051,
+          "volumeRatio": 1.0694739638682254
+        },
+        {
+          "id": 58,
+          "sourceVoxels": 7912,
+          "sourceVolumeMm3": 7912.0,
+          "targetVoxels": 8430,
+          "targetVolumeMm3": 8430,
+          "volumeRatio": 1.0654701718907988
+        },
+        {
+          "id": 59,
+          "sourceVoxels": 18472,
+          "sourceVolumeMm3": 18472.0,
+          "targetVoxels": 19706,
+          "targetVolumeMm3": 19706,
+          "volumeRatio": 1.0668038111736682
+        },
+        {
+          "id": 60,
+          "sourceVoxels": 20144,
+          "sourceVolumeMm3": 20144.0,
+          "targetVoxels": 17938,
+          "targetVolumeMm3": 17938,
+          "volumeRatio": 0.8904884829229547
+        },
+        {
+          "id": 61,
+          "sourceVoxels": 31136,
+          "sourceVolumeMm3": 31136.0,
+          "targetVoxels": 28518,
+          "targetVolumeMm3": 28518,
+          "volumeRatio": 0.9159172661870504
+        },
+        {
+          "id": 62,
+          "sourceVoxels": 30584,
+          "sourceVolumeMm3": 30584.0,
+          "targetVoxels": 26663,
+          "targetVolumeMm3": 26663,
+          "volumeRatio": 0.871795710175255
+        },
+        {
+          "id": 63,
+          "sourceVoxels": 16520,
+          "sourceVolumeMm3": 16520.0,
+          "targetVoxels": 17790,
+          "targetVolumeMm3": 17790,
+          "volumeRatio": 1.0768765133171914
+        },
+        {
+          "id": 64,
+          "sourceVoxels": 17776,
+          "sourceVolumeMm3": 17776.0,
+          "targetVoxels": 18188,
+          "targetVolumeMm3": 18188,
+          "volumeRatio": 1.0231773177317731
+        },
+        {
+          "id": 65,
+          "sourceVoxels": 19576,
+          "sourceVolumeMm3": 19576.0,
+          "targetVoxels": 17810,
+          "targetVolumeMm3": 17810,
+          "volumeRatio": 0.9097874948917041
+        },
+        {
+          "id": 66,
+          "sourceVoxels": 10760,
+          "sourceVolumeMm3": 10760.0,
+          "targetVoxels": 12803,
+          "targetVolumeMm3": 12803,
+          "volumeRatio": 1.1898698884758365
+        },
+        {
+          "id": 67,
+          "sourceVoxels": 10048,
+          "sourceVolumeMm3": 10048.0,
+          "targetVoxels": 8847,
+          "targetVolumeMm3": 8847,
+          "volumeRatio": 0.8804737261146497
+        },
+        {
+          "id": 68,
+          "sourceVoxels": 15792,
+          "sourceVolumeMm3": 15792.0,
+          "targetVoxels": 14379,
+          "targetVolumeMm3": 14379,
+          "volumeRatio": 0.9105243161094225
+        },
+        {
+          "id": 69,
+          "sourceVoxels": 9384,
+          "sourceVolumeMm3": 9384.0,
+          "targetVoxels": 10434,
+          "targetVolumeMm3": 10434,
+          "volumeRatio": 1.1118925831202047
+        },
+        {
+          "id": 70,
+          "sourceVoxels": 14016,
+          "sourceVolumeMm3": 14016.0,
+          "targetVoxels": 16834,
+          "targetVolumeMm3": 16834,
+          "volumeRatio": 1.2010559360730593
+        },
+        {
+          "id": 71,
+          "sourceVoxels": 28224,
+          "sourceVolumeMm3": 28224.0,
+          "targetVoxels": 25731,
+          "targetVolumeMm3": 25731,
+          "volumeRatio": 0.9116709183673469
+        },
+        {
+          "id": 72,
+          "sourceVoxels": 26120,
+          "sourceVolumeMm3": 26120.0,
+          "targetVoxels": 25310,
+          "targetVolumeMm3": 25310,
+          "volumeRatio": 0.968989280245023
+        },
+        {
+          "id": 73,
+          "sourceVoxels": 10792,
+          "sourceVolumeMm3": 10792.0,
+          "targetVoxels": 10628,
+          "targetVolumeMm3": 10628,
+          "volumeRatio": 0.9848035581912528
+        },
+        {
+          "id": 74,
+          "sourceVoxels": 6688,
+          "sourceVolumeMm3": 6688.0,
+          "targetVoxels": 6473,
+          "targetVolumeMm3": 6473,
+          "volumeRatio": 0.9678528708133971
+        },
+        {
+          "id": 75,
+          "sourceVoxels": 6344,
+          "sourceVolumeMm3": 6344.0,
+          "targetVoxels": 5967,
+          "targetVolumeMm3": 5967,
+          "volumeRatio": 0.9405737704918032
+        },
+        {
+          "id": 76,
+          "sourceVoxels": 6824,
+          "sourceVolumeMm3": 6824.0,
+          "targetVoxels": 6539,
+          "targetVolumeMm3": 6539,
+          "volumeRatio": 0.9582356389214537
+        },
+        {
+          "id": 77,
+          "sourceVoxels": 7967,
+          "sourceVolumeMm3": 7967.0,
+          "targetVoxels": 7944,
+          "targetVolumeMm3": 7944,
+          "volumeRatio": 0.9971130915024476
+        },
+        {
+          "id": 78,
+          "sourceVoxels": 8499,
+          "sourceVolumeMm3": 8499.0,
+          "targetVoxels": 8470,
+          "targetVolumeMm3": 8470,
+          "volumeRatio": 0.9965878338628074
+        },
+        {
+          "id": 79,
+          "sourceVoxels": 2344,
+          "sourceVolumeMm3": 2344.0,
+          "targetVoxels": 2506,
+          "targetVolumeMm3": 2506,
+          "volumeRatio": 1.069112627986348
+        },
+        {
+          "id": 80,
+          "sourceVoxels": 2240,
+          "sourceVolumeMm3": 2240.0,
+          "targetVoxels": 2329,
+          "targetVolumeMm3": 2329,
+          "volumeRatio": 1.0397321428571429
+        },
+        {
+          "id": 83,
+          "sourceVoxels": 1800,
+          "sourceVolumeMm3": 1800.0,
+          "targetVoxels": 2398,
+          "targetVolumeMm3": 2398,
+          "volumeRatio": 1.3322222222222222
+        },
+        {
+          "id": 84,
+          "sourceVoxels": 1992,
+          "sourceVolumeMm3": 1992.0,
+          "targetVoxels": 1624,
+          "targetVolumeMm3": 1624,
+          "volumeRatio": 0.8152610441767069
+        },
+        {
+          "id": 85,
+          "sourceVoxels": 18368,
+          "sourceVolumeMm3": 18368.0,
+          "targetVoxels": 23752,
+          "targetVolumeMm3": 23752,
+          "volumeRatio": 1.2931184668989546
+        },
+        {
+          "id": 86,
+          "sourceVoxels": 25128,
+          "sourceVolumeMm3": 25128.0,
+          "targetVoxels": 23242,
+          "targetVolumeMm3": 23242,
+          "volumeRatio": 0.9249442852594715
+        },
+        {
+          "id": 87,
+          "sourceVoxels": 10280,
+          "sourceVolumeMm3": 10280.0,
+          "targetVoxels": 12156,
+          "targetVolumeMm3": 12156,
+          "volumeRatio": 1.1824902723735409
+        },
+        {
+          "id": 88,
+          "sourceVoxels": 10704,
+          "sourceVolumeMm3": 10704.0,
+          "targetVoxels": 12532,
+          "targetVolumeMm3": 12532,
+          "volumeRatio": 1.1707772795216742
+        },
+        {
+          "id": 89,
+          "sourceVoxels": 39536,
+          "sourceVolumeMm3": 39536.0,
+          "targetVoxels": 35724,
+          "targetVolumeMm3": 35724,
+          "volumeRatio": 0.9035815459328207
+        },
+        {
+          "id": 90,
+          "sourceVoxels": 35272,
+          "sourceVolumeMm3": 35272.0,
+          "targetVoxels": 34723,
+          "targetVolumeMm3": 34723,
+          "volumeRatio": 0.9844352460875482
+        },
+        {
+          "id": 91,
+          "sourceVoxels": 6040,
+          "sourceVolumeMm3": 6040.0,
+          "targetVoxels": 6542,
+          "targetVolumeMm3": 6542,
+          "volumeRatio": 1.083112582781457
+        },
+        {
+          "id": 92,
+          "sourceVoxels": 9496,
+          "sourceVolumeMm3": 9496.0,
+          "targetVoxels": 11039,
+          "targetVolumeMm3": 11039,
+          "volumeRatio": 1.1624894692502106
+        },
+        {
+          "id": 93,
+          "sourceVoxels": 25600,
+          "sourceVolumeMm3": 25600.0,
+          "targetVoxels": 22762,
+          "targetVolumeMm3": 22762,
+          "volumeRatio": 0.889140625
+        },
+        {
+          "id": 94,
+          "sourceVoxels": 28456,
+          "sourceVolumeMm3": 28456.0,
+          "targetVoxels": 24289,
+          "targetVolumeMm3": 24289,
+          "volumeRatio": 0.8535633961203262
+        },
+        {
+          "id": 95,
+          "sourceVoxels": 20824,
+          "sourceVolumeMm3": 20824.0,
+          "targetVoxels": 19302,
+          "targetVolumeMm3": 19302,
+          "volumeRatio": 0.9269112562427968
+        },
+        {
+          "id": 96,
+          "sourceVoxels": 21184,
+          "sourceVolumeMm3": 21184.0,
+          "targetVoxels": 17340,
+          "targetVolumeMm3": 17340,
+          "volumeRatio": 0.8185422960725075
+        },
+        {
+          "id": 97,
+          "sourceVoxels": 15152,
+          "sourceVolumeMm3": 15152.0,
+          "targetVoxels": 13439,
+          "targetVolumeMm3": 13439,
+          "volumeRatio": 0.8869456177402323
+        },
+        {
+          "id": 98,
+          "sourceVoxels": 16936,
+          "sourceVolumeMm3": 16936.0,
+          "targetVoxels": 14743,
+          "targetVolumeMm3": 14743,
+          "volumeRatio": 0.8705125177137458
+        },
+        {
+          "id": 99,
+          "sourceVoxels": 1088,
+          "sourceVolumeMm3": 1088.0,
+          "targetVoxels": 996,
+          "targetVolumeMm3": 996,
+          "volumeRatio": 0.9154411764705882
+        },
+        {
+          "id": 100,
+          "sourceVoxels": 1656,
+          "sourceVolumeMm3": 1656.0,
+          "targetVoxels": 1348,
+          "targetVolumeMm3": 1348,
+          "volumeRatio": 0.8140096618357487
+        },
+        {
+          "id": 101,
+          "sourceVoxels": 9000,
+          "sourceVolumeMm3": 9000.0,
+          "targetVoxels": 8259,
+          "targetVolumeMm3": 8259,
+          "volumeRatio": 0.9176666666666666
+        },
+        {
+          "id": 102,
+          "sourceVoxels": 6888,
+          "sourceVolumeMm3": 6888.0,
+          "targetVoxels": 5392,
+          "targetVolumeMm3": 5392,
+          "volumeRatio": 0.7828106852497096
+        },
+        {
+          "id": 103,
+          "sourceVoxels": 13552,
+          "sourceVolumeMm3": 13552.0,
+          "targetVoxels": 10491,
+          "targetVolumeMm3": 10491,
+          "volumeRatio": 0.774129279811098
+        },
+        {
+          "id": 104,
+          "sourceVoxels": 14360,
+          "sourceVolumeMm3": 14360.0,
+          "targetVoxels": 11688,
+          "targetVolumeMm3": 11688,
+          "volumeRatio": 0.8139275766016713
+        },
+        {
+          "id": 105,
+          "sourceVoxels": 4680,
+          "sourceVolumeMm3": 4680.0,
+          "targetVoxels": 4758,
+          "targetVolumeMm3": 4758,
+          "volumeRatio": 1.0166666666666666
+        },
+        {
+          "id": 106,
+          "sourceVoxels": 4272,
+          "sourceVolumeMm3": 4272.0,
+          "targetVoxels": 3750,
+          "targetVolumeMm3": 3750,
+          "volumeRatio": 0.8778089887640449
+        },
+        {
+          "id": 107,
+          "sourceVoxels": 15096,
+          "sourceVolumeMm3": 15096.0,
+          "targetVoxels": 12863,
+          "targetVolumeMm3": 12863,
+          "volumeRatio": 0.8520800211976682
+        },
+        {
+          "id": 108,
+          "sourceVoxels": 18464,
+          "sourceVolumeMm3": 18464.0,
+          "targetVoxels": 16014,
+          "targetVolumeMm3": 16014,
+          "volumeRatio": 0.8673093587521664
+        },
+        {
+          "id": 109,
+          "sourceVoxels": 6952,
+          "sourceVolumeMm3": 6952.0,
+          "targetVoxels": 6182,
+          "targetVolumeMm3": 6182,
+          "volumeRatio": 0.8892405063291139
+        },
+        {
+          "id": 110,
+          "sourceVoxels": 6472,
+          "sourceVolumeMm3": 6472.0,
+          "targetVoxels": 5592,
+          "targetVolumeMm3": 5592,
+          "volumeRatio": 0.8640296662546354
+        },
+        {
+          "id": 111,
+          "sourceVoxels": 1152,
+          "sourceVolumeMm3": 1152.0,
+          "targetVoxels": 1046,
+          "targetVolumeMm3": 1046,
+          "volumeRatio": 0.9079861111111112
+        },
+        {
+          "id": 112,
+          "sourceVoxels": 1272,
+          "sourceVolumeMm3": 1272.0,
+          "targetVoxels": 1083,
+          "targetVolumeMm3": 1083,
+          "volumeRatio": 0.8514150943396226
+        },
+        {
+          "id": 113,
+          "sourceVoxels": 417,
+          "sourceVolumeMm3": 417.0,
+          "targetVoxels": 313,
+          "targetVolumeMm3": 313,
+          "volumeRatio": 0.750599520383693
+        },
+        {
+          "id": 114,
+          "sourceVoxels": 1824,
+          "sourceVolumeMm3": 1824.0,
+          "targetVoxels": 1508,
+          "targetVolumeMm3": 1508,
+          "volumeRatio": 0.8267543859649122
+        },
+        {
+          "id": 115,
+          "sourceVoxels": 5320,
+          "sourceVolumeMm3": 5320.0,
+          "targetVoxels": 4594,
+          "targetVolumeMm3": 4594,
+          "volumeRatio": 0.8635338345864662
+        },
+        {
+          "id": 116,
+          "sourceVoxels": 2968,
+          "sourceVolumeMm3": 2968.0,
+          "targetVoxels": 2555,
+          "targetVolumeMm3": 2555,
+          "volumeRatio": 0.8608490566037735
+        },
+        {
+          "id": 117,
+          "sourceVoxels": 1552,
+          "sourceVolumeMm3": 1552.0,
+          "targetVoxels": 1233,
+          "targetVolumeMm3": 1233,
+          "volumeRatio": 0.7944587628865979
+        },
+        {
+          "id": 118,
+          "sourceVoxels": 1944,
+          "sourceVolumeMm3": 1944.0,
+          "targetVoxels": 1428,
+          "targetVolumeMm3": 1428,
+          "volumeRatio": 0.7345679012345679
+        },
+        {
+          "id": 119,
+          "sourceVoxels": 1392,
+          "sourceVolumeMm3": 1392.0,
+          "targetVoxels": 1302,
+          "targetVolumeMm3": 1302,
+          "volumeRatio": 0.9353448275862069
+        },
+        {
+          "id": 120,
+          "sourceVoxels": 896,
+          "sourceVolumeMm3": 896.0,
+          "targetVoxels": 614,
+          "targetVolumeMm3": 614,
+          "volumeRatio": 0.6852678571428571
+        },
+        {
+          "id": 121,
+          "sourceVoxels": 154,
+          "sourceVolumeMm3": 154.0,
+          "targetVoxels": 204,
+          "targetVolumeMm3": 204,
+          "volumeRatio": 1.3246753246753247
+        },
+        {
+          "id": 122,
+          "sourceVoxels": 176,
+          "sourceVolumeMm3": 176.0,
+          "targetVoxels": 227,
+          "targetVolumeMm3": 227,
+          "volumeRatio": 1.2897727272727273
+        },
+        {
+          "id": 123,
+          "sourceVoxels": 206,
+          "sourceVolumeMm3": 206.0,
+          "targetVoxels": 212,
+          "targetVolumeMm3": 212,
+          "volumeRatio": 1.029126213592233
+        },
+        {
+          "id": 124,
+          "sourceVoxels": 192,
+          "sourceVolumeMm3": 192.0,
+          "targetVoxels": 204,
+          "targetVolumeMm3": 204,
+          "volumeRatio": 1.0625
+        },
+        {
+          "id": 125,
+          "sourceVoxels": 631,
+          "sourceVolumeMm3": 631.0,
+          "targetVoxels": 634,
+          "targetVolumeMm3": 634,
+          "volumeRatio": 1.0047543581616483
+        },
+        {
+          "id": 126,
+          "sourceVoxels": 625,
+          "sourceVolumeMm3": 625.0,
+          "targetVoxels": 735,
+          "targetVolumeMm3": 735,
+          "volumeRatio": 1.176
+        },
+        {
+          "id": 127,
+          "sourceVoxels": 2185,
+          "sourceVolumeMm3": 2185.0,
+          "targetVoxels": 2293,
+          "targetVolumeMm3": 2293,
+          "volumeRatio": 1.0494279176201373
+        },
+        {
+          "id": 128,
+          "sourceVoxels": 2069,
+          "sourceVolumeMm3": 2069.0,
+          "targetVoxels": 2401,
+          "targetVolumeMm3": 2401,
+          "volumeRatio": 1.1604639922667956
+        },
+        {
+          "id": 129,
+          "sourceVoxels": 1347,
+          "sourceVolumeMm3": 1347.0,
+          "targetVoxels": 1298,
+          "targetVolumeMm3": 1298,
+          "volumeRatio": 0.96362286562732
+        },
+        {
+          "id": 130,
+          "sourceVoxels": 1317,
+          "sourceVolumeMm3": 1317.0,
+          "targetVoxels": 1323,
+          "targetVolumeMm3": 1323,
+          "volumeRatio": 1.0045558086560364
+        },
+        {
+          "id": 131,
+          "sourceVoxels": 420,
+          "sourceVolumeMm3": 420.0,
+          "targetVoxels": 451,
+          "targetVolumeMm3": 451,
+          "volumeRatio": 1.0738095238095238
+        },
+        {
+          "id": 132,
+          "sourceVoxels": 419,
+          "sourceVolumeMm3": 419.0,
+          "targetVoxels": 429,
+          "targetVolumeMm3": 429,
+          "volumeRatio": 1.0238663484486874
+        },
+        {
+          "id": 133,
+          "sourceVoxels": 8,
+          "sourceVolumeMm3": 8.0,
+          "targetVoxels": 8,
+          "targetVolumeMm3": 8,
+          "volumeRatio": 1.0
+        },
+        {
+          "id": 134,
+          "sourceVoxels": 8,
+          "sourceVolumeMm3": 8.0,
+          "targetVoxels": 7,
+          "targetVolumeMm3": 7,
+          "volumeRatio": 0.875
+        },
+        {
+          "id": 135,
+          "sourceVoxels": 1000,
+          "sourceVolumeMm3": 1000.0,
+          "targetVoxels": 1042,
+          "targetVolumeMm3": 1042,
+          "volumeRatio": 1.042
+        },
+        {
+          "id": 136,
+          "sourceVoxels": 1016,
+          "sourceVolumeMm3": 1016.0,
+          "targetVoxels": 1021,
+          "targetVolumeMm3": 1021,
+          "volumeRatio": 1.0049212598425197
+        },
+        {
+          "id": 137,
+          "sourceVoxels": 296,
+          "sourceVolumeMm3": 296.0,
+          "targetVoxels": 329,
+          "targetVolumeMm3": 329,
+          "volumeRatio": 1.1114864864864864
+        },
+        {
+          "id": 138,
+          "sourceVoxels": 275,
+          "sourceVolumeMm3": 275.0,
+          "targetVoxels": 310,
+          "targetVolumeMm3": 310,
+          "volumeRatio": 1.1272727272727272
+        },
+        {
+          "id": 139,
+          "sourceVoxels": 345,
+          "sourceVolumeMm3": 345.0,
+          "targetVoxels": 362,
+          "targetVolumeMm3": 362,
+          "volumeRatio": 1.0492753623188407
+        },
+        {
+          "id": 140,
+          "sourceVoxels": 373,
+          "sourceVolumeMm3": 373.0,
+          "targetVoxels": 379,
+          "targetVolumeMm3": 379,
+          "volumeRatio": 1.0160857908847185
+        },
+        {
+          "id": 141,
+          "sourceVoxels": 136,
+          "sourceVolumeMm3": 136.0,
+          "targetVoxels": 145,
+          "targetVolumeMm3": 145,
+          "volumeRatio": 1.0661764705882353
+        },
+        {
+          "id": 142,
+          "sourceVoxels": 114,
+          "sourceVolumeMm3": 114.0,
+          "targetVoxels": 113,
+          "targetVolumeMm3": 113,
+          "volumeRatio": 0.9912280701754386
+        },
+        {
+          "id": 143,
+          "sourceVoxels": 248,
+          "sourceVolumeMm3": 248.0,
+          "targetVoxels": 253,
+          "targetVolumeMm3": 253,
+          "volumeRatio": 1.0201612903225807
+        },
+        {
+          "id": 144,
+          "sourceVoxels": 255,
+          "sourceVolumeMm3": 255.0,
+          "targetVoxels": 226,
+          "targetVolumeMm3": 226,
+          "volumeRatio": 0.8862745098039215
+        },
+        {
+          "id": 145,
+          "sourceVoxels": 1472,
+          "sourceVolumeMm3": 1472.0,
+          "targetVoxels": 1332,
+          "targetVolumeMm3": 1332,
+          "volumeRatio": 0.904891304347826
+        },
+        {
+          "id": 146,
+          "sourceVoxels": 1480,
+          "sourceVolumeMm3": 1480.0,
+          "targetVoxels": 1314,
+          "targetVolumeMm3": 1314,
+          "volumeRatio": 0.8878378378378379
+        },
+        {
+          "id": 147,
+          "sourceVoxels": 266,
+          "sourceVolumeMm3": 266.0,
+          "targetVoxels": 270,
+          "targetVolumeMm3": 270,
+          "volumeRatio": 1.0150375939849625
+        },
+        {
+          "id": 148,
+          "sourceVoxels": 274,
+          "sourceVolumeMm3": 274.0,
+          "targetVoxels": 266,
+          "targetVolumeMm3": 266,
+          "volumeRatio": 0.9708029197080292
+        },
+        {
+          "id": 149,
+          "sourceVoxels": 214,
+          "sourceVolumeMm3": 214.0,
+          "targetVoxels": 203,
+          "targetVolumeMm3": 203,
+          "volumeRatio": 0.9485981308411215
+        },
+        {
+          "id": 150,
+          "sourceVoxels": 200,
+          "sourceVolumeMm3": 200.0,
+          "targetVoxels": 221,
+          "targetVolumeMm3": 221,
+          "volumeRatio": 1.105
+        },
+        {
+          "id": 151,
+          "sourceVoxels": 1343,
+          "sourceVolumeMm3": 1343.0,
+          "targetVoxels": 1538,
+          "targetVolumeMm3": 1538,
+          "volumeRatio": 1.1451973194341027
+        },
+        {
+          "id": 152,
+          "sourceVoxels": 1056,
+          "sourceVolumeMm3": 1056.0,
+          "targetVoxels": 1268,
+          "targetVolumeMm3": 1268,
+          "volumeRatio": 1.2007575757575757
+        },
+        {
+          "id": 153,
+          "sourceVoxels": 5016,
+          "sourceVolumeMm3": 5016.0,
+          "targetVoxels": 5681,
+          "targetVolumeMm3": 5681,
+          "volumeRatio": 1.1325757575757576
+        },
+        {
+          "id": 154,
+          "sourceVoxels": 5184,
+          "sourceVolumeMm3": 5184.0,
+          "targetVoxels": 6068,
+          "targetVolumeMm3": 6068,
+          "volumeRatio": 1.1705246913580247
+        },
+        {
+          "id": 155,
+          "sourceVoxels": 4840,
+          "sourceVolumeMm3": 4840.0,
+          "targetVoxels": 4636,
+          "targetVolumeMm3": 4636,
+          "volumeRatio": 0.9578512396694215
+        },
+        {
+          "id": 156,
+          "sourceVoxels": 4264,
+          "sourceVolumeMm3": 4264.0,
+          "targetVoxels": 5542,
+          "targetVolumeMm3": 5542,
+          "volumeRatio": 1.299718574108818
+        },
+        {
+          "id": 157,
+          "sourceVoxels": 1297,
+          "sourceVolumeMm3": 1297.0,
+          "targetVoxels": 1336,
+          "targetVolumeMm3": 1336,
+          "volumeRatio": 1.0300693909020817
+        },
+        {
+          "id": 158,
+          "sourceVoxels": 1193,
+          "sourceVolumeMm3": 1193.0,
+          "targetVoxels": 1201,
+          "targetVolumeMm3": 1201,
+          "volumeRatio": 1.0067057837384745
+        },
+        {
+          "id": 159,
+          "sourceVoxels": 71,
+          "sourceVolumeMm3": 71.0,
+          "targetVoxels": 51,
+          "targetVolumeMm3": 51,
+          "volumeRatio": 0.7183098591549296
+        },
+        {
+          "id": 160,
+          "sourceVoxels": 65,
+          "sourceVolumeMm3": 65.0,
+          "targetVoxels": 77,
+          "targetVolumeMm3": 77,
+          "volumeRatio": 1.1846153846153846
+        },
+        {
+          "id": 161,
+          "sourceVoxels": 251,
+          "sourceVolumeMm3": 251.0,
+          "targetVoxels": 252,
+          "targetVolumeMm3": 252,
+          "volumeRatio": 1.00398406374502
+        },
+        {
+          "id": 162,
+          "sourceVoxels": 270,
+          "sourceVolumeMm3": 270.0,
+          "targetVoxels": 266,
+          "targetVolumeMm3": 266,
+          "volumeRatio": 0.9851851851851852
+        },
+        {
+          "id": 163,
+          "sourceVoxels": 425,
+          "sourceVolumeMm3": 425.0,
+          "targetVoxels": 472,
+          "targetVolumeMm3": 472,
+          "volumeRatio": 1.1105882352941177
+        },
+        {
+          "id": 164,
+          "sourceVoxels": 445,
+          "sourceVolumeMm3": 445.0,
+          "targetVoxels": 457,
+          "targetVolumeMm3": 457,
+          "volumeRatio": 1.0269662921348315
+        },
+        {
+          "id": 165,
+          "sourceVoxels": 464,
+          "sourceVolumeMm3": 464.0,
+          "targetVoxels": 413,
+          "targetVolumeMm3": 413,
+          "volumeRatio": 0.8900862068965517
+        },
+        {
+          "id": 166,
+          "sourceVoxels": 486,
+          "sourceVolumeMm3": 486.0,
+          "targetVoxels": 499,
+          "targetVolumeMm3": 499,
+          "volumeRatio": 1.0267489711934157
+        },
+        {
+          "id": 167,
+          "sourceVoxels": 48,
+          "sourceVolumeMm3": 48.0,
+          "targetVoxels": 42,
+          "targetVolumeMm3": 42,
+          "volumeRatio": 0.875
+        },
+        {
+          "id": 168,
+          "sourceVoxels": 53,
+          "sourceVolumeMm3": 53.0,
+          "targetVoxels": 35,
+          "targetVolumeMm3": 35,
+          "volumeRatio": 0.660377358490566
+        },
+        {
+          "id": 169,
+          "sourceVoxels": 148,
+          "sourceVolumeMm3": 148.0,
+          "targetVoxels": 175,
+          "targetVolumeMm3": 175,
+          "volumeRatio": 1.1824324324324325
+        },
+        {
+          "id": 170,
+          "sourceVoxels": 65,
+          "sourceVolumeMm3": 65.0,
+          "targetVoxels": 64,
+          "targetVolumeMm3": 64,
+          "volumeRatio": 0.9846153846153847
+        }
+      ]
+    }
+  },
+  "warning": "1mm output sampling preserves small labels; it does not imply 1mm registration accuracy.",
+  "fieldSha256": "93ed27791cfceacba0f1caf609bc145193a5df6f03c2ecfa331b5b9e6fbb21ea"
+}

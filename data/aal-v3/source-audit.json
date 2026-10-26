@@ -1,0 +1,23 @@
+{
+  "nihVsPriorBrainNetAAL3": {
+    "voxelArraysExactlyEqual": true,
+    "affinesExactlyEqual": true,
+    "nihSha256": "b6984902c534f778baf74148bd5cb6afcf38204adc8de1879c58cfedb9e2dbb2",
+    "priorBrainNetSha256": "5fbc211ffa4e97a69768e1343da93de30799a7e8b3867d2b2cb41baf852452a1"
+  },
+  "authorV2ReleaseNote": {
+    "url": "https://www.gin.cnrs.fr/wp-content/uploads/AAL3_UserGuide_April2024.pdf",
+    "observedVia": "Search-indexed primary PDF text, 2026-10-26; direct PDF fetch failed",
+    "facts": [
+      "2024-04-05 v2 adds GPL notice to README",
+      "Atlas geometry unchanged; atlas filenames remain AAL3v1"
+    ],
+    "downloadedOriginalPdf": false
+  },
+  "sourceTemplateIdentity": {
+    "source": "https://www.oxcns.org/papers/607%20Rolls%20Huang%20Lin%20Feng%20Joliot%202020%20AAL3.pdf",
+    "support": "Section 2.1 identifies Colin27 as the single-subject T1 used in AAL. SPM canonical single_subj_T1 is the 2mm Colin27 release.",
+    "spmIdentitySource": "https://imaging.mrc-cbu.cam.ac.uk/imaging/MniTalairach",
+    "gridEqualityIsNotAnatomicalRegistration": true
+  }
+}

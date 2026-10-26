@@ -1,0 +1,330 @@
+{
+  "schemaVersion": 1,
+  "generated": "2026-10-26",
+  "requiredFiles": [
+    "data-sources/aal-official/aal1-spm12-mirror/aal.m",
+    "data-sources/aal-official/aal1-spm12-mirror/gin_clusters.m",
+    "data-sources/aal-official/aal1-spm12-mirror/gin_clusters_plabels.m",
+    "data-sources/aal-official/aal1-spm12-mirror/gin_det_dlabels.m",
+    "data-sources/aal-official/aal1-spm12-mirror/gin_det_plabels.m",
+    "data-sources/aal-official/aal1-spm12-mirror/gin_dlabels.m",
+    "data-sources/aal-official/aal1-spm12-mirror/gin_list_dlabels.m",
+    "data-sources/aal-official/aal1-spm12-mirror/gin_list_plabels.m",
+    "data-sources/aal-official/aal1-spm12-mirror/gin_rclusters.m",
+    "data-sources/aal-official/aal1-spm12-mirror/readme_aal_for_SPM12.txt",
+    "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4.nii.gz",
+    "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4.txt",
+    "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4.xml",
+    "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4_Border.mat",
+    "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4_List.mat",
+    "data-sources/aal-official/AAL3_dist/AAL3v1.nii",
+    "data-sources/aal-official/AAL3_dist/AAL3v1.nii.txt",
+    "data-sources/aal-official/AAL3_dist/AAL3v1_1mm.nii",
+    "data-sources/aal-official/AAL3_dist/AAL3v1_1mm.nii.txt",
+    "data-sources/aal-official/AAL3_dist/CustomAtlases.niml",
+    "data-sources/aal-official/AAL3_dist/ROI_MNI_V7_1mm_vol.txt",
+    "data-sources/aal-official/AAL3_dist/ROI_MNI_V7_vol.txt",
+    "data-sources/aal-official/AAL3_dist/SessionAtlases.niml",
+    "data-sources/aal-official/AAL3_dist.tgz",
+    "data-sources/aal-official/Colin27-LICENSE.txt",
+    "data-sources/aal-official/colin27-spm-to-fsl/aal-on-fsl-1mm.nii.gz",
+    "data-sources/aal-official/colin27-spm-to-fsl/aal3-on-fsl-1mm.nii.gz",
+    "data-sources/aal-official/colin27-spm-to-fsl/label-resampling-report.json",
+    "data-sources/aal-official/colin27-spm-to-fsl/labels-on-fixed.nii.gz",
+    "data-sources/aal-official/colin27-spm-to-fsl/mapping.npz",
+    "data-sources/aal-official/colin27-spm-to-fsl/moving-on-fixed.nii.gz",
+    "data-sources/aal-official/colin27-spm-to-fsl/registration-qc.png",
+    "data-sources/aal-official/colin27-spm-to-fsl/registration-report.json",
+    "data-sources/aal-official/colin27-spm-to-fsl/root-review.json",
+    "data-sources/aal-official/Colin27-template_description.json",
+    "data-sources/aal-official/GNU-GPL-3.0.txt",
+    "data-sources/aal-official/source-template-identity.json",
+    "data-sources/aal-official/spm12-colin27-brain-mask-verified-shift.nii.gz",
+    "data-sources/aal-official/spm12-LICENCE.txt",
+    "data-sources/aal-official/spm12-single_subj_T1.nii",
+    "data-sources/aal-official/tpl-MNIColin27_desc-brain_mask.nii.gz",
+    "data-sources/aal-official/tpl-MNIColin27_T1w.nii.gz",
+    "data-sources/raw/AAL3v2.nii.gz"
+  ],
+  "files": [
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/aal.m",
+      "sha256": "3a8d4a60b0acab558d92019e9b56d2418304266b1ce4f944c51613936cf40f9b",
+      "bytes": 2050,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/aal.m"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/gin_clusters.m",
+      "sha256": "62765e0316b42312026a8dbe01d2cdd62263bbf0d2ff9dd226af9b4ba0911b23",
+      "bytes": 766,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/gin_clusters.m"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/gin_clusters_plabels.m",
+      "sha256": "83fedd9be13ab0118a832c13040aee637c973e08941eca29a681c8263ac7a66d",
+      "bytes": 19231,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/gin_clusters_plabels.m"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/gin_det_dlabels.m",
+      "sha256": "47a42a10a4be151bda212af32753ab561816ac31a825f970c6589d14ceb3aa31",
+      "bytes": 2712,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/gin_det_dlabels.m"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/gin_det_plabels.m",
+      "sha256": "ad7063d196c3b6c47014383fc7393543ee0395da3b7f10f2c604ed30383a668d",
+      "bytes": 2468,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/gin_det_plabels.m"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/gin_dlabels.m",
+      "sha256": "b6891118b7b00f0f9db1f50810d0d9a410c0256d6374c6807b4c729d3a077579",
+      "bytes": 1018,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/gin_dlabels.m"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/gin_list_dlabels.m",
+      "sha256": "6bf769c42ab818dfab18030e5cbdcc6036df03bf590abf7d117b4b1d0fc5b541",
+      "bytes": 20387,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/gin_list_dlabels.m"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/gin_list_plabels.m",
+      "sha256": "ea887293c4aee3439808c3d6c12d17a2aa626a18127aa8bdec6ddceaca6e33f3",
+      "bytes": 22789,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/gin_list_plabels.m"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/gin_rclusters.m",
+      "sha256": "f44358dff85cba34cecdeef8388d8cd8fec440626e50fa8b33f22160a1c0409b",
+      "bytes": 1078,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/gin_rclusters.m"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/readme_aal_for_SPM12.txt",
+      "sha256": "65724be6894c271873ae131c300c47257f4f0da316163821aa462e47c2a91089",
+      "bytes": 11299,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/readme_aal_for_SPM12.txt"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4.nii.gz",
+      "sha256": "3df7662d4ea3adbed45a8eefc21ce97085ef773c85ab86e4ce0e3906e6994dbb",
+      "bytes": 44236,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/ROI_MNI_V4.nii.gz"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4.txt",
+      "sha256": "fc3aa3001131895e74898b1034a915a93d5dbc644167f02110e895c913f3860e",
+      "bytes": 2854,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/ROI_MNI_V4.txt"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4.xml",
+      "sha256": "d374dbd6318e8bafb59d5cf6f8c9bfb6dbb105bc72d14fd937cc8396d75e529b",
+      "bytes": 8902,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/ROI_MNI_V4.xml"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4_Border.mat",
+      "sha256": "63fc8827704b152cfe65dfd30a8b83f28e6fdd35083f1792b3bbb5cb4699865a",
+      "bytes": 449480,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/ROI_MNI_V4_Border.mat"
+    },
+    {
+      "path": "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4_List.mat",
+      "sha256": "1783cdeef74e96a97cd9de159fae39f0f91ce37208a5a4ab0c49e7fff103213d",
+      "bytes": 24528,
+      "url": "https://raw.githubusercontent.com/Neurita/std_brains/master/atlases/aal_SPM12/aal/ROI_MNI_V4_List.mat"
+    },
+    {
+      "path": "data-sources/aal-official/AAL3_dist/AAL3v1.nii",
+      "sha256": "b6984902c534f778baf74148bd5cb6afcf38204adc8de1879c58cfedb9e2dbb2",
+      "bytes": 951621,
+      "fromArchive": "data-sources/aal-official/AAL3_dist.tgz"
+    },
+    {
+      "path": "data-sources/aal-official/AAL3_dist/AAL3v1.nii.txt",
+      "sha256": "5c643d5bef449948af5d92f116cc2eeb670777a500882ce6e523a033837ffd08",
+      "bytes": 3313,
+      "fromArchive": "data-sources/aal-official/AAL3_dist.tgz"
+    },
+    {
+      "path": "data-sources/aal-official/AAL3_dist/AAL3v1_1mm.nii",
+      "sha256": "53e86a6d0db7d9d375da9936d62437e92c8e6d54aab7b6d3393d9cc43ae0f732",
+      "bytes": 7159105,
+      "fromArchive": "data-sources/aal-official/AAL3_dist.tgz"
+    },
+    {
+      "path": "data-sources/aal-official/AAL3_dist/AAL3v1_1mm.nii.txt",
+      "sha256": "5c643d5bef449948af5d92f116cc2eeb670777a500882ce6e523a033837ffd08",
+      "bytes": 3313,
+      "fromArchive": "data-sources/aal-official/AAL3_dist.tgz"
+    },
+    {
+      "path": "data-sources/aal-official/AAL3_dist/CustomAtlases.niml",
+      "sha256": "43ccadc00164470fb9b2e0c5ecd74b515696d642f25d063338a9770941a8bdf1",
+      "bytes": 286,
+      "fromArchive": "data-sources/aal-official/AAL3_dist.tgz"
+    },
+    {
+      "path": "data-sources/aal-official/AAL3_dist/ROI_MNI_V7_1mm_vol.txt",
+      "sha256": "5fba51e82ea8e89925028516361de3efcdcb4bf1999f433e08d1a649b6d29af1",
+      "bytes": 5347,
+      "fromArchive": "data-sources/aal-official/AAL3_dist.tgz"
+    },
+    {
+      "path": "data-sources/aal-official/AAL3_dist/ROI_MNI_V7_vol.txt",
+      "sha256": "1d9439d9c0f7857598c3f976b485df0bef6ff0a4e75669aaec58f09266abf19d",
+      "bytes": 5191,
+      "fromArchive": "data-sources/aal-official/AAL3_dist.tgz"
+    },
+    {
+      "path": "data-sources/aal-official/AAL3_dist/SessionAtlases.niml",
+      "sha256": "43ccadc00164470fb9b2e0c5ecd74b515696d642f25d063338a9770941a8bdf1",
+      "bytes": 286,
+      "fromArchive": "data-sources/aal-official/AAL3_dist.tgz"
+    },
+    {
+      "path": "data-sources/aal-official/AAL3_dist.tgz",
+      "sha256": "c5ca83864e49687564a0d785884d6365a5aed987c96dbaebfc93771b718c72ca",
+      "bytes": 178315,
+      "url": "https://afni.nimh.nih.gov/pub/dist/atlases/aal/AAL3_dist.tgz"
+    },
+    {
+      "path": "data-sources/aal-official/Colin27-LICENSE.txt",
+      "sha256": "3f9cccbb17f9adc793f933160b44e6a14849be4956fa237ea71d0145bdbf86b8",
+      "bytes": 700,
+      "url": "https://raw.githubusercontent.com/templateflow/tpl-MNIColin27/master/LICENSE"
+    },
+    {
+      "path": "data-sources/aal-official/colin27-spm-to-fsl/aal-on-fsl-1mm.nii.gz",
+      "sha256": "bb6e4c723de2a4063baa8b0d422421b4f1180c6591b0abd0a012fd58e4186f17",
+      "bytes": 431494,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/colin27-spm-to-fsl/aal3-on-fsl-1mm.nii.gz",
+      "sha256": "451111c1850b01cdda46c6e3244d3ba13ab93e10b2b0ebaaa1426fd8ee0c4ebe",
+      "bytes": 436202,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/colin27-spm-to-fsl/label-resampling-report.json",
+      "sha256": "3c2f31419ebc22737880e1ae8a71ccbc2e3a15e02bd30bc18093c587be9d11f6",
+      "bytes": 67320,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/colin27-spm-to-fsl/labels-on-fixed.nii.gz",
+      "sha256": "518dbe7800941891439fbc53979c12b6a46cb2b8c2fc9da88964e5c2a0fe7453",
+      "bytes": 85032,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/colin27-spm-to-fsl/mapping.npz",
+      "sha256": "93ed27791cfceacba0f1caf609bc145193a5df6f03c2ecfa331b5b9e6fbb21ea",
+      "bytes": 18866365,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/colin27-spm-to-fsl/moving-on-fixed.nii.gz",
+      "sha256": "873de59f77d686262201f04891d01e67c337e0442f6ac32e40dc138a080578f1",
+      "bytes": 946157,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/colin27-spm-to-fsl/registration-qc.png",
+      "sha256": "17fb3353b5a49f60dc58ca2cb9030e00cfc618766521e57c175a3438749dadaf",
+      "bytes": 330198,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/colin27-spm-to-fsl/registration-report.json",
+      "sha256": "e89286bcfb69216b95172cb6f4ecc0f0b4403a6eb67430745186597f7166f6ba",
+      "bytes": 6323,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/colin27-spm-to-fsl/root-review.json",
+      "sha256": "15f24a05c5973a612686440e84e7cefe5d179d1ea7dcdd4ddc19adbba9eb0dd9",
+      "bytes": 1278,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/Colin27-template_description.json",
+      "sha256": "365d3522f8f29019373432cd7eb5ee3876edff13a558a7d69701de90af84620f",
+      "bytes": 460,
+      "url": "https://raw.githubusercontent.com/templateflow/tpl-MNIColin27/master/template_description.json"
+    },
+    {
+      "path": "data-sources/aal-official/GNU-GPL-3.0.txt",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "bytes": 35149,
+      "url": "https://raw.githubusercontent.com/emacs-mirror/emacs/master/COPYING"
+    },
+    {
+      "path": "data-sources/aal-official/source-template-identity.json",
+      "sha256": "ecf210ab659134cc8bcda6578aabeb414474b2ae87b7c1b11be9936fb8a51983",
+      "bytes": 976,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/spm12-colin27-brain-mask-verified-shift.nii.gz",
+      "sha256": "0286057225899d2c951e1b4105138a749e3d44723a14238bdfda29d4d63bc406",
+      "bytes": 27446,
+      "role": "project-generated input, transform or audit record; see scripts and reports"
+    },
+    {
+      "path": "data-sources/aal-official/spm12-LICENCE.txt",
+      "sha256": "63ad604c61168c18c0fbcc871c0f17e371700d71ec7300b98f4c252b010f67e6",
+      "bytes": 19611,
+      "url": "https://raw.githubusercontent.com/spm/spm12/main/LICENCE.txt"
+    },
+    {
+      "path": "data-sources/aal-official/spm12-single_subj_T1.nii",
+      "sha256": "6e58e76e05eb5fef5d2260f6c762a57b4947a571d47f2479d892d6d29b20ced1",
+      "bytes": 902981,
+      "url": "https://raw.githubusercontent.com/spm/spm12/main/canonical/single_subj_T1.nii"
+    },
+    {
+      "path": "data-sources/aal-official/tpl-MNIColin27_desc-brain_mask.nii.gz",
+      "sha256": "21f4de9826077b54c991ec8d91109a0768f928de6ac40f70a8d63bd7650150eb",
+      "bytes": 136842,
+      "url": "https://templateflow.s3.amazonaws.com/tpl-MNIColin27/tpl-MNIColin27_desc-brain_mask.nii.gz"
+    },
+    {
+      "path": "data-sources/aal-official/tpl-MNIColin27_T1w.nii.gz",
+      "sha256": "811416b120cca98d28762a5ca3fd9ecbed6c02c1bf0bac8b0ff037518089da3b",
+      "bytes": 14747884,
+      "url": "https://templateflow.s3.amazonaws.com/tpl-MNIColin27/tpl-MNIColin27_T1w.nii.gz"
+    },
+    {
+      "path": "data-sources/raw/AAL3v2.nii.gz",
+      "sha256": "5fbc211ffa4e97a69768e1343da93de30799a7e8b3867d2b2cb41baf852452a1",
+      "bytes": 39157,
+      "url": "https://raw.githubusercontent.com/mingruixia/BrainNet-Viewer/master/resources/atlases/AAL3v2/AAL3v2.nii.gz"
+    }
+  ],
+  "scripts": [
+    "scripts/aal_build.py",
+    "scripts/aal_prepare_registration.py",
+    "scripts/aal_apply_registration.py",
+    "scripts/aal_validate.py",
+    "scripts/register_volume.py"
+  ],
+  "alreadyRequiredElsewhere": [
+    "data-sources/raw/MNI152_T1_2mm_brain.nii.gz",
+    "public/data/licenses/NOTICE-DATA.md",
+    "public/data/aal-v3/licenses/AAL-NOTICE.md",
+    "public/data/aal-v3/licenses/AAL3-GPL-EVIDENCE.json",
+    "public/data/aal-v3/licenses/GNU-GPL-3.0.txt"
+  ],
+  "excludeFromPublication": [
+    "data-sources/aal-official/AAL3-paper.pdf",
+    "data-sources/aal-official/MNI-Colin27-source.html",
+    "data-sources/aal-official/MRC-Colin27-identity.html",
+    "data-sources/aal-official/colin27-to-fsl/"
+  ],
+  "note": "Native originals and matching license/source evidence are mandatory. The aborted preliminary mask/registration and article/web caches are not release inputs."
+}
