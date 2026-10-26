@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-24T20:10:35.057Z",
+  "generated": "2026-10-26T06:35:55.198Z",
   "algorithm": "SHA-256",
   "files": {
     "anatomy/hcp-arcuate-l.json": "235932301f399ca8995f290dd2f69fc9a16fb545ddca7e09407d70a8ed525472",
@@ -123,8 +123,8 @@
     "licenses/MNI152NLin6Asym-template-license-metadata.json": "4ae55cb140b6f3c38f5e48d50931d599c3bec49750173d8e2a589104e15acb07",
     "licenses/Neuroparc-LICENSE.md": "85e3db4a482cf530c46a7eee14a094584f37aff2f6a2b11945b5fd6b51cb315d",
     "licenses/NOTICE-DATA.md": "7f2bf7b793ada51287ee8f2ed0f164c88d9f7004a6d1f78a5ef2580d9a42238f",
-    "manifest.json": "099dde9f6ab9880fa2c084de67b531e50c55e6ef76aaa295761026aeec17d8c0",
-    "public-edition.json": "b1f556aefb3cb37d8a8e4ed94364298983a51ecdad84203953aae76959ef0428",
+    "manifest.json": "4d63dbf1579722c40cf6e0c1e3db0415385b1856e14a22e73cd5cca025eadf33",
+    "public-edition.json": "9c9433e49abe6b0c90f519f9b8146cc6a98161723c8200fa197c1aac7877ad0d",
     "space/alignment.json": "34e8965a4e64bf6c420c39a253bdaaba5db11374c714a4400e7d81e74d37fa28",
     "space/hcp1065-registration-qc.png": "0694e5985cc8928f923c01f80bb7ad8d3ff07174d6bdb9ddc874ba13830b2a71",
     "space/hcp1065-registration.json": "c64ce6c03589c3e9d2ce22fc7ac3273692f15faafe57768d52b7cd4c7180cb64",

@@ -5,6 +5,7 @@ import { loadAnatomyVolume, loadAtlas, loadManifest, atlasLabelAt, makeSliceCanv
 import { dataURL } from '../lib/assets.js';
 import { ROI_COLORS, ROI_DEFAULT_DISPLAY, voxelMaskSurface } from '../lib/roi.js';
 import { createPAM50Loader } from '../lib/pam50.js';
+import { overviewFrame } from '../lib/scene-frame.js';
 
 const PASTELS = ['#9ebdb2', '#e4bcaa', '#b6b7d3', '#b8cbb0', '#d9c797', '#a6becf', '#d5b0ba', '#b8c5d5', '#c9c1a7', '#98bfbf', '#d7c4b9', '#c2b5ca'];
 const axisColors = { x: '#c999a0', y: '#a3b6cb', z: '#87afa0' };
@@ -219,11 +220,11 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
   useImperativeHandle(ref, () => ({
     reset: () => stateRef.current?.reset(),
     focus: id => stateRef.current?.focus(id),
-    setView: view => stateRef.current?.setView(view),
+    setView: view => { const state = stateRef.current; if (state) { state.autoOverview = false; state.setView(view); } },
     exportPNG: () => stateRef.current?.exportPNG(),
     focusROI: () => stateRef.current?.focusROI(),
     retryRemoteAnatomy: () => stateRef.current?.retryRemoteAnatomy(),
-    zoom: delta => { const s = stateRef.current; if (s) { s.camera.zoom = THREE.MathUtils.clamp(s.camera.zoom * (delta > 0 ? 1.22 : 0.82), 0.12, 18); s.camera.updateProjectionMatrix(); s.invalidate(); } },
+    zoom: delta => { const s = stateRef.current; if (s) { s.autoOverview = false; s.camera.zoom = THREE.MathUtils.clamp(s.camera.zoom * (delta > 0 ? 1.22 : 0.82), 0.12, 18); s.camera.updateProjectionMatrix(); s.invalidate(); } },
     getCameraState: () => { const s = stateRef.current; return s ? { position: s.camera.position.toArray(), target: s.controls.target.toArray(), zoom: s.camera.zoom } : null; },
   }), []);
 
@@ -267,6 +268,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       assetDefinitions: new Map(), anatomyEntries: {}, anatomyFailures: new Set(), atlasOverlayBlocked: false,
       roiComparisonId: null, roiObjects: new Map(),
       remotePAMLoader: null, remotePAMPending: new Set(), remotePAMFailures: new Map(), remotePAMEnabledSeen: false, remotePAMRequest: null,
+      autoOverview: false, overviewBounds: null, pendingFocusId: null,
     };
 
     function projectLabels() {
@@ -308,6 +310,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     }
     status.invalidate = () => { if (!animation && !destroyed) animation = requestAnimationFrame(render); };
     controls.addEventListener('change', status.invalidate);
+    controls.addEventListener('start', () => { status.autoOverview = false; status.pendingFocusId = null; });
 
     function resize() {
       const bounds = container.getBoundingClientRect();
@@ -315,6 +318,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       status.width = bounds.width; status.height = bounds.height;
       renderer.setSize(bounds.width, bounds.height, false);
       const aspect = bounds.width / bounds.height;
+      if (status.autoOverview && status.overviewBounds) status.frameExtent = overviewFrame(status.overviewBounds, aspect).extent;
       camera.left = -status.frameExtent * aspect; camera.right = status.frameExtent * aspect;
       camera.top = status.frameExtent; camera.bottom = -status.frameExtent;
       camera.updateProjectionMatrix(); status.invalidate();
@@ -324,10 +328,20 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     function reset() {
       const preset = propsRef.current.preset;
       const whole = isWhole(preset) || isCord(preset);
-      status.frameExtent = whole ? 340 : 108;
-      controls.target.set(0, -16, whole ? -215 : 12);
+      status.autoOverview = whole; status.pendingFocusId = null;
+      const bounds = new THREE.Box3();
+      if (whole) {
+        scene.updateMatrixWorld(true);
+        for (const object of [...status.cortexMeshes, ...status.objects.values()]) {
+          if (object.visible) bounds.union(new THREE.Box3().setFromObject(object));
+        }
+      }
+      const frame = !bounds.isEmpty() ? overviewFrame([bounds.min.toArray(), bounds.max.toArray()], status.width / status.height) : null;
+      status.overviewBounds = frame ? [bounds.min.toArray(), bounds.max.toArray()] : null;
+      status.frameExtent = frame?.extent || 108;
+      controls.target.fromArray(frame?.target || [0,-16,12]);
       camera.zoom = 1;
-      camera.position.copy(controls.target).add(new THREE.Vector3(-320, 400, whole ? 70 : 180));
+      camera.position.copy(controls.target).add(new THREE.Vector3(...(frame?.direction || [-320,400,180])).normalize().multiplyScalar(1000));
       camera.up.set(0, 0, 1); controls.update(); resize();
     }
     function setView(view) {
@@ -338,6 +352,8 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     }
     function focus(id) {
       const structure = propsRef.current.structures.find(s => s.id === id); if (!structure) return;
+      status.autoOverview = false;
+      status.pendingFocusId = status.anatomyEntries[id]?.remoteGeometry && !status.assetDefinitions.has(id) ? id : null;
       const target = labelPosition(structure);
       const direction = camera.position.clone().sub(controls.target).normalize();
       controls.target.copy(target); camera.position.copy(target).addScaledVector(direction, 600);
@@ -353,6 +369,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       camera.updateProjectionMatrix(); controls.update(); status.invalidate();
     }
     function focusROI() {
+      status.autoOverview = false; status.pendingFocusId = null;
       const comparison = propsRef.current.roiComparison;
       if (!comparison?.center || !comparison.bounds) return;
       const target = toPoint(comparison.center), direction = camera.position.clone().sub(controls.target).normalize();
@@ -634,6 +651,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         status.remotePAMPending.delete(message.id); status.remotePAMFailures.delete(message.id);
         const entry = status.anatomyEntries[message.id];
         if (entry) applyActualAsset(message.id, message.data, { ...entry, ...message.metadata, representation: 'atlas-segmentation' });
+        if (status.pendingFocusId === message.id && propsRef.current.selectedIds?.includes(message.id)) focus(message.id);
         if (!status.remotePAMFailures.size) setError(current => current.startsWith('PAM50') ? '' : current);
         propsRef.current.onReady?.({ remoteAnatomyGenerated: { id: message.id, ...message.metadata } });
       } else if (message.type === 'error' || message.type === 'worker-error') {
@@ -645,6 +663,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         updateMaterials();
       }
       remotePAMStatus(message.stage);
+      if (!status.remotePAMPending.size && status.autoOverview) reset();
     }
     function updateRemoteAnatomy() {
       const p = propsRef.current;
@@ -785,7 +804,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       if (entry.vertexLabels && data.vertexLabels?.length !== data.positions.length / 3) throw new Error(sceneText('DK 表面顶点注释与几何不匹配', 'DK vertex annotations do not match the surface geometry'));
       mesh.userData = { category: 'cortex', hemisphere: index === 0 ? 'L' : 'R', sourceIndices: data.indices, sourceMetadata: entry, vertexLabels: data.vertexLabels, dkLabels: manifest.atlases?.dk?.labels || [] }; cortexGroup.add(mesh); status.cortexMeshes.push(mesh);
     }))).then(() => {
-      if (destroyed) return; status.loaded = true; setLoading(false); colorCortex();
+      if (destroyed) return; status.loaded = true; setLoading(false); colorCortex(); if (status.autoOverview) reset();
       propsRef.current.onReady?.({ loaded: true, method: status.atlasVolume ? 'atlas' : 'teaching', message: sceneText('MNI152NLin6Asym 真实皮层表面 · RAS', 'MNI152NLin6Asym cortical surfaces · RAS') });
     }).catch(error => { if (!destroyed) { setLoading(false); setError(error.message); propsRef.current.onReady?.({ loaded: false, message: error.message }); } });
     loadAnatomyVolume().then(volume => { if (!destroyed) { status.anatomyVolume = volume; updateSlices(); } }).catch(() => { if (!destroyed) setError(sceneText('T1 参考影像加载失败，切片影像暂不可用。请刷新重试。', 'The reference T1 image could not be loaded. Slice images are unavailable; refresh to retry.')); });
@@ -842,6 +861,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       }
       if (!destroyed) {
         updateMaterials();
+        if (status.autoOverview) reset();
         if (status.anatomyFailures.size) { setError(sceneText(`${status.anatomyFailures.size} 个真实结构文件加载失败，相关结构已隐藏。请刷新重试。`, `${status.anatomyFailures.size} anatomical files failed to load. Those structures are hidden; refresh to retry.`)); propsRef.current.onReady?.({ loaded: status.loaded, anatomyFailures: [...status.anatomyFailures] }); }
       }
     }).catch(error => { if (!destroyed) setError(sceneText(`解剖表面清单加载失败：${error.message}`, 'The anatomical surface manifest could not be loaded.')); });
@@ -866,6 +886,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       }));
       if (destroyed) return;
       updateMaterials();
+      if (status.autoOverview) reset();
       const failed = entries.map(([id]) => id).filter(id => status.anatomyFailures.has(id));
       if (failed.length) setError(sceneText(`${failed.length} 个真实结构文件加载失败，相关结构已隐藏，未以示意模型冒充。请刷新重试。`, `${failed.length} anatomical files failed to load. Those structures are hidden; refresh to retry.`));
       propsRef.current.onReady?.({ loaded: status.loaded, anatomyLoadedIds: entries.map(([id]) => id).filter(id => !status.anatomyFailures.has(id)), anatomyFailures: [...status.anatomyFailures], message: sceneText(`真实解剖资产 ${entries.length - failed.length}/${entries.length} · 空间与覆盖见结构来源`, `Anatomical assets ${entries.length - failed.length}/${entries.length} · See each source for alignment and coverage`) });
@@ -885,7 +906,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
   useEffect(() => { stateRef.current?.updateStudyMarkers(); }, [props.studyMarkers, props.exploded]);
   useEffect(() => { stateRef.current?.updateRemoteAnatomy(); }, [props.remoteAnatomyEnabled, props.remoteAnatomyRequest, props.remoteAnatomyTissues, props.selectedIds, props.visibleCategories, props.language]);
   useEffect(() => { stateRef.current?.reset(); }, [props.preset]);
-  useEffect(() => { if (props.view) stateRef.current?.setView(props.view); }, [props.view]);
+  useEffect(() => { const state = stateRef.current; if (props.view && state) { if (state.autoOverview && props.view === 'oblique') state.reset(); else state.setView(props.view); } }, [props.view]);
   useEffect(() => { stateRef.current?.updateSlices(); }, [props.slices?.enabled, props.slices?.x, props.slices?.y, props.slices?.z]);
   useEffect(() => {
     const state = stateRef.current; if (!state) return;

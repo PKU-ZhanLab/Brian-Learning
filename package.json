@@ -1,13 +1,13 @@
 {
   "name": "neuroatlas-teaching-studio",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "check": "node scripts/check-data.mjs && node scripts/literature_validate.mjs && node --test src/lib/roi.test.mjs src/lib/pam50.test.mjs",
+    "check": "node scripts/check-data.mjs && node scripts/literature_validate.mjs && node --test src/lib/roi.test.mjs src/lib/pam50.test.mjs src/lib/scene-frame.test.mjs",
     "build:public": "node scripts/build-public.mjs",
     "package:source": "node scripts/public-package.mjs"
   },
