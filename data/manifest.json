@@ -2,7 +2,7 @@
   "schemaVersion": 2,
   "coordinateSystem": "RAS",
   "units": "mm",
-  "generated": "2026-10-26",
+  "generated": "2026-10-27",
   "registrationNote": "脑内主参考为 FSL MNI152NLin6Asym。DK 分区与配对表面已核对同源模板；其余数据分别记录原作者映射、后续配准或未验证状态。相同 RAS 轴或相同体素网格不能证明解剖配准。",
   "schematicNote": "PAM50 脊髓使用原生直化参考，未与脑模板联合配准。原始形态、项目定义分段和示意几何分别标注；无数据的示意默认隐藏。",
   "meshes": [
@@ -12324,6 +12324,7 @@
         "Exploratory reference/ROI view only; individual small nuclei need independent anatomical review."
       ],
       "review": "aal-v3/root-review.json",
+      "surfaceProjection": "surface-v1/manifest.json",
       "distribution": "bundled-gpl-project-registration"
     },
     "aal3-registered": {
@@ -14217,6 +14218,7 @@
         "Exploratory reference/ROI view only; individual small nuclei need independent anatomical review."
       ],
       "review": "aal-v3/root-review.json",
+      "surfaceProjection": "surface-v1/manifest.json",
       "distribution": "bundled-gpl-project-registration"
     }
   },
@@ -14270,7 +14272,7 @@
   "anatomy": "anatomy/manifest.json",
   "baCoverage": "ba-v2/manifest.json",
   "alignment": "space/alignment.json",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "edition": "brain-evidence",
   "aalSourceManifest": "aal-v3/manifest.json",
   "aalRegistrationReview": "aal-v3/root-review.json",

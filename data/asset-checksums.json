@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-26T08:51:45.636Z",
+  "generated": "2026-10-27T02:56:50.153Z",
   "algorithm": "SHA-256",
   "files": {
     "aal-v3/aal-fsl1mm.bin": "2e0da6dcc27fcf60a10835ae53053cb96362bd4b5881360e8bac4803e8f0830a",
@@ -155,13 +155,22 @@
     "licenses/MNI152NLin6Asym-template-license-metadata.json": "4ae55cb140b6f3c38f5e48d50931d599c3bec49750173d8e2a589104e15acb07",
     "licenses/Neuroparc-LICENSE.md": "85e3db4a482cf530c46a7eee14a094584f37aff2f6a2b11945b5fd6b51cb315d",
     "licenses/NOTICE-DATA.md": "863474f62955709e11a6d2414fa2be9a16c68e362f1f6aff27e20e6ab6e8447c",
-    "manifest.json": "9fff2239ea90aef5a868303ba1a70ef61360eccd31f1b097ec6eab3a564c8497",
-    "public-edition.json": "3048475d95e10eb1ad4be194b936f9e2ceba167f0bc437aac9fc86ac65a44348",
+    "manifest.json": "25b9a2584a8db5849ca95b118321ed233731cf88673756018365a27d2bbd44d5",
+    "public-edition.json": "1c0f0984d4217270f6f46ab6243b2aafb6e2f5aeab617bddcf2e17e6f21e6770",
     "space/alignment.json": "34e8965a4e64bf6c420c39a253bdaaba5db11374c714a4400e7d81e74d37fa28",
     "space/hcp1065-registration-qc.png": "0694e5985cc8928f923c01f80bb7ad8d3ff07174d6bdb9ddc874ba13830b2a71",
     "space/hcp1065-registration.json": "c64ce6c03589c3e9d2ce22fc7ac3273692f15faafe57768d52b7cd4c7180cb64",
     "space/LICENSE-MNI.txt": "46e280fe1a24c6f37feef2445ed288435e0ad063504a06030b206b12fdd2629d",
     "space/template-comparison.json": "dada73232a12a6447667b04e58a6bf3aeac248b7139ff43bd64c55f368f7ad04",
+    "surface-v1/aal-registered-left-support.bin": "887d2f406d2ad786c1888a0f91532fea6239bb5665e31acc1c30d8ac619308c1",
+    "surface-v1/aal-registered-left.bin": "4a84516aa863578fe5346c96a0308c3b4b6918051ed0765a2dcc3cc8a20a1d95",
+    "surface-v1/aal-registered-right-support.bin": "2bfbd3d9a0b09937c8f8c07d8697e31dcefc3c99106804a087365d623605100a",
+    "surface-v1/aal-registered-right.bin": "fd4966bd08f59a3da59fda1cd47330fd24ae9004c417a6c19f92adb4ece94830",
+    "surface-v1/aal3-registered-left-support.bin": "bf6ef16adb5cf67db511ff9767bce10423c16fc50158fd1aec0e5b197f2d3853",
+    "surface-v1/aal3-registered-left.bin": "3a29ca4e86da3d01c777ced6ca4d272b3be241f406e0964ccb7630006d07d1cd",
+    "surface-v1/aal3-registered-right-support.bin": "2f71fbc88584ee654eb89d8430ba463b3a77e75961867bb1606bd58eabb55fae",
+    "surface-v1/aal3-registered-right.bin": "6f6e28433c49c1fc4932361a8f71b36e217be435f8e237f7a74943ab29b33a08",
+    "surface-v1/manifest.json": "c9529c36628593442dcb5c416da6351748d3a9379e5a295a9bf0f1b6606391c6",
     "t1.bin": "1008af54b83b1c74fa82ec5eab851b93c64a2affcd33a4b797ae97f72990e780",
     "volume.json": "f8942cfef8a973f7764b66cfc7ddcd10a01acf1ac48f25a64737225b95f18b66"
   }
