@@ -4,6 +4,8 @@
 
 A bilingual research workspace connecting 3D brain structures, atlas parcels, and published findings. Explore actual atlas labels, compare ROIs and statistical maps, curate findings with provenance, and save work in local project files.
 
+DK, AAL and AAL3 share the same standard brain geometry and retain the current camera when switching parcellations. AAL also provides original Colin27 T1 slices with linked crosshairs, label opacity and image export.
+
 **Online entry: [NeuroAtlas](https://pku-zhanlab.github.io/Brian-Learning/)** · This documentation describes the v4 workflow; check the site's version label for the deployed version.
 
 ## Start exploring

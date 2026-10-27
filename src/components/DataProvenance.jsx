@@ -25,7 +25,7 @@ const hasCjk = value => /[\u3400-\u9fff]/.test(String(value));
 const atlasNamesEn = { dk: 'Desikan–Killiany · DK', aal: 'AAL', aal3: 'AAL3', ho: 'Harvard–Oxford', jhu: 'JHU white-matter atlas', ba: 'BA · FSL historical labels', 'ba-histology': 'BA · Jülich histological subset', 'ba-legacy': 'BA · BrainNet legacy (unaligned)' };
 const atlasNotesEn = {
   dk: 'All 34 × 2 DK cortical regions, including both insulae. FreeSurfer labels and paired surfaces come from the same FSL MNI152 reconstruction. The 2 mm volume uses nearest-neighbor resampling; vertex labels come from the original aparc.annot. These are not individual anatomical boundaries.',
-  aal: 'Original AAL116 labels sampled every other voxel to 2 mm; this is not a new segmentation of the MNI152 population template.',
+  aal: 'Original AAL116 labels in the distributed 2 mm Colin27 grid; native T1 slices remain separate from the registered standard-brain view.',
   aal3: 'The actual AAL3v2 label volume may use nonconsecutive IDs. Nuclear subdivisions come from the original atlas and are not exact boundaries in every individual.',
   ho: 'Maximum-probability map at a 25% threshold and 2 mm resolution. FreeSurfer IDs in the MGH mirror were restored to standard HO IDs using the accompanying label file. Includes whole cortex and white-matter labels; deep-nucleus boundaries depend on threshold.',
   jhu: 'JHU white-matter region labels (48 positive labels), not continuous tractography streamlines. A labeled white-matter region is not necessarily a complete tract.',
@@ -63,15 +63,17 @@ export function EvidenceOverview({ evidence, language = 'zh' }) {
   return <div className="evidence-overview"><strong>{names[evidence.level] || evidence.level}</strong>{localized.gaps?.length > 0 && <ul>{localized.gaps.map((gap, i) => <li key={i}>{gap}</li>)}</ul>}</div>;
 }
 
-export function GeometryProvenance({ selected, anatomy, manifest, showSchematic, remoteLoaded = false, language = 'zh' }) {
+export function GeometryProvenance({ selected, anatomy, manifest, atlas='dk', showSchematic, remoteLoaded = false, language = 'zh' }) {
   if (!selected) return null;
   const en = language === 'en';
   const t = (zh, english) => en ? english : zh;
   const data = anatomy?.structures?.[selected.id];
   let title, body, space;
   if (selected.category === 'cortex') {
-    title = t('同源 DK 曲面与顶点标签', 'Matched DK surfaces and vertex labels');
-    body = t('34 区/侧；表面注释和体素标签来自同一 FreeSurfer 重建。', '34 regions per hemisphere; surface annotations and voxel labels come from the same FreeSurfer reconstruction.');
+    title = t('共用 FSL MNI152 皮层曲面', 'Shared FSL MNI152 cortical surfaces');
+    body = atlas==='dk'?t('DK 使用同源 FreeSurfer 重建的顶点标签，34 区/侧。', 'DK uses annotations from the matched FreeSurfer reconstruction, 34 regions per hemisphere.')
+      :manifest?.atlases?.[atlas]?.surfaceProjection?t('脑形保持不变；AAL 分区取配对皮层表面与白质表面之间的多数标签。无覆盖处保留灰色，深部标签在体积和切片中查看。空间变换为项目配准估计。', 'The brain shape is unchanged. AAL colours use the most frequent label sampled between paired pial and white surfaces. Uncovered cortex stays grey; deep labels remain volumetric. The spatial transform is a project estimate.')
+      :t('几何来自同源 FSL 模板的 FreeSurfer 重建；颜色由当前体积图谱采样。', 'Geometry comes from a FreeSurfer reconstruction of the FSL template; colours are sampled from the selected volume atlas.');
     space = 'MNI152NLin6Asym';
   } else if (data) {
     title = ({ 'atlas-segmentation': t('图谱分割网格', 'Atlas segmentation mesh'), tractography: t('真实数据的纤维追踪估计', 'Tractography estimate from measured data'), schematic: t('尚无真实几何', 'Measured geometry unavailable') })[data.representation] || t('真实解剖数据', 'Measured anatomical data');
@@ -120,7 +122,7 @@ export default function DataProvenance({ manifest, atlasOptions, alignment, anat
     <div className="notice"><Info size={18}/><p>{en
       ? 'Matching RAS axes across templates does not establish anatomical alignment. Data are marked aligned only when supported by provenance or transformation evidence. The viewer now focuses on the brain; the spinal module has been removed.'
       : `${manifest?.registrationNote || '不同模板的 RAS 轴一致不等于解剖对齐。只有有来源或转换证据的数据才标记为对齐。'} 当前查看器聚焦脑结构，脊髓模块已移除。`}</p></div>
-    <h3>{t('图谱与空间', 'Atlases and spaces')}</h3><div className="atlas-table">{atlasOptions.map(atlas => {
+    <h3>{t('图谱与空间', 'Atlases and spaces')}</h3><div className="atlas-table">{[...atlasOptions,...Object.entries(manifest?.atlases||{}).filter(([id])=>!atlasOptions.some(a=>a.id===id)).map(([id,data])=>({id,label:data.name}))].map(atlas => {
       const data = manifest?.atlases?.[atlas.id];
       const aligned = alignment?.atlases?.[atlas.id] || alignment?.datasets?.[atlas.id];
       return <div key={atlas.id}><div><strong>{en ? atlasNamesEn[atlas.id] || englishMetadata(atlas.label, atlas.id) : atlas.label}</strong><span className={`data-badge ${data?.available ? 'available' : ''}`}>{alignmentLabel(data?.alignmentStatus || aligned?.status, language)}</span></div>

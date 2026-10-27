@@ -25,7 +25,17 @@ export function atlasLabelSummary(volume){
   const labels=Array.isArray(volume.labels)?volume.labels:Object.entries(volume.labels||{}).map(([id,v])=>({id:+id,...(typeof v==='string'?{name:v}:v)}));
   const map=new Map(labels.map(v=>[Number(v.id??v.value??v.index),v]));
   const mm3=Math.abs(new Matrix4().set(...a).determinant());
-  return [...counts].sort(([a],[b])=>a-b).map(([id,count])=>{const xyz=sums.get(id).map(v=>v/count);return {...map.get(id),id,name:map.get(id)?.name||map.get(id)?.label||`Label ${id}`,voxels:count,volumeMm3:count*mm3,centroid:[a[0]*xyz[0]+a[1]*xyz[1]+a[2]*xyz[2]+a[3],a[4]*xyz[0]+a[5]*xyz[1]+a[6]*xyz[2]+a[7],a[8]*xyz[0]+a[9]*xyz[1]+a[10]*xyz[2]+a[11]]};});
+  const centers=new Map([...counts].map(([id,count])=>[id,sums.get(id).map(v=>v/count)])),distances=new Map();
+  // The centroid of a thin or disconnected parcel can be outside it. Slice
+  // navigation uses the closest actual voxel, while reporting the true centroid.
+  for(let k=0;k<nz;k++)for(let j=0;j<ny;j++)for(let i=0;i<nx;i++){
+    const id=volume.data[xfast?i+nx*(j+ny*k):(i*ny+j)*nz+k],c=centers.get(id);if(!c)continue;
+    const dx=i-c[0],dy=j-c[1],dz=k-c[2];
+    const distance=(a[0]*dx+a[1]*dy+a[2]*dz)**2+(a[4]*dx+a[5]*dy+a[6]*dz)**2+(a[8]*dx+a[9]*dy+a[10]*dz)**2;
+    if(distance<(distances.get(id)??Infinity)){distances.set(id,distance);positions.set(id,[i,j,k]);}
+  }
+  const world=xyz=>[a[0]*xyz[0]+a[1]*xyz[1]+a[2]*xyz[2]+a[3],a[4]*xyz[0]+a[5]*xyz[1]+a[6]*xyz[2]+a[7],a[8]*xyz[0]+a[9]*xyz[1]+a[10]*xyz[2]+a[11]];
+  return [...counts].sort(([a],[b])=>a-b).map(([id,count])=>({...map.get(id),id,name:map.get(id)?.name||map.get(id)?.label||`Label ${id}`,voxels:count,volumeMm3:count*mm3,centroid:world(centers.get(id)),representativePoint:world(positions.get(id))}));
 }
 
 /** Independent atlas geometry: no target template, coordinate transform or registration is inferred. */

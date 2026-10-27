@@ -6,6 +6,7 @@ import { dataURL } from '../lib/assets.js';
 import { ROI_COLORS, ROI_DEFAULT_DISPLAY, voxelMaskSurface } from '../lib/roi.js';
 import { createPAM50Loader } from '../lib/pam50.js';
 import { overviewFrame } from '../lib/scene-frame.js';
+import { surfaceLabelAt } from '../lib/surface-projection.js';
 
 const PASTELS = ['#9ebdb2', '#e4bcaa', '#b6b7d3', '#b8cbb0', '#d9c797', '#a6becf', '#d5b0ba', '#b8c5d5', '#c9c1a7', '#98bfbf', '#d7c4b9', '#c2b5ca'];
 const axisColors = { x: '#c999a0', y: '#a3b6cb', z: '#87afa0' };
@@ -521,11 +522,13 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         const atlasCache = new Map();
         const compatible = p.structures.filter(s => s.category === 'cortex' && s.hemisphere === mesh.userData.hemisphere);
         const directDK = p.atlas === 'dk' && mesh.userData.vertexLabels;
+        const projected=status.atlasVolume?.surfaceLabels?.[mesh.userData.hemisphere];
+        if(projected&&(projected.length!==position.count||status.atlasVolume.surfaceProjectionInfo.hemispheres[mesh.userData.hemisphere].pialSha256!==mesh.userData.sourceMetadata.sha256))throw Error('Projected atlas labels do not match the displayed cortical geometry');
         const dkLabels = new Map((mesh.userData.dkLabels || []).map(label => [label.id, label]));
         for (let i = 0; i < position.count; i++) {
           world.fromBufferAttribute(position, i);
           const directLabel = directDK ? dkLabels.get(mesh.userData.vertexLabels[i]) : null;
-          const atlasLabel = directDK ? directLabel && { ...directLabel, value: directLabel.id } : atlasLabelAt(status.atlasVolume, world.toArray());
+          const atlasLabel = directDK ? directLabel && { ...directLabel, value: directLabel.id } : projected ? surfaceLabelAt(status.atlasVolume,mesh.userData.hemisphere,i) : atlasLabelAt(status.atlasVolume, world.toArray());
           let structure;
           if (atlasLabel) {
             if (!atlasCache.has(atlasLabel.value)) atlasCache.set(atlasLabel.value, atlasLabel.structureId ? compatible.find(s => s.id === atlasLabel.structureId) : findMatchingStructure(compatible, atlasLabel.name, mesh.userData.hemisphere));
@@ -757,16 +760,16 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
             point.sub(hit.object.position);
             let label = atlasLabelAt(status.atlasVolume, point.toArray());
             const directDK = p.atlas === 'dk' && hit.object.userData.vertexLabels;
-            if (directDK && hit.face) {
+            const projected=status.atlasVolume?.surfaceLabels?.[hit.object.userData.hemisphere];
+            if ((directDK||projected) && hit.face) {
               const positions = hit.object.geometry.attributes.position;
               const vertex = [hit.face.a, hit.face.b, hit.face.c].sort((a, b) => new THREE.Vector3().fromBufferAttribute(positions, a).distanceToSquared(point) - new THREE.Vector3().fromBufferAttribute(positions, b).distanceToSquared(point))[0];
-              const value = hit.object.userData.vertexLabels[vertex];
-              const entry = hit.object.userData.dkLabels.find(item => item.id === value);
-              label = entry ? { ...entry, value } : null;
+              if(projected)label=surfaceLabelAt(status.atlasVolume,hit.object.userData.hemisphere,vertex);
+              else {const value = hit.object.userData.vertexLabels[vertex];const entry = hit.object.userData.dkLabels.find(item => item.id === value);label = entry ? { ...entry, value } : null;}
             }
             structure = label?.structureId ? p.structures.find(s => s.id === label.structureId) : label ? findMatchingStructure(p.structures, label.name, hit.object.userData.hemisphere) : null;
             const matched = Boolean(structure);
-            p.onReady?.({ loaded: true, method: label ? 'atlas' : 'unlabelled', mapping: matched ? directDK ? 'original-vertex-annotation' : 'label-name' : 'none', atlasLabel: label?.name, position: point.toArray(), message: label ? `${label.name} · ${directDK ? sceneText('同源 DK 顶点注释', 'Matched DK vertex annotation') : sceneText('体素标签', 'Voxel label')}${matched ? '' : sceneText(' · 无对应结构卡片', ' · No matching structure card')}` : status.atlasOverlayBlocked ? sceneText('该图谱未配准，已停止标签查询', 'Atlas alignment is unverified; label queries are disabled') : sceneText('此处没有图谱标签，未按邻近脑回补标', 'No atlas label here; no nearest-gyrus inference was applied') });
+            p.onReady?.({ loaded: true, method: label ? 'atlas' : 'unlabelled', mapping: projected ? 'cortical-ribbon' : matched ? directDK ? 'original-vertex-annotation' : 'label-name' : 'none', atlasLabel: label?.name, position: point.toArray(), message: label ? `${label.name} · ${directDK ? sceneText('同源 DK 顶点注释', 'Matched DK vertex annotation') : projected ? sceneText('皮层厚度投影标签', 'Cortical ribbon label') : sceneText('体素标签', 'Voxel label')}${matched ? '' : sceneText(' · 无对应结构卡片', ' · No matching structure card')}` : status.atlasOverlayBlocked ? sceneText('该图谱未配准，已停止标签查询', 'Atlas alignment is unverified; label queries are disabled') : sceneText('此处没有图谱标签，未按邻近脑回补标', 'No atlas label here; no nearest-gyrus inference was applied') });
           } else {
             structure = hit.object.userData.structure;
             const object = structure && status.objects.get(structure.id);

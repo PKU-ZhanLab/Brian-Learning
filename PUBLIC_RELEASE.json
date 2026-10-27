@@ -1,7 +1,7 @@
 {
   "edition": "brain-evidence",
-  "version": "4.0.0",
-  "generatedAt": "2026-10-26T08:51:34.696Z",
+  "version": "4.1.0",
+  "generatedAt": "2026-10-27T02:55:35.425Z",
   "excludedBundledFiles": [
     "aal.bin",
     "aal3.bin",
@@ -64,7 +64,7 @@
   "licenseNotice": "licenses/NOTICE-DATA.md",
   "licenseEvidenceFormat": "Original fetched HTML bytes retained as inert .html.txt files",
   "sourceRepository": "https://github.com/PKU-ZhanLab/Brian-Learning",
-  "files": 162,
+  "files": 171,
   "aalSourceInputCount": 43,
   "sourceInputs": "Licensed originals, saved transforms, transformation scripts and result source metadata included; PAM50 precomputed files, article PDFs and full-text caches excluded."
 }

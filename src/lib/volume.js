@@ -81,10 +81,44 @@ export async function loadAtlas(atlasId) {
     if (!metadata?.available || !(metadata.data || metadata.file || metadata.metadata)) return null;
     if (metadata.metadata) metadata = { ...metadata, ...await fetch(assetPath(metadata.metadata)).then(r => { if (!r.ok) throw new Error('图谱空间信息加载失败'); return r.json(); }) };
     const volume = await loadBinaryVolume(metadata);
+    if(metadata.surfaceProjection){
+      const response=await fetch(dataURL(metadata.surfaceProjection));
+      if(!response.ok)throw Error('Surface projection metadata could not be loaded');
+      const projection=(await response.json()).atlases?.[atlasId];
+      if(!projection||projection.sourceSha256!==metadata.sha256)throw Error('Surface projection does not match the atlas volume');
+      volume.surfaceLabels={};volume.surfaceProjectionInfo=projection;
+      await Promise.all(Object.entries(projection.hemispheres).map(async([hemi,entry])=>{
+        const r=await fetch(dataURL(entry.file));if(!r.ok)throw Error('Surface labels could not be loaded');
+        const buffer=await r.arrayBuffer();if(buffer.byteLength!==entry.vertices*2)throw Error('Surface label count does not match geometry');
+        const view=new DataView(buffer),labels=new Uint16Array(entry.vertices);for(let i=0;i<labels.length;i++)labels[i]=view.getUint16(i*2,true);
+        volume.surfaceLabels[hemi]=labels;
+      }));
+    }
     cache.set(atlasId, volume);
     return volume;
   }).catch(error => { pending.delete(key); throw error; }));
   return pending.get(key);
+}
+
+export const nativeAtlasId=id=>['aal-registered','aal3-registered'].includes(id)?id.replace('-registered',''):['aal','aal3'].includes(id)?id:null;
+export const unifiedAtlasId=id=>['aal','aal3'].includes(id)?`${id}-registered`:id;
+
+export async function loadAtlasSlicePair(id){
+  const atlas=await loadAtlas(id);if(!atlas)throw Error('Atlas volume is unavailable');
+  if(['aal','aal3'].includes(id)){
+    const key='aal-native-t1';
+    if(!pending.has(key))pending.set(key,fetch(dataURL('aal-v3/manifest.json')).then(r=>{if(!r.ok)throw Error('Native T1 metadata unavailable');return r.json();}).then(m=>loadBinaryVolume(m.nativeTemplate)).catch(e=>{pending.delete(key);throw e;}));
+    const anatomy=await pending.get(key);
+    return {anatomy:{...anatomy,sliceReference:'aal-colin27'},atlas:{...atlas,sliceReference:'aal-colin27'},native:true};
+  }
+  if(atlas.canOverlayOnTarget!==true)throw Error('No verified matching T1 is available for this native volume');
+  return {anatomy:await loadAnatomyVolume(),atlas,native:false};
+}
+
+export function sliceOverlayAllowed(anatomy,atlas){
+  if(!anatomy||!atlas)return false;
+  if(anatomy.sliceReference)return anatomy.sliceReference===atlas.sliceReference;
+  return atlas.canOverlayOnTarget===true;
 }
 
 export function sliceWorldPoint(axis, value, u, v, radiological = true) {
@@ -116,11 +150,12 @@ export function makeSliceCanvas(volume, axis, value, options = {}) {
     const q = (py * canvas.width + px) * 4;
     pixels.data[q] = pixels.data[q + 1] = pixels.data[q + 2] = intensity;
     pixels.data[q + 3] = options.transparent && intensity < 5 ? 0 : 255;
-    if (!options.roiComparison && options.atlasVolume?.canOverlayOnTarget === true) {
+    if (!options.roiComparison && sliceOverlayAllowed(volume,options.atlasVolume)) {
       const label = options.atlasVolume.sampleRAS(...point);
-      if (label > 0) {
+      if (label > 0 && (!options.selectedLabels||options.selectedLabels.has(label))) {
         const rgb = ATLAS_RGB[(label * 7) % ATLAS_RGB.length];
-        for (let channel = 0; channel < 3; channel++) pixels.data[q + channel] = Math.round(intensity * .45 + rgb[channel] * .55);
+        const alpha=options.overlayOpacity??.55;
+        for (let channel = 0; channel < 3; channel++) pixels.data[q + channel] = Math.round(intensity * (1-alpha) + rgb[channel] * alpha);
         pixels.data[q + 3] = 255;
       }
     }

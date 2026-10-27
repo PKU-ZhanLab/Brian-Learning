@@ -42,7 +42,7 @@ export async function preparePublicData(source,target){
     if(!id.endsWith('-registered')&&entry.canOverlayOnTarget!==false)throw Error(`Native AAL must retain its own space: ${id}`);
     if(id.endsWith('-registered')&&(entry.alignmentStatus!=='registered-estimate'||!entry.canOverlayOnTarget||!entry.limitations?.length))throw Error(`Missing registration status or limits: ${id}`);
   }
-  manifest.edition='brain-evidence';manifest.version='4.0.0';
+  manifest.edition='brain-evidence';manifest.version='4.1.0';
   manifest.dataLicenseNotice='/data/licenses/NOTICE-DATA.md';
   anatomy.edition='brain-evidence';anatomy.datasets.PAM50.distribution='on-demand-official-source';
   anatomy.datasets.PAM50.bundledGeometryCount=0;anatomy.datasets.PAM50.remoteGeometryCount=remoteCount;
@@ -64,7 +64,7 @@ export async function preparePublicData(source,target){
     else for(const original of htmlFiles){const name=path.basename(original);content=content.replaceAll(`](${name})`,`](${name}.txt)`).replaceAll('`'+name+'`','`'+name+'.txt`');}
     if(content!==originalContent)await fs.writeFile(file,content);
   }
-  const report={edition:'brain-evidence',version:'4.0.0',generatedAt:new Date().toISOString(),excludedBundledFiles:[...excluded].sort(),bundledPAM50Geometry:0,onDemandPAM50Structures:remoteCount,metadataOnlyAtlases:['ba-legacy'],nativeAalAtlases:['aal','aal3'],estimatedRegisteredAalAtlases:['aal-registered','aal3-registered'],aalLicenseNotice:'aal-v3/licenses/AAL-NOTICE.md',licenseNotice:'licenses/NOTICE-DATA.md',licenseEvidenceFormat:'Original fetched HTML bytes retained as inert .html.txt files',sourceRepository:'https://github.com/PKU-ZhanLab/Brian-Learning'};
+  const report={edition:'brain-evidence',version:'4.1.0',generatedAt:new Date().toISOString(),excludedBundledFiles:[...excluded].sort(),bundledPAM50Geometry:0,onDemandPAM50Structures:remoteCount,metadataOnlyAtlases:['ba-legacy'],nativeAalAtlases:['aal','aal3'],estimatedRegisteredAalAtlases:['aal-registered','aal3-registered'],aalLicenseNotice:'aal-v3/licenses/AAL-NOTICE.md',licenseNotice:'licenses/NOTICE-DATA.md',licenseEvidenceFormat:'Original fetched HTML bytes retained as inert .html.txt files',sourceRepository:'https://github.com/PKU-ZhanLab/Brian-Learning'};
   await writeJSON(path.join(target,'public-edition.json'),report);
   const hashes={};for(const file of await files(target)){const name=slash(path.relative(target,file));if(name==='asset-checksums.json')continue;hashes[name]=sha(await fs.readFile(file));}
   await writeJSON(path.join(target,'asset-checksums.json'),{generated:new Date().toISOString(),algorithm:'SHA-256',files:hashes});

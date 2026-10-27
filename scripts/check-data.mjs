@@ -95,6 +95,21 @@ for(const [id,count] of [['aal',116],['aal3',166],['aal-registered',116],['aal3-
   }
 }
 const aalReview=JSON.parse(fs.readFileSync(path.join(data,'aal-v3/root-review.json'),'utf8'));
+const projections=JSON.parse(fs.readFileSync(path.join(data,'surface-v1/manifest.json'),'utf8'));
+for(const [id,projection]of Object.entries(projections.atlases)){
+  const atlas=manifest.atlases[id];assert.equal(sha(fs.readFileSync(path.join(data,projection.sourceVolume))),projection.sourceSha256);
+  assert.equal(atlas.surfaceProjection,'surface-v1/manifest.json');assert.equal(projection.sourceSha256,atlas.sha256);
+  for(const [hemi,entry]of Object.entries(projection.hemispheres)){
+    const bytes=fs.readFileSync(path.join(data,entry.file));assert.equal(sha(bytes),entry.sha256);assert.equal(bytes.length,entry.vertices*2);
+    const pial=JSON.parse(fs.readFileSync(path.join(data,entry.pialFile),'utf8'));
+    assert.equal(sha(fs.readFileSync(path.join(data,entry.pialFile))),entry.pialSha256);assert.equal(sha(fs.readFileSync(path.join(data,entry.whiteFile))),entry.whiteSha256);
+    assert.equal(pial.positions.length/3,entry.vertices);const allowed=new Set(entry.allowedLabelIds);let labelled=0;
+    for(let i=0;i<entry.vertices;i++){const value=bytes.readUInt16LE(i*2);if(value){assert(allowed.has(value));assert(pial.vertexLabels[i]>0);labelled++;}}
+    assert(entry.allowedLabelIds.every(id=>atlas.labels.find(l=>l.id===id)?.name.endsWith(`_${hemi}`)));assert.equal(labelled,entry.ribbonLabelled);
+    assert(entry.ribbonLabelled>=entry.pialOnlyLabelled);
+  }
+}
+console.log('PASS shared brain: source-matched AAL surface labels, unchanged pial/white hashes, hemisphere and medial-wall guards');
 assert.equal(aalReview.humanValidated,false,'AI visual review is not human anatomical certification');
 assert.equal(sha(fs.readFileSync(path.join(data,'aal-v3/sources/colin27-to-fsl-dipy.npz'))),aalReview.fieldSha256);
 assert.equal(sha(fs.readFileSync(path.join(data,'aal-v3/registration-qc.png'))),aalReview.observedQcSha256);

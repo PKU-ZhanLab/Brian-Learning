@@ -9,7 +9,7 @@ const file='manifest.json',m=read(file);
 if(!fs.existsSync(path.join(data,'legacy-manifest-v1.json')))write('legacy-manifest-v1.json',m);
 const legacy=read('legacy-manifest-v1.json');
 const dk=read('dk-v2/metadata.json'),ba=read('ba-v2/manifest.json');
-m.schemaVersion=2;m.generated='2026-10-26';m.version='4.0.0';m.edition='brain-evidence';
+m.schemaVersion=2;m.generated='2026-10-27';m.version='4.1.0';m.edition='brain-evidence';
 m.atlases.dk=dk;
 m.atlases['ba-legacy']={...legacy.atlases.ba,available:false,data:null,alignmentStatus:'legacy',canOverlayOnTarget:false,canViewInNativeSpace:false,note:'保留 BrainNet 旧版 BA 41 个编号目录；精确配对 T1 与该版本数据许可尚未确认。待取得原始图谱、配对 T1 和坐标依据后再配准，当前不加载旧二进制。'};
 Object.assign(m.atlases,ba.atlases);
@@ -34,6 +34,7 @@ for(const id of ['aal','aal3','aal-registered','aal3-registered']){
   const entry=aal.atlases[id];
   if(!entry?.available||!entry.publicRedistributionReady||!entry.data?.startsWith('aal-v3/'))throw Error(`Incomplete AAL release: ${id}`);
   m.atlases[id]=entry;
+  if(id.endsWith('-registered'))m.atlases[id].surfaceProjection='surface-v1/manifest.json';
 }
 m.aalSourceManifest='aal-v3/manifest.json';m.aalRegistrationReview='aal-v3/root-review.json';
 m.atlases.ho.alignmentStatus??='published-template';m.atlases.jhu.alignmentStatus??='published-template';
