@@ -29,7 +29,9 @@ for(const spacing of [1,2])test(`${spacing} mm JSON and CSV downloads preserve e
   const fieldHash=createHash('sha256').update(await fs.readFile(new URL('../../public/data/aal-v3/sources/colin27-to-fsl-dipy.npz',import.meta.url))).digest('hex');
   expect(manifest.transforms).toEqual([{id:'public/data/aal-v3/sources/colin27-to-fsl-dipy.npz',sha256:fieldHash},{id:'public/data/aal-v3/sources/colin27-to-fsl-dipy.npz',sha256:fieldHash}]);
   expect(manifest.sourceGrids[0].shape).toEqual([181,217,181]);expect(manifest.targetGrid.shape).toEqual(spacing===1?[181,217,181]:[91,109,91]);
-  expect(manifest.interpolation).toEqual(['nearest-neighbour','nearest-neighbour']);expect(manifest.thresholds[0]).toEqual({kind:'label',threshold:0,tail:'positive'});
+  expect(manifest.interpolation).toEqual(['nearest-neighbour','nearest-neighbour']);
+  // Preserve the configured UI value; discrete label membership ignores threshold.
+  expect(manifest.thresholds).toEqual([{kind:'label',threshold:.5,tail:'positive'},{kind:'label',threshold:.5,tail:'positive'}]);
   expect(sampling.A.sourceVoxels).toBe(7);expect(sampling.A.targetVoxels).toBe(spacing===1?7:0);expect(metrics.dice).toBe(spacing===1?1:null);
   expect(sampling.A.lostLabelIds).toEqual(spacing===1?[]:[134]);
   expect(manifest.inputs.slice(2).some(input=>input.id.endsWith('AAL3v1_1mm.nii'))).toBe(true);
