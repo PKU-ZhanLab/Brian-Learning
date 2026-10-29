@@ -1,5 +1,6 @@
 import {prepareVolume} from '../../src/lib/volume.js';
-import {nativeDisplayVolume,buildAtlasSurfaces} from '../../src/lib/atlas-explorer.js';
+import {buildAtlasSurfaces} from '../../src/lib/atlas-explorer.js';
+import {prepareComparisonDisplay} from '../../src/lib/comparison-display.js';
 import {exportNifti,parseNifti} from '../../src/lib/nifti.js';
 import {makeAssetIdentity,prepareLocalVolumeProvenance,makeComputationManifest} from '../../src/lib/computation-manifest.js';
 import {serializeProject,parseProject} from '../../src/lib/workspace-project.js';
@@ -11,7 +12,7 @@ export async function prepareFixture({kind='label',threshold=3,tail='positive',r
  const bytes=exportNifti(source),original=await makeAssetIdentity(bytes,{id:`synthetic-original-${kind}`,version:fixtureVersion,spaceId:source.space});
  const parsed=await parseNifti(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),{kind,spaceId:source.space});
  const volume=restoredVolume?prepareVolume(restoredVolume.data,restoredVolume):prepareVolume(parsed.data,{...source,...await prepareLocalVolumeProvenance({...source,alignmentStatus:'user-declared',source:'Immutable synthetic formula in fixture.mjs'},bytes,{id:`synthetic-derived-${kind}`,version:fixtureVersion,spaceId:source.space})});
- const display=nativeDisplayVolume(volume,{threshold,tail}),ids=kind==='label'?[7,42]:[1],geometry=buildAtlasSurfaces(display,ids);
+ const display=prepareComparisonDisplay(volume,{threshold,tail}),ids=kind==='label'?[7,42]:[1],geometry=buildAtlasSurfaces(display,ids);
  const grid={shape,affine,space:source.space,order:'x-fastest'};
  const manifest=makeComputationManifest({appVersion:'4.1.0',algorithmVersion:'x10-fixture-v1',inputs:[volume.identity,volume.identity,original],transforms:[],sourceGrids:[grid,grid],targetGrid:grid,interpolation:['nearest-neighbour','nearest-neighbour'],thresholds:[0,1].map(()=>({kind,threshold:kind==='label'?0:threshold,tail})),labelSets:[ids,ids]});
  return {volume,display,geometry,bytes,original,manifest,parsed};

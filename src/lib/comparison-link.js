@@ -1,4 +1,21 @@
 import {validateAssetIdentity} from './computation-manifest.js';
+export function comparisonSourceRequestKey(value,{epoch,key,resetGeneration=0}={}){
+ return JSON.stringify([value.assetId,value.threshold,value.tail,value.labels,epoch,key,resetGeneration]);
+}
+/** UI request lifetime only; loadAtlas remains the authoritative shared cache. */
+export function createComparisonSourceLoader(load){
+ let generation=0;
+ return {
+  cancel(){generation++;},
+  async run(value){
+   const request=++generation,volume=await load(value.assetId);
+   if(request!==generation)return null;
+   if(!volume)throw Error('Source unavailable');
+   if(value.identity&&!sameComparisonIdentity(value.identity,volume.identity))throw Error('comparison-source-identity-mismatch');
+   return {volume,isCurrent:()=>request===generation};
+  },
+ };
+}
 const point=v=>Array.isArray(v)&&v.length===3&&v.every(Number.isFinite);
 const equal=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 export const sameComparisonIdentity=(a,b)=>!!a&&!!b&&equal(a,b);
