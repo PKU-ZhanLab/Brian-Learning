@@ -3,6 +3,17 @@
  * review-mixed even when they discuss several recording or imaging techniques.
  */
 const p=(en,topics,modalities=null,studyType=null,species=null,scope=null)=>({en,topics,modalities,studyType,species,scope});
+// Labels retained from the existing curated descriptions, not from human targets.
+// U means laterality has not been extracted; it does not assert bilateral sampling.
+export const sourceRegionAnnotations={
+  hubel1962:{label:'striate cortex',hemisphere:'U'},
+  hafting2005:{label:'medial entorhinal cortex',hemisphere:'U'},
+  padoaschioppa2006:{label:'orbitofrontal cortex',hemisphere:'U'},
+  graziano2002:{label:'precentral cortex',hemisphere:'U'},
+  rexed1952:{label:'spinal grey matter laminae',hemisphere:'U'},
+  silani2013:{label:'right supramarginal gyrus',hemisphere:'R'},
+  dronkers2007:{label:'left inferior frontal cortex and extended lesions',hemisphere:'L'},
+};
 export const paperAnnotations={
   desikan2006:p('A gyral MRI labeling method defines 34 cortical regions per hemisphere. It supports anatomical naming, not functional boundaries.',['anatomy','methods'],['structural-MRI'],'atlas','human'),
   tzourio2002:p('AAL labels the macroscopic anatomy of a normalized single-subject brain. This anatomy should not be treated as a population-average template.',['anatomy','methods'],['structural-MRI'],'atlas','human'),

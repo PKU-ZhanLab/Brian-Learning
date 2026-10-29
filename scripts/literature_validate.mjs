@@ -11,6 +11,7 @@ import {additionalLiteratureReferences,literaturePapers,literatureTopics,literat
 import {additionalResultsReferences,curatedResults} from '../src/data/results.js';
 import {emptyEvidence,validateEvidence} from '../src/lib/evidence-workspace.js';
 import {structures as allStructures} from '../src/data/catalog.js';
+import {classifyMapping,buildLocateRequest} from '../src/lib/evidence-mapping.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dir=path.join(root,'data-sources/literature-upgrade');
 const sha=s=>createHash('sha256').update(s).digest('hex');
@@ -29,6 +30,7 @@ const doiSet=new Set();
 for(const r of refs)if(r.doi){const d=r.doi.toLowerCase();assert(!doiSet.has(d),`Duplicate DOI: ${d}`);doiSet.add(d);}
 for(const option of [...literatureTopics,...literatureModalities]){bilingual(option.label,option.id);bilingual(option.description,option.id);}
 const mappedIds=new Set();
+const mappingIds=new Set();
 let links=0,figures=0;
 for(const p of literaturePapers){
   assert(refIds.has(p.referenceId)&&p.referenceId===p.id,`Unknown paper reference: ${p.id}`);
@@ -41,6 +43,14 @@ for(const p of literaturePapers){
   url(p.methodProvenance.source,p.id);
   assert(p.methodProvenance.metadataSources.length,`No verified source metadata: ${p.id}`);
   for(const m of p.mappedRegions){
+    assert(m.id&&!mappingIds.has(m.id),`Missing or duplicate mapping identity: ${p.id}/${m.structureId}`);mappingIds.add(m.id);
+    assert.equal(m.referenceId,p.id);assert.equal(m.targetConceptId,m.structureId);
+    assert(p.claims.some(c=>c.id===m.claimId),`Unknown claim: ${m.id}`);
+    assert.equal(m.sourceRegion.species,p.species,`Species changed at target: ${m.id}`);
+    assert.equal(m.directEvidence,m.support==='direct',`Derived directEvidence mismatch: ${m.id}`);
+    assert.equal(classifyMapping(m).support,m.support,`Unsafe mapping classification: ${m.id}`);
+    assert(m.sourceRefs.some(s=>s.url===m.source),`Missing per-mapping source: ${m.id}`);
+    assert.equal(m.targetRegionRef,null,'Concept reading links do not establish discrete atlas identity');
     assert(evidenceByStructureId[m.structureId],`Unknown mapped structure: ${p.id}/${m.structureId}`);
     assert.equal(m.coordinates,null,`Unreviewed coordinates: ${p.id}`);assert.equal(m.space,null,`Implied coordinate system: ${p.id}`);
     assert(!m.position,`Synthetic position leaked into paper: ${p.id}`);
@@ -66,6 +76,17 @@ assert.deepEqual(literatureByReferenceId.gibo1981.modalities,['dissection']);
 assert.deepEqual(literatureByReferenceId.parvizi2012.mappedRegions.map(m=>m.structureId),['fusiform-r']);
 assert(literatureByReferenceId.tsao2006.mappedRegions.every(m=>m.directEvidence===false));
 assert(literatureByReferenceId.bentin1996.mappedRegions.every(m=>m.directEvidence===false));
+const mappings=literaturePapers.flatMap(p=>p.mappedRegions);
+const affectedReferences=new Set(['hubel1962','hafting2005','padoaschioppa2006','graziano2002','rexed1952']);
+const affected=mappings.filter(m=>affectedReferences.has(m.referenceId));
+assert.equal(affected.length,11,'Retain all eleven audited animal relationships');
+const spinalIds=new Set(allStructures.filter(s=>s.category==='spinal').map(s=>s.id));
+assert.equal(affected.filter(m=>!spinalIds.has(m.targetConceptId)).length,8);
+assert.equal(affected.filter(m=>spinalIds.has(m.targetConceptId)).length,3);
+assert(affected.every(m=>m.support==='cross-species'&&m.directEvidence===false));
+assert.deepEqual(buildLocateRequest('silani2013',{mappings}).directMappings.map(m=>m.targetConceptId),['supramarginal-r']);
+assert.equal(buildLocateRequest('bentin1996',{mappings}).directMappings.length,0);
+assert(buildLocateRequest('dronkers2007',{mappings}).directMappings.every(m=>m.targetConceptId.endsWith('-l')));
 assert(literatureByReferenceId.dubois2006.mappedRegions.filter(m=>m.structureId.endsWith('-r')).every(m=>m.directEvidence===false));
 for(const modality of ['MEG','fMRI','EEG','iEEG','single-unit'])assert(literaturePapers.some(p=>p.modalities.includes(modality)),`Requested modality missing: ${modality}`);
 const metadata=JSON.parse(await readFile(path.join(dir,'metadata.json'),'utf8'));
@@ -124,4 +145,4 @@ assert.deepEqual(portable,structured,'Portable example must match the built-in s
 const frames=Object.fromEntries([...new Set(sourceCheckedCoordinates.map(c=>c.space))].map(space=>[space,sourceCheckedCoordinates.filter(c=>c.space===space).length]));
 const activeBrainStructuresWithReadingLinks=allStructures.filter(s=>s.category!=='spinal'&&mappedIds.has(s.id)).length;
 assert.equal(activeBrainStructuresWithReadingLinks,150,'Expected 150 active brain catalog structures');
-console.log(JSON.stringify({status:'passed',papers:refs.length,legacyReadingRecords:literaturePapers.length,legacyStructureRecordsWithReadingLinks:mappedIds.size,activeBrainStructuresWithReadingLinks,regionLinks:links,topics:topics.size,modalities:modalities.size,comparisons:literatureDebates.length,figureLinks:figures+curatedResults.reduce((n,r)=>n+r.figures.length,0),externalSourceImages:curatedResults.flatMap(r=>r.figures).filter(f=>f.imageUrl).length,rawHashChecks:checkedHashes,unavailableRawCaches,resultMetadataHashChecks,structuredPapers:additionalResultsReferences.length,structuredFindings:curatedResults.length,sourceCheckedCoordinates:sourceCheckedCoordinates.length,coordinateFrames:frames},null,2));
+console.log(JSON.stringify({status:'passed',papers:refs.length,legacyReadingRecords:literaturePapers.length,legacyStructureRecordsWithReadingLinks:mappedIds.size,activeBrainStructuresWithReadingLinks,regionLinks:links,correctedAnimalMappings:{fullLibrary:affected.length,activeBrain:8,hiddenSpinal:3},topics:topics.size,modalities:modalities.size,comparisons:literatureDebates.length,figureLinks:figures+curatedResults.reduce((n,r)=>n+r.figures.length,0),externalSourceImages:curatedResults.flatMap(r=>r.figures).filter(f=>f.imageUrl).length,rawHashChecks:checkedHashes,unavailableRawCaches,resultMetadataHashChecks,structuredPapers:additionalResultsReferences.length,structuredFindings:curatedResults.length,sourceCheckedCoordinates:sourceCheckedCoordinates.length,coordinateFrames:frames},null,2));
