@@ -13,6 +13,7 @@ const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 
 test('documented manifest upgrade deterministically rebuilds source identities and relations', async () => {
   const scratch = path.join(root, '.superpowers/sdd/README');
+  fs.mkdirSync(scratch, { recursive:true });
   const fixture = fs.mkdtempSync(path.join(scratch, 'S1-rebuild-'));
   try {
     const data = path.join(fixture, 'public/data');
