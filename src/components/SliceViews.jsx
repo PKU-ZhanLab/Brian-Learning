@@ -1,7 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {resourceFeedback} from '../lib/workspace-status.js';
-import { makeSliceCanvas, sliceWorldPoint, atlasLabelAt, SLICE_BOUNDS } from '../lib/volume.js';
-import { ANATOMY_VOLUME_RESOURCE, atlasResourceKey, getResourceState, subscribe, ensureResource, retry } from '../lib/atlas-resource.js';
+import { atlasResourceKeyFor, makeSliceCanvas, sliceWorldPoint, atlasLabelAt, SLICE_BOUNDS } from '../lib/volume.js';
+import { ANATOMY_VOLUME_RESOURCE, getResourceState, subscribe, ensureResource, retry } from '../lib/atlas-resource.js';
 import { queryableAtlasVolume } from '../lib/query-state.js';
 import {comparisonVolumeBounds} from '../lib/comparison-link.js';
 
@@ -40,7 +40,7 @@ function useSharedResource(key){
 }
 export default function SliceViews({slices,onChange,atlas,atlasIdentity,onCoordinate,spaceId='MNI152NLin6Asym',independentSpace=false,onReturnToBrain,language='zh'}){
   const en=language==='en';
-  const anatomyState=useSharedResource(ANATOMY_VOLUME_RESOURCE),atlasKey=atlasIdentity?.version&&atlasIdentity?.sha256?atlasResourceKey(atlasIdentity):null;
+  const anatomyState=useSharedResource(ANATOMY_VOLUME_RESOURCE),atlasKey=atlasIdentity?.version&&atlasIdentity?.sha256?atlasResourceKeyFor({identity:atlasIdentity},atlas):null;
   const atlasState=useSharedResource(atlasKey);
   const volume=anatomyState?.status==='ready'?anatomyState.value:null;
   const atlasVolume=atlasState?.status==='ready'?queryableAtlasVolume(atlasState.value,atlas,atlasIdentity):null;

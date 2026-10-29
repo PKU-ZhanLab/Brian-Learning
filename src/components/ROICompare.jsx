@@ -2,8 +2,8 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 import CoordinateNavigator from './CoordinateNavigator.jsx';
 import WorkspaceStatus from './WorkspaceStatus.jsx';
 import {normalizeWorkspaceError} from '../lib/workspace-status.js';
-import {atlasIdentityFor} from '../lib/volume.js';
-import {atlasResourceKey,getResourceState,subscribe,retry} from '../lib/atlas-resource.js';
+import {atlasResourceKeyFor} from '../lib/volume.js';
+import {getResourceState,subscribe,retry} from '../lib/atlas-resource.js';
 import { makeAtlasRegionRef } from '../lib/atlas-identity.js';
 import { serializeAtlasSelection } from '../lib/atlas-selection.js';
 import { updateROIRegionExpectation, roiRegionIdentityMismatch, createComparisonExportTasks } from '../lib/roi-region-state.js';
@@ -63,7 +63,7 @@ const formatRatio = value => value == null ? '—' : value.toFixed(4);
 const formatPercent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
 
 function useSource(atlasId, version, metadata) {
-  const key=useMemo(()=>{try{return metadata?atlasResourceKey(atlasIdentityFor(metadata)):null;}catch{return null;}},[metadata]);
+  const key=useMemo(()=>{try{return metadata?atlasResourceKeyFor(metadata):null;}catch{return null;}},[metadata]);
   const [generation,setGeneration]=useState(0);
   useEffect(()=>{if(!key)return;const update=()=>setGeneration(getResourceState(key).generation);const off=subscribe(key,update);update();return off;},[key]);
   const [state, setState] = useState({ loading: true, volume: null, labels: [], error: null });

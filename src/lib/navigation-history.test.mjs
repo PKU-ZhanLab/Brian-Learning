@@ -87,7 +87,9 @@ test('incoming history remaps singular result-coordinate identities without rewr
     target.view.navigationHistory=pushNavigation({projectId:target.projectId,entries:[],index:-1},entry('research',{coordinateOrigin:{kind:'result',resultId:'result',sourceReferenceId:'paper',coordinateId:'point',spaceId:'MNI152NLin6Asym',imported:true,cameraSensitive:true,explorerSensitive:true}})).history;
   }
   const before=structuredClone(current),merged=mergeWorkspace(current,incoming,(kind,id)=>`incoming-${kind}-${id}`);
-  assert.deepEqual(merged.snapshot.view.navigationHistory.entries[0].view.coordinateOrigin,{kind:'result',resultId:'incoming-results-result',sourceReferenceId:'incoming-references-paper',coordinateId:'incoming-locations-point',spaceId:'MNI152NLin6Asym',imported:true,cameraSensitive:true,explorerSensitive:true});
+  assert.deepEqual(merged.snapshot.view.navigationHistory.entries[0],before.view.navigationHistory.entries[0]);
+  const selected=merged.snapshot.view.navigationHistory.entries[merged.snapshot.view.navigationHistory.index];
+  assert.deepEqual(selected.view.coordinateOrigin,{kind:'result',resultId:'incoming-results-result',sourceReferenceId:'incoming-references-paper',coordinateId:'incoming-locations-point',spaceId:'MNI152NLin6Asym',imported:true,cameraSensitive:true,explorerSensitive:true});
   assert.deepEqual(current,before);
 });
 test('blank B survives the real view-adapter sequence: explorer navigation, full-set A handoff, history restore',()=>{

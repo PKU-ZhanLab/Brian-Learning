@@ -13,9 +13,9 @@ const manifestFiles={
 };
 const resources=new Map();
 const record=key=>{if(!resources.has(key))resources.set(key,{state:{status:'idle',generation:0,value:null,error:null},listeners:new Set(),pending:null,controller:null});return resources.get(key);};
-export function atlasResourceKey(identity){
+export function atlasResourceKey(identity,ownerScope=null){
   if(!identity?.id||!identity.version||!identity.sha256)throw Error('Complete asset identity is required');
-  return `atlas:${JSON.stringify([identity.id,identity.version,identity.sha256,identity.spaceId??null])}`;
+  return `atlas:${JSON.stringify([identity.id,identity.version,identity.sha256,identity.spaceId??null,...(ownerScope?[ownerScope]:[])])}`;
 }
 export const getResourceState=key=>record(key).state;
 export function subscribe(key,listener){const resource=record(key);resource.listeners.add(listener);return()=>resource.listeners.delete(listener);}
@@ -29,8 +29,8 @@ async function load(key,signal){
   const volume=await import('./volume.js');
   if(key===ANATOMY_VOLUME_RESOURCE)return volume.loadAnatomyVolumeData({signal});
   if(key.startsWith('atlas:')){
-    const [id,version,sha256,spaceId]=JSON.parse(key.slice(6));
-    return volume.loadAtlasVersionData({id,version,sha256,spaceId},{signal});
+    const [id,version,sha256,spaceId,ownerScope]=JSON.parse(key.slice(6));
+    return volume.loadAtlasVersionData({id,version,sha256,spaceId},{signal,ownerScope});
   }
   throw Error(`Unknown resource: ${key}`);
 }
@@ -55,5 +55,10 @@ export function retry(key){
   const resource=record(key);resource.controller?.abort();resource.pending=null;resource.controller=null;
   publish(resource,{status:'idle',generation:resource.state.generation+1,value:null,error:resource.state.error});
   return ensureResource(key);
+}
+export function retireResource(key){
+  const resource=resources.get(key);if(!resource)return;
+  resource.controller?.abort();resource.pending=null;resource.controller=null;
+  publish(resource,{status:'error',generation:resource.state.generation+1,value:null,error:'Project atlas ownership expired'});
 }
 export async function resourceValue(key){const state=await ensureResource(key);if(state.status!=='ready')throw Error(state.error||`Resource ${key} is unavailable`);return state.value;}

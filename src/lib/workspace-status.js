@@ -45,6 +45,7 @@ export function normalizeWorkspaceError(error,language='zh'){
   if(error instanceof SyntaxError||/Unexpected|not valid JSON|JSON.*(?:parse|position)|(?:parse|position).*JSON/i.test(code))return en?'The file could not be read as valid project JSON. Choose a valid file; current work is retained.':'无法将此文件读取为有效的项目 JSON。请选择有效文件；当前工作仍保留。';
   if(/title.*conflict|conflict.*title/i.test(code))return en?'The imported title conflicts with an existing paper. Check the paper ID and title, then retry.':'导入的标题与已有论文冲突。请核对论文 ID 和标题后重试。';
   if(/stale-workspace|stale-draft-generation/.test(code))return en?'The project changed during this action. Retry using the current project.':'操作期间项目发生了变化。请在当前项目中重试。';
+  if(/workspace-storage-budget-recovery/.test(code))return en?'Current work and its recovery copy exceed the browser save limit. In Projects & views, archive the recovery record first, then retry saving or exporting. Current work and the original record are retained.':'当前内容与恢复副本超过浏览器保存上限。请在“保存与分享”中先归档恢复记录，再重试保存或导出。当前内容和原始记录仍保留。';
   if(/budget|too large|exceeds|too-long|size limit/i.test(code))return en?'This content exceeds the supported save or export size. Reduce the content and retry; current work is retained.':'内容超过保存或导出上限。减少内容后重试；当前工作仍保留。';
   if(/workspace-storage-unavailable|workspace-session-unavailable/.test(code))return en?'Local saving is unavailable. Keep this session open and retry.':'本地保存暂不可用。请保留当前会话后重试。';
   return value;

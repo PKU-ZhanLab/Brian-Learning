@@ -1,4 +1,5 @@
 // Plans are pure. Publication belongs exclusively to workspace-session.
+import {validateStartupRecovery} from './workspace-project.js';
 const assetFields=new Set(['atlas','atlasId','aAtlas','bAtlas','volumeId','assetId','sourceAssetId']);
 const skipped=new Set(['legacyV1','legacyImports','payload']);
 const isRecord=value=>value&&typeof value==='object'&&!ArrayBuffer.isView(value);
@@ -50,6 +51,20 @@ function detach(snapshot,excluded){
  }
  return {next,dependentViewFields:detached.fields,dependentResults};
 }
+/** Startup has metadata but no session image bytes; use the ordinary detach rules. */
+export function recoverUnavailableSessionAssets(snapshot,sessionAssetIds=[]){
+ const ids=[...new Set([...sessionAssetIds,...referencedAssetIds(snapshot.view),...historical(snapshot),...(snapshot.missingAssetIds||[])])];
+ const recovery=detach(snapshot,ids);
+ recovery.next.missingAssetIds=ids;
+ return {...recovery,unavailableAssetIds:ids};
+}
+/** An explicit archive action separates the original receipt from active work. */
+export function planRecoveryArchive(snapshot){
+ const recovery=validateStartupRecovery(snapshot.startupRecovery);
+ if(!recovery)throw Error('startup-recovery-unavailable');
+ const {startupRecovery,...next}=snapshot;
+ return {next,preview:{mode:'archive-recovery'}};
+}
 export function planAssetRemoval(snapshot,assetId){
  if(!owned(snapshot).some(v=>v.id===assetId))throw Error(`foreign-asset: ${assetId}`);
  return {assetId,...detach(snapshot,[assetId])};
@@ -67,6 +82,7 @@ export function planProjectExport(snapshot,{assetIds,dependentPolicy}={}){
   while(previous!==selected.size){previous=selected.size;for(const id of refs.concat(assets.filter(v=>selected.has(v.id)).flatMap(referencedAssetIds))){if(available.has(id))selected.add(id);else if(!(snapshot.missingAssetIds||[]).includes(id))throw Error(`missing-asset: ${id}`);}}
  }
  const excluded=assets.filter(v=>!selected.has(v.id)).map(v=>v.id),plan=detach(snapshot,excluded);
+ if(excluded.length&&snapshot.startupRecovery)throw Error('Startup recovery retains original project context. Export the full project to keep it, or open a separate project before selecting assets. / 启动恢复记录包含原项目内容，请导出完整项目保留记录，或另开项目后选择部分影像。');
  const included=describeWorkspaceAssets(snapshot).filter(v=>selected.has(v.id));
  return {workspace:plan.next,preview:{mode:'export',dependentPolicy,includedAssetIds:included.map(v=>v.id),excludedAssetIds:excluded,assets:included,assetCount:included.length,rawPayloadBytes:included.reduce((n,v)=>n+v.bytes,0),dependentViewFields:plan.dependentViewFields,dependentResults:plan.dependentResults,localEvidenceCounts:Object.fromEntries(Object.entries(snapshot.evidence||{}).filter(([,v])=>Array.isArray(v)).map(([key,value])=>[key,value.length])),noteCount:snapshot.notes?.length||0}};
 }

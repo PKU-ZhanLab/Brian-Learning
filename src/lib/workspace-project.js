@@ -70,6 +70,17 @@ export function validateMissingAssetIds(value=[]){
 }
 export const validateProjectDrafts=(value=[],projectId)=>validateDrafts(value,projectId);
 
+/** Opaque startup evidence is portable data, never a source of live assets. */
+export function validateStartupRecovery(input){
+  if(input==null)return null;
+  const value=JSON.parse(boundedJsonStringify(input,MAX_PROJECT_UTF8_BYTES,'startup-recovery-budget'));
+  if(!record(value)||typeof value.originalEnvelope!=='string'||!Array.isArray(value.detachedViewFields)||value.detachedViewFields.length>500||value.detachedViewFields.some(field=>typeof field!=='string'||field.length>160))throw Error('invalid-startup-recovery');
+  if(utf8ByteLength(value.originalEnvelope)>32*1024*1024)throw Error('startup-recovery-envelope-budget');
+  let original;try{original=JSON.parse(value.originalEnvelope);}catch{throw Error('invalid-startup-recovery-envelope');}
+  if(!record(original)||original.schema!=='neuroatlas-workspace-current-v1'||Object.hasOwn(original,'startupRecovery'))throw Error('invalid-startup-recovery-envelope');
+  return {originalEnvelope:value.originalEnvelope,unavailableAssetIds:validateMissingAssetIds(value.unavailableAssetIds),detachedViewFields:[...value.detachedViewFields]};
+}
+
 export function validateViewState(input,{savedProjectId,projectId}={}){
   if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Invalid view state');
   if(projectId!==undefined&&input.navigationHistory&&savedProjectId!==projectId)throw Error('navigation-history-project-mismatch');
@@ -234,10 +245,11 @@ async function verifyVolumeProvenance(volume,provenance){
   return observed;
 }
 
-export async function prepareProjectPayload({projectId=`project-${crypto.randomUUID()}`,view,notes=[],evidence=null,drafts=[],volumes=[],missingAssetIds=[],roiSnapshot=null,recomputedSnapshot=null,provenanceStatus}){
+export async function prepareProjectPayload({projectId=`project-${crypto.randomUUID()}`,view,notes=[],evidence=null,drafts=[],volumes=[],missingAssetIds=[],roiSnapshot=null,recomputedSnapshot=null,provenanceStatus,startupRecovery}){
   if(typeof projectId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(projectId))throw Error('Invalid project ID');
   if(view?.navigationHistory)validateNavigationHistory(view.navigationHistory,{projectId});
   if(!Array.isArray(volumes))throw Error('Invalid project volumes');
+  const validatedRecovery=validateStartupRecovery(startupRecovery);
   const usage={assetCount:volumes.length,rawPayloadBytes:0,compressedAssetBytes:[],projectUtf8Bytes:0};
   assertWorkspaceBudget(usage);
   const entries=[],encodedAssets=[],ids=new Set();
@@ -257,6 +269,7 @@ export async function prepareProjectPayload({projectId=`project-${crypto.randomU
   const encodedSnapshots={};
   for(const [key,snapshot] of Object.entries(snapshots)){const encoded=await encodeSavedComputation(snapshot);encodedSnapshots[key]=encoded.value;if(snapshot)usage.compressedAssetBytes.push(encoded.compressedBytes);assertWorkspaceBudget(usage);}
   const project={schema:PROJECT_SCHEMA,projectId,createdAt:new Date().toISOString(),view:validateViewState(view),notes:validateProjectNotes(notes),evidence:safeObject(evidence,20*1024*1024),drafts:validateProjectDrafts(drafts,projectId),volumes:entries,missingAssetIds:validateMissingAssetIds(missingAssetIds),...encodedSnapshots,provenanceStatus:projectProvenance(provenanceStatus,snapshots)};
+  if(validatedRecovery)project.startupRecovery=validatedRecovery;
   // Empty volumes already include the brackets. Entries contribute their exact UTF-8 size.
   let projectedBytes=utf8ByteLength(JSON.stringify(project));
   assertWorkspaceBudget({...usage,projectUtf8Bytes:projectedBytes});
@@ -301,6 +314,7 @@ export async function parseProject(text){
   const projectUtf8Bytes=utf8ByteLength(text);assertWorkspaceBudget({assetCount:0,rawPayloadBytes:0,projectUtf8Bytes});
   let p=JSON.parse(text);if(!record(p)||![PROJECT_SCHEMA,LEGACY_PROJECT_SCHEMA].includes(p.schema))throw Error('Unsupported project format');
   if(p.schema===LEGACY_PROJECT_SCHEMA)p=migrateProjectV1(p);
+  const startupRecovery=validateStartupRecovery(p.startupRecovery);
   const view=validateViewState(p.view);if(!Array.isArray(p.volumes))throw Error('Invalid project content');
   // File claims cannot attest how a point or camera was obtained. Exact public
   // result references can still be independently authorized at link projection.
@@ -333,6 +347,7 @@ export async function parseProject(text){
     if(volumeProvenance){observed=await verifyVolumeProvenance(volume,volumeProvenance);volume={...volume,...volumeProvenance};}
     else{const declared=meta.space==='MNI152NLin6Asym'&&meta.alignmentStatus==='user-declared'&&meta.canOverlayOnTarget&&meta.provenance.trim().length>0;volume=await prepareLocalVolumeProvenance({...meta,...volume,canOverlayOnTarget:declared,alignmentStatus:declared?'user-declared':'unverified'},received,{id:`project-entry:${id}`});observed=volume.identity;}
     volume.projectEntryObservation={scope:'current-project-entry',derivedIdentity:observed,originalSourceBytesEmbedded:false};
+    volume.identityVerification='received-project-derived-bytes';
     const declared=volume.identity.spaceId===meta.space&&meta.space==='MNI152NLin6Asym'&&meta.alignmentStatus==='user-declared'&&meta.canOverlayOnTarget&&meta.provenance.trim().length>0;
     volumes.push({...meta,...volume,id,metadata:{...volume.metadata,affineConflict:!!(volume.metadata.affineConflict||meta.metadata.affineConflict||meta.metadata.sourceImport?.affineConflict),sourceImport:meta.metadata.sourceImport||meta.metadata,userDeclaredAligned:declared,referenceSpace:meta.space,restoredFromProject:true},labels:meta.labels,custom:true,available:true,canOverlayOnTarget:declared,alignmentStatus:declared?'user-declared':'unverified'});
   }
@@ -340,6 +355,7 @@ export async function parseProject(text){
   // Restoring a file never authorizes a new computation; W6 owns explicit recompute.
   if(view.roi){view.roi.computed=false;view.roi.snapshot??=snapshots.recomputedSnapshot?'recomputed':snapshots.roiSnapshot?'original':'none';}
   const restored={schema:PROJECT_SCHEMA,projectId,view,notes,evidence,drafts,volumes,...snapshots,missingAssetIds:validateMissingAssetIds(p.missingAssetIds??[]),provenanceStatus:projectProvenance(p.provenanceStatus,snapshots)};
+  if(startupRecovery)restored.startupRecovery=startupRecovery;
   // Restoration adds truthful header provenance; admit its actual next export too.
   await prepareProjectPayload(restored);
   return restored;

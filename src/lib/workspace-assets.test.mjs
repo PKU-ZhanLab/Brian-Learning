@@ -15,7 +15,10 @@ test('paired sources detach missing private assets and merge every source identi
  const detached=planAssetRemoval(before,'custom-a').next;
  assert.equal(detached.view.roi.paired.left.assetId,'');assert.equal(detached.view.roi.paired.left.identity,null);assert.equal(detached.view.roi.paired.right.assetId,'custom-b');
  const incoming=structuredClone(before);incoming.volumes[0].data=Uint8Array.of(2);
+ assert.throws(()=>mergeWorkspace(before,incoming,()=> 'custom-remapped'),/occupied computation history/);
+ incoming.roiSnapshot=null;
  const merged=mergeWorkspace(before,incoming,()=> 'custom-remapped').snapshot;
+ assert.deepEqual(merged.roiSnapshot,before.roiSnapshot);
  assert.equal(merged.view.roi.paired.left.assetId,'custom-remapped');assert.equal(merged.view.roi.paired.left.identity.id,'custom-remapped');
 });
 test('paired canonical derived byte identities are not mistaken for catalog asset IDs',async()=>{

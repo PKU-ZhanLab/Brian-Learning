@@ -6,9 +6,10 @@ import WorkspaceStatus from './WorkspaceStatus.jsx';
 import {normalizeWorkspaceError,describeProjectExport} from '../lib/workspace-status.js';
 import './WorkspaceFiles.css';
 
-export default function WorkspaceFiles({language='zh',onClose,getView,onRestoreView,onExportProject,onStageProject,onCommitProject,onShare,customVolumeCount=0,snapshot,onRemovePlan,onCommitRemoval,onExportPlan,onConfirmExport,draftState,onFlushDrafts,undoEntries=[],onUndo}){
+export default function WorkspaceFiles({language='zh',onClose,getView,onRestoreView,onExportProject,onStageProject,onCommitProject,onShare,customVolumeCount=0,snapshot,onRemovePlan,onCommitRemoval,onExportPlan,onConfirmExport,onArchiveRecoveryPlan,onDownloadRecovery,onCommitRecovery,draftState,onFlushDrafts,undoEntries=[],onUndo}){
   const en=language==='en',t=(zh,eng)=>en?eng:zh;
   const [name,setName]=useState(''),[saved,setSaved]=useState(()=>readSavedViews()),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[failed,setFailed]=useState(false),[pending,setPending]=useState(null);
+  const [recoveryDownloaded,setRecoveryDownloaded]=useState(false);
   const actionTrigger=useRef(null),input=useRef(null),importButton=useRef(null),mergeButton=useRef(null),pickerMode=useRef('open'),epoch=useRef(0),mounted=useRef(true);
   useEffect(()=>{mounted.current=true;const node=input.current,restore=()=>{(pickerMode.current==='merge'?mergeButton:importButton).current?.focus();};node?.addEventListener('cancel',restore);return()=>{mounted.current=false;epoch.current++;node?.removeEventListener('cancel',restore);};},[]);
   const fail=error=>{setFailed(true);setMessage(normalizeWorkspaceError(error,language));};
@@ -25,7 +26,7 @@ export default function WorkspaceFiles({language='zh',onClose,getView,onRestoreV
   };
   const commit=async()=>{const stage=pending;if(!stage||!onCommitProject)return;await run(async()=>{await onCommitProject(stage);setPending(null);});};
   const cancel=()=>{epoch.current++;setPending(null);setMessage('');if(actionTrigger.current?.isConnected)actionTrigger.current.focus();else (pickerMode.current==='merge'?mergeButton:importButton).current?.focus();};
-  const preview=async action=>{actionTrigger.current=document.activeElement;const request=++epoch.current;setBusy(true);setMessage('');setFailed(false);setPending(null);try{const plan=await action();if(mounted.current&&request===epoch.current)setPending(plan);}catch(error){if(mounted.current&&request===epoch.current)fail(error);}finally{if(mounted.current&&request===epoch.current)setBusy(false);}};
+  const preview=async action=>{actionTrigger.current=document.activeElement;const request=++epoch.current;setBusy(true);setMessage('');setFailed(false);setPending(null);setRecoveryDownloaded(false);try{const plan=await action();if(mounted.current&&request===epoch.current)setPending(plan);}catch(error){if(mounted.current&&request===epoch.current)fail(error);}finally{if(mounted.current&&request===epoch.current)setBusy(false);}};
   const exportPlan=options=>preview(()=>onExportPlan(options));
   const confirmAsset=()=>run(async()=>{if(pending.preview.mode==='remove')await onCommitRemoval(pending);else await onConfirmExport(pending);setPending(null);});
   const exportSize=pending?.preview.mode==='export'?describeProjectExport(pending):null;
@@ -36,6 +37,16 @@ export default function WorkspaceFiles({language='zh',onClose,getView,onRestoreV
     <p>{t('完整项目包含视图、批注、论文与证据、草稿、本项目影像及已保存的计算结果；其中可含本地私有内容。','A full project contains views, notes, papers and evidence, drafts, project images and saved computations, including local private content.')}</p>
     <div className="workspace-file-actions"><button disabled={busy} onClick={()=>snapshot?exportPlan({assetIds:snapshot.volumes.filter(v=>!v.projectId||v.projectId===snapshot.projectId).map(v=>v.id),dependentPolicy:'include'}):run(onExportProject)}>{t('导出完整项目','Export project')}</button><button ref={importButton} disabled={busy} onClick={()=>pick('open')}>{t('打开项目文件','Open project file')}</button><button ref={mergeButton} disabled={busy} onClick={()=>pick('merge')}>{t('合并到当前项目','Merge into current project')}</button><button disabled={busy} onClick={()=>run(onShare)}>{t('复制视图链接','Copy view link')}</button></div>
     <input type="file" accept=".json,.neuroatlas" hidden ref={input} onChange={stageFile}/>
+    {snapshot?.startupRecovery&&<button disabled={busy} onClick={()=>preview(onArchiveRecoveryPlan)}>{t('归档恢复记录并继续','Archive recovery record and continue')}</button>}
+    {pending?.preview.mode==='archive-recovery'&&<section className="workspace-import-preview" aria-label={t('恢复记录归档预览','Recovery archive preview')}>
+      <h3>{t('另存原始恢复记录','Save the original recovery record separately')}</h3>
+      <p>{t('请先保存下载的恢复记录。确认后将从当前项目移除这份嵌入副本；当前笔记、证据、草稿、历史数值和缺失影像身份保留，之后可正常保存和导出项目。','Save the downloaded recovery record first. Continuing removes its embedded copy from this project; current notes, evidence, drafts, saved numbers and missing-image identities remain available for normal saving and project export.')}</p>
+      <div className="workspace-file-actions">
+        <button disabled={busy} onClick={()=>run(async()=>{setRecoveryDownloaded(false);await onDownloadRecovery(pending);setRecoveryDownloaded(true);},t('请确认文件已保存，再继续。','Confirm that you saved the file before continuing.'))}>{t('下载原始恢复记录','Download original recovery record')}</button>
+        <button disabled={busy||!recoveryDownloaded} onClick={()=>run(async()=>{await onCommitRecovery(pending);setPending(null);})}>{t('我已保存，继续工作','I saved it; continue')}</button>
+        <button disabled={busy} onClick={cancel}>{t('取消','Cancel')}</button>
+      </div>
+    </section>}
     {pending&&['open','merge'].includes(pending.preview.mode)&&<section className="workspace-import-preview" aria-label={t('项目导入预览','Project import preview')}>
       <h3>{pending.preview.mode==='merge'?t('合并到当前项目','Merge into current project'):t('打开并替换当前项目','Open and replace current project')}</h3>
       <p>{t(`${pending.next.notes.length} 条批注 · ${pending.next.evidence.references.length} 篇本地论文 · ${pending.next.volumes.length} 个影像`,`${pending.next.notes.length} notes · ${pending.next.evidence.references.length} local papers · ${pending.next.volumes.length} volumes`)}</p>

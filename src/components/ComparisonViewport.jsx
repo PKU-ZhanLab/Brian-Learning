@@ -1,17 +1,17 @@
 import React,{useEffect,useRef,useState} from 'react';
 import AtlasCanvas from './AtlasCanvas.jsx';
 import {SourceSliceViews} from './SliceViews.jsx';
-import {loadAtlas,atlasIdentityFor} from '../lib/volume.js';
+import {loadAtlas,atlasResourceKeyFor} from '../lib/volume.js';
 import {serializableVolume} from '../lib/roi.js';
 import {prepareComparisonDisplay} from '../lib/comparison-display.js';
-import {atlasResourceKey,subscribe,getResourceState,retry} from '../lib/atlas-resource.js';
+import {subscribe,getResourceState,retry} from '../lib/atlas-resource.js';
 import {canLinkCoordinates,comparisonVolumeBounds,comparisonSourceRequestKey,createComparisonSourceLoader,updateComparison,validateComparisonState} from '../lib/comparison-link.js';
 import './ComparisonViewport.css';
 
 const emptySource=assetId=>({assetId,identity:null,point:[0,0,0],camera:null,labels:[],threshold:.5,tail:'positive'});
 function SourcePanel({side,value,manifest,language,onSource,onUpdate,onChoose,resetGeneration}){
  const en=language==='en',seq=useRef(0),[volume,setVolume]=useState(null),[geometry,setGeometry]=useState(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[epoch,setEpoch]=useState(0);
- const metadata=manifest?.atlases?.[value.assetId];let key=null;try{if(metadata)key=atlasResourceKey(atlasIdentityFor(metadata));}catch{/* Absent identity is shown by the loader. */}
+ const metadata=manifest?.atlases?.[value.assetId];let key=null;try{if(metadata)key=atlasResourceKeyFor(metadata);}catch{/* Absent identity is shown by the loader. */}
  const [sourceLoader]=useState(()=>createComparisonSourceLoader(loadAtlas));
  const requestKey=comparisonSourceRequestKey(value,{epoch,key,resetGeneration});
  useEffect(()=>{if(!key)return;return subscribe(key,()=>setEpoch(getResourceState(key).generation));},[key]);

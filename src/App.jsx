@@ -28,8 +28,8 @@ import {emptyEvidence} from './lib/evidence-workspace.js';
 import {resolveResultLayers,projectPublicResultLayers} from './lib/result-layers.js';
 import {editResultLayers} from './lib/result-layer-controls.js';
 import {EVIDENCE_COLLECTIONS,getResultViewModel} from './lib/evidence-schema.js';
-import {planAssetRemoval,planProjectExport} from './lib/workspace-assets.js';
-import {createWorkspaceSession,restoreWorkspaceInitial,stageWorkspaceChange,stageProjectImport,WORKSPACE_STORAGE_KEY} from './lib/workspace-session.js';
+import {planAssetRemoval,planProjectExport,planRecoveryArchive} from './lib/workspace-assets.js';
+import {createWorkspaceSession,restoreWorkspaceInitial,stageWorkspaceChange,stageProjectImport,downloadRecoveryArchive,acknowledgeRecoveryArchive,WORKSPACE_STORAGE_KEY} from './lib/workspace-session.js';
 import {assetURL} from './lib/assets.js';
 import {localizeStructure} from './i18n/catalog-en.js';
 import {localizeReference} from './i18n/references-en.js';
@@ -37,8 +37,8 @@ import {localizeUI,translateUI} from './i18n/ui.js';
 import {additionalLiteratureReferences} from './data/literature.js';
 import {additionalResultsReferences,curatedEvidence} from './data/results.js';
 import DataProvenance, { ClaimEvidence, EvidenceOverview, GeometryProvenance, alignmentLabel } from './components/DataProvenance.jsx';
-import { loadAtlas, atlasLabelAt, atlasIdentityFor, SLICE_BOUNDS } from './lib/volume.js';
-import { MAIN_MANIFEST_RESOURCE, ANATOMY_MANIFEST_RESOURCE, BA_COVERAGE_RESOURCE, ANATOMY_VOLUME_RESOURCE, atlasResourceKey, getResourceState, subscribe, ensureResource, retry } from './lib/atlas-resource.js';
+import { loadAtlas, atlasLabelAt, atlasIdentityFor, SLICE_BOUNDS, atlasResourceKeyFor} from './lib/volume.js';
+import { MAIN_MANIFEST_RESOURCE, ANATOMY_MANIFEST_RESOURCE, BA_COVERAGE_RESOURCE, ANATOMY_VOLUME_RESOURCE, getResourceState, subscribe, ensureResource, retry } from './lib/atlas-resource.js';
 import { beginQuery, invalidateQuery, acceptQueryResult, queryableAtlasVolume, queryDisplayState } from './lib/query-state.js';
 import { atlasEvidence } from './data/evidence.js';
 import { structures as catalogStructures, references as catalogReferences, atlasOptions, categories, networks, brodmannIndex, citationGB } from './data/catalog.js';
@@ -177,7 +177,7 @@ export default function App(){
   };
   const [query,setQuery]=useState(''),[searchOpen,setSearchOpen]=useState(false),[treeTab,setTreeTab]=useState('anatomy'),[openGroups,setOpenGroups]=useState(['cortex']);
   const [infoTab,setInfoTab]=useState('anatomy'),[modal,setModal]=useState(null),[refQuery,setRefQuery]=useState('');
-  const [notes,setNotes]=useState(startup.initial.notes),[draft,setDraft]=useState(''),[toast,setToast]=useState(startup.error?{error:startup.error}:'');
+  const [notes,setNotes]=useState(startup.initial.notes),[draft,setDraft]=useState(''),[toast,setToast]=useState(startup.error?{error:startup.error}:startup.initial.startupRecovery?.unavailableAssetIds.length?(language==='en'?'Previous session images are unavailable. Notes are retained; open the full project file to recover images and results.':'上一会话的影像已不可用。笔记仍保留；请打开完整项目文件恢复影像和结果。'):'');
   const [quiz,setQuiz]=useState(null),[quizType,setQuizType]=useState('name'),[quizScore,setQuizScore]=useState({correct:0,total:0});
   const [coordinate,setCoordinate]=useState([-38,-20,54]),[coordinateSpace,setCoordinateSpace]=useState('brain');
   const [coordinateOrigin,setCoordinateOrigin]=useState({kind:'manual',cameraSensitive:false,explorerSensitive:false,imported:false});
@@ -190,7 +190,7 @@ export default function App(){
   const restoredSharedView=useRef(false);
   const atlasInfo=['aal-registered','aal3-registered'].includes(atlas)?{label:atlas==='aal-registered'?'AAL · 116':'AAL3 · 166'}:atlasOptions.find(a=>a.id===atlas)||{label:manifest?.atlases?.[atlas]?.name||atlas};
   const liveAtlas=manifest?.atlases?.[atlas];
-  const atlasKey=liveAtlas?.atlasVersion&&liveAtlas?.sha256?atlasResourceKey(atlasIdentityFor(liveAtlas)):null;
+  const atlasKey=liveAtlas?.atlasVersion&&liveAtlas?.sha256?atlasResourceKeyFor(liveAtlas):null;
   const atlasResource=useResource(atlasKey);
   const resourceEpoch=`${mainResource?.generation??0}:${atlasResource?.generation??0}`;
   const queryVolume=atlasResource?.status==='ready'?queryableAtlasVolume(activeVolume,atlas,liveAtlas?atlasIdentityFor(liveAtlas):null):null;
@@ -385,16 +385,22 @@ export default function App(){
     const epoch=projectEpoch.current;
     const {base,captured}=mode==='export'?await captureDraftSafeWorkspace(workspaceSession,draftManager,captureWorkspace):{base:workspaceSession.getSnapshot(),captured:captureWorkspace()};
     if(epoch!==projectEpoch.current)throw Error('stale-workspace');
-    const plan=mode==='remove'?planAssetRemoval(captured,options):planProjectExport(captured,options);
+    const plan=mode==='archive-recovery'?planRecoveryArchive(captured):mode==='remove'?planAssetRemoval(captured,options):planProjectExport(captured,options);
     const preview=mode==='remove'?{mode,assetId:options,assetName:base.volumes.find(v=>v.id===options)?.name||options,dependentViewFields:plan.dependentViewFields,dependentResults:plan.dependentResults}:plan.preview;
-    const stage=await stageWorkspaceChange(mode==='remove'?plan.next:plan.workspace,{current:base,knownEvidence:knownWorkspaceEvidence,preview});
+    const stage=await stageWorkspaceChange(mode==='export'?plan.workspace:plan.next,{current:base,knownEvidence:knownWorkspaceEvidence,preview});
     if(base!==workspaceSession.getSnapshot())throw Error('stale-workspace');
     assetStages.current.set(stage,{base,mode});return stage;
+  };
+  const downloadRecoveryRecord=async stage=>{
+    const action=assetStages.current.get(stage);
+    if(!action||action.mode!=='archive-recovery'||action.base!==workspaceSession.getSnapshot())throw Error('stale-workspace');
+    await downloadRecoveryArchive(stage,text=>download(text,`NeuroAtlas-startup-recovery-${new Date().toISOString().slice(0,10)}.json`,'application/json'));
   };
   const confirmAssetAction=async(stage,mode)=>{
     if(mode==='export')await draftManager.flush();
     const action=assetStages.current.get(stage);if(!action||action.mode!==mode||action.base!==workspaceSession.getSnapshot())throw Error('stale-workspace');
     if(mode==='export')download(stage.projectText,`NeuroAtlas-project-${new Date().toISOString().slice(0,10)}.neuroatlas`,'application/json');
+    else if(mode==='archive-recovery'){acknowledgeRecoveryArchive(stage);workspaceSession.commit(stage);setToast(language==='en'?'Recovery copy removed from active project. Current research is retained.':'已从当前项目移除恢复副本，当前研究内容仍保留。');await draftManager.flush();}
     else {const next=workspaceSession.commit(stage);importEpoch.current++;projectEpoch.current++;await restoreWorkspaceView(next.view);setToast(language==='en'?'Asset removed.':'影像已移除。');}
     assetStages.current.delete(stage);
   };
@@ -530,7 +536,7 @@ export default function App(){
       ...(showAtlasExplorer?[{id:'atlas-explorer',modal:true,title:language==='en'?'Atlas label explorer':'完整图谱分区',content:<AtlasExplorer key={`${workspaceRevision}-${atlasExplorerState?.atlas||'atlas'}`} manifest={manifest} language={language} initialState={atlasExplorerState} onStateChange={value=>{atlasState.current=value;}} onClose={()=>navigateWorkspace({atlasExplorerOpen:false})} onRestoreReady={restoreReadyScroll} onAssignSelection={assignAtlasSelection} onRegionSelect={async(refs,pos,context)=>{if(await navigateWorkspace({atlasExplorerOpen:false}))selectRegions(refs,pos,context);}} onViewStandard={id=>navigateWorkspace({atlas:id,atlasExplorerOpen:false})} onSave={()=>setShowWorkspaceFiles(true)} onShare={shareView} onImport={enterImageTask}/>}]:[]),
       ...(showDisplaySettings?[{id:'display-settings',modal:true,title:language==='en'?'Display settings':'显示设置',returnFocusRef:displaySettingsTrigger,content:<DisplaySettingsDrawer settings={displaySettings} onChange={changeDisplaySettings} onRestoreHidden={()=>setHiddenIds([])} onClose={()=>setShowDisplaySettings(false)} language={language}/>}]:[]),
       ...(modal?[{id:'app-modal',modal:true,title:translateUI({refs:'参考文献总目录',notes:'研究批注',help:'使用指南',data:'图谱与数据来源',legend:'图谱图例'}[modal],language),content:genericDialogContent}]:[]),
-      ...(showWorkspaceFiles?[{id:'workspace-files',modal:true,title:language==='en'?'Save and share':'保存与分享',content:<WorkspaceFiles language={language} onClose={()=>setShowWorkspaceFiles(false)} getView={getWorkspaceView} onRestoreView={restoreNamedWorkspaceView} snapshot={captureWorkspace()} draftState={draftState} onFlushDrafts={()=>draftManager.flush()} undoEntries={undoEntries} onUndo={undoResearchAction} onRemovePlan={id=>stageAssetAction('remove',id)} onCommitRemoval={stage=>confirmAssetAction(stage,'remove')} onExportPlan={options=>stageAssetAction('export',options)} onConfirmExport={stage=>confirmAssetAction(stage,'export')} onStageProject={stageWorkspaceImport} onCommitProject={commitWorkspaceImport} onShare={()=>shareView({inline:true})} customVolumeCount={customVolumes.length}/>}]:[]),
+      ...(showWorkspaceFiles?[{id:'workspace-files',modal:true,title:language==='en'?'Save and share':'保存与分享',content:<WorkspaceFiles language={language} onClose={()=>setShowWorkspaceFiles(false)} getView={getWorkspaceView} onRestoreView={restoreNamedWorkspaceView} snapshot={captureWorkspace()} draftState={draftState} onFlushDrafts={()=>draftManager.flush()} undoEntries={undoEntries} onUndo={undoResearchAction} onRemovePlan={id=>stageAssetAction('remove',id)} onCommitRemoval={stage=>confirmAssetAction(stage,'remove')} onArchiveRecoveryPlan={()=>stageAssetAction('archive-recovery')} onDownloadRecovery={downloadRecoveryRecord} onCommitRecovery={stage=>confirmAssetAction(stage,'archive-recovery')} onExportPlan={options=>stageAssetAction('export',options)} onConfirmExport={stage=>confirmAssetAction(stage,'export')} onStageProject={stageWorkspaceImport} onCommitProject={commitWorkspaceImport} onShare={()=>shareView({inline:true})} customVolumeCount={customVolumes.length}/>}]:[]),
     ]} onCloseTop={id=>{if(id==='source-comparison')setComparisonViewer(null);else if(id==='workspace-files')setShowWorkspaceFiles(false);else if(id==='app-modal')setModal(null);else if(id==='display-settings')setShowDisplaySettings(false);else if(id==='atlas-explorer')navigateWorkspace({atlasExplorerOpen:false});else if(id==='result-coordinates')setActiveResult(null);}}/>
 
   </div>,language);

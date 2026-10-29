@@ -142,7 +142,7 @@ test('merge rewrites explicitly incoming snapshots independently while retaining
  const snapshot=(value)=>({volumeId:'custom-a',A:{atlasId:'custom-a'},voxels:[value],manifest:{inputs:[{id:'custom-a',version:`bytes-${value}`,sha256:String(value).repeat(64),spaceId:null}]}});
  for(const incomingKey of ['roiSnapshot','recomputedSnapshot']){
    const retainedKey=incomingKey==='roiSnapshot'?'recomputedSnapshot':'roiSnapshot';
-   const current=makeWorkspace('A',{volumes:[volume()],roiSnapshot:snapshot(1),recomputedSnapshot:snapshot(1)}),before=structuredClone(current);
+   const current=makeWorkspace('A',{volumes:[volume()],[retainedKey]:snapshot(1)}),before=structuredClone(current);
    const incoming=makeWorkspace('B',{volumes:[volume('custom-a',2)],[incomingKey]:snapshot(2)}),incomingBefore=structuredClone(incoming);
    const merged=mergeWorkspace(current,incoming,()=> 'custom-incoming');assert.strictEqual(merged.snapshot[retainedKey],current[retainedKey]);
    const stage=await stageWorkspaceChange(merged.snapshot,{current,preview:merged.preview});assert.deepEqual(stage.next[retainedKey],before[retainedKey]);assert.equal(stage.next[incomingKey].volumeId,'custom-incoming');assert.equal(stage.next[incomingKey].A.atlasId,'custom-incoming');assert.equal(stage.next[incomingKey].manifest.inputs[0].id,'custom-incoming');assert.deepEqual(stage.next[incomingKey].voxels,[2]);assert.equal(stage.next[incomingKey].manifest.inputs[0].sha256,'2'.repeat(64));assert.deepEqual(current,before);assert.deepEqual(incoming,incomingBefore);

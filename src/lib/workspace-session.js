@@ -1,10 +1,10 @@
-import {parseProject,prepareProjectPayload,validateViewState,validateProjectDrafts,validateProjectNotes,validateMissingAssetIds} from './workspace-project.js';
+import {parseProject,prepareProjectPayload,validateViewState,validateProjectDrafts,validateProjectNotes,validateMissingAssetIds,validateStartupRecovery} from './workspace-project.js';
 import {savedComputationUsage} from './saved-computation.js';
 import {validateResultLayers} from './result-layers.js';
 import {validateNavigationHistory} from './navigation-history.js';
-import {referencedAssetIds} from './workspace-assets.js';
+import {referencedAssetIds,recoverUnavailableSessionAssets} from './workspace-assets.js';
 import {boundedJsonStringify,utf8ByteLength,assertWorkspaceBudget,MAX_PROJECT_UTF8_BYTES} from './workspace-limits.js';
-import {emptyEvidence,EVIDENCE_COLLECTIONS} from './evidence-schema.js';
+import {emptyEvidence,EVIDENCE_COLLECTIONS,validateReferenceAliases} from './evidence-schema.js';
 import {validateEvidence,loadEvidence} from './evidence-workspace.js';
 import {prepareCustomVolumeReplacement,publishCustomVolumeReplacement,notifyCustomVolumes} from './custom-volumes.js';
 
@@ -46,6 +46,7 @@ const cloneSnapshot=value=>{if(value==null)return null;const {maskA,maskB,surfac
 export async function stageWorkspaceChange(candidate,{current,knownEvidence,preview}={}){
   if(!current||!Number.isSafeInteger(current.revision)||current.revision<0||!identifier(current.projectId))throw Error('invalid-current-workspace');
   if(!object(candidate)||!identifier(candidate.projectId))throw Error('invalid-project-id');
+  if(current.startupRecovery&&!candidate.startupRecovery&&candidate.projectId===current.projectId&&!['open','archive-recovery'].includes(preview?.mode))throw Error('recovery-archive-required');
   const candidateVolumes=candidate.volumes??[];
   if(!Array.isArray(candidateVolumes))throw Error('invalid-project-volumes');
   let rawPayloadBytes=0;assertWorkspaceBudget({assetCount:candidateVolumes.length,rawPayloadBytes});
@@ -55,15 +56,31 @@ export async function stageWorkspaceChange(candidate,{current,knownEvidence,prev
   const assetsChanged=candidate.projectId!==current.projectId||!sameContent(candidateVolumes,current.volumes);
   const next={projectId:candidate.projectId,revision:current.revision+1,view:checkedView(candidate.view),notes:validateProjectNotes(candidate.notes??[]),evidence,drafts:validateProjectDrafts(candidate.drafts??[],candidate.projectId),volumes:assetsChanged?structuredClone(candidateVolumes):current.volumes,missingAssetIds:validateMissingAssetIds(candidate.missingAssetIds??[]),roiSnapshot:cloneSnapshot(candidate.roiSnapshot),recomputedSnapshot:cloneSnapshot(candidate.recomputedSnapshot)};
   if(candidate.provenanceStatus)next.provenanceStatus=candidate.provenanceStatus;
+  if(candidate.startupRecovery)next.startupRecovery=validateStartupRecovery(candidate.startupRecovery);
   if(!Array.isArray(next.notes)||next.notes.some(n=>!object(n)||typeof n.text!=='string'))throw Error('invalid-notes');
   assertReferences(next,knownEvidence);
   const prepared=await prepareProjectPayload(next);
   assertWorkspaceBudget(prepared.usage);
-  const persistedJSON=boundedJsonStringify({schema:WORKSPACE_STORAGE_KEY,projectId:next.projectId,revision:next.revision,notes:next.notes,evidence:next.evidence,view:next.view,drafts:next.drafts,missingAssetIds:next.missingAssetIds},32*1024*1024,'workspace-storage-budget');
+  const computationHistory=Object.fromEntries(['roiSnapshot','recomputedSnapshot'].map(key=>[key,next[key]?savedComputationUsage(next[key]).metadata:null]));
+  const persistedJSON=boundedJsonStringify({schema:WORKSPACE_STORAGE_KEY,projectId:next.projectId,revision:next.revision,notes:next.notes,evidence:next.evidence,view:next.view,drafts:next.drafts,missingAssetIds:next.missingAssetIds,sessionAssetIds:next.volumes.map(v=>v.id),computationHistory,...(next.startupRecovery?{startupRecovery:next.startupRecovery}:{})},32*1024*1024,next.startupRecovery?'workspace-storage-budget-recovery':'workspace-storage-budget');
   const replacement=assetsChanged?prepareCustomVolumeReplacement(next.projectId,next.volumes):null;
   freeze(next);
   const stage=Object.freeze({baseRevision:current.revision,next,persistedJSON,projectText:prepared.text,preview:freeze(preview||{mode:'change',includedAssetIds:next.volumes.map(v=>v.id),removedAssetIds:current.volumes.filter(v=>!next.volumes.some(n=>n.id===v.id)).map(v=>v.id),collisions:[],remap:{},changedReferenceCounts:{}}),warnings:freeze(warnings)});
-  stages.set(stage,{next,replacement,base:current});return stage;
+  const recoveryArchive=preview?.mode==='archive-recovery'?{originalEnvelope:validateStartupRecovery(current.startupRecovery)?.originalEnvelope,downloadRequested:false,acknowledged:false}:null;
+  if(recoveryArchive&&!recoveryArchive.originalEnvelope)throw Error('startup-recovery-unavailable');
+  stages.set(stage,{next,replacement,base:current,recoveryArchive});return stage;
+}
+
+/** Download initiation is not a receipt: a separate user acknowledgement is required. */
+export async function downloadRecoveryArchive(stage,download){
+  const archive=stages.get(stage)?.recoveryArchive;if(!archive)throw Error('invalid-recovery-stage');
+  archive.downloadRequested=false;archive.acknowledged=false;
+  await download(archive.originalEnvelope);archive.downloadRequested=true;
+}
+export function acknowledgeRecoveryArchive(stage){
+  const archive=stages.get(stage)?.recoveryArchive;
+  if(!archive?.downloadRequested)throw Error('recovery-download-required');
+  archive.acknowledged=true;
 }
 
 /** Exactly one storage mutation precedes every in-memory publication. */
@@ -77,6 +94,7 @@ export function createWorkspaceSession({storage,initial,knownEvidence}={}){
     if(committing)throw Error('workspace-commit-in-progress');
     const prepared=stages.get(stage);if(!prepared)throw Error('invalid-stage');
     if(stage.baseRevision!==current.revision||prepared.base!==current)throw Error('stale-workspace');
+    if(prepared.recoveryArchive&&!prepared.recoveryArchive.acknowledged)throw Error('recovery-acknowledgement-required');
     storage.setItem(WORKSPACE_STORAGE_KEY,stage.persistedJSON);
     committing=true;
     try{current=prepared.next;if(prepared.replacement)publishCustomVolumeReplacement(prepared.replacement,{notify:false});for(const callback of [...listeners]){try{callback();}catch{/* Already committed; continue notifying peers. */}}if(prepared.replacement)notifyCustomVolumes();return current;}
@@ -92,7 +110,13 @@ export function restoreWorkspaceInitial({storage,fallback,knownEvidence,legacyNo
     const restored={...fallback,...saved,view:checkedView(saved.view),notes:validateProjectNotes(saved.notes),evidence:checkedEvidence(saved.evidence,knownEvidence).value,drafts:validateProjectDrafts(saved.drafts??[],saved.projectId),missingAssetIds:validateMissingAssetIds(saved.missingAssetIds??[]),volumes:[],roiSnapshot:null,recomputedSnapshot:null};
     restored.view.resultLayers=validateResultLayers(restored.view.resultLayers,{evidence:restored.evidence,publicEvidence:knownEvidence});
     if(restored.view.navigationHistory){validateNavigationHistory(restored.view.navigationHistory,{projectId:restored.projectId});for(const entry of restored.view.navigationHistory.entries)entry.view.resultLayers=validateResultLayers(entry.view.resultLayers,{evidence:restored.evidence,publicEvidence:knownEvidence});}
-    return restored;
+    for(const key of ['roiSnapshot','recomputedSnapshot'])if(saved.computationHistory?.[key])restored[key]=savedComputationUsage(saved.computationHistory[key]).metadata;
+    const recovery=recoverUnavailableSessionAssets(restored,validateMissingAssetIds(saved.sessionAssetIds??[]));
+    // Keep the first received envelope exactly, even after ordinary new saves.
+    const previousRecovery=validateStartupRecovery(saved.startupRecovery);
+    if(recovery.unavailableAssetIds.length||previousRecovery)recovery.next.startupRecovery=validateStartupRecovery({originalEnvelope:previousRecovery?.originalEnvelope??raw,unavailableAssetIds:recovery.unavailableAssetIds,detachedViewFields:[...new Set([...(previousRecovery?.detachedViewFields||[]),...recovery.dependentViewFields])]});
+    assertReferences(recovery.next,knownEvidence);
+    return recovery.next;
   }
   const legacyNotes=storage?.getItem(legacyNotesKey),legacyEvidence=loadEvidence(storage,contextOptions(knownEvidence));
   if(legacyEvidence.storageError)throw Error(legacyEvidence.storageError);
@@ -100,6 +124,8 @@ export function restoreWorkspaceInitial({storage,fallback,knownEvidence,legacyNo
 }
 
 const fields={referenceId:'references',sourceReferenceId:'references',referenceIds:'references',paperId:'references',compared:'references',experimentId:'experiments',resultId:'results',resultIds:'results',fromResultId:'results',toResultId:'results',locationIds:'locations',coordinateIds:'locations',coordinateId:'locations',layerId:'resultLayers',claimId:'claims',claimIds:'claims',artifactId:'sourceArtifacts',sourceArtifactId:'sourceArtifacts',volumeId:'volumes',assetId:'volumes',sourceAssetId:'volumes',missingAssetIds:'volumes',atlas:'volumes',atlasId:'volumes',aAtlas:'volumes',bAtlas:'volumes'};
+const immutableArtifact=row=>['source-artifact-v1','source-reference-v1'].includes(row?.schema);
+const mergeConflict=detail=>Error(`Cannot merge ${detail}. Export the current project, then open the incoming project separately. / 无法无损合并；请先导出当前项目，再单独打开传入项目。`);
 function rewriteIncoming(value,maps,counts,key='',parent=''){
   if(['legacyV1','legacyImports'].includes(key))return structuredClone(value);
   if(ArrayBuffer.isView(value))return value;
@@ -125,6 +151,7 @@ export function mergeWorkspace(current,incoming,makeId){
   const maps=new Map(Object.keys(collections).map(k=>[k,new Map()])),collisions=[],used=new Map(Object.entries(collections).map(([k,lists])=>[k,new Set(lists.flat().map(r=>k==='resultLayers'?r.layerId:r.id))]));
   const identity=(row,kind)=>kind==='resultLayers'?row.layerId:row.id;
   const rewriteRow=(row,kind,counts)=>{
+    if(kind==='sourceArtifacts'&&immutableArtifact(row))return structuredClone(row);
     const result=rewriteIncoming(row,maps,counts);
     if(kind==='drafts'){
       result.projectId=current.projectId;
@@ -143,15 +170,55 @@ export function mergeWorkspace(current,incoming,makeId){
   for(const id of incomingMissing)if(current.volumes.some(v=>v.id===id))allocate('volumes',id);
   // Dependency changes can force an otherwise byte-identical child to separate.
   let changed=true;while(changed){changed=false;for(const [kind,[existing,rows]]of Object.entries(collections)){const old=new Map(existing.map(r=>[identity(r,kind),r]));for(const row of rows){const id=identity(row,kind);if(!maps.get(kind).has(id)&&old.has(id)&&!sameContent(old.get(id),rewriteRow(row,kind,{}))){allocate(kind,id);changed=true;}}}}
+  // The schema aliases reference IDs only. Source records and field anchors
+  // cannot be renamed or rehashed to hide a namespace collision.
+  for(const artifact of incoming.evidence.sourceArtifacts.filter(immutableArtifact)){
+    const bindings=[['sourceArtifacts',artifact.id],['references',artifact.referenceId],...(artifact.fields||[]).map(field=>field.path.split('/').slice(0,2))];
+    if(bindings.some(([kind,id])=>maps.get(kind)?.has(id)))throw mergeConflict(`immutable source bindings (${artifact.id})`);
+  }
   const counts={},merged={};
   for(const [kind,[existing,rows]]of Object.entries(collections)){
     const next=[...existing],ids=new Set(existing.map(r=>identity(r,kind)));
     for(const row of rows){const original=identity(row,kind),id=maps.get(kind).get(original)||original;if(ids.has(id))continue;const rewritten=rewriteRow(row,kind,counts);rewritten[kind==='resultLayers'?'layerId':'id']=id;next.push(rewritten);ids.add(id);}
     merged[kind]=next;
   }
-  const snapshotFor=key=>incoming[key]==null?current[key]:rewriteIncoming(incoming[key],maps,counts);
+  const snapshotFor=key=>{
+    if(incoming[key]==null)return current[key];
+    const next=rewriteIncoming(incoming[key],maps,counts);
+    if(current[key]!=null){
+      const normalized=value=>({...savedComputationUsage(value).metadata,classes:value.classes??null});
+      if(!sameContent(normalized(current[key]),normalized(next)))throw mergeConflict(`occupied computation history (${key})`);
+      return current[key];
+    }
+    return next;
+  };
   const snapshot={...incoming,projectId:current.projectId,missingAssetIds:[...new Set([...currentMissing,...incomingMissing.map(id=>maps.get('volumes').get(id)||id)])],view:{...rewriteIncoming(incoming.view,maps,counts),resultLayers:merged.resultLayers},notes:merged.notes,drafts:merged.drafts,volumes:merged.volumes,evidence:{...current.evidence,...Object.fromEntries(EVIDENCE_COLLECTIONS.map(k=>[k,merged[k]]))},roiSnapshot:snapshotFor('roiSnapshot'),recomputedSnapshot:snapshotFor('recomputedSnapshot')};
-  if(snapshot.view.navigationHistory)snapshot.view.navigationHistory.projectId=current.projectId;
+  if(current.startupRecovery&&incoming.startupRecovery&&current.startupRecovery.originalEnvelope!==incoming.startupRecovery.originalEnvelope)throw mergeConflict('distinct startup recovery envelopes');
+  const retainedRecovery=current.startupRecovery||incoming.startupRecovery;
+  if(retainedRecovery)snapshot.startupRecovery={...retainedRecovery,unavailableAssetIds:[...new Set([...(current.startupRecovery?.unavailableAssetIds||[]),...(incoming.startupRecovery?.unavailableAssetIds||[])])],detachedViewFields:[...new Set([...(current.startupRecovery?.detachedViewFields||[]),...(incoming.startupRecovery?.detachedViewFields||[])])]};
+  const currentHistory=current.view.navigationHistory,incomingHistory=snapshot.view.navigationHistory;
+  if(currentHistory||incomingHistory){
+    const entries=structuredClone(currentHistory?.entries||[]);
+    let index=currentHistory?.index??-1;
+    for(const [at,entry] of (incomingHistory?.entries||[]).entries()){
+      let target=entries.findIndex(previous=>sameContent(previous,entry));
+      if(target<0){target=entries.length;entries.push(entry);}
+      if(at===incomingHistory.index)index=target;
+    }
+    if(entries.length>50)throw mergeConflict('navigation history capacity');
+    snapshot.view.navigationHistory={projectId:current.projectId,entries,index};
+  }
+  for(const view of [snapshot.view,...(snapshot.view.navigationHistory?.entries||[]).map(entry=>entry.view)]){
+    const slot={original:'roiSnapshot',recomputed:'recomputedSnapshot'}[view.roi?.snapshot];
+    if(slot&&view.roi.snapshotId&&snapshot[slot]?.id!==view.roi.snapshotId)throw mergeConflict('computation history view bindings');
+  }
+  const aliases=new Map();
+  for(const alias of [...(current.evidence.referenceAliases||[]),...(incoming.evidence.referenceAliases||[]).map(row=>({...structuredClone(row),canonicalId:maps.get('references').get(row.canonicalId)||row.canonicalId}))]){
+    if(aliases.has(alias.aliasId)&&!sameContent(aliases.get(alias.aliasId),alias))throw mergeConflict(`historical reference aliases (${alias.aliasId})`);
+    aliases.set(alias.aliasId,alias);
+  }
+  if(aliases.size)snapshot.evidence.referenceAliases=[...aliases.values()];
+  if(!validateReferenceAliases(snapshot.evidence).valid)throw mergeConflict('historical reference alias bindings');
   const legacy=[...(current.evidence.legacyImports||[]),...(incoming.evidence.legacyImports||[]),...(incoming.evidence.legacyV1?[incoming.evidence.legacyV1]:[])];if(legacy.length)snapshot.evidence.legacyImports=legacy;
   return {snapshot,preview:{mode:'merge',includedAssetIds:merged.volumes.map(v=>v.id),removedAssetIds:[],collisions,remap:Object.fromEntries([...maps].map(([k,v])=>[k,Object.fromEntries(v)])),changedReferenceCounts:counts}};
 }

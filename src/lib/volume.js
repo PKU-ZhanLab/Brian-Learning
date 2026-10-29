@@ -1,12 +1,16 @@
 import { Matrix4, Vector3 } from 'three';
 import { dataURL } from './assets.js';
 import { roiSliceStyle, sampleComparisonRAS } from './roi.js';
-import {getCustomVolume,listCustomVolumes} from './custom-volumes.js';
+import {getCustomVolume,listCustomVolumes,getCustomVolumeScope,subscribeCustomVolumeRetirement} from './custom-volumes.js';
 import { makeAssetIdentity } from './computation-manifest.js';
-import { MAIN_MANIFEST_RESOURCE, ANATOMY_VOLUME_RESOURCE, atlasResourceKey, resourceValue } from './atlas-resource.js';
+import { MAIN_MANIFEST_RESOURCE, ANATOMY_VOLUME_RESOURCE, atlasResourceKey, resourceValue,retireResource } from './atlas-resource.js';
 
 const pending = new Map();
 const atlasMetadata = new Map();
+subscribeCustomVolumeRetirement(scope=>{
+  for(const [key,metadata] of atlasMetadata)if(metadata.ownerScope===scope){atlasMetadata.delete(key);retireResource(key);}
+});
+const sameScope=(a,b)=>!!a&&!!b&&a.projectId===b.projectId&&a.entryId===b.entryId&&a.generation===b.generation;
 export const SLICE_BOUNDS = { x: [-100, 100], y: [-140, 100], z: [-80, 120] };
 const assetPath = dataURL;
 const ATLAS_RGB = ['9ebdb2','e4bcaa','b6b7d3','b8cbb0','d9c797','a6becf','d5b0ba','b8c5d5','c9c1a7','98bfbf','d7c4b9','c2b5ca'].map(hex=>hex.match(/../g).map(value=>parseInt(value,16)));
@@ -86,7 +90,8 @@ export async function loadAnatomyVolumeData({signal}={}) {
 
 async function resolveAtlasMetadata(atlasId,{signal}={}) {
   const custom=getCustomVolume(atlasId);
-  if(custom)return {...custom,atlasId,atlasVersion:custom.atlasVersion||custom.identity?.version,sha256:custom.identity?.sha256||custom.sha256,spaceId:custom.identity?custom.identity.spaceId:custom.spaceId??null};
+  if(custom)return {...custom,ownerScope:getCustomVolumeScope(atlasId),atlasId,atlasVersion:custom.atlasVersion||custom.identity?.version,sha256:custom.identity?.sha256||custom.sha256,spaceId:custom.identity?custom.identity.spaceId:custom.spaceId??null};
+  if(atlasId?.startsWith('custom-'))throw Error('Requested project atlas is unavailable');
   const manifest = await loadManifest();
   let metadata = manifest.atlases?.[atlasId];
   if (!metadata?.available || !(metadata.data || metadata.file || metadata.metadata)) return null;
@@ -97,19 +102,28 @@ async function resolveAtlasMetadata(atlasId,{signal}={}) {
 }
 export const atlasIdentityFor=metadata=>metadata?.identity||{id:`public/data/${metadata?.data||metadata?.file||metadata?.path}`,version:metadata?.atlasVersion,sha256:metadata?.sha256,spaceId:metadata?.spaceId};
 const metadataIdentity=atlasIdentityFor;
+/** Runtime ownership is read from the admitted registry, never file metadata. */
+export const atlasResourceKeyFor=(metadata,atlasId=metadata?.atlasId||metadata?.id)=>atlasResourceKey(metadataIdentity(metadata),getCustomVolumeScope(atlasId));
 const metadataSignature=metadata=>JSON.stringify([metadata.atlasId,metadata.probabilitySha256??null,metadata.shape,metadata.affine,metadata.order,metadata.surfaceProjection??null]);
 export async function loadAtlas(atlasId,options={}) {
   const metadata=await resolveAtlasMetadata(atlasId,options);if(!metadata)return null;
-  const identity=metadataIdentity(metadata),key=atlasResourceKey(identity);
+  const identity=metadataIdentity(metadata),key=atlasResourceKey(identity,metadata.ownerScope);
+  if(metadata.custom&&!sameScope(metadata.ownerScope,getCustomVolumeScope(atlasId)))throw Error('Project atlas ownership expired');
   const previous=atlasMetadata.get(key);
   if(previous&&metadataSignature(previous)!==metadataSignature(metadata))throw Error('Atlas metadata changed without a new asset identity');
   atlasMetadata.set(key,getCustomVolume(atlasId)?{...metadata}:structuredClone(metadata));
-  return loadAtlasVersion(identity,options);
+  return loadAtlasVersion(identity,{...options,ownerScope:metadata.ownerScope});
 }
 /** Load only the declared identity; byte/catalog/transform checks remain mandatory. */
-export async function loadAtlasVersion(identity,{signal}={}) {
+export async function loadAtlasVersion(identity,{signal,ownerScope}={}) {
   signal?.throwIfAborted();
-  const promise=resourceValue(atlasResourceKey(identity));
+  if(!ownerScope&&!identity.id.startsWith('public/data/')){
+    const matches=listCustomVolumes().filter(v=>atlasResourceKey(metadataIdentity(v))===atlasResourceKey(identity));
+    if(matches.length>1)throw Error('Project atlas entry is ambiguous; select its owned ID');
+    if(matches.length===1)ownerScope=getCustomVolumeScope(matches[0].id);
+  }
+  if(ownerScope&&!sameScope(ownerScope,getCustomVolumeScope(ownerScope.entryId)))throw Error('Project atlas ownership expired');
+  const promise=resourceValue(atlasResourceKey(identity,ownerScope));
   if(!signal)return promise;
   return new Promise((resolve,reject)=>{
     const abort=()=>reject(signal.reason||new DOMException('Aborted','AbortError'));
@@ -118,23 +132,25 @@ export async function loadAtlasVersion(identity,{signal}={}) {
   });
 }
 /** Resource loader: only atlas-resource starts/cancels the shared transfer. */
-export async function loadAtlasVersionData(identity,{signal}={}) {
+export async function loadAtlasVersionData(identity,{signal,ownerScope}={}) {
   signal?.throwIfAborted();
-  const key=atlasResourceKey(identity);
+  const key=atlasResourceKey(identity,ownerScope);
   let metadata=atlasMetadata.get(key);
-  if(!metadata){
-    const custom=listCustomVolumes().find(volume=>atlasResourceKey(metadataIdentity(volume))===key);
-    if(custom)metadata=await resolveAtlasMetadata(custom.id,{signal});
+  if(ownerScope){
+    if(!sameScope(ownerScope,getCustomVolumeScope(ownerScope.entryId)))throw Error('Project atlas ownership expired');
+    metadata=await resolveAtlasMetadata(ownerScope.entryId,{signal});
+    if(!sameScope(ownerScope,metadata.ownerScope))throw Error('Project atlas ownership expired');
+    atlasMetadata.set(key,metadata);
   }
   if(!metadata){
     const manifest=await loadManifest();
     const candidate=Object.entries(manifest.atlases||{}).find(([atlasId,entry])=>identity.id===atlasId||identity.id===`public/data/${entry.data||entry.file||entry.path}`);
     if(candidate)metadata=await resolveAtlasMetadata(candidate[0],{signal});
   }
-  if(!metadata||atlasResourceKey(metadataIdentity(metadata))!==key)throw Error('Requested atlas identity/version is unavailable');
+  if(!metadata||atlasResourceKey(metadataIdentity(metadata),metadata.ownerScope)!==key)throw Error('Requested atlas identity/version is unavailable');
   const atlasId=metadata.atlasId;
   const volume=metadata.custom||getCustomVolume(atlasId)?prepareVolume(metadata.data,metadata):await loadBinaryVolume(metadata,{signal});
-  if(atlasResourceKey(volume.identity)!==key)throw Error('Loaded atlas identity differs from requested identity');
+  if(atlasResourceKey(volume.identity,ownerScope)!==key)throw Error('Loaded atlas identity differs from requested identity');
     if(metadata.surfaceProjection){
       const response=await fetch(dataURL(metadata.surfaceProjection),{signal});
       if(!response.ok)throw Error('Surface projection metadata could not be loaded');
@@ -148,6 +164,7 @@ export async function loadAtlasVersionData(identity,{signal}={}) {
         volume.surfaceLabels[hemi]=labels;
       }));
     }
+    if(ownerScope&&!sameScope(ownerScope,getCustomVolumeScope(ownerScope.entryId)))throw Error('Project atlas ownership expired');
     return volume;
 }
 

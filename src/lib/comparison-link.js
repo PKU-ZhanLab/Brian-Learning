@@ -22,7 +22,13 @@ export const sameComparisonIdentity=(a,b)=>!!a&&!!b&&equal(a,b);
 const specific=space=>typeof space==='string'&&space.trim()&&!/^(MNI|MNI152|native|unknown|unspecified)$/i.test(space.trim())&&!/unknown|unspecified/i.test(space);
 function evidence(source){
  const space=source.identity.spaceId,e=source.spatialEvidence,reference=source.spaceIdentitySource;
- return source.identityVerification==='received-bytes'&&((e?.space===space&&!!(e.source||e.provenance)&&!!e.alignmentStatus)||(reference?.spaceId===space&&!!reference.sourceUrl&&/^[a-f\d]{64}$/i.test(reference.sourceSha256||'')));
+ const projectBytes=source.identityVerification==='received-project-derived-bytes'
+  &&source.projectEntryObservation?.scope==='current-project-entry'
+  &&sameComparisonIdentity(source.projectEntryObservation.derivedIdentity,source.identity)
+  &&source.alignmentStatus==='user-declared'&&source.canOverlayOnTarget===true
+  &&e?.alignmentStatus==='user-declared';
+ const received=source.identityVerification==='received-bytes'||projectBytes;
+ return received&&((e?.space===space&&!!(e.source||e.provenance)&&!!e.alignmentStatus)||(reference?.spaceId===space&&!!reference.sourceUrl&&/^[a-f\d]{64}$/i.test(reference.sourceSha256||'')));
 }
 /** Grid coincidence, generic MNI and arbitrary imported transforms never prove registration. */
 export function canLinkCoordinates(left,right,transform){
