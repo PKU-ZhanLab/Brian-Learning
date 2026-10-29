@@ -3,10 +3,20 @@ import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
 import {atlasRegionKey} from './atlas-identity.js';
 import {savedComputationUsage,encodeSavedComputation,inspectEncodedSavedComputation,decodeSavedComputation} from './saved-computation.js';
 import {validateResultLayers,projectPublicResultLayers} from './result-layers.js';
+import {migrateEvidence,emptyEvidence} from './evidence-schema.js';
+import {validateAssetIdentity,validateGridSpec,validateTransformIdentity,encodeDerivedVolume,makeAssetIdentity,compareComputationManifest,prepareLocalVolumeProvenance} from './computation-manifest.js';
 
 export const PROJECT_SCHEMA='neuroatlas-project-v2';
 export const LEGACY_PROJECT_SCHEMA='neuroatlas-project-v1';
 export const VIEW_SCHEMA='neuroatlas-view-v2';
+const PROVENANCE_STATES=['missing-input','missing-provenance','unverified','matched','mismatch'];
+function projectProvenance(value,snapshots){
+  if(value!=null&&!PROVENANCE_STATES.includes(value))throw Error('invalid-project-provenance-status');
+  const recorded=Object.values(snapshots).filter(Boolean);
+  if(recorded.some(s=>s.status==='missing-input'))return 'missing-input';
+  if(recorded.some(s=>savedComputationUsage(s).metadata.status==='missing-provenance'))return 'missing-provenance';
+  return value??(recorded.length?'unverified':'missing-provenance');
+}
 const MAX_FILE_BYTES=MAX_PROJECT_UTF8_BYTES;
 const boundedString=(v,max=500)=>typeof v==='string'?v.slice(0,max):'';
 const number=(v,min,max,fallback)=>Number.isFinite(v)?Math.min(max,Math.max(min,v)):fallback;
@@ -44,6 +54,7 @@ export function validateViewState(input,{savedProjectId,projectId}={}){
   // Named local references are meaningful only in their original project. A v1
   // view has no layers; public URLs use their separate canonical-public gate.
   if(projectId!==undefined&&input.schema!=='neuroatlas-view-v1'&&input.resultLayers?.length&&savedProjectId!==projectId)throw Error('named-view-project-mismatch: Open the originating project before restoring these result layers.');
+  if(projectId!==undefined&&['original','recomputed'].includes(input.roi?.snapshot)&&savedProjectId!==projectId)throw Error('named-view-project-mismatch: Open the originating project before restoring this saved computation.');
   const output={schema:VIEW_SCHEMA,language:input.language==='en'?'en':'zh',atlas:boundedString(input.atlas,120)||'dk',selectedIds:stringArray(input.selectedIds),visibleCategories:stringArray(input.visibleCategories,20),hiddenIds:stringArray(input.hiddenIds),hemisphere:['L','R'].includes(input.hemisphere)?input.hemisphere:'both',opacity:number(input.opacity,0,1,1),exploded:input.exploded===true,labels:input.labels===true,showSchematic:input.showSchematic===true,preset:boundedString(input.preset,40)||'cortex',view:boundedString(input.view,40)||'oblique',mode:['roi','research'].includes(input.mode)?input.mode:'anatomy',network:boundedString(input.network,80)||null,coordinate:point(input.coordinate)||[-38,-20,54],showSlices:input.showSlices===true,camera:validateCamera(input.camera),researchScope:input.researchScope===true,atlasExplorerOpen:input.atlasExplorerOpen===true};
   const s=input.slices||{};output.slices={enabled:s.enabled===true,x:number(s.x,-100,100,-38),y:number(s.y,-140,100,-20),z:number(s.z,-80,120,54),axis:['x','y','z'].includes(s.axis)?s.axis:'z'};
   if(input.roi){const r=input.roi;output.roi={aAtlas:r.aAtlas===''?'':boundedString(r.aAtlas,120)||'dk',bAtlas:r.bAtlas===''?'':boundedString(r.bAtlas,120)||'ba-histology',aLabels:Array.isArray(r.aLabels)?r.aLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],bLabels:Array.isArray(r.bLabels)?r.bLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],aThreshold:number(r.aThreshold,-1e12,1e12,0),bThreshold:number(r.bThreshold,-1e12,1e12,0),aTail:['negative','absolute'].includes(r.aTail)?r.aTail:'positive',bTail:['negative','absolute'].includes(r.bTail)?r.bTail:'positive',computed:r.computed===true,display:{mode:['parts','overlap','A','B'].includes(r.display?.mode)?r.display.mode:'parts',opacityA:number(r.display?.opacityA,0,1,.65),opacityB:number(r.display?.opacityB,0,1,.65),opacityOverlap:number(r.display?.opacityOverlap,0,1,.9),xray:r.display?.xray===true}};}
@@ -53,6 +64,7 @@ export function validateViewState(input,{savedProjectId,projectId}={}){
   if(input.atlasSelectionQuery!==undefined)output.atlasSelectionQuery=safeObject(input.atlasSelectionQuery);
   output.resultLayers=input.schema==='neuroatlas-view-v1'?[]:validateResultLayers(safeObject(input.resultLayers??[],2*1024*1024));
   if(input.roi){for(const key of ['aRegionRefs','bRegionRefs','unresolvedRegionRefs'])if(input.roi[key]!==undefined)output.roi[key]=regionRefs(input.roi[key]);if(input.roi.resolutionMm!==undefined){if(![1,2].includes(input.roi.resolutionMm))throw Error('Invalid ROI grid spacing');output.roi.resolutionMm=input.roi.resolutionMm;}}
+  if(input.roi?.snapshot!==undefined){if(!['original','recomputed','none'].includes(input.roi.snapshot))throw Error('Invalid ROI snapshot reference');output.roi.snapshot=input.roi.snapshot;}
   return output;
 }
 function bytesToBase64(bytes){let s='';for(let i=0;i<bytes.length;i+=32768)s+=String.fromCharCode(...bytes.subarray(i,i+32768));return btoa(s);}
@@ -68,6 +80,7 @@ export function encodeView(input,{publicReferenceIds=[],publicResults,publicEvid
   if(state.atlas.startsWith('custom-')){state.atlas='dk';omitted.push('atlas');}
   if(state.roi&&[state.roi.aAtlas,state.roi.bAtlas].some(id=>id.startsWith('custom-'))){delete state.roi;if(state.mode==='roi')state.mode='anatomy';omitted.push('ROI');}
   projectRegionRefs(state.roi,['aRegionRefs','bRegionRefs','unresolvedRegionRefs'],'roi.');
+  if(state.roi){delete state.roi.snapshot;state.roi.computed=false;}
   if(state.atlasExplorer?.atlas.startsWith('custom-')){delete state.atlasExplorer;state.atlasExplorerOpen=false;omitted.push('atlasExplorer');}
   // IDs are not inherently public. Only the caller's bundled reference allowlist can authorize link inclusion.
   const publicIds=new Set(publicReferenceIds instanceof Set||Array.isArray(publicReferenceIds)?publicReferenceIds:[]);
@@ -80,7 +93,7 @@ export function encodeView(input,{publicReferenceIds=[],publicResults,publicEvid
   const bytes=new TextEncoder().encode(JSON.stringify(state));if(bytes.length>30000)throw Error('View is too large for a link; export a project file');
   return {encoded:bytesToBase64(bytes).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,''),omitted};
 }
-export function decodeView(encoded){if(!encoded||encoded.length>45000)throw Error('Invalid view link');const base=encoded.replaceAll('-','+').replaceAll('_','/');return validateViewState(JSON.parse(new TextDecoder().decode(base64ToBytes(base+'='.repeat((4-base.length%4)%4)))));}
+export function decodeView(encoded){if(!encoded||encoded.length>45000)throw Error('Invalid view link');const base=encoded.replaceAll('-','+').replaceAll('_','/');const view=validateViewState(JSON.parse(new TextDecoder().decode(base64ToBytes(base+'='.repeat((4-base.length%4)%4)))));if(view.roi){view.roi.snapshot='none';view.roi.computed=false;}return view;}
 
 const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 function checkedVolumeId(id,ids){if(typeof id!=='string'||!/^custom-[a-zA-Z0-9_-]{1,112}$/.test(id)||ids.has(id))throw Error('Invalid or duplicate custom volume ID');ids.add(id);return id;}
@@ -98,6 +111,71 @@ async function compressVolume(raw){
   const bytes=new Uint8Array(length);let at=0;for(const chunk of chunks){bytes.set(chunk,at);at+=chunk.length;}return bytes;
 }
 
+const VOLUME_PROVENANCE_FIELDS=['identity','sourceIdentities','sourceGrid','transforms','encoding','spatialEvidence'];
+function checkedVolumeProvenance(input){
+  if(input==null)return null;
+  const value=JSON.parse(boundedJsonStringify(input,2*1024*1024,'project-volume-provenance-budget'));
+  if(!record(value)||!Array.isArray(value.sourceIdentities)||!Array.isArray(value.transforms)||!record(value.encoding)||!record(value.spatialEvidence))throw Error('project-volume-provenance-required');
+  const identity=validateAssetIdentity(value.identity);value.sourceIdentities.forEach(validateAssetIdentity);value.transforms.forEach(validateTransformIdentity);
+  if(identity.spaceId===null){if(value.sourceGrid!==null)throw Error('project-volume-grid-mismatch');}
+  else if(validateGridSpec(value.sourceGrid).space!==identity.spaceId)throw Error('project-volume-grid-mismatch');
+  if(!['uint8','int8','uint16','int16','uint32','int32','float32','float64'].includes(value.encoding.dtype)||value.encoding.byteOrder!=='little-endian'||typeof value.encoding.derivation!=='string'||!value.encoding.derivation)throw Error('project-volume-encoding-mismatch');
+  return Object.fromEntries(VOLUME_PROVENANCE_FIELDS.map(key=>[key,value[key]]));
+}
+function volumeProvenanceFor(volume){
+  const value=volume.identity?checkedVolumeProvenance(Object.fromEntries(VOLUME_PROVENANCE_FIELDS.map(key=>[key,volume[key]]))):null;
+  if(value?.sourceGrid){const original=validateGridSpec(volume.sourceGrid);for(let i=0;i<16;i++)if(Object.is(original.affine[i],-0))value.sourceGrid.affine[i]=-0;}
+  return value;
+}
+function checkVolumeProvenanceGrid(volume,provenance){
+  if(!provenance)return;
+  if(provenance.identity.spaceId!==null){
+    const actual=validateGridSpec({...volume,order:volume.order||'x-fastest'});
+    if(provenance.identity.spaceId!==volume.space||!compareComputationManifest(provenance.sourceGrid,actual).matches)throw Error('project-volume-grid-mismatch');
+  }
+}
+// The embedded NIfTI uses mm sform/float32 geometry and x-fastest voxel storage.
+// This versioned layout retains the exact decoded grid/order independently.
+const VOLUME_LAYOUT_SCHEMA='neuroatlas-volume-layout-v1';
+const storageGridFor=grid=>({...grid,shape:[...grid.shape],affine:grid.affine.map((value,index)=>index<12?Math.fround(value):value),order:'x-fastest'});
+function checkedVolumeLayout(input){
+  if(input==null)return null;
+  const value=JSON.parse(boundedJsonStringify(input,16*1024,'project-volume-layout-budget'));
+  if(!record(value)||value.schema!==VOLUME_LAYOUT_SCHEMA)throw Error('project-volume-layout-mismatch');
+  const grid=validateGridSpec(value.grid),storageGrid=validateGridSpec(value.storageGrid);
+  const signs=value.negativeZeroAffineIndices??[];
+  if(!Array.isArray(signs)||signs.length>16||new Set(signs).size!==signs.length||signs.some(index=>!Number.isInteger(index)||index<0||index>15||grid.affine[index]!==0||storageGrid.affine[index]!==0))throw Error('project-volume-layout-mismatch');
+  for(const index of signs){grid.affine[index]=-0;storageGrid.affine[index]=-0;}
+  const expectedStorage=storageGridFor(grid);
+  for(let i=0;i<16;i++)if(Object.is(expectedStorage.affine[i],-0)&&storageGrid.affine[i]===0)storageGrid.affine[i]=-0;
+  if(!compareComputationManifest(expectedStorage,storageGrid).matches)throw Error('project-volume-layout-mismatch');
+  return {schema:VOLUME_LAYOUT_SCHEMA,grid,storageGrid,...(signs.length?{negativeZeroAffineIndices:signs}:{})};
+}
+function makeVolumeLayout(volume){
+  const grid=validateGridSpec({...volume,order:volume.order||'x-fastest'});
+  const negativeZeroAffineIndices=grid.affine.flatMap((value,index)=>Object.is(value,-0)?[index]:[]);
+  return checkedVolumeLayout({schema:VOLUME_LAYOUT_SCHEMA,grid,storageGrid:storageGridFor(grid),negativeZeroAffineIndices});
+}
+function restoreVolumeLayout(volume,layout,space){
+  if(!layout)return volume;
+  const actual=validateGridSpec({...volume,order:volume.order||'x-fastest'}),header=volume.metadata;
+  if(layout.grid.space!==space||!compareComputationManifest(layout.storageGrid,actual).matches||header.littleEndian!==true||header.originalSpatialUnits!==2||header.affineSource!=='sform'||header.sformCode!==2||header.qformCode!==0||header.scaling.slope!==1||header.scaling.intercept!==0)throw Error('project-volume-storage-mismatch');
+  let data=volume.data;
+  if(layout.grid.order==='z-fastest'){
+    const [nx,ny,nz]=layout.grid.shape;data=new volume.data.constructor(volume.data.length);
+    for(let z=0;z<nz;z++)for(let y=0;y<ny;y++)for(let x=0;x<nx;x++)data[z+nz*(y+ny*x)]=volume.data[x+nx*(y+ny*z)];
+  }
+  return {...volume,...layout.grid,data,dataTypedArray:data};
+}
+async function verifyVolumeProvenance(volume,provenance){
+  checkVolumeProvenanceGrid(volume,provenance);
+  const encoded=encodeDerivedVolume(volume);
+  if(encoded.dtype!==provenance.encoding.dtype||encoded.byteOrder!==provenance.encoding.byteOrder)throw Error('project-volume-encoding-mismatch');
+  const observed=await makeAssetIdentity(encoded.bytes,provenance.identity);
+  if(!compareComputationManifest(validateAssetIdentity(provenance.identity),observed).matches)throw Error('project-volume-digest-mismatch');
+  return observed;
+}
+
 export async function prepareProjectPayload({projectId=`project-${crypto.randomUUID()}`,view,notes=[],evidence=null,drafts=[],volumes=[],missingAssetIds=[],roiSnapshot=null,recomputedSnapshot=null,provenanceStatus}){
   if(typeof projectId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(projectId))throw Error('Invalid project ID');
   if(!Array.isArray(volumes))throw Error('Invalid project volumes');
@@ -109,24 +187,28 @@ export async function prepareProjectPayload({projectId=`project-${crypto.randomU
   // Preflight every asset before the first binary export or compression allocation.
   const candidates=volumes.map(v=>{
     if(!record(v))throw Error('Invalid project volume');
-    const id=checkedVolumeId(v.id,ids),metadata=validateVolumeMetadata(v);
-    const rawPayloadBytes=(v.data||v.dataTypedArray)?.byteLength+352;
+    const id=checkedVolumeId(v.id,ids),metadata=validateVolumeMetadata(v),volumeProvenance=volumeProvenanceFor(v);
+    checkVolumeProvenanceGrid(v,volumeProvenance);
+    let rawPayloadBytes=(v.data||v.dataTypedArray)?.byteLength+352+(volumeProvenance?utf8ByteLength(JSON.stringify(volumeProvenance)):0);
+    assertWorkspaceBudget({...usage,rawPayloadBytes:usage.rawPayloadBytes+rawPayloadBytes});
+    const layout=makeVolumeLayout({...v,space:metadata.space});rawPayloadBytes+=utf8ByteLength(JSON.stringify(layout));
     assertWorkspaceBudget({...usage,rawPayloadBytes});usage.rawPayloadBytes+=rawPayloadBytes;assertWorkspaceBudget(usage);
-    return {v,id,metadata,rawPayloadBytes};
+    return {v,id,metadata,volumeProvenance,layout,rawPayloadBytes};
   });
   const encodedSnapshots={};
   for(const [key,snapshot] of Object.entries(snapshots)){const encoded=await encodeSavedComputation(snapshot);encodedSnapshots[key]=encoded.value;if(snapshot)usage.compressedAssetBytes.push(encoded.compressedBytes);assertWorkspaceBudget(usage);}
-  const project={schema:PROJECT_SCHEMA,projectId,createdAt:new Date().toISOString(),view:validateViewState(view),notes:validateProjectNotes(notes),evidence:safeObject(evidence,20*1024*1024),drafts:validateProjectDrafts(drafts,projectId),volumes:entries,missingAssetIds:validateMissingAssetIds(missingAssetIds),...encodedSnapshots,...(provenanceStatus==='missing-provenance'?{provenanceStatus}:{})};
+  const project={schema:PROJECT_SCHEMA,projectId,createdAt:new Date().toISOString(),view:validateViewState(view),notes:validateProjectNotes(notes),evidence:safeObject(evidence,20*1024*1024),drafts:validateProjectDrafts(drafts,projectId),volumes:entries,missingAssetIds:validateMissingAssetIds(missingAssetIds),...encodedSnapshots,provenanceStatus:projectProvenance(provenanceStatus,snapshots)};
   // Empty volumes already include the brackets. Entries contribute their exact UTF-8 size.
   let projectedBytes=utf8ByteLength(JSON.stringify(project));
   assertWorkspaceBudget({...usage,projectUtf8Bytes:projectedBytes});
-  for(const {v,id,metadata,rawPayloadBytes} of candidates){
+  for(const {v,id,metadata,volumeProvenance,layout,rawPayloadBytes} of candidates){
+    if(volumeProvenance)await verifyVolumeProvenance(v,volumeProvenance);
     const compressed=await compressVolume(exportNifti(v,{kind:metadata.kind}));
     usage.compressedAssetBytes.push(compressed.byteLength);
-    projectedBytes+=utf8ByteLength(JSON.stringify({id,metadata,niftiGzip:''}))+4*Math.ceil(compressed.byteLength/3)+(entries.length?1:0);
+    projectedBytes+=utf8ByteLength(JSON.stringify({id,metadata,...(volumeProvenance?{volumeProvenance}:{}),layout,niftiGzip:''}))+4*Math.ceil(compressed.byteLength/3)+(entries.length?1:0);
     // Reject before allocating the base64 string or concatenating the final JSON document.
     assertWorkspaceBudget({...usage,projectUtf8Bytes:projectedBytes});
-    const entry={id,metadata,niftiGzip:bytesToBase64(compressed)};
+    const entry={id,metadata,...(volumeProvenance?{volumeProvenance}:{}),layout,niftiGzip:bytesToBase64(compressed)};
     entries.push(entry);encodedAssets.push({...entry,rawPayloadBytes,compressedBytes:compressed.byteLength});
   }
   const text=JSON.stringify(project);usage.projectUtf8Bytes=utf8ByteLength(text);assertWorkspaceBudget(usage);
@@ -149,10 +231,17 @@ export function validateProjectNotes(notes){
   }
   return normalized;
 }
+/** Only the project container receives a new identity; no historical computation is invented. */
+export function migrateProjectV1(value){
+  if(!record(value)||value.schema!==LEGACY_PROJECT_SCHEMA)throw Error('Unsupported project format');
+  const view=validateViewState(value.view);if(view.roi)view.roi.computed=false;
+  return {...value,schema:PROJECT_SCHEMA,projectId:`project-${crypto.randomUUID()}`,view,evidence:migrateEvidence(value.evidence??emptyEvidence()).value,drafts:[],roiSnapshot:null,recomputedSnapshot:null,provenanceStatus:'missing-provenance'};
+}
 export async function parseProject(text){
   if(typeof text!=='string')throw Error('Project exceeds 180 MB');
   const projectUtf8Bytes=utf8ByteLength(text);assertWorkspaceBudget({assetCount:0,rawPayloadBytes:0,projectUtf8Bytes});
-  const p=JSON.parse(text);if(!record(p)||![PROJECT_SCHEMA,LEGACY_PROJECT_SCHEMA].includes(p.schema))throw Error('Unsupported project format');
+  let p=JSON.parse(text);if(!record(p)||![PROJECT_SCHEMA,LEGACY_PROJECT_SCHEMA].includes(p.schema))throw Error('Unsupported project format');
+  if(p.schema===LEGACY_PROJECT_SCHEMA)p=migrateProjectV1(p);
   const view=validateViewState(p.view);if(!Array.isArray(p.volumes))throw Error('Invalid project content');
   const projectId=p.schema===PROJECT_SCHEMA?p.projectId:`project-${crypto.randomUUID()}`;
   if(typeof projectId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(projectId))throw Error('Invalid project ID');
@@ -164,21 +253,29 @@ export async function parseProject(text){
   for(const snapshot of Object.values(snapshotInputs)){const declared=inspectEncodedSavedComputation(snapshot);usage.rawPayloadBytes+=declared.rawPayloadBytes;if(snapshot)usage.compressedAssetBytes.push(declared.compressedBytes);assertWorkspaceBudget(usage);}
   const candidates=p.volumes.map(e=>{
     if(!record(e))throw Error('Invalid project volume');
-    const id=checkedVolumeId(e.id,ids),meta=validateVolumeMetadata(e.metadata);
+    const id=checkedVolumeId(e.id,ids),meta=validateVolumeMetadata(e.metadata),volumeProvenance=checkedVolumeProvenance(e.volumeProvenance),layout=checkedVolumeLayout(e.layout);
+    if(volumeProvenance?.sourceGrid)for(const index of layout?.negativeZeroAffineIndices??[])if(volumeProvenance.sourceGrid.affine[index]===0)volumeProvenance.sourceGrid.affine[index]=-0;
+    usage.rawPayloadBytes+=(volumeProvenance?utf8ByteLength(JSON.stringify(volumeProvenance)):0)+(layout?utf8ByteLength(JSON.stringify(layout)):0);
     usage.compressedAssetBytes.push(encodedByteLength(e.niftiGzip,MAX_NIFTI_FILE_BYTES));assertWorkspaceBudget(usage);
-    return {id,meta,niftiGzip:e.niftiGzip};
+    return {id,meta,volumeProvenance,layout,niftiGzip:e.niftiGzip};
   });
-  for(const {id,meta,niftiGzip} of candidates){
+  for(const {id,meta,volumeProvenance,layout,niftiGzip} of candidates){
     const remaining=MAX_WORKSPACE_RAW_PAYLOAD_BYTES-usage.rawPayloadBytes;
-    const volume=await parseNifti(base64ToBytes(niftiGzip,MAX_NIFTI_FILE_BYTES),{name:meta.name,space:meta.space,kind:meta.kind,maxDecodedVoxelBytes:Math.max(0,remaining-352),maxInflatedBytes:remaining});
+    const received=base64ToBytes(niftiGzip,MAX_NIFTI_FILE_BYTES);
+    let volume=await parseNifti(received,{name:meta.name,space:meta.space,kind:meta.kind,maxDecodedVoxelBytes:Math.max(0,remaining-352),maxInflatedBytes:remaining});
     usage.rawPayloadBytes+=352+volume.data.byteLength;assertWorkspaceBudget(usage);
-    const declared=meta.space==='MNI152NLin6Asym'&&meta.alignmentStatus==='user-declared'&&meta.canOverlayOnTarget&&meta.provenance.trim().length>0;
+    volume=restoreVolumeLayout(volume,layout,meta.space);
+    let observed;
+    if(volumeProvenance){observed=await verifyVolumeProvenance(volume,volumeProvenance);volume={...volume,...volumeProvenance};}
+    else{const declared=meta.space==='MNI152NLin6Asym'&&meta.alignmentStatus==='user-declared'&&meta.canOverlayOnTarget&&meta.provenance.trim().length>0;volume=await prepareLocalVolumeProvenance({...meta,...volume,canOverlayOnTarget:declared,alignmentStatus:declared?'user-declared':'unverified'},received,{id:`project-entry:${id}`});observed=volume.identity;}
+    volume.projectEntryObservation={scope:'current-project-entry',derivedIdentity:observed,originalSourceBytesEmbedded:false};
+    const declared=volume.identity.spaceId===meta.space&&meta.space==='MNI152NLin6Asym'&&meta.alignmentStatus==='user-declared'&&meta.canOverlayOnTarget&&meta.provenance.trim().length>0;
     volumes.push({...meta,...volume,id,metadata:{...volume.metadata,affineConflict:!!(volume.metadata.affineConflict||meta.metadata.affineConflict||meta.metadata.sourceImport?.affineConflict),sourceImport:meta.metadata.sourceImport||meta.metadata,userDeclaredAligned:declared,referenceSpace:meta.space,restoredFromProject:true},labels:meta.labels,custom:true,available:true,canOverlayOnTarget:declared,alignmentStatus:declared?'user-declared':'unverified'});
   }
   const snapshots={};for(const [key,snapshot]of Object.entries(snapshotInputs))snapshots[key]=await decodeSavedComputation(snapshot);
   // Restoring a file never authorizes a new computation; W6 owns explicit recompute.
-  if(view.roi)view.roi.computed=false;
-  const restored={schema:PROJECT_SCHEMA,projectId,view,notes,evidence,drafts,volumes,...snapshots,missingAssetIds:validateMissingAssetIds(p.missingAssetIds??[]),...(p.schema===LEGACY_PROJECT_SCHEMA||p.provenanceStatus==='missing-provenance'?{provenanceStatus:'missing-provenance'}:{})};
+  if(view.roi){view.roi.computed=false;view.roi.snapshot??=snapshots.recomputedSnapshot?'recomputed':snapshots.roiSnapshot?'original':'none';}
+  const restored={schema:PROJECT_SCHEMA,projectId,view,notes,evidence,drafts,volumes,...snapshots,missingAssetIds:validateMissingAssetIds(p.missingAssetIds??[]),provenanceStatus:projectProvenance(p.provenanceStatus,snapshots)};
   // Restoration adds truthful header provenance; admit its actual next export too.
   await prepareProjectPayload(restored);
   return restored;

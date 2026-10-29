@@ -164,7 +164,7 @@ test('export payload bound matches the NIfTI import limit',()=>{
 test('aggregate capacity is export symmetric',async()=>{
   const volume={...fixture(),labels:[{id:1,name:'x'.repeat(2000),zh:'中'.repeat(2000)}]};
   const accepted=await prepareProjectPayload({view:{},volumes:[volume]});
-  assert.equal(accepted.usage.rawPayloadBytes,356);assert.equal(accepted.usage.assetCount,1);
+  assert.equal(accepted.usage.rawPayloadBytes,356+new TextEncoder().encode(JSON.stringify(accepted.encodedAssets[0].layout)).length);assert.equal(accepted.usage.assetCount,1);
   assert.equal(accepted.usage.projectUtf8Bytes,new TextEncoder().encode(accepted.text).length);
   assert.deepEqual(accepted.usage.compressedAssetBytes,[accepted.encodedAssets[0].compressedBytes]);
   const restored=await parseProject(accepted.text);
@@ -220,4 +220,99 @@ test('normalized note JSON includes exact punctuation at its inclusive budget',a
   const prepared=await prepareProjectPayload({view:{},notes});
   assert.equal(new TextEncoder().encode(JSON.stringify(JSON.parse(prepared.text).notes)).length,limit);
   notes.at(-1).text+='x';await assert.rejects(prepareProjectPayload({view:{},notes}),/too large/);
+});
+
+test('project v2 keeps provenance states and v1 migration delegates evidence without inventing computation facts',async()=>{
+ const {migrateProjectV1}=await import('./workspace-project.js');
+ assert.equal(typeof migrateProjectV1,'function');
+ const legacy={schema:'neuroatlas-project-v1',view:{mode:'roi',roi:{aAtlas:'dk',aLabels:[1],computed:true,display:{mode:'B'}}},notes:[],evidence:{schema:'brain-evidence-v1',references:[],results:[],relations:[]},volumes:[]};
+ const before=structuredClone(legacy),migrated=migrateProjectV1(legacy);assert.deepEqual(legacy,before);assert.equal(migrated.schema,'neuroatlas-project-v2');assert.equal(migrated.evidence.schema,'brain-evidence-v2');assert.deepEqual(migrated.drafts,[]);assert.equal(migrated.roiSnapshot,null);assert.equal(migrated.view.roi.computed,false);assert.equal(migrated.view.roi.display.mode,'B');assert.equal(migrated.provenanceStatus,'missing-provenance');
+ const reopened=await parseProject(await serializeProject({projectId:'A',view:{},notes:[],volumes:[],provenanceStatus:'mismatch'}));assert.equal(reopened.provenanceStatus,'mismatch');
+ const publicView=decodeView(encodeView({...reopened.view,roiSnapshot:{manifest:{secret:'private'}},drafts:[{payload:'private'}],provenanceStatus:'mismatch'}).encoded);assert.equal(JSON.stringify(publicView).includes('secret'),false);assert.equal(JSON.stringify(publicView).includes('private'),false);
+});
+
+test('real local NIfTI provenance survives the project codec and explicit recompute; tampering fails symmetrically',async()=>{
+ const {prepareLocalVolumeProvenance,prepareComparisonManifest}=await import('./computation-manifest.js'),{parseNifti,exportNifti}=await import('./nifti.js'),{compareROIs,normalizeROISelection}=await import('./roi.js');
+ const input=fixture(),raw=exportNifti(input),parsed=await parseNifti(raw,{kind:'label',space:'MNI152NLin6Asym'}),source=await prepareLocalVolumeProvenance({...parsed,id:'custom-local',canOverlayOnTarget:true,alignmentStatus:'user-declared',provenance:'Synthetic alignment declaration'},raw,{id:'original.nii'});
+ const project={projectId:'provenance-A',view:{},notes:[],evidence:null,volumes:[source]},text=await serializeProject(project),decoded=await parseProject(text),restored=decoded.volumes[0];
+ for(const key of ['identity','sourceIdentities','sourceGrid','transforms','encoding','spatialEvidence'])assert.deepEqual(restored[key],source[key],key);
+ const sa=normalizeROISelection(source,{labels:[1]}),sb=normalizeROISelection(source,{labels:[2]}),manifest=await prepareComparisonManifest(restored,sa,restored,sb,restored);assert.deepEqual(compareROIs(restored,sa,restored,sb,restored,{manifest}).metrics,compareROIs(source,sa,source,sb,source).metrics);
+ const bad=JSON.parse(text);bad.volumes[0].volumeProvenance.identity.sha256='f'.repeat(64);await assert.rejects(parseProject(JSON.stringify(bad)),/project-volume-digest-mismatch/);await assert.rejects(serializeProject({...project,volumes:[{...source,identity:{...source.identity,sha256:'f'.repeat(64)}}]}),/project-volume-digest-mismatch/);
+ const badGrid=JSON.parse(text);badGrid.volumes[0].volumeProvenance.sourceGrid.affine[3]+=1;await assert.rejects(parseProject(JSON.stringify(badGrid)),/project-volume-grid-mismatch/);
+});
+
+test('legacy project-entry observations do not backfill historical identity; unknown-space identities stay ineligible',async()=>{
+ const {prepareLocalVolumeProvenance}=await import('./computation-manifest.js'),{exportNifti}=await import('./nifti.js');
+ const source={...fixture(),space:'native-unverified'},unknown=await prepareLocalVolumeProvenance(source,exportNifti(source),{id:'native.nii'});
+ const reopened=await parseProject(await serializeProject({projectId:'unknown-space',view:{},notes:[],volumes:[unknown],roiSnapshot:{id:'old-result',manifest:null,metrics:{dice:.42}}}));assert.equal(reopened.volumes[0].identity.spaceId,null);assert.equal(reopened.volumes[0].sourceGrid,null);assert.equal(reopened.volumes[0].canOverlayOnTarget,false);
+ const legacy=JSON.parse(await serializeProject({projectId:'legacy-volume',view:{},notes:[],volumes:[source],roiSnapshot:{id:'old-result',manifest:null,metrics:{dice:.42}}}));delete legacy.volumes[0].volumeProvenance;
+ const loaded=await parseProject(JSON.stringify(legacy));assert.equal(loaded.roiSnapshot.manifest,null);assert.equal(loaded.roiSnapshot.status,'missing-provenance');assert.deepEqual(loaded.roiSnapshot.metrics,{dice:.42});assert.equal(loaded.volumes[0].projectEntryObservation.scope,'current-project-entry');assert.equal(loaded.volumes[0].projectEntryObservation.originalSourceBytesEmbedded,false);assert.match(loaded.volumes[0].sourceIdentities[0].id,/project-entry:/);
+});
+
+test('project and named view preserve the displayed historical slot while public links never bind local history',async()=>{
+ const history={id:'saved-history',manifest:null,metrics:{dice:.42}};
+ for(const snapshot of ['original','recomputed','none']){const opened=await parseProject(await serializeProject({projectId:'A',view:{roi:{snapshot}},notes:[],volumes:[],roiSnapshot:history,recomputedSnapshot:{...history,id:'new-history'}}));assert.equal(opened.view.roi.snapshot,snapshot);}
+ assert.throws(()=>validateViewState({roi:{snapshot:'original'}},{savedProjectId:'A',projectId:'B'}),/named-view-project-mismatch/);assert.equal(validateViewState({roi:{snapshot:'original'}},{savedProjectId:'A',projectId:'A'}).roi.snapshot,'original');
+ const shared=decodeView(encodeView({roi:{snapshot:'original',computed:true}}).encoded);assert.equal(shared.roi.snapshot,'none');assert.equal(shared.roi.computed,false);
+ const hostile=btoa(JSON.stringify({roi:{snapshot:'recomputed',computed:true}}));assert.equal(decodeView(hostile).roi.snapshot,'none');
+});
+
+test('identity-bearing project entries reject bounded-envelope, encoding and contradictory-grid violations',async()=>{
+ const {prepareLocalVolumeProvenance}=await import('./computation-manifest.js'),{exportNifti}=await import('./nifti.js');
+ const base={...fixture(),space:'MNI152NLin6Asym'},source=await prepareLocalVolumeProvenance(base,exportNifti(base),{id:'synthetic.nii'}),project=volumes=>({projectId:'A',view:{},notes:[],volumes});
+ await assert.rejects(serializeProject(project([{...source,spatialEvidence:{note:'x'.repeat(2*1024*1024)}}])),/project-volume-provenance-budget/);
+ await assert.rejects(serializeProject(project([{...source,encoding:{...source.encoding,dtype:'float64'}}])),/project-volume-encoding-mismatch/);
+ await assert.rejects(serializeProject(project([{...source,sourceGrid:{...source.sourceGrid,shape:[1,2,2]}}])),/project-volume-grid-mismatch/);
+ await assert.rejects(serializeProject(project([{...source,order:'z-fastest'}])),/project-volume-grid-mismatch/);
+ const affine=[...source.affine];affine[0]=1/3;const precise=await parseProject(await serializeProject(project([{...source,affine,sourceGrid:{...source.sourceGrid,affine}}])));assert.deepEqual(precise.volumes[0].affine,affine);
+ const encoded=JSON.parse(await serializeProject(project([source])));encoded.volumes[0].volumeProvenance.spatialEvidence={note:'x'.repeat(2*1024*1024)};await assert.rejects(parseProject(JSON.stringify(encoded)),/project-volume-provenance-budget/);
+});
+
+test('all supported voxel types retain exact S5 derived identities across the project-entry envelope',async()=>{
+ const {prepareLocalVolumeProvenance}=await import('./computation-manifest.js'),{exportNifti,parseNifti}=await import('./nifti.js');
+ for(const Type of [Uint8Array,Int8Array,Uint16Array,Int16Array,Uint32Array,Int32Array,Float32Array,Float64Array]){
+  const input={...fixture(),kind:'label',data:Type.of(1,2,0,3)},raw=exportNifti(input),decoded=await parseNifti(raw,{kind:'label',space:'MNI152NLin6Asym'}),source=await prepareLocalVolumeProvenance({...decoded,id:'custom-type'},raw,{id:`${Type.name}.nii`});
+  const restored=(await parseProject(await serializeProject({projectId:'A',view:{},notes:[],volumes:[source]}))).volumes[0];assert.deepEqual(restored.identity,source.identity,Type.name);assert.equal(restored.data.constructor,Type);assert.deepEqual(restored.data,source.data);
+ }
+});
+
+test('metre and micron NIfTI producers retain exact decoded mm geometry and provenance across projects',async()=>{
+ const {exportNifti,parseNifti}=await import('./nifti.js'),{prepareLocalVolumeProvenance}=await import('./computation-manifest.js');
+ for(const [units,diagonal]of [[1,.001],[3,1000.125]]){
+  const raw=exportNifti({...fixture(),shape:[1,1,1],data:Uint8Array.of(1)}),header=new DataView(raw.buffer);raw[123]=units;for(const offset of [280,300,320])header.setFloat32(offset,diagonal,true);
+  const decoded=await parseNifti(raw,{kind:'mask',space:'MNI152NLin6Asym'}),source=await prepareLocalVolumeProvenance({...decoded,id:'custom-units'},raw,{id:`unit-${units}.nii`});assert.notEqual(decoded.affine[0],Math.fround(decoded.affine[0]));
+  const original={id:'old-unit-result',manifest:null,grid:{shape:source.shape,affine:source.affine,order:source.order,space:source.space},classes:Uint8Array.of(3),metrics:{dice:1}};
+  const text=await serializeProject({projectId:'A',view:{},notes:[],volumes:[source],roiSnapshot:original}),restored=await parseProject(text);
+  assert.deepEqual(restored.volumes[0].affine,source.affine);assert.deepEqual(restored.volumes[0].sourceGrid,source.sourceGrid);assert.deepEqual(restored.volumes[0].identity,source.identity);assert.deepEqual(restored.roiSnapshot.grid,original.grid);assert.equal(restored.roiSnapshot.manifest,null);
+  const twice=await parseProject(await serializeProject(restored));assert.deepEqual(twice.volumes[0].affine,source.affine);assert.deepEqual(twice.volumes[0].identity,source.identity);
+ }
+});
+
+test('versioned layout preserves precision, unknown-space geometry and asymmetric z-fastest voxel bytes',async()=>{
+ const {exportNifti}=await import('./nifti.js'),{prepareLocalVolumeProvenance}=await import('./computation-manifest.js');
+ const affine=[Math.SQRT2,1/7,0,Math.PI,0,Math.E,1/11,-1/3,0,0,Math.sqrt(3),Math.log(2),0,0,0,1];
+ for(const space of ['MNI152NLin6Asym','native-unverified']){
+  const base={...fixture(),kind:'label',shape:[2,3,2],affine,order:'z-fastest',space,data:Uint16Array.from({length:12},(_,i)=>i+1)},source=await prepareLocalVolumeProvenance(base,exportNifti(base),{id:'layout.nii'});
+  const text=await serializeProject({projectId:'A',view:{},notes:[],volumes:[source]}),entry=JSON.parse(text).volumes[0];assert.equal(entry.layout.schema,'neuroatlas-volume-layout-v1');assert.deepEqual(entry.layout.grid,{shape:source.shape,affine,space,order:'z-fastest'});assert.equal(entry.layout.storageGrid.order,'x-fastest');assert.notDeepEqual(entry.layout.storageGrid.affine,affine);
+  const restored=(await parseProject(text)).volumes[0];assert.deepEqual(restored.affine,affine);assert.equal(restored.order,'z-fastest');assert.deepEqual(restored.data,base.data);assert.strictEqual(restored.dataTypedArray,restored.data);assert.deepEqual(restored.identity,source.identity);assert.deepEqual(restored.sourceIdentities,source.sourceIdentities);assert.equal(restored.identity.spaceId,space==='native-unverified'?null:space);assert.deepEqual(restored.sourceGrid,source.sourceGrid);
+ }
+});
+
+async function changeProjectHeader(entry,mutate){
+ const compressed=Uint8Array.from(Buffer.from(entry.niftiGzip,'base64')),bytes=new Uint8Array(await new Response(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());mutate(new DataView(bytes.buffer),bytes);entry.niftiGzip=Buffer.from(await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer()).toString('base64');
+}
+
+test('layout source/storage/header inconsistencies reject without rewriting recorded source grids',async()=>{
+ const {exportNifti}=await import('./nifti.js'),{prepareLocalVolumeProvenance}=await import('./computation-manifest.js');
+ const base={...fixture(),space:'MNI152NLin6Asym'},source=await prepareLocalVolumeProvenance(base,exportNifti(base),{id:'layout.nii'}),text=await serializeProject({projectId:'A',view:{},notes:[],volumes:[source]});
+ const requireLayout=JSON.parse(text);assert.ok(requireLayout.volumes[0].layout);
+ for(const mutate of [entry=>entry.layout.grid.affine[3]+=1,entry=>entry.layout.storageGrid.affine[3]+=1,entry=>entry.volumeProvenance.sourceGrid.affine[3]+=1,entry=>entry.layout.grid.space='other-space']){const changed=JSON.parse(text);mutate(changed.volumes[0]);await assert.rejects(parseProject(JSON.stringify(changed)),/project-volume-(layout|grid|storage)-mismatch/);}
+ const changed=JSON.parse(text);await changeProjectHeader(changed.volumes[0],view=>view.setFloat32(292,7,true));await assert.rejects(parseProject(JSON.stringify(changed)),/project-volume-storage-mismatch/);
+ const changedUnits=JSON.parse(text);await changeProjectHeader(changedUnits.volumes[0],(_view,bytes)=>bytes[123]=1);await assert.rejects(parseProject(JSON.stringify(changedUnits)),/project-volume-storage-mismatch/);
+});
+
+test('lossless layout retains signed zero from actual NIfTI affines and the recorded source grid',async()=>{
+ const {exportNifti,parseNifti}=await import('./nifti.js'),{prepareLocalVolumeProvenance}=await import('./computation-manifest.js');
+ const raw=exportNifti(fixture());new DataView(raw.buffer).setFloat32(284,-0,true);const decoded=await parseNifti(raw,{kind:'mask',space:'MNI152NLin6Asym'});assert.ok(Object.is(decoded.affine[1],-0));
+ const source=await prepareLocalVolumeProvenance({...decoded,id:'custom-signed-zero'},raw,{id:'signed-zero.nii'}),restored=(await parseProject(await serializeProject({projectId:'A',view:{},notes:[],volumes:[source]}))).volumes[0];assert.deepEqual(restored.affine,source.affine);assert.deepEqual(restored.sourceGrid,source.sourceGrid);assert.deepEqual(restored.identity,source.identity);
 });

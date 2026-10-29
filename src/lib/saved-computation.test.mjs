@@ -75,3 +75,51 @@ test('producer ID admission retains the existing bounded metadata budget and ID 
  assert.throws(()=>savedComputationUsage({...saved(),id:'large-id'.repeat(500),note:'x'.repeat(2*1024*1024)}),/snapshot-metadata-budget/);
  for(const id of ['',123,{}])assert.throws(()=>savedComputationUsage({...saved(),id}),/snapshot-id/);
 });
+
+// W6 behavior: the storage codec above remains the sole snapshot encoding path.
+import * as history from './saved-computation.js';
+
+test('manifest mismatch blocks silent recompute and reports the actual changed fields',()=>{
+ const original=saved();
+ const changes=[['algorithmVersion',v=>v.algorithmVersion='roi-v-next'],['inputs.0.sha256',v=>v.inputs[0].sha256='b'.repeat(64)],['inputs.1.sha256',v=>v.inputs[1].sha256='c'.repeat(64)],['transforms.0.id',v=>v.transforms[0].id='new-transform'],['transforms.0.sha256',v=>v.transforms[0].sha256='d'.repeat(64)],['sourceGrids.0.affine.3',v=>v.sourceGrids[0].affine[3]=4],['targetGrid.affine.7',v=>v.targetGrid.affine[7]=2],['interpolation.0',v=>v.interpolation[0]='trilinear'],['thresholds.0.threshold',v=>v.thresholds[0].threshold=.4],['thresholds.1.tail',v=>v.thresholds[1].tail='negative'],['labelSets.0.0',v=>v.labelSets[0]=[8]]];
+ original.manifest=structuredClone(manifest);original.manifest.transforms=[{id:'transform',sha256:'f'.repeat(64)}];
+ for(const [path,change]of changes){const current=structuredClone(original.manifest);change(current);const restored=history.restoreComputation(original,{currentManifest:current});assert.equal(restored.status,'mismatch',path);assert.equal(restored.shouldRecompute,false);assert.ok(restored.differences.some(d=>d.path===path),path);assert.strictEqual(restored.saved,original);assert.deepEqual(restored.saved.metrics,{dice:.5,aVoxels:2});}
+ assert.equal(history.restoreComputation(original,{currentManifest:original.manifest}).status,'matched');
+});
+
+test('saved numerical inspection builds masks and surfaces only from stored classes under version drift',()=>{
+ const original=saved(),before=structuredClone(original);let workerCalls=0;
+ const oldWorker=globalThis.Worker;globalThis.Worker=class{constructor(){workerCalls++;throw Error('must not run');}};
+ try{const restored=history.restoreComputation(original,{currentManifest:{...manifest,algorithmVersion:'next'}});assert.equal(workerCalls,0);assert.deepEqual(restored.comparison.maskA,Uint8Array.of(0,1,0,1));assert.deepEqual(restored.comparison.maskB,Uint8Array.of(0,0,1,1));assert.ok(restored.comparison.surfaces.intersection.faces>0);assert.deepEqual(restored.comparison.metrics,original.metrics);assert.deepEqual(restored.comparison.classes,original.classes);assert.deepEqual(original,before);}finally{globalThis.Worker=oldWorker;}
+});
+
+test('missing provenance and missing inputs remain explicit; only an explicit decision requests recomputation',()=>{
+ const partial={...saved(),manifest:null};assert.equal(history.restoreComputation(partial,{currentManifest:manifest}).status,'missing-provenance');assert.equal(partial.manifest,null);
+ const unavailable={...saved(),status:'missing-input',missingAssetIds:['custom-lost']};const restored=history.restoreComputation(unavailable,{currentManifest:manifest});assert.equal(restored.status,'missing-input');assert.deepEqual(restored.missingAssetIds,['custom-lost']);assert.equal(restored.shouldRecompute,false);
+ assert.equal(history.restoreComputation(saved(),{currentManifest:null}).status,'unverified');assert.equal(history.restoreComputation(saved(),{decision:'recompute'}).shouldRecompute,false);
+ assert.equal(history.restoreComputation(saved(),{currentManifest:manifest,decision:'recompute'}).shouldRecompute,true);assert.throws(()=>history.restoreComputation(saved(),{decision:'automatic'}),/invalid-restore-decision/);
+});
+
+test('explicit repeated computation gets new identities while original snapshot and deterministic metrics survive export',async()=>{
+ const source={...grid,kind:'mask',canOverlayOnTarget:true,data:Uint8Array.of(0,1,1,0)};
+ const raw=compareROIs(source,{},source,{},source),first=history.createComputationSnapshot({...raw,manifest});
+ const original=structuredClone(first),second=history.createComputationSnapshot({...compareROIs(source,{},source,{},source),manifest});
+ assert.notEqual(first.id,second.id);assert.equal(first.producerId,raw.id);assert.equal(second.producerId,raw.id);assert.deepEqual(second.metrics,first.metrics);
+ const retained=history.retainComputation({roiSnapshot:first,recomputedSnapshot:null},second);assert.strictEqual(retained.roiSnapshot,first);assert.strictEqual(retained.recomputedSnapshot,second);
+ const reopened=await parseProject(await serializeProject(project(retained)));assert.deepEqual(reopened.roiSnapshot.metrics,original.metrics);assert.deepEqual(reopened.roiSnapshot.classes,original.classes);assert.equal(reopened.roiSnapshot.id,first.id);assert.equal(reopened.recomputedSnapshot.id,second.id);assert.equal(reopened.recomputedSnapshot.metrics.dice,1);
+});
+
+test('original and recomputed class payloads are admitted together before any volume export',async()=>{
+ const original=saved('first'),recomputed=saved('second'),bytes=256*1024*1024-savedComputationUsage(original).rawPayloadBytes-savedComputationUsage(recomputed).rawPayloadBytes-351;
+ const tiny=Uint8Array.of(1),data=new Proxy(tiny,{get(target,key){if(key==='byteLength')return bytes;return Reflect.get(target,key,target);}});
+ await assert.rejects(prepareProjectPayload(project({volumes:[{id:'custom-budget',kind:'mask',shape:[1,1,1],affine:grid.affine,data}],roiSnapshot:original,recomputedSnapshot:recomputed})),/decoded-budget/);
+});
+
+test('z-fastest historical classes are reordered for geometry without changing the recorded bytes or grid',()=>{
+ const original={...saved(),grid:{...grid,shape:[2,1,2],order:'z-fastest'},classes:Uint8Array.of(1,2,3,0)},before=structuredClone(original);
+ const result=history.restoreComputation(original);assert.deepEqual(result.comparison.classes,Uint8Array.of(1,3,2,0));assert.equal(result.comparison.grid.order,'x-fastest');assert.deepEqual(original,before);
+});
+
+test('historical unknown-space results retain metrics and bytes but cannot attach geometry to the main brain',()=>{
+ const original={...saved(),grid:{...grid,space:'native-unverified'}};const restored=history.restoreComputation(original);assert.equal(restored.comparison,null);assert.equal(restored.overlayUnavailableReason,'saved-space-not-main');assert.deepEqual(restored.saved.metrics,original.metrics);assert.deepEqual(restored.saved.classes,original.classes);
+});

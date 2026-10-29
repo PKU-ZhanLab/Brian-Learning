@@ -5,6 +5,7 @@ import { updateROIRegionExpectation, roiRegionIdentityMismatch } from '../lib/ro
 import { loadAnatomyVolume, loadAtlas, makeSliceCanvas, sliceWorldPoint } from '../lib/volume.js';
 import { positiveLabels, ROI_COLORS, ROI_DEFAULT_DISPLAY, serializableVolume, comparisonMaskVolume, normalizeROISelection } from '../lib/roi.js';
 import { prepareComparisonManifest, makeComputationManifest, compareComputationManifest, exportComparisonBundle } from '../lib/computation-manifest.js';
+import {restoreComputation,createComputationSnapshot} from '../lib/saved-computation.js';
 import { makeComparisonGrid } from '../lib/roi-grid.js';
 import { exportNifti } from '../lib/nifti.js';
 import { newImportDraft, reduceImportDraft, stageVolumeImport } from '../lib/roi-import-state.js';
@@ -87,9 +88,14 @@ function download(bytes, filename, type) {
   setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onClose, initialState, onStateChange, customVolumes, onViewNative, onRestoreAborted, onImportVolume, onManageAssets, workspaceProjectId, workspaceEpoch }) {
+export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onComputedResult, onClose, initialState, savedSnapshot, recomputedSnapshot, provenanceStatus, onStateChange, customVolumes, onViewNative, onRestoreAborted, onImportVolume, onManageAssets, workspaceProjectId, workspaceEpoch }) {
   const t = TEXT[language === 'en' ? 'en' : 'zh'];
-  const callbacks = useRef({}); callbacks.current = { onComparisonChange, onStateChange, onRestoreAborted };
+  const callbacks = useRef({}); callbacks.current = { onComparisonChange, onComputedResult, onStateChange, onRestoreAborted };
+  const initialSaved=useRef(initialState?.snapshot==='none'?null:initialState?.snapshot==='original'?savedSnapshot:initialState?.snapshot==='recomputed'?recomputedSnapshot:recomputedSnapshot??savedSnapshot),preserveSelections=useRef(!!initialState||!!initialSaved.current);
+  const [inspectedSnapshot,setInspectedSnapshot]=useState(null),[inspectWhich,setInspectWhich]=useState(initialState?.snapshot==='original'?'original':initialState?.snapshot==='recomputed'?'recomputed':recomputedSnapshot?'recomputed':'original');
+  const [currentManifest,setCurrentManifest]=useState(null),[provenanceError,setProvenanceError]=useState('');
+  const selectedSaved=inspectWhich==='recomputed'?recomputedSnapshot:savedSnapshot;
+  const historical=useMemo(()=>restoreComputation(selectedSaved,{currentManifest,geometry:false}),[selectedSaved,currentManifest]);
   const [registryVersion, setRegistryVersion] = useState(0);
   useEffect(() => subscribeCustomVolumes(() => { abortRestore('registry-changed'); invalidateWork(); setRegistryVersion(v => v + 1); }), []);
   const [aAtlas, setAAtlas] = useState(initialState?.aAtlas ?? 'dk'), [bAtlas, setBAtlas] = useState(initialState?.bAtlas ?? 'ba-histology');
@@ -116,9 +122,8 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     setImportBusy(false);setImportError('');setImportMessage(null);
     if(action.type==='file-changed'&&labelInput.current)labelInput.current.value='';
   }
-  const worker = useRef(null), sequence = useRef(0), restore = useRef(!!initialState?.computed), lastInitial = useRef(initialState), displayRef = useRef(display);
+  const worker = useRef(null), sequence = useRef(0), restore = useRef(false), lastInitial = useRef(initialState), displayRef = useRef(display);
   const restoringRequest = useRef(false), previousRegistryVersion = useRef(registryVersion);
-  const [restoreEpoch, setRestoreEpoch] = useState(0);
   const [restoreWarning, setRestoreWarning] = useState('');
   displayRef.current = display;
   const atlases = useMemo(() => {
@@ -137,12 +142,13 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     }
   }
   function invalidateWork() {
-    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
+    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setInspectedSnapshot(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
   }
   function changeSelection(update) {
     abortRestore('selection-changed'); invalidateWork(); setRestoreWarning(''); update();
   }
   function reselectRegion(side,kind,update) {
+    preserveSelections.current=false;
     setExpectedRegionRefs(current=>updateROIRegionExpectation(current,{side,kind}));
     changeSelection(update);
   }
@@ -153,7 +159,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
     restoringRequest.current = false;
     setRestoreWarning('');
-    restore.current = !!initialState.computed;
+    restore.current = false;
     setAAtlas(initialState.aAtlas ?? 'dk'); setBAtlas(initialState.bAtlas ?? 'ba-histology');
     setALabels(initialState.aLabels || []); setBLabels(initialState.bLabels || []);
     setExpectedRegionRefs({A:initialState.aRegionRefs ?? null,B:initialState.bRegionRefs ?? null});
@@ -161,22 +167,21 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     setATail(initialState.aTail || 'positive'); setBTail(initialState.bTail || 'positive');
     setResolutionMm(initialState.resolutionMm === 1 ? 1 : 2);
     setDisplay({ ...ROI_DEFAULT_DISPLAY, ...initialState.display });
-    setRestoreEpoch(value => value + 1);
   }, [initialState]);
   useEffect(() => {
-    if (!allowed.length || !manifest) return;
+    if (!allowed.length || !manifest || preserveSelections.current) return;
     if (!allowed.includes(aAtlas) || !allowed.includes(bAtlas)) abortRestore('source-unavailable');
     if (aAtlas && !allowed.includes(aAtlas)) setAAtlas(allowed[0]);
     if (bAtlas && !allowed.includes(bAtlas)) setBAtlas(allowed.includes('ba-histology') ? 'ba-histology' : allowed[1] || allowed[0]);
   }, [allowed.join('|'), aAtlas, bAtlas, manifest]);
   useEffect(() => {
-    if (sourceA.labels.length) {
+    if (sourceA.labels.length && !preserveSelections.current) {
       if (aLabels.some(id => !aLabelIds.has(+id))) abortRestore('label-unavailable');
       setALabels(current => { const valid = current.filter(id => aLabelIds.has(+id)); return valid.length ? valid : [(sourceA.labels.find(label => /left precentral/i.test(label.name)) || sourceA.labels[0]).id]; });
     }
   }, [sourceA.labels, aLabelIds]);
   useEffect(() => {
-    if (sourceB.labels.length) {
+    if (sourceB.labels.length && !preserveSelections.current) {
       if (bLabels.some(id => !bLabelIds.has(+id))) abortRestore('label-unavailable');
       setBLabels(current => { const valid = current.filter(id => bLabelIds.has(+id)); return valid.length ? valid : [(sourceB.labels.find(label => /BA4a L$/.test(label.name)) || sourceB.labels[0]).id]; });
     }
@@ -188,11 +193,12 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     catch { return {A:[],B:[]}; }
   },[selectionKey,sourceA,sourceB]);
   const identityMismatch = roiRegionIdentityMismatch(expectedRegionRefs,currentRegionRefs,{A:sourceA.volume,B:sourceB.volume});
-  useEffect(()=>{if(identityMismatch){abortRestore('region-version-unavailable');invalidateWork();}},[identityMismatch]);
+  useEffect(()=>{if(identityMismatch){abortRestore('region-version-unavailable');if(!inspectedSnapshot)invalidateWork();}},[identityMismatch]);
   useEffect(() => {
     if (previousRegistryVersion.current !== registryVersion) abortRestore('registry-changed');
     previousRegistryVersion.current = registryVersion;
-    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setError(''); setComparison(null); callbacks.current.onComparisonChange?.(null);
+    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setError('');
+    if(!inspectedSnapshot){setComparison(null);callbacks.current.onComparisonChange?.(null);}
   }, [selectionKey, registryVersion]);
   useEffect(() => {
     if ((sourceA.error && sourceA.atlasId === aAtlas) || (sourceB.error && sourceB.atlasId === bAtlas)) abortRestore('source-load-failed');
@@ -204,18 +210,41 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   }, [selectionKey, sourceA, sourceB, aLabelIds, bLabelIds]);
   useEffect(() => () => { sequence.current++; worker.current?.terminate(); }, []);
   useEffect(() => {
-    callbacks.current.onStateChange?.({ aAtlas, bAtlas, aLabels, bLabels, aRegionRefs:serializeAtlasSelection(expectedRegionRefs.A ?? currentRegionRefs.A), bRegionRefs:serializeAtlasSelection(expectedRegionRefs.B ?? currentRegionRefs.B), aThreshold, bThreshold, aTail, bTail, resolutionMm, display, computed: !identityMismatch && (!!comparison || restore.current || restoringRequest.current) });
-  }, [selectionKey, display, comparison, busy, restoreWarning, currentRegionRefs, expectedRegionRefs, identityMismatch]);
+    const snapshot=inspectedSnapshot?inspectWhich:comparison?.id!=null&&comparison.id===savedSnapshot?.id?'original':comparison?.id!=null&&comparison.id===recomputedSnapshot?.id?'recomputed':'none';
+    callbacks.current.onStateChange?.({ aAtlas, bAtlas, aLabels, bLabels, aRegionRefs:serializeAtlasSelection(expectedRegionRefs.A ?? currentRegionRefs.A), bRegionRefs:serializeAtlasSelection(expectedRegionRefs.B ?? currentRegionRefs.B), aThreshold, bThreshold, aTail, bTail, resolutionMm, display, snapshot, computed: !identityMismatch && (!!comparison || restore.current || restoringRequest.current) });
+  }, [selectionKey, display, comparison, inspectedSnapshot, inspectWhich, savedSnapshot?.id, recomputedSnapshot?.id, busy, restoreWarning, currentRegionRefs, expectedRegionRefs, identityMismatch]);
 
   const ready = !identityMismatch && sourceA.atlasId === aAtlas && sourceB.atlasId === bAtlas && sourceA.volume && sourceB.volume && !sourceA.loading && !sourceB.loading && ((sourceA.volume.kind || 'label') !== 'label' || (aLabels.length && aLabels.every(id => aLabelIds.has(+id)))) && ((sourceB.volume.kind || 'label') !== 'label' || (bLabels.length && bLabels.every(id => bLabelIds.has(+id))));
   const missingThreshold = (['statistic','probability'].includes(sourceA.volume?.kind) && aThreshold === '') || (['statistic','probability'].includes(sourceB.volume?.kind) && bThreshold === '');
+  // Observe actual current identities for comparison, without ROI resampling or worker work.
+  useEffect(()=>{
+    let cancelled=false;setCurrentManifest(null);setProvenanceError('');
+    if(!ready||missingThreshold)return;
+    (async()=>{try{
+      const target=await loadAnatomyVolume(),grid=makeComparisonGrid(target,resolutionMm);
+      const a=normalizeROISelection(sourceA.volume,{labels:aLabels,threshold:aThreshold,tail:aTail}),b=normalizeROISelection(sourceB.volume,{labels:bLabels,threshold:bThreshold,tail:bTail});
+      const value=await prepareComparisonManifest(sourceA.volume,a,sourceB.volume,b,grid);
+      if(!cancelled){setAnatomy(target);setCurrentManifest(value);}
+    }catch(problem){if(!cancelled)setProvenanceError(problem.message);}})();
+    return()=>{cancelled=true;};
+  },[ready,missingThreshold,selectionKey,sourceA.volume,sourceB.volume]);
+  function inspectSaved(snapshot=selectedSaved,restoredDisplay=snapshot?.display){
+    if(!snapshot)return;
+    invalidateWork();setError('');setInspectedSnapshot(snapshot);
+    try{
+      const restored=restoreComputation(snapshot,{currentManifest});
+      if(restored.geometryError)setError(restored.geometryError);
+      if(restored.comparison){const value={...restored.comparison,display:{...ROI_DEFAULT_DISPLAY,...restoredDisplay}};setDisplay(value.display);setComparison(value);setPoint(value.center||[0,0,0]);callbacks.current.onComparisonChange?.(value,{inspection:true});}
+    }catch(problem){setError(problem.message);}
+  }
+  useEffect(()=>{if(initialSaved.current)inspectSaved(initialSaved.current,initialState?.display??initialSaved.current.display);},[]);
   async function compute() {
     if (!ready) return;
     setRestoreWarning('');
     restoringRequest.current = restore.current;
     restore.current = false;
     const requestId = ++sequence.current;
-    worker.current?.terminate(); setBusy(true); setPreflight(null); setComparison(null); callbacks.current.onComparisonChange?.(null); setError('');
+    worker.current?.terminate(); setBusy(true); setPreflight(null); setInspectedSnapshot(null); setComparison(null); callbacks.current.onComparisonChange?.(null); setError('');
     try {
       const target = await loadAnatomyVolume();
       if (requestId !== sequence.current) return;
@@ -225,28 +254,32 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       const selectionB = normalizeROISelection(sourceB.volume, { labels: bLabels, threshold: bThreshold, tail: bTail });
       const manifest = await prepareComparisonManifest(sourceA.volume, selectionA, sourceB.volume, selectionB, grid);
       if (requestId !== sequence.current) return;
+      if(!restoreComputation(selectedSaved,{currentManifest:manifest,decision:'recompute',geometry:false}).shouldRecompute)return;
       const current = new Worker(new URL('../lib/roi.worker.js', import.meta.url), { type: 'module' }); worker.current = current;
-      current.onmessage = ({ data }) => {
+      current.onmessage = async ({ data }) => {
         if (requestId !== sequence.current || data.requestId !== requestId) return;
         if (data.phase === 'preflight' && !data.error) {
           setPreflight(data);
           if (data.blocked) { abortRestore('empty-source'); setBusy(false); current.terminate(); worker.current = null; }
           return;
         }
-        setBusy(false); current.terminate(); worker.current = null;
-        if (data.error) { abortRestore('compute-failed'); setError(data.error); return; }
-        if (!compareComputationManifest(manifest, data.comparison?.manifest).matches) { abortRestore('compute-failed'); setError('result-manifest-mismatch'); return; }
+        current.terminate(); worker.current = null;
+        if (data.error) { setBusy(false);abortRestore('compute-failed'); setError(data.error); return; }
+        if (!compareComputationManifest(manifest, data.comparison?.manifest).matches) { setBusy(false);abortRestore('compute-failed'); setError('result-manifest-mismatch'); return; }
         restoringRequest.current = false;
         setPreflight(null);
-        const result = { ...data.comparison, manifest: makeComputationManifest(data.comparison.manifest), display: { ...displayRef.current } };
-        setComparison(result); setPoint(result.center || [0, 0, 0]); callbacks.current.onComparisonChange?.(result);
+        try{
+          const result=createComputationSnapshot({ ...data.comparison, manifest: makeComputationManifest(data.comparison.manifest), display: { ...displayRef.current } });
+          await callbacks.current.onComputedResult?.(result,{isCurrent:()=>requestId===sequence.current,projectId:workspaceProjectId,epoch:workspaceEpoch});
+          if(requestId!==sequence.current)return;
+          setBusy(false);setInspectWhich(savedSnapshot?'recomputed':'original');setComparison(result);setPoint(result.center||[0,0,0]);callbacks.current.onComparisonChange?.(result);
+        }catch(problem){if(requestId===sequence.current){setBusy(false);setError(problem.message);}}
       };
       current.onerror = () => { if (requestId === sequence.current) { abortRestore('worker-failed'); setBusy(false); setError('computeError'); current.terminate(); worker.current = null; } };
       const describe = (source, atlasId, labels) => ({ atlasId, regionRefs:refsFor(atlasId,source,labels), name: source.labels.length ? source.labels.filter(label => labels.includes(label.id)).map(label => label.name).join(' + ') : source.volume.name });
       current.postMessage({ requestId, volumeA: serializableVolume(sourceA.volume), volumeB: serializableVolume(sourceB.volume), selectionA, selectionB, target: grid, manifest, descriptors: { A: describe(sourceA, aAtlas, aLabels), B: describe(sourceB, bAtlas, bLabels) } });
     } catch (problem) { if (requestId === sequence.current) { abortRestore('compute-failed'); setBusy(false); setError(problem.message); } }
   }
-  useEffect(() => { if (restore.current && ready && !busy) compute(); }, [ready, selectionKey, sourceA.volume, sourceB.volume, restoreEpoch]);
   function changeDisplay(patch) {
     const next = { ...display, ...patch }; setDisplay(next);
     if (comparison) { const value = { ...comparison, display: next }; setComparison(value); callbacks.current.onComparisonChange?.(value); }
@@ -258,9 +291,15 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     setPreflight(null);
   }
   function exportMetrics(format = 'csv') {
-    if (!comparison) return;
-    const bundle = exportComparisonBundle(comparison);
-    download((format === 'csv' ? '\ufeff' : '') + bundle[format], `${t.downloadName}-${comparison.A.atlasId}-${comparison.B.atlasId}.${format}`, format === 'json' ? 'application/json' : 'text/csv;charset=utf-8');
+    const value=inspectedSnapshot||comparison;if(!value)return;
+    try{
+      // S5 owns complete manifest exports. Incomplete history exports its recorded facts verbatim.
+      let bundle;
+      let complete=false;try{makeComputationManifest(value.manifest);complete=true;}catch{/* Export incomplete recorded facts below. */}
+      if(complete&&value.sampling){bundle=exportComparisonBundle(value);}
+      else{const fields={schema:'neuroatlas-computation-v1',id:value.id??null,manifest:value.manifest??null,metrics:value.metrics??null,probabilityMetrics:value.probabilityMetrics??null,grid:value.grid??null,status:restoreComputation(value,{currentManifest,geometry:false}).status};const cell=n=>'"'+String(n).replaceAll('"','""')+'"';bundle={json:JSON.stringify(fields,null,2),csv:'field,value\r\n'+Object.entries(fields).map(([key,n])=>`${cell(key)},${cell(JSON.stringify(n))}`).join('\r\n')+'\r\n'};}
+      download((format==='csv'?'\ufeff':'')+bundle[format],`${t.downloadName}-${value.A?.atlasId||'A'}-${value.B?.atlasId||'B'}.${format}`,format==='json'?'application/json':'text/csv;charset=utf-8');
+    }catch(problem){setError(problem.message);}
   }
   async function importVolume() {
     if (!importFile || importBusy) return;
@@ -302,7 +341,34 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     })}</tbody></table>
     {['A','B'].map(key => <p key={key} className={sampling[key].status === 'retained' ? 'roi-note' : 'roi-warning'}>ROI {key}: {t[sampling[key].status]}{!!sampling[key].lostLabelIds.length && <> · {t.lostLabels}: {sampling[key].lostLabelIds.join(', ')}</>}{!!sampling[key].absentLabelIds.length && <> · {t.absentLabels}: {sampling[key].absentLabelIds.join(', ')}</>}</p>)}
   </section>;
+  const completeComparisonManifest=useMemo(()=>{try{return makeComputationManifest(comparison?.manifest);}catch{return null;}},[comparison?.manifest]);
+  const hasDetailedResult=completeComparisonManifest&&comparison?.A?.selection&&comparison?.B?.selection&&['A','B'].every(key=>comparison.sampling?.[key]&&['labels','lostLabelIds','absentLabelIds'].every(field=>Array.isArray(comparison.sampling[key][field]))&&['sourceVoxels','sourceMm3','targetVoxels','targetMm3'].every(field=>Number.isFinite(comparison.sampling[key][field])))&&Number.isFinite(comparison.grid?.voxelVolumeMm3)&&['aVoxels','bVoxels','intersectionVoxels','unionVoxels','aOnlyVoxels','bOnlyVoxels','aMm3','bMm3','intersectionMm3','unionMm3','aOnlyMm3','bOnlyMm3'].every(key=>Number.isFinite(comparison.metrics?.[key]));
+  const statusText=language==='en'?{
+    'missing-input':'Missing input. Saved values are retained; the listed source files are unavailable.',
+    'missing-provenance':'Missing historical provenance. Saved values are retained; their original identities were not recorded.',
+    unverified:'Current inputs are unavailable or still loading. Saved provenance has not been verified.',
+    matched:'Saved provenance matches the current inputs and settings.',
+    mismatch:'Saved values are retained. Current inputs or settings differ from the saved computation.',
+  }:{
+    'missing-input':'缺少输入影像。已保留保存时的数值，以下来源文件不可用。',
+    'missing-provenance':'缺少历史计算来源。已保留保存时的数值，原始身份未记录。',
+    unverified:'当前输入不可用或仍在载入，尚未核对保存的计算来源。',
+    matched:'保存的计算来源与当前输入和设置一致。',
+    mismatch:'已保留保存时的数值；当前输入或设置与保存的计算不同。',
+  };
+  const fact=value=>value===undefined?(language==='en'?'Not recorded':'未记录'):JSON.stringify(value);
   return <section className="roi-compare" aria-label="ROI overlap comparison"><header className="roi-header"><div><h2>{t.title}</h2><p>{t.subtitle}</p></div>{onClose && <button type="button" className="roi-close" onClick={onClose} aria-label="Close ROI comparison" title={t.close}>×</button>}</header>
+    {(savedSnapshot||recomputedSnapshot||provenanceStatus==='missing-provenance'||initialState?.computed)&&<section aria-label="Saved computation" className="roi-provenance">
+      <p role="status" data-provenance-status={historical.status}>{selectedSaved?statusText[historical.status]:(language==='en'?'No historical numerical result was saved. Choose inputs and explicitly compute a new result.':'未保存历史数值结果。请选择输入并明确计算新结果。')}</p>
+      {comparison&&<p>{comparison.id===savedSnapshot?.id?(language==='en'?'Viewing original saved result':'正在查看原始保存结果'):comparison.id===recomputedSnapshot?.id?(language==='en'?'Viewing recomputed result':'正在查看重新计算结果'):(language==='en'?'Viewing current computation':'正在查看本次计算结果')}</p>}
+      {historical.overlayUnavailableReason&&<p>{language==='en'?`Saved grid space: ${selectedSaved.grid.space}. Numerical results remain available; this space cannot overlay the main brain.`:`保存的网格空间：${selectedSaved.grid.space}。仍可查看数值；此空间不能叠加到主脑。`}</p>}
+      {!!historical.missingAssetIds.length&&<ul>{historical.missingAssetIds.map(id=><li key={id}><code>{id}</code></li>)}</ul>}
+      <div className="roi-actions">{savedSnapshot&&<button type="button" aria-label="Inspect original saved ROI result" aria-pressed={comparison?.id===savedSnapshot.id||inspectedSnapshot?.id===savedSnapshot.id} onClick={()=>{setInspectWhich('original');inspectSaved(savedSnapshot);}}>{language==='en'?'View original saved result':'查看原始保存结果'}</button>}{recomputedSnapshot&&<button type="button" aria-label="Inspect recomputed ROI result" aria-pressed={comparison?.id===recomputedSnapshot.id||inspectedSnapshot?.id===recomputedSnapshot.id} onClick={()=>{setInspectWhich('recomputed');inspectSaved(recomputedSnapshot);}}>{language==='en'?'View recomputed result':'查看重新计算结果'}</button>}</div>
+      {selectedSaved&&<details><summary>{language==='en'?'Saved result and identities':'保存的数值与身份'}</summary><p style={{overflowWrap:'anywhere'}}><code>{selectedSaved.id??(language==='en'?'ID not recorded':'未记录 ID')}</code></p><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify({metrics:selectedSaved.metrics??null,probabilityMetrics:selectedSaved.probabilityMetrics??null,manifest:selectedSaved.manifest??null},null,2)}</pre></details>}
+      {!!historical.differences.length&&<details open><summary>{language==='en'?'Changed computation fields':'计算差异字段'}</summary><table className="roi-counts" aria-label="Computation provenance differences"><thead><tr><th>{language==='en'?'Field':'字段'}</th><th>{language==='en'?'Saved':'保存时'}</th><th>{language==='en'?'Current':'当前'}</th></tr></thead><tbody>{historical.differences.map((difference,index)=><tr key={index}>{[difference.path,fact(difference.saved),fact(difference.current)].map((value,i)=><td key={i} style={{overflowWrap:'anywhere',maxWidth:220}}><code>{value}</code></td>)}</tr>)}</tbody></table></details>}
+      {inspectedSnapshot&&!hasDetailedResult&&<div className="roi-actions"><button type="button" onClick={()=>exportMetrics('csv')} aria-label="Export ROI overlap metrics CSV">{t.export}</button><button type="button" onClick={()=>exportMetrics('json')} aria-label="Export ROI provenance JSON">{language==='en'?'Export provenance JSON':'导出来源 JSON'}</button></div>}
+      {provenanceError&&<p role="alert" className="roi-warning">{t[provenanceError]||provenanceError}</p>}
+    </section>}
     <details className="roi-import"><summary>{t.importTitle}</summary><p className="roi-note">{t.localOnly}</p><div className="roi-import-grid">
       <label><span>{t.file}</span><input type="file" accept=".nii,.nii.gz" aria-label="Import NIfTI file" onChange={event => { const file=event.target.files[0]||null;setImportFile(file);changeImportDraft({type:'file-changed',fileToken:file?crypto.randomUUID():null});event.target.value=''; }} /></label>
       <label><span>{t.kind}</span><select value={importKind} aria-label="Imported image kind" onChange={event => changeImportDraft({type:'kind-changed',value:event.target.value})}>{['label','mask','statistic','probability'].map(kind => <option key={kind} value={kind}>{t[`${kind}Kind`]}</option>)}</select></label>
@@ -321,10 +387,10 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       {identityMismatch&&<p className="roi-warning" role="alert">{language==='en'?'Saved atlas label identity is unavailable or has changed. Select the source labels again.':'保存的图谱标签身份不可用或版本已改变。请重新选择来源标签。'}</p>}
       <label className="roi-grid"><strong>{t.grid}</strong> <select aria-label="ROI shared grid spacing" value={resolutionMm} onChange={event => changeSelection(() => setResolutionMm(+event.target.value))}><option value="2">2 mm · 91 × 109 × 91</option><option value="1">1 mm · 181 × 217 × 181</option></select></label>
       <p className="roi-note">{t.gridHint}</p>
-      <div className="roi-actions"><button type="button" className="roi-primary" onClick={compute} disabled={busy || !ready || missingThreshold} aria-label="Compute ROI overlap">{busy ? t.computing : t.compare}</button>{busy && <button type="button" onClick={clear} aria-label="Cancel ROI computation">{t.cancelCompute}</button>}{comparison && <><button type="button" onClick={clear} aria-label="Clear ROI overlay">{t.clear}</button><button type="button" onClick={() => exportMetrics('csv')} aria-label="Export ROI overlap metrics CSV">{t.export}</button><button type="button" onClick={() => exportMetrics('json')} aria-label="Export ROI provenance JSON">{language === 'en' ? 'Export provenance JSON' : '导出来源 JSON'}</button></>}</div>
+      <div className="roi-actions"><button type="button" className="roi-primary" onClick={compute} disabled={busy || !ready || missingThreshold} aria-label="Compute ROI overlap">{busy?t.computing:(savedSnapshot||recomputedSnapshot||initialState?.computed)?(language==='en'?'Recompute with current data':'按当前数据重新计算'):t.compare}</button>{busy && <button type="button" onClick={clear} aria-label="Cancel ROI computation">{t.cancelCompute}</button>}{comparison && <><button type="button" onClick={clear} aria-label="Clear ROI overlay">{t.clear}</button>{hasDetailedResult&&<><button type="button" onClick={() => exportMetrics('csv')} aria-label="Export ROI overlap metrics CSV">{t.export}</button><button type="button" onClick={() => exportMetrics('json')} aria-label="Export ROI provenance JSON">{language === 'en' ? 'Export provenance JSON' : '导出来源 JSON'}</button></>}</>}</div>
       {preflight && <div aria-live="polite">{samplingBlock(preflight.sampling, preflight.grid)}{preflight.blocked && <p className="roi-warning" role="alert">{t.sourceMissing}</p>}{preflight.requiresConfirmation && <><p className="roi-warning" role="alert">{t.lossWarning}</p><div className="roi-actions"><button type="button" className="roi-primary" aria-label="Confirm ROI sampling loss" onClick={confirmSamplingLoss}>{t.confirmLoss}</button><button type="button" aria-label="Cancel ROI sampling preflight" onClick={clear}>{t.cancelPreflight}</button></div></>}</div>}
       {restoreWarning && <p role="alert" className="roi-warning">{t.restoreAborted}</p>}{error && <p role="alert" className="roi-error">{t[error] || t.computeError}</p>}{!comparison && !busy && <p className="roi-empty">{t.waiting}</p>}{busy && <p className="roi-note" role="status">{t.computing}</p>}
-      {comparison && <div className="roi-result" aria-live="polite">{samplingBlock(comparison.sampling, comparison.grid)}<h3>{t.binary}</h3><div className="roi-metrics"><div><span>Dice</span><strong>{formatRatio(comparison.metrics.dice)}</strong><small>2|A ∩ B| / (|A| + |B|)</small></div><div><span>Jaccard</span><strong>{formatRatio(comparison.metrics.jaccard)}</strong><small>|A ∩ B| / |A ∪ B|</small></div><div><span>{t.coveredA}</span><strong>{formatPercent(comparison.metrics.aCoveredByB)}</strong></div><div><span>{t.coveredB}</span><strong>{formatPercent(comparison.metrics.bCoveredByA)}</strong></div></div>
+      {hasDetailedResult && <div className="roi-result" aria-live="polite">{samplingBlock(comparison.sampling, comparison.grid)}<h3>{t.binary}</h3><div className="roi-metrics"><div><span>Dice</span><strong>{formatRatio(comparison.metrics.dice)}</strong><small>2|A ∩ B| / (|A| + |B|)</small></div><div><span>Jaccard</span><strong>{formatRatio(comparison.metrics.jaccard)}</strong><small>|A ∩ B| / |A ∪ B|</small></div><div><span>{t.coveredA}</span><strong>{formatPercent(comparison.metrics.aCoveredByB)}</strong></div><div><span>{t.coveredB}</span><strong>{formatPercent(comparison.metrics.bCoveredByA)}</strong></div></div>
         {comparison.probabilityMetrics ? <div className="roi-probability"><h3>{t.probabilityTitle}</h3><div className="roi-metrics"><div><span>{t.fuzzyDice}</span><strong>{formatRatio(comparison.probabilityMetrics.fuzzyDice)}</strong><small>2Σmin(p,q) / (Σp + Σq)</small></div><div><span>{t.fuzzyJaccard}</span><strong>{formatRatio(comparison.probabilityMetrics.fuzzyJaccard)}</strong><small>Σmin(p,q) / Σmax(p,q)</small></div></div><p className="roi-note">{t.probabilityHint}</p></div> : [comparison.A,comparison.B].some(source => source.selection.kind === 'probability') && <p className="roi-note">{t.probabilityOne}</p>}
         <p className="roi-grid"><strong>{t.grid}</strong> {comparison.grid.space} · {comparison.grid.shape.join(' × ')} · {t.resolution} {comparison.grid.voxelVolumeMm3.toLocaleString()} mm³</p>
         <table className="roi-counts"><thead><tr><th>{t.part}</th><th>{t.voxels}</th><th>{t.volume}</th></tr></thead><tbody>{[['A','aVoxels','aMm3'],['B','bVoxels','bMm3'],['intersection','intersectionVoxels','intersectionMm3'],['aOnly','aOnlyVoxels','aOnlyMm3'],['bOnly','bOnlyVoxels','bOnlyMm3'],['union','unionVoxels','unionMm3']].map(([key,count,volume]) => <tr key={key}><td>{ROI_COLORS[key] && <i style={{background:ROI_COLORS[key]}}/>}{t[key]}</td><td>{comparison.metrics[count].toLocaleString()}</td><td>{comparison.metrics[volume].toLocaleString(undefined,{maximumFractionDigits:2})}</td></tr>)}</tbody></table>

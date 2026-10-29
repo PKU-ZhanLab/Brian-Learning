@@ -69,3 +69,7 @@ test('actual loaded bytes receive verified identity; corruption cannot borrow th
     await assert.rejects(loadAtlas('aal3-registered'),/digest/);
   }finally{corrupt=false;corruptTransform=false;for(const key of keys)assert.equal((await retry(key)).status,'ready');globalThis.fetch=original;}
 });
+
+test('project entries reuse the canonical asset grid and transform validators without a synthetic manifest',async()=>{
+ const api=await import('./computation-manifest.js');assert.equal(typeof api.validateAssetIdentity,'function');assert.equal(typeof api.validateGridSpec,'function');assert.equal(typeof api.validateTransformIdentity,'function');assert.deepEqual(api.validateAssetIdentity(identity(1)),identity(1));assert.deepEqual(api.validateGridSpec(grid),grid);assert.deepEqual(api.validateTransformIdentity({id:'warp',sha256:'a'.repeat(64)}),{id:'warp',sha256:'a'.repeat(64)});assert.throws(()=>api.validateAssetIdentity({...identity(1),sha256:'bad'}),/asset-identity-required/);assert.throws(()=>api.validateGridSpec({...grid,order:'unknown'}),/manifest-grid-required/);
+});

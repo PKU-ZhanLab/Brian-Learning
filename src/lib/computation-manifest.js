@@ -7,33 +7,37 @@ const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).for
 export const ROI_ALGORITHM_VERSION='roi-shared-grid-v2';
 export const ROI_APP_VERSION='4.1.0';
 
-function validateIdentity(value) {
+export function validateAssetIdentity(value) {
   if(!nonempty(value?.id)||!nonempty(value.version)||!digest(value.sha256)||(value.spaceId!==null&&!nonempty(value.spaceId)))throw Error('asset-identity-required');
   return {id:value.id,version:value.version,sha256:value.sha256.toLowerCase(),spaceId:value.spaceId};
 }
-function gridSpec(value) {
+export function validateGridSpec(value) {
   const affine=Array.isArray(value?.affine?.[0])?value.affine.flat():value?.affine;
   if(value?.shape?.length!==3||!value.shape.every(n=>Number.isSafeInteger(n)&&n>0)||affine?.length!==16||!affine.every(Number.isFinite)||!nonempty(value.space)||!['x-fastest','z-fastest'].includes(value.order))throw Error('manifest-grid-required');
   return {shape:[...value.shape],affine:[...affine],space:value.space,order:value.order};
+}
+export function validateTransformIdentity(value){
+  if(!nonempty(value?.id)||!digest(value.sha256))throw Error('transform-identity-required');
+  return {id:value.id,sha256:value.sha256.toLowerCase()};
 }
 
 /** SHA-256 of precisely the provided file bytes, with no decompression or JSON encoding. */
 export async function makeAssetIdentity(bytes,metadata) {
   if(!(bytes instanceof Uint8Array))throw Error('asset-bytes-required');
   const hash=await crypto.subtle.digest('SHA-256',bytes);
-  return freeze(validateIdentity({...metadata,sha256:Array.from(new Uint8Array(hash),v=>v.toString(16).padStart(2,'0')).join('')}));
+  return freeze(validateAssetIdentity({...metadata,sha256:Array.from(new Uint8Array(hash),v=>v.toString(16).padStart(2,'0')).join('')}));
 }
 
 /** @returns {ComputationManifest} */
 export function makeComputationManifest(input) {
   if(!nonempty(input?.appVersion)||!nonempty(input.algorithmVersion)||!Array.isArray(input.inputs)||input.inputs.length<2||!Array.isArray(input.transforms))throw Error('computation-provenance-required');
   for(const field of ['sourceGrids','interpolation','thresholds','labelSets'])if(!Array.isArray(input[field])||input[field].length!==2)throw Error(`manifest-${field}-requires-A-B`);
-  const inputs=input.inputs.map(validateIdentity);
+  const inputs=input.inputs.map(validateAssetIdentity);
   if(inputs.slice(0,2).some(identity=>identity.spaceId===null))throw Error('comparison-space-required');
-  const transforms=input.transforms.map(value=>{if(!nonempty(value?.id)||!digest(value.sha256))throw Error('transform-identity-required');return {id:value.id,sha256:value.sha256.toLowerCase()};});
-  const sourceGrids=input.sourceGrids.map(gridSpec);
+  const transforms=input.transforms.map(validateTransformIdentity);
+  const sourceGrids=input.sourceGrids.map(validateGridSpec);
   if(sourceGrids.some((grid,i)=>grid.space!==inputs[i].spaceId))throw Error('source-grid-space-mismatch');
-  const targetGrid=gridSpec(input.targetGrid);
+  const targetGrid=validateGridSpec(input.targetGrid);
   const interpolation=input.interpolation.map(value=>{if(!nonempty(value))throw Error('interpolation-required');return value;});
   const thresholds=input.thresholds.map(value=>{if(!['label','mask','probability','statistic'].includes(value?.kind)||!Number.isFinite(value.threshold)||value.threshold<0||!['positive','negative','absolute'].includes(value.tail)||(value.kind==='probability'&&value.threshold>1))throw Error('manifest-threshold-invalid');return {kind:value.kind,threshold:value.threshold,tail:value.tail};});
   const labelSets=input.labelSets.map((values,i)=>{if(!Array.isArray(values)||!values.every(n=>Number.isSafeInteger(n)&&n>0)||(thresholds[i].kind==='label'&&!values.length))throw Error('manifest-label-set-invalid');return [...new Set(values)].sort((a,b)=>a-b);});
@@ -78,7 +82,7 @@ export async function prepareLocalVolumeProvenance(volume,originalBytes,{id='loc
   const original=freeze({...originalObserved,version:`sha256:${originalObserved.sha256}`});
   const encoded=encodeDerivedVolume(volume),observed=await makeAssetIdentity(encoded.bytes,{id:`${id}:derived:${encoded.dtype}:little-endian`,version:'observed-derived-bytes',spaceId});
   const derived=freeze({...observed,version:`sha256:${observed.sha256}`});
-  return {...volume,identity:derived,sourceIdentities:[original],sourceGrid:spaceId?gridSpec({...volume,order:volume.order||'x-fastest'}):null,transforms:[],encoding:{dtype:encoded.dtype,byteOrder:encoded.byteOrder,derivation:'nifti-decoded-v1'},identityVerification:'received-bytes',spatialEvidence:{space:spaceId,alignmentStatus:volume.alignmentStatus??'user-declared',source:volume.source??null,provenance:volume.provenance??null,limitations:['Local source/alignment declaration is not independent registration verification.']}};
+  return {...volume,identity:derived,sourceIdentities:[original],sourceGrid:spaceId?validateGridSpec({...volume,order:volume.order||'x-fastest'}):null,transforms:[],encoding:{dtype:encoded.dtype,byteOrder:encoded.byteOrder,derivation:'nifti-decoded-v1'},identityVerification:'received-bytes',spatialEvidence:{space:spaceId,alignmentStatus:volume.alignmentStatus??'user-declared',source:volume.source??null,provenance:volume.provenance??null,limitations:['Local source/alignment declaration is not independent registration verification.']}};
 }
 
 /** Locks the exact operands before worker preflight. Caller must pass normalized selections. */
@@ -86,9 +90,9 @@ export function makeComparisonManifest(a,selectionA,b,selectionB,target,options=
   const volumes=[a,b],selections=[selectionA,selectionB];
   if(volumes.some(volume=>volume.canOverlayOnTarget!==true||!volume.identity||!Array.isArray(volume.sourceIdentities)||!Array.isArray(volume.transforms)))throw Error('computation-provenance-required');
   for(const volume of volumes){
-    if(volume.identity.spaceId!==volume.space||!volume.sourceGrid||JSON.stringify(gridSpec(volume.sourceGrid))!==JSON.stringify(gridSpec({...volume,order:volume.order||'x-fastest'})))throw Error('source-grid-identity-mismatch');
+    if(volume.identity.spaceId!==volume.space||!volume.sourceGrid||JSON.stringify(validateGridSpec(volume.sourceGrid))!==JSON.stringify(validateGridSpec({...volume,order:volume.order||'x-fastest'})))throw Error('source-grid-identity-mismatch');
   }
-  return makeComputationManifest({appVersion:options.appVersion||ROI_APP_VERSION,algorithmVersion:options.algorithmVersion||ROI_ALGORITHM_VERSION,inputs:[a.identity,b.identity,...a.sourceIdentities,...b.sourceIdentities],transforms:[...a.transforms,...b.transforms],sourceGrids:volumes.map(volume=>volume.sourceGrid||gridSpec({...volume,order:volume.order||'x-fastest'})),targetGrid:gridSpec({...target,order:target.order||'x-fastest'}),interpolation:selections.map(selection=>['label','mask'].includes(selection.kind)?'nearest-neighbour':'trilinear'),thresholds:selections.map(({kind,threshold,tail})=>({kind,threshold,tail})),labelSets:selections.map(selection=>selection.labels||[]),spatialEvidence:volumes.map(volume=>volume.spatialEvidence??{space:volume.space,alignmentStatus:volume.alignmentStatus,source:volume.source??null,provenance:volume.provenance??null})});
+  return makeComputationManifest({appVersion:options.appVersion||ROI_APP_VERSION,algorithmVersion:options.algorithmVersion||ROI_ALGORITHM_VERSION,inputs:[a.identity,b.identity,...a.sourceIdentities,...b.sourceIdentities],transforms:[...a.transforms,...b.transforms],sourceGrids:volumes.map(volume=>volume.sourceGrid||validateGridSpec({...volume,order:volume.order||'x-fastest'})),targetGrid:validateGridSpec({...target,order:target.order||'x-fastest'}),interpolation:selections.map(selection=>['label','mask'].includes(selection.kind)?'nearest-neighbour':'trilinear'),thresholds:selections.map(({kind,threshold,tail})=>({kind,threshold,tail})),labelSets:selections.map(selection=>selection.labels||[]),spatialEvidence:volumes.map(volume=>volume.spatialEvidence??{space:volume.space,alignmentStatus:volume.alignmentStatus,source:volume.source??null,provenance:volume.provenance??null})});
 }
 export async function prepareComparisonManifest(...args){
   const manifest=makeComparisonManifest(...args);

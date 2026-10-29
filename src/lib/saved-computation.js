@@ -1,5 +1,6 @@
 import {boundedJsonStringify,utf8ByteLength,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_COMPRESSED_ASSET_BYTES} from './workspace-limits.js';
-import {makeComputationManifest} from './computation-manifest.js';
+import {makeComputationManifest,compareComputationManifest} from './computation-manifest.js';
+import {attachROISurfaces} from './roi.js';
 
 const MAX_SNAPSHOT_METADATA_BYTES=2*1024*1024;
 const MAX_CLASSES=64_000_000;
@@ -71,4 +72,41 @@ export async function decodeSavedComputation(input,{maxRawBytes=MAX_WORKSPACE_RA
  const usage=inspectEncodedSavedComputation(input);if(usage.rawPayloadBytes>maxRawBytes)throw Error('snapshot-budget');if(input==null)return null;
  let classes=null;if(usage.classCount){const compressed=Uint8Array.from(atob(input.classesGzip),c=>c.charCodeAt(0));classes=await streamBytes(new Blob([compressed]).stream().pipeThrough(new DecompressionStream('gzip')),usage.classCount,'snapshot-inflated-budget');if(classes.length!==usage.classCount||classes.some(n=>n>3))throw Error('snapshot-classes');}
  return {...usage.metadata,classes};
+}
+
+/** Evaluate recorded facts with S5's sole comparator. Inspection never samples a source or starts a worker. */
+export function restoreComputation(saved,{currentManifest=null,decision='inspect-saved',geometry=true}={}){
+ if(!['inspect-saved','recompute'].includes(decision))throw Error('invalid-restore-decision');
+ let recorded=false,current=false;
+ try{if(saved?.manifest){makeComputationManifest(saved.manifest);recorded=true;}}catch{/* Preserve incomplete historical facts. */}
+ try{if(currentManifest){makeComputationManifest(currentManifest);current=true;}}catch{/* Current provenance is not yet available. */}
+ const report=recorded&&current?compareComputationManifest(saved.manifest,currentManifest):null;
+ const status=saved?.status==='missing-input'?'missing-input':!recorded?'missing-provenance':!current?'unverified':report.matches?'matched':'mismatch';
+ let comparison=null,geometryError=null;
+ const overlayUnavailableReason=saved?.grid&&saved.grid.space!=='MNI152NLin6Asym'?'saved-space-not-main':null;
+ if(saved&&geometry&&decision==='inspect-saved'&&saved.classes!=null&&!overlayUnavailableReason){
+  savedComputationUsage(saved);
+  let classes=saved.classes,grid=saved.grid;
+  // The renderer's existing geometry helpers use x-fastest; only reorder stored cells.
+  if(grid.order==='z-fastest'){
+   const [nx,ny,nz]=grid.shape;classes=new Uint8Array(saved.classes.length);
+   for(let z=0;z<nz;z++)for(let y=0;y<ny;y++)for(let x=0;x<nx;x++)classes[x+nx*(y+ny*z)]=saved.classes[z+nz*(y+ny*x)];
+   grid={...grid,order:'x-fastest'};
+  }
+  comparison={...saved,grid,classes,maskA:Uint8Array.from(classes,n=>n&1),maskB:Uint8Array.from(classes,n=>(n>>1)&1)};
+  try{comparison=attachROISurfaces(comparison);}catch(error){geometryError=error.message;comparison=null;}
+ }
+ return {saved,status,canRecompute:current,shouldRecompute:decision==='recompute'&&current,differences:report?.differences??[],missingAssetIds:saved?.missingAssetIds??[],comparison,geometryError,overlayUnavailableReason};
+}
+
+/** A new run has a new identity even when operands and numerical results are identical. */
+export function createComputationSnapshot(result){
+ const snapshot={...result,id:`computation-${crypto.randomUUID()}`,producerId:result.id,manifest:makeComputationManifest(result.manifest),status:'matched'};
+ savedComputationUsage(snapshot);return snapshot;
+}
+
+/** Retain the original computation forever; a later explicit run occupies its own slot. */
+export function retainComputation(history,result){
+ if(history.roiSnapshot?.id===result.id||history.recomputedSnapshot?.id===result.id)throw Error('computation-identity-reused');
+ return history.roiSnapshot?{roiSnapshot:history.roiSnapshot,recomputedSnapshot:result}:{roiSnapshot:result,recomputedSnapshot:null};
 }
