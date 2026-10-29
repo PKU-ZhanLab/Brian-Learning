@@ -2,6 +2,7 @@ import { Matrix4, Vector3 } from 'three';
 import { dataURL } from './assets.js';
 import { roiSliceStyle, sampleComparisonRAS } from './roi.js';
 import {getCustomVolume} from './custom-volumes.js';
+import { makeAssetIdentity } from './computation-manifest.js';
 
 const cache = new Map();
 const pending = new Map();
@@ -46,9 +47,21 @@ export function prepareVolume(data, metadata) {
 }
 
 async function loadBinaryVolume(metadata) {
-  const response = await fetch(assetPath(metadata.data || metadata.file || metadata.path));
+  const file = metadata.data || metadata.file || metadata.path;
+  const response = await fetch(assetPath(file));
   if (!response.ok) throw new Error('影像文件加载失败');
   const buffer = await response.arrayBuffer();
+  const identity = await makeAssetIdentity(new Uint8Array(buffer), {id:`public/data/${file}`,version:metadata.atlasVersion||`sha256:${metadata.sha256}`,spaceId:metadata.spaceId??metadata.space??null});
+  if (!metadata.sha256 || identity.sha256 !== metadata.sha256) throw new Error('Loaded volume byte digest mismatch or missing expected hash');
+  if (!pending.has('asset-identities')) pending.set('asset-identities',fetch(dataURL('asset-identities.json')).then(r=>{if(!r.ok)throw Error('Asset identities could not be loaded');return r.json();}).catch(error=>{pending.delete('asset-identities');throw error;}));
+  const entry=(await pending.get('asset-identities')).assets?.[file];
+  if(entry&&(entry.identity.sha256!==identity.sha256||entry.identity.spaceId!==identity.spaceId))throw Error('Asset identity differs from loaded volume');
+  for(const dependency of entry?.verificationFiles||[]){
+    if(dependency.path===metadata.probability)continue;
+    const r=await fetch(assetPath(dependency.path));if(!r.ok)throw Error('Transform/source bytes unavailable');
+    const observed=await makeAssetIdentity(new Uint8Array(await r.arrayBuffer()),{id:dependency.path,version:'observed',spaceId:null});
+    if(observed.sha256!==dependency.sha256)throw Error('Transform/source byte digest mismatch');
+  }
   const dtype = String(metadata.dtype || 'uint8').toLowerCase();
   const data = dtype.includes('float32') ? new Float32Array(buffer) : dtype.includes('16') ? new Uint16Array(buffer) : new Uint8Array(buffer);
   if (data.length !== metadata.shape.reduce((a, b) => a * b, 1)) throw new Error('影像文件尺寸与空间信息不一致');
@@ -56,10 +69,12 @@ async function loadBinaryVolume(metadata) {
     const probabilityResponse = await fetch(assetPath(metadata.probability));
     if (!probabilityResponse.ok) throw new Error('图谱概率数据加载失败');
     const probabilityData = new Uint8Array(await probabilityResponse.arrayBuffer());
+    const probabilityIdentity=await makeAssetIdentity(probabilityData,{id:metadata.probability,version:'observed',spaceId:identity.spaceId});
+    if(!metadata.probabilitySha256||probabilityIdentity.sha256!==metadata.probabilitySha256)throw Error('Probability byte digest mismatch');
     if (probabilityData.length !== data.length) throw new Error('图谱概率体积尺寸不匹配');
     metadata = { ...metadata, probabilityData };
   }
-  return prepareVolume(data, metadata);
+  return prepareVolume(data, {...metadata,identity,identityVerification:'received-bytes',sourceIdentities:entry?.sourceIdentities??null,sourceGrid:entry?.sourceGrid??null,transforms:entry?.transforms??null,spatialEvidence:entry?.spatialEvidence??{space:identity.spaceId,source:metadata.source??null,limitations:['Original dependencies and transform chain are unavailable.']}});
 }
 
 export async function loadAnatomyVolume() {

@@ -1,0 +1,939 @@
+{
+  "schema": "neuroatlas-asset-identities-v1",
+  "hashDefinition": "SHA-256 of exact file bytes; compressed sources remain compressed. Build observations do not certify historical computations or anatomical registration.",
+  "assets": {
+    "dk-v2/dk68.bin": {
+      "identity": {
+        "id": "public/data/dk-v2/dk68.bin",
+        "version": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "sha256": "2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/dk/mri/aparc+aseg_182x218x182.nii.gz",
+          "version": "sha256:a93978f91fb119ac57fa173cfbbc2f2c2bf631015ceac8750b67e277f3fb89ca",
+          "sha256": "a93978f91fb119ac57fa173cfbbc2f2c2bf631015ceac8750b67e277f3fb89ca",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/dk/mri/orig.mgz",
+          "version": "sha256:d845b4d81a61c4163fc4322e8fb6fd88be11610febbc1448bf04ae43e062825f",
+          "sha256": "d845b4d81a61c4163fc4322e8fb6fd88be11610febbc1448bf04ae43e062825f",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/dk_build.py",
+          "version": "sha256:f8cdec041cdba0150363a10aad19f25120611ce64025d2af1c958195e58491cb",
+          "sha256": "f8cdec041cdba0150363a10aad19f25120611ce64025d2af1c958195e58491cb",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/dk/label/aparc.annot.ctab",
+          "version": "sha256:a43af4cbe595e60829a72fa223725098abbea7bc40e18aad87eb4e626e6d9972",
+          "sha256": "a43af4cbe595e60829a72fa223725098abbea7bc40e18aad87eb4e626e6d9972",
+          "spaceId": null
+        }
+      ],
+      "transforms": [],
+      "verificationFiles": [],
+      "sourceGrid": {
+        "shape": [
+          91,
+          109,
+          91
+        ],
+        "affine": [
+          2,
+          0,
+          0,
+          -90,
+          0,
+          2,
+          0,
+          -126,
+          0,
+          0,
+          2,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "MNI152NLin6Asym",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "MNI152NLin6Asym",
+        "alignmentStatus": "verified-native",
+        "canOverlayOnTarget": true,
+        "source": "https://github.com/ThomasYeoLab/CBIG/tree/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0",
+        "spaceIdentitySource": {
+          "spaceId": "MNI152NLin6Asym",
+          "sourceUrl": "https://github.com/ThomasYeoLab/CBIG/tree/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0",
+          "sourceFile": "public/data/dk-v2/metadata.json",
+          "sourceSha256": "336e4a5e39af9821a0d245e07408aa3ff5db022418ded675d0bbd976c234235d",
+          "sourceLocator": "public/data/dk-v2/metadata.json#/space",
+          "alignmentStatus": "verified-native",
+          "note": "Recorded source-space declaration only. Template uncertainty and registration-estimate status are preserved; this reference does not certify anatomical alignment."
+        },
+        "fieldResolutionMm": null,
+        "outputGridResolutionMm": null,
+        "registrationReport": null,
+        "limitations": [
+          "完整34×2 DK皮层区，包含双侧岛叶。来自同一FSL MNI152模板的FreeSurfer分割与配对皮层表面；2mm标签最近邻重采样，顶点标签来自原始aparc.annot。不是个体解剖边界。"
+        ],
+        "sourceVerification": "Original dependencies hashed from preserved local files during build; received binary and public transform bytes are verified separately at load."
+      }
+    },
+    "aal-v3/aal-native.bin": {
+      "identity": {
+        "id": "public/data/aal-v3/aal-native.bin",
+        "version": "sha256:b6dc91b41abc811b95ec9c430f5cb9241024ad5cb811441992baffa8bfd1d3e4",
+        "sha256": "b6dc91b41abc811b95ec9c430f5cb9241024ad5cb811441992baffa8bfd1d3e4",
+        "spaceId": "Colin27 / MNI single-subject"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4.nii.gz",
+          "version": "sha256:3df7662d4ea3adbed45a8eefc21ce97085ef773c85ab86e4ce0e3906e6994dbb",
+          "sha256": "3df7662d4ea3adbed45a8eefc21ce97085ef773c85ab86e4ce0e3906e6994dbb",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/aal_build.py",
+          "version": "sha256:089194182d40bd7c2ff51581a2b25f8881cf06d71a0ca66aa969508690abbc06",
+          "sha256": "089194182d40bd7c2ff51581a2b25f8881cf06d71a0ca66aa969508690abbc06",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4.txt",
+          "version": "sha256:fc3aa3001131895e74898b1034a915a93d5dbc644167f02110e895c913f3860e",
+          "sha256": "fc3aa3001131895e74898b1034a915a93d5dbc644167f02110e895c913f3860e",
+          "spaceId": null
+        }
+      ],
+      "transforms": [],
+      "verificationFiles": [],
+      "sourceGrid": {
+        "shape": [
+          91,
+          109,
+          91
+        ],
+        "affine": [
+          2,
+          0,
+          0,
+          -90,
+          0,
+          2,
+          0,
+          -126,
+          0,
+          0,
+          2,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "Colin27 / MNI single-subject",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "Colin27 / MNI single-subject",
+        "alignmentStatus": "native-space",
+        "canOverlayOnTarget": false,
+        "source": "https://www.gin.cnrs.fr/en/tools/aal/",
+        "spaceIdentitySource": {
+          "spaceId": "Colin27 / MNI single-subject",
+          "sourceUrl": "https://www.gin.cnrs.fr/en/tools/aal/",
+          "sourceFile": "public/data/aal-v3/manifest.json",
+          "sourceSha256": "459dd887790d9a1e79354272a7764bc69fca8a50cc4f535edbbcd5d0b4615c20",
+          "sourceLocator": "public/data/aal-v3/manifest.json#/atlases/aal/space",
+          "alignmentStatus": "native-space",
+          "note": "Recorded source-space declaration only. Template uncertainty and registration-estimate status are preserved; this reference does not certify anatomical alignment."
+        },
+        "fieldResolutionMm": null,
+        "outputGridResolutionMm": null,
+        "registrationReport": null,
+        "limitations": [
+          "116 original positive label IDs (2001–9170), preserved without renumbering. Native atlas; no FSL overlay without an explicitly reviewed transform."
+        ],
+        "sourceVerification": "Original dependencies hashed from preserved local files during build; received binary and public transform bytes are verified separately at load."
+      }
+    },
+    "aal-v3/aal3-native.bin": {
+      "identity": {
+        "id": "public/data/aal-v3/aal3-native.bin",
+        "version": "sha256:ad02a042ebd830108a2486fa19c118289eebb7c0560001acbbe2dc7e58423dd9",
+        "sha256": "ad02a042ebd830108a2486fa19c118289eebb7c0560001acbbe2dc7e58423dd9",
+        "spaceId": "Colin27 / MNI single-subject"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/aal-official/AAL3_dist/AAL3v1_1mm.nii",
+          "version": "sha256:53e86a6d0db7d9d375da9936d62437e92c8e6d54aab7b6d3393d9cc43ae0f732",
+          "sha256": "53e86a6d0db7d9d375da9936d62437e92c8e6d54aab7b6d3393d9cc43ae0f732",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/aal_build.py",
+          "version": "sha256:089194182d40bd7c2ff51581a2b25f8881cf06d71a0ca66aa969508690abbc06",
+          "sha256": "089194182d40bd7c2ff51581a2b25f8881cf06d71a0ca66aa969508690abbc06",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/aal-official/AAL3_dist/ROI_MNI_V7_1mm_vol.txt",
+          "version": "sha256:5fba51e82ea8e89925028516361de3efcdcb4bf1999f433e08d1a649b6d29af1",
+          "sha256": "5fba51e82ea8e89925028516361de3efcdcb4bf1999f433e08d1a649b6d29af1",
+          "spaceId": null
+        }
+      ],
+      "transforms": [],
+      "verificationFiles": [],
+      "sourceGrid": {
+        "shape": [
+          181,
+          217,
+          181
+        ],
+        "affine": [
+          1,
+          0,
+          0,
+          -90,
+          0,
+          1,
+          0,
+          -126,
+          0,
+          0,
+          1,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "Colin27 / MNI single-subject",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "Colin27 / MNI single-subject",
+        "alignmentStatus": "native-space",
+        "canOverlayOnTarget": false,
+        "source": "https://www.gin.cnrs.fr/en/tools/aal/",
+        "spaceIdentitySource": {
+          "spaceId": "Colin27 / MNI single-subject",
+          "sourceUrl": "https://www.gin.cnrs.fr/en/tools/aal/",
+          "sourceFile": "public/data/aal-v3/manifest.json",
+          "sourceSha256": "459dd887790d9a1e79354272a7764bc69fca8a50cc4f535edbbcd5d0b4615c20",
+          "sourceLocator": "public/data/aal-v3/manifest.json#/atlases/aal3/space",
+          "alignmentStatus": "native-space",
+          "note": "Recorded source-space declaration only. Template uncertainty and registration-estimate status are preserved; this reference does not certify anatomical alignment."
+        },
+        "fieldResolutionMm": null,
+        "outputGridResolutionMm": null,
+        "registrationReport": null,
+        "limitations": [
+          "166 positive regions at 1 mm; original IDs 1–170 with 35,36,81,82 absent. Small nuclei are template labels, not subject-specific localization."
+        ],
+        "sourceVerification": "Original dependencies hashed from preserved local files during build; received binary and public transform bytes are verified separately at load."
+      }
+    },
+    "ho.bin": {
+      "identity": {
+        "id": "public/data/ho.bin",
+        "version": "sha256:bfebf28ef1aea3758e386e0a5bafb9f4a01385c47b6faf008cc17bd6dba3e4d5",
+        "sha256": "bfebf28ef1aea3758e386e0a5bafb9f4a01385c47b6faf008cc17bd6dba3e4d5",
+        "spaceId": "FSL MNI152NLin6Asym"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/raw/HarvardOxford-sub.nii.gz",
+          "version": "sha256:02a69ed80d75876de8237c59320587efdf832c9334d16ba45618e45a0e05b774",
+          "sha256": "02a69ed80d75876de8237c59320587efdf832c9334d16ba45618e45a0e05b774",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/data_build.py",
+          "version": "sha256:ad518280f18aa424cfc73414a55f97a3b7e5be3956b8a812eb31cda08026a727",
+          "sha256": "ad518280f18aa424cfc73414a55f97a3b7e5be3956b8a812eb31cda08026a727",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/raw/HarvardOxford-Subcortical.xml",
+          "version": "sha256:902088b2ce0f005861084190fbf494c4a65a0201a08f7e44f15dfb351e172cd3",
+          "sha256": "902088b2ce0f005861084190fbf494c4a65a0201a08f7e44f15dfb351e172cd3",
+          "spaceId": null
+        }
+      ],
+      "transforms": [],
+      "verificationFiles": [],
+      "sourceGrid": {
+        "shape": [
+          91,
+          109,
+          91
+        ],
+        "affine": [
+          2,
+          0,
+          0,
+          -90,
+          0,
+          2,
+          0,
+          -126,
+          0,
+          0,
+          2,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "FSL MNI152NLin6Asym",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "FSL MNI152NLin6Asym",
+        "alignmentStatus": "published-template",
+        "canOverlayOnTarget": true,
+        "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+        "spaceIdentitySource": {
+          "spaceId": "FSL MNI152NLin6Asym",
+          "sourceUrl": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+          "sourceFile": "scripts/data_build.py",
+          "sourceSha256": "ad518280f18aa424cfc73414a55f97a3b7e5be3956b8a812eb31cda08026a727",
+          "sourceLocator": "scripts/data_build.py:144-146; original space declaration",
+          "alignmentStatus": "published-template",
+          "note": "Recorded source-space declaration only. Template uncertainty and registration-estimate status are preserved; this reference does not certify anatomical alignment."
+        },
+        "fieldResolutionMm": null,
+        "outputGridResolutionMm": null,
+        "registrationReport": null,
+        "limitations": [
+          "最大概率图，25% 概率阈值，2 mm；MGH 镜像的 FreeSurfer 编号已按随附 labels 文件恢复为 HO 标准编号。含皮层及白质总区标签，深核边界随阈值改变。"
+        ],
+        "sourceVerification": "Original dependencies hashed from preserved local files during build; received binary and public transform bytes are verified separately at load."
+      }
+    },
+    "jhu.bin": {
+      "identity": {
+        "id": "public/data/jhu.bin",
+        "version": "sha256:1e1e55365cac9433c0181cb0993dce3def1204c7f751e90cb2ad21c0f2bb2901",
+        "sha256": "1e1e55365cac9433c0181cb0993dce3def1204c7f751e90cb2ad21c0f2bb2901",
+        "spaceId": "JHU ICBM-DTI-81 / FSL MNI grid"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/raw/JHU.nii.gz",
+          "version": "sha256:974a0fd72d1214a29e58ccf33cf5aec989d937d999ae65f389dd6b3e1ffdbbad",
+          "sha256": "974a0fd72d1214a29e58ccf33cf5aec989d937d999ae65f389dd6b3e1ffdbbad",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/data_build.py",
+          "version": "sha256:ad518280f18aa424cfc73414a55f97a3b7e5be3956b8a812eb31cda08026a727",
+          "sha256": "ad518280f18aa424cfc73414a55f97a3b7e5be3956b8a812eb31cda08026a727",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/raw/JHU-labels.xml",
+          "version": "sha256:2d76ce80d1b0a50dccda2698d5eec55c8984a7f1bb438f79111d67a26fc4dc1c",
+          "sha256": "2d76ce80d1b0a50dccda2698d5eec55c8984a7f1bb438f79111d67a26fc4dc1c",
+          "spaceId": null
+        }
+      ],
+      "transforms": [],
+      "verificationFiles": [],
+      "sourceGrid": {
+        "shape": [
+          91,
+          109,
+          91
+        ],
+        "affine": [
+          2,
+          0,
+          0,
+          -90,
+          0,
+          2,
+          0,
+          -126,
+          0,
+          0,
+          2,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "JHU ICBM-DTI-81 / FSL MNI grid",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "JHU ICBM-DTI-81 / FSL MNI grid",
+        "alignmentStatus": "published-template",
+        "canOverlayOnTarget": true,
+        "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+        "spaceIdentitySource": {
+          "spaceId": "JHU ICBM-DTI-81 / FSL MNI grid",
+          "sourceUrl": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/atlases.html",
+          "sourceFile": "scripts/data_build.py",
+          "sourceSha256": "ad518280f18aa424cfc73414a55f97a3b7e5be3956b8a812eb31cda08026a727",
+          "sourceLocator": "scripts/data_build.py:147-148; original space declaration",
+          "alignmentStatus": "published-template",
+          "note": "Recorded source-space declaration only. Template uncertainty and registration-estimate status are preserved; this reference does not certify anatomical alignment."
+        },
+        "fieldResolutionMm": null,
+        "outputGridResolutionMm": null,
+        "registrationReport": null,
+        "limitations": [
+          "JHU 白质区域标签图（48 个正标签），不是连续纤维追踪流线；图谱内的白质区域不等于完整纤维束。"
+        ],
+        "sourceVerification": "Original dependencies hashed from preserved local files during build; received binary and public transform bytes are verified separately at load."
+      }
+    },
+    "ba-v2/talairach-ba.bin": {
+      "identity": {
+        "id": "public/data/ba-v2/talairach-ba.bin",
+        "version": "sha256:ad1c708a1b820a752f85566858d466075178bb1aa38257ab1f81b17bd6cb985b",
+        "sha256": "ad1c708a1b820a752f85566858d466075178bb1aa38257ab1f81b17bd6cb985b",
+        "spaceId": "MNI152 (FSL published Lancaster affine)"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/ba/Talairach-labels-2mm.nii.gz",
+          "version": "sha256:95c192a1911faf4eb43c8c2c2df0cfb5a3f395db04a73d9ef0f55e5e479bd9b2",
+          "sha256": "95c192a1911faf4eb43c8c2c2df0cfb5a3f395db04a73d9ef0f55e5e479bd9b2",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/ba_build.py",
+          "version": "sha256:b8e6548968656add6421411da65641c075d2207321117822f1d4b289602981ee",
+          "sha256": "b8e6548968656add6421411da65641c075d2207321117822f1d4b289602981ee",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/ba/Talairach.xml",
+          "version": "sha256:67ea3980a2c9a2c40caface44452003cb6c38091baa87fcc8211784b0768a183",
+          "sha256": "67ea3980a2c9a2c40caface44452003cb6c38091baa87fcc8211784b0768a183",
+          "spaceId": null
+        }
+      ],
+      "transforms": [],
+      "verificationFiles": [],
+      "sourceGrid": {
+        "shape": [
+          91,
+          109,
+          91
+        ],
+        "affine": [
+          2,
+          0,
+          0,
+          -90,
+          0,
+          2,
+          0,
+          -126,
+          0,
+          0,
+          2,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "MNI152 (FSL published Lancaster affine)",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "MNI152 (FSL published Lancaster affine)",
+        "alignmentStatus": "published-affine",
+        "canOverlayOnTarget": true,
+        "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/datasets.html#talairach-atlas",
+        "spaceIdentitySource": {
+          "spaceId": "MNI152 (FSL published Lancaster affine)",
+          "sourceUrl": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/datasets.html#talairach-atlas",
+          "sourceFile": "public/data/ba-v2/manifest.json",
+          "sourceSha256": "938504eab443e0ca5fb3b4a4e51a564113c3d7bf6b1ee959ab3d4b06408f2fc7",
+          "sourceLocator": "public/data/ba-v2/manifest.json#/atlases/ba/space",
+          "alignmentStatus": "published-affine",
+          "note": "Recorded source-space declaration only. Template uncertainty and registration-estimate status are preserved; this reference does not certify anatomical alignment."
+        },
+        "fieldResolutionMm": null,
+        "outputGridResolutionMm": null,
+        "registrationReport": null,
+        "limitations": [
+          "FSL 发布的 Talairach 历史标签，经 Lancaster 2007 校正仿射映射至 MNI152。来源为单脑、粗切片数字化，不是现代组织学群体边界。",
+          "仿射映射不消除局部解剖差异。",
+          "左右使用同一 BA 编号；按 RAS 坐标辨别侧别。",
+          "空白处表示无标签，不能由邻近标签补齐。"
+        ],
+        "sourceVerification": "Original dependencies hashed from preserved local files during build; received binary and public transform bytes are verified separately at load."
+      }
+    },
+    "ba-v2/juelich-ba.bin": {
+      "identity": {
+        "id": "public/data/ba-v2/juelich-ba.bin",
+        "version": "sha256:37cbaa98a78fa017d109badf0433f2627e441d6dbe6ba39fcdccf7e4c61c9998",
+        "sha256": "37cbaa98a78fa017d109badf0433f2627e441d6dbe6ba39fcdccf7e4c61c9998",
+        "spaceId": "MNI152 (FSL Juelich distribution)"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/ba/Juelich-maxprob-thr25-2mm.nii.gz",
+          "version": "sha256:83a54685e6d4ea733145ec5c613c5c2e9c2f4e56e8ba5a2505f62aa11b31be09",
+          "sha256": "83a54685e6d4ea733145ec5c613c5c2e9c2f4e56e8ba5a2505f62aa11b31be09",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/ba/Juelich-prob-2mm.nii.gz",
+          "version": "sha256:e7dc0c83e8029296ee5c62aba158ad5ff198cc58573d942eeebd88e69897c218",
+          "sha256": "e7dc0c83e8029296ee5c62aba158ad5ff198cc58573d942eeebd88e69897c218",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/ba_build.py",
+          "version": "sha256:b8e6548968656add6421411da65641c075d2207321117822f1d4b289602981ee",
+          "sha256": "b8e6548968656add6421411da65641c075d2207321117822f1d4b289602981ee",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/ba/Juelich.xml",
+          "version": "sha256:2db19453d3f993cb44c8614b309c5298a9152e28e0ca3433881cbee6f949476b",
+          "sha256": "2db19453d3f993cb44c8614b309c5298a9152e28e0ca3433881cbee6f949476b",
+          "spaceId": null
+        },
+        {
+          "id": "public/data/ba-v2/juelich-ba-probability.bin",
+          "version": "sha256:22ecb295a28278af403763a82abc2b420778e70a8e04bb0193c9d046df296801",
+          "sha256": "22ecb295a28278af403763a82abc2b420778e70a8e04bb0193c9d046df296801",
+          "spaceId": "MNI152 (FSL Juelich distribution)"
+        }
+      ],
+      "transforms": [],
+      "verificationFiles": [
+        {
+          "path": "ba-v2/juelich-ba-probability.bin",
+          "sha256": "22ecb295a28278af403763a82abc2b420778e70a8e04bb0193c9d046df296801"
+        }
+      ],
+      "sourceGrid": {
+        "shape": [
+          91,
+          109,
+          91
+        ],
+        "affine": [
+          2,
+          0,
+          0,
+          -90,
+          0,
+          2,
+          0,
+          -126,
+          0,
+          0,
+          2,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "MNI152 (FSL Juelich distribution)",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "MNI152 (FSL Juelich distribution)",
+        "alignmentStatus": "published-template",
+        "canOverlayOnTarget": true,
+        "source": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/julich.html",
+        "spaceIdentitySource": {
+          "spaceId": "MNI152 (FSL Juelich distribution)",
+          "sourceUrl": "https://fsl.fmrib.ox.ac.uk/fsl/docs/other/julich.html",
+          "sourceFile": "public/data/ba-v2/manifest.json",
+          "sourceSha256": "938504eab443e0ca5fb3b4a4e51a564113c3d7bf6b1ee959ab3d4b06408f2fc7",
+          "sourceLocator": "public/data/ba-v2/manifest.json#/atlases/ba-histology/space",
+          "alignmentStatus": "published-template",
+          "note": "Recorded source-space declaration only. Template uncertainty and registration-estimate status are preserved; this reference does not certify anatomical alignment."
+        },
+        "fieldResolutionMm": null,
+        "outputGridResolutionMm": null,
+        "registrationReport": null,
+        "limitations": [
+          "Jülich 尸检组织学概率图的明确 BA 子集，使用 FSL 最大概率图（25% 阈值），保留左右与 3a/3b、4a/4p 亚区。未收录的编号不以脑回推断。",
+          "仅明确含 BA 名称的已发布区域；不等于全部人类细胞构筑学分区。",
+          "其他非 BA 名称的 Jülich 区域不自动改名为 BA。",
+          "最大概率标签与群体概率不代表个体边界。",
+          "该旧版 FSL 数据的精确 MNI152 模板变体未从原始元数据独立确认。"
+        ],
+        "sourceVerification": "Original dependencies hashed from preserved local files during build; received binary and public transform bytes are verified separately at load."
+      }
+    },
+    "aal-v3/aal-fsl1mm.bin": {
+      "identity": {
+        "id": "public/data/aal-v3/aal-fsl1mm.bin",
+        "version": "sha256:2e0da6dcc27fcf60a10835ae53053cb96362bd4b5881360e8bac4803e8f0830a",
+        "sha256": "2e0da6dcc27fcf60a10835ae53053cb96362bd4b5881360e8bac4803e8f0830a",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4.nii.gz",
+          "version": "sha256:3df7662d4ea3adbed45a8eefc21ce97085ef773c85ab86e4ce0e3906e6994dbb",
+          "sha256": "3df7662d4ea3adbed45a8eefc21ce97085ef773c85ab86e4ce0e3906e6994dbb",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/aal_build.py",
+          "version": "sha256:089194182d40bd7c2ff51581a2b25f8881cf06d71a0ca66aa969508690abbc06",
+          "sha256": "089194182d40bd7c2ff51581a2b25f8881cf06d71a0ca66aa969508690abbc06",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/aal-official/aal1-spm12-mirror/ROI_MNI_V4.txt",
+          "version": "sha256:fc3aa3001131895e74898b1034a915a93d5dbc644167f02110e895c913f3860e",
+          "sha256": "fc3aa3001131895e74898b1034a915a93d5dbc644167f02110e895c913f3860e",
+          "spaceId": null
+        },
+        {
+          "id": "public/data/aal-v3/sources/aal-on-fsl-1mm.nii.gz",
+          "version": "sha256:bb6e4c723de2a4063baa8b0d422421b4f1180c6591b0abd0a012fd58e4186f17",
+          "sha256": "bb6e4c723de2a4063baa8b0d422421b4f1180c6591b0abd0a012fd58e4186f17",
+          "spaceId": "MNI152NLin6Asym"
+        },
+        {
+          "id": "public/data/aal-v3/aal-native.bin",
+          "version": "sha256:b6dc91b41abc811b95ec9c430f5cb9241024ad5cb811441992baffa8bfd1d3e4",
+          "sha256": "b6dc91b41abc811b95ec9c430f5cb9241024ad5cb811441992baffa8bfd1d3e4",
+          "spaceId": "Colin27 / MNI single-subject"
+        },
+        {
+          "id": "data-sources/raw/MNI152_T1_2mm_brain.nii.gz",
+          "version": "sha256:09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+          "sha256": "09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/aal-official/spm12-single_subj_T1.nii",
+          "version": "sha256:6e58e76e05eb5fef5d2260f6c762a57b4947a571d47f2479d892d6d29b20ced1",
+          "sha256": "6e58e76e05eb5fef5d2260f6c762a57b4947a571d47f2479d892d6d29b20ced1",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/aal_apply_registration.py",
+          "version": "sha256:6cc011b70aff924982d3547a7855dbb3bfbe36ffbd0d9a64558977ed839946b5",
+          "sha256": "6cc011b70aff924982d3547a7855dbb3bfbe36ffbd0d9a64558977ed839946b5",
+          "spaceId": null
+        }
+      ],
+      "transforms": [
+        {
+          "id": "public/data/aal-v3/sources/colin27-to-fsl-dipy.npz",
+          "sha256": "93ed27791cfceacba0f1caf609bc145193a5df6f03c2ecfa331b5b9e6fbb21ea"
+        }
+      ],
+      "verificationFiles": [
+        {
+          "path": "aal-v3/sources/colin27-to-fsl-dipy.npz",
+          "sha256": "93ed27791cfceacba0f1caf609bc145193a5df6f03c2ecfa331b5b9e6fbb21ea"
+        }
+      ],
+      "sourceGrid": {
+        "shape": [
+          181,
+          217,
+          181
+        ],
+        "affine": [
+          1,
+          0,
+          0,
+          -90,
+          0,
+          1,
+          0,
+          -126,
+          0,
+          0,
+          1,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "MNI152NLin6Asym",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "MNI152NLin6Asym",
+        "alignmentStatus": "registered-estimate",
+        "canOverlayOnTarget": true,
+        "source": "https://www.gin.cnrs.fr/en/tools/aal/",
+        "spaceIdentitySource": {
+          "spaceId": "MNI152NLin6Asym",
+          "sourceUrl": "https://www.gin.cnrs.fr/en/tools/aal/",
+          "sourceFile": "public/data/aal-v3/manifest.json",
+          "sourceSha256": "459dd887790d9a1e79354272a7764bc69fca8a50cc4f535edbbcd5d0b4615c20",
+          "sourceLocator": "public/data/aal-v3/manifest.json#/atlases/aal-registered/space",
+          "alignmentStatus": "registered-estimate",
+          "note": "Recorded source-space declaration only. Template uncertainty and registration-estimate status are preserved; this reference does not certify anatomical alignment."
+        },
+        "fieldResolutionMm": 2,
+        "outputGridResolutionMm": 1,
+        "registrationReport": "aal-v3/registration-report.json",
+        "limitations": [
+          "项目估计配准：2mm变换场，1mm标签采样；保留全部标签，不代表1mm定位精度。三正交中心切片经AI核图；并非官方变换或人工解剖认证。2mm采样会丢失AAL3标签134。",
+          "Project estimated transform, not an official GIN/FSL transform.",
+          "1mm label grid uses a field estimated at2mm; output spacing does not imply spatial accuracy.",
+          "2mm output loses label134; 1mm output retains all116/166 labels.",
+          "Exploratory reference/ROI view only; individual small nuclei need independent anatomical review.",
+          "Project estimated transformation; output spacing is not anatomical registration accuracy."
+        ],
+        "sourceVerification": "Original dependencies hashed from preserved local files during build; received binary and public transform bytes are verified separately at load."
+      }
+    },
+    "aal-v3/aal3-fsl1mm.bin": {
+      "identity": {
+        "id": "public/data/aal-v3/aal3-fsl1mm.bin",
+        "version": "sha256:fdcc53f70f169fef2bfd3135c5da5027317b7840bddb212e0ea1638f2dfd5113",
+        "sha256": "fdcc53f70f169fef2bfd3135c5da5027317b7840bddb212e0ea1638f2dfd5113",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/aal-official/AAL3_dist/AAL3v1_1mm.nii",
+          "version": "sha256:53e86a6d0db7d9d375da9936d62437e92c8e6d54aab7b6d3393d9cc43ae0f732",
+          "sha256": "53e86a6d0db7d9d375da9936d62437e92c8e6d54aab7b6d3393d9cc43ae0f732",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/aal_build.py",
+          "version": "sha256:089194182d40bd7c2ff51581a2b25f8881cf06d71a0ca66aa969508690abbc06",
+          "sha256": "089194182d40bd7c2ff51581a2b25f8881cf06d71a0ca66aa969508690abbc06",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/aal-official/AAL3_dist/ROI_MNI_V7_1mm_vol.txt",
+          "version": "sha256:5fba51e82ea8e89925028516361de3efcdcb4bf1999f433e08d1a649b6d29af1",
+          "sha256": "5fba51e82ea8e89925028516361de3efcdcb4bf1999f433e08d1a649b6d29af1",
+          "spaceId": null
+        },
+        {
+          "id": "public/data/aal-v3/sources/aal3-on-fsl-1mm.nii.gz",
+          "version": "sha256:451111c1850b01cdda46c6e3244d3ba13ab93e10b2b0ebaaa1426fd8ee0c4ebe",
+          "sha256": "451111c1850b01cdda46c6e3244d3ba13ab93e10b2b0ebaaa1426fd8ee0c4ebe",
+          "spaceId": "MNI152NLin6Asym"
+        },
+        {
+          "id": "public/data/aal-v3/aal3-native.bin",
+          "version": "sha256:ad02a042ebd830108a2486fa19c118289eebb7c0560001acbbe2dc7e58423dd9",
+          "sha256": "ad02a042ebd830108a2486fa19c118289eebb7c0560001acbbe2dc7e58423dd9",
+          "spaceId": "Colin27 / MNI single-subject"
+        },
+        {
+          "id": "data-sources/raw/MNI152_T1_2mm_brain.nii.gz",
+          "version": "sha256:09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+          "sha256": "09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/aal-official/spm12-single_subj_T1.nii",
+          "version": "sha256:6e58e76e05eb5fef5d2260f6c762a57b4947a571d47f2479d892d6d29b20ced1",
+          "sha256": "6e58e76e05eb5fef5d2260f6c762a57b4947a571d47f2479d892d6d29b20ced1",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/aal_apply_registration.py",
+          "version": "sha256:6cc011b70aff924982d3547a7855dbb3bfbe36ffbd0d9a64558977ed839946b5",
+          "sha256": "6cc011b70aff924982d3547a7855dbb3bfbe36ffbd0d9a64558977ed839946b5",
+          "spaceId": null
+        }
+      ],
+      "transforms": [
+        {
+          "id": "public/data/aal-v3/sources/colin27-to-fsl-dipy.npz",
+          "sha256": "93ed27791cfceacba0f1caf609bc145193a5df6f03c2ecfa331b5b9e6fbb21ea"
+        }
+      ],
+      "verificationFiles": [
+        {
+          "path": "aal-v3/sources/colin27-to-fsl-dipy.npz",
+          "sha256": "93ed27791cfceacba0f1caf609bc145193a5df6f03c2ecfa331b5b9e6fbb21ea"
+        }
+      ],
+      "sourceGrid": {
+        "shape": [
+          181,
+          217,
+          181
+        ],
+        "affine": [
+          1,
+          0,
+          0,
+          -90,
+          0,
+          1,
+          0,
+          -126,
+          0,
+          0,
+          1,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "MNI152NLin6Asym",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "MNI152NLin6Asym",
+        "alignmentStatus": "registered-estimate",
+        "canOverlayOnTarget": true,
+        "source": "https://www.gin.cnrs.fr/en/tools/aal/",
+        "spaceIdentitySource": {
+          "spaceId": "MNI152NLin6Asym",
+          "sourceUrl": "https://www.gin.cnrs.fr/en/tools/aal/",
+          "sourceFile": "public/data/aal-v3/manifest.json",
+          "sourceSha256": "459dd887790d9a1e79354272a7764bc69fca8a50cc4f535edbbcd5d0b4615c20",
+          "sourceLocator": "public/data/aal-v3/manifest.json#/atlases/aal3-registered/space",
+          "alignmentStatus": "registered-estimate",
+          "note": "Recorded source-space declaration only. Template uncertainty and registration-estimate status are preserved; this reference does not certify anatomical alignment."
+        },
+        "fieldResolutionMm": 2,
+        "outputGridResolutionMm": 1,
+        "registrationReport": "aal-v3/registration-report.json",
+        "limitations": [
+          "项目估计配准：2mm变换场，1mm标签采样；保留全部标签，不代表1mm定位精度。三正交中心切片经AI核图；并非官方变换或人工解剖认证。2mm采样会丢失AAL3标签134。",
+          "Project estimated transform, not an official GIN/FSL transform.",
+          "1mm label grid uses a field estimated at2mm; output spacing does not imply spatial accuracy.",
+          "2mm output loses label134; 1mm output retains all116/166 labels.",
+          "Exploratory reference/ROI view only; individual small nuclei need independent anatomical review.",
+          "Project estimated transformation; output spacing is not anatomical registration accuracy."
+        ],
+        "sourceVerification": "Original dependencies hashed from preserved local files during build; received binary and public transform bytes are verified separately at load."
+      }
+    },
+    "t1.bin": {
+      "identity": {
+        "id": "public/data/t1.bin",
+        "version": "sha256:1008af54b83b1c74fa82ec5eab851b93c64a2affcd33a4b797ae97f72990e780",
+        "sha256": "1008af54b83b1c74fa82ec5eab851b93c64a2affcd33a4b797ae97f72990e780",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/raw/MNI152_T1_2mm_brain.nii.gz",
+          "version": "sha256:09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+          "sha256": "09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+          "spaceId": null
+        }
+      ],
+      "transforms": [],
+      "verificationFiles": [],
+      "sourceGrid": {
+        "shape": [
+          91,
+          109,
+          91
+        ],
+        "affine": [
+          2,
+          0,
+          0,
+          -90,
+          0,
+          2,
+          0,
+          -126,
+          0,
+          0,
+          2,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "MNI152NLin6Asym",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "MNI152NLin6Asym",
+        "source": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/standard/MNI152_T1_2mm_brain.nii.gz",
+        "limitations": [
+          "Intensity scaled to 0–255 with 99.6th percentile upper clipping for display only."
+        ]
+      }
+    },
+    "aal-v3/colin27-t1.bin": {
+      "identity": {
+        "id": "public/data/aal-v3/colin27-t1.bin",
+        "version": "sha256:4bfd2b0ccaffcde54fb1820ae62eea010bf6d0e2fe00eabe7ef527e856b6a7fb",
+        "sha256": "4bfd2b0ccaffcde54fb1820ae62eea010bf6d0e2fe00eabe7ef527e856b6a7fb",
+        "spaceId": "Colin27 / MNI single-subject"
+      },
+      "sourceIdentities": [
+        {
+          "id": "data-sources/aal-official/spm12-single_subj_T1.nii",
+          "version": "sha256:6e58e76e05eb5fef5d2260f6c762a57b4947a571d47f2479d892d6d29b20ced1",
+          "sha256": "6e58e76e05eb5fef5d2260f6c762a57b4947a571d47f2479d892d6d29b20ced1",
+          "spaceId": null
+        }
+      ],
+      "transforms": [],
+      "verificationFiles": [],
+      "sourceGrid": {
+        "shape": [
+          91,
+          109,
+          91
+        ],
+        "affine": [
+          2,
+          0,
+          0,
+          -90,
+          0,
+          2,
+          0,
+          -126,
+          0,
+          0,
+          2,
+          -72,
+          0,
+          0,
+          0,
+          1
+        ],
+        "space": "Colin27 / MNI single-subject",
+        "order": "x-fastest"
+      },
+      "spatialEvidence": {
+        "space": "Colin27 / MNI single-subject",
+        "source": "https://github.com/spm/spm12/blob/main/canonical/single_subj_T1.nii",
+        "limitations": []
+      }
+    }
+  }
+}

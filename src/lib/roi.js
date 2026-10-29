@@ -1,4 +1,5 @@
 import { Matrix4 } from 'three';
+import { makeComputationManifest, makeComparisonManifest, compareComputationManifest } from './computation-manifest.js';
 
 export const ROI_COLORS = { aOnly: '#27a5b5', bOnly: '#e39845', intersection: '#8e69c6', A: '#27a5b5', B: '#e39845' };
 export const ROI_DEFAULT_DISPLAY = { mode: 'parts', opacity: 0.7, opacityA: 0.65, opacityB: 0.65, opacityOverlap: 0.9, xray: false };
@@ -13,7 +14,8 @@ function checkedGrid(volume, maxVoxels = MAX_GRID_VOXELS) {
   const matrix = new Matrix4().set(...affine);
   const determinant = matrix.determinant();
   if (Math.abs(determinant) < 1e-10) throw new Error('invalid-affine');
-  return { shape: [...volume.shape], affine: [...affine], matrix, voxelVolumeMm3: Math.abs(determinant), space: volume.space || 'MNI152NLin6Asym', order: 'x-fastest' };
+  if (typeof volume.space !== 'string' || !volume.space.trim()) throw new Error('source-space-required');
+  return { shape: [...volume.shape], affine: [...affine], matrix, voxelVolumeMm3: Math.abs(determinant), space: volume.space, order: 'x-fastest' };
 }
 
 export function positiveLabels(volume) {
@@ -107,6 +109,11 @@ export function compareROIs(volumeA, selectionA, volumeB, selectionB, target, de
   const grid = checkedGrid(target);
   if (grid.space !== 'MNI152NLin6Asym') throw new Error('unsupported-target-space');
   const a = resampleROI(volumeA, selectionA, grid), b = resampleROI(volumeB, selectionB, grid);
+  const manifest = descriptors.manifest ? makeComputationManifest(descriptors.manifest) : null;
+  if (manifest) {
+    const current = makeComparisonManifest(volumeA,a.selection,volumeB,b.selection,grid);
+    if (!compareComputationManifest(manifest,current).matches) throw Error('result-manifest-mismatch');
+  }
   const classes = new Uint8Array(a.mask.length);
   let aVoxels = 0, bVoxels = 0, intersectionVoxels = 0, unionVoxels = 0;
   const low = [Infinity, Infinity, Infinity], high = [-Infinity, -Infinity, -Infinity], sum = [0, 0, 0];
@@ -133,7 +140,7 @@ export function compareROIs(volumeA, selectionA, volumeB, selectionB, target, de
   }
   return {
     id: `${A.atlasId || 'A'}:${JSON.stringify(a.selection)}|${B.atlasId || 'B'}:${JSON.stringify(b.selection)}|${grid.shape.join('x')}|${grid.affine.join(',')}`,
-    A, B, sampling: { A:a.sampling, B:b.sampling }, grid: { shape: grid.shape, affine: grid.affine, order: 'x-fastest', space: grid.space, voxelVolumeMm3: mm3 },
+    A, B, manifest, sampling: { A:a.sampling, B:b.sampling }, grid: { shape: grid.shape, affine: grid.affine, order: 'x-fastest', space: grid.space, voxelVolumeMm3: mm3 },
     maskA: a.mask, maskB: b.mask, classes, center: unionVoxels ? sum.map(n => n / unionVoxels) : null, bounds: unionVoxels ? [low, high] : null,
     metrics: { aVoxels, bVoxels, intersectionVoxels, unionVoxels, aOnlyVoxels, bOnlyVoxels, aMm3: aVoxels * mm3, bMm3: bVoxels * mm3, intersectionMm3: intersectionVoxels * mm3, unionMm3: unionVoxels * mm3, aOnlyMm3: aOnlyVoxels * mm3, bOnlyMm3: bOnlyVoxels * mm3, dice: aVoxels + bVoxels ? 2 * intersectionVoxels / (aVoxels + bVoxels) : null, jaccard: unionVoxels ? intersectionVoxels / unionVoxels : null, aCoveredByB: aVoxels ? intersectionVoxels / aVoxels : null, bCoveredByA: bVoxels ? intersectionVoxels / bVoxels : null },
     probabilityMetrics, display: { ...ROI_DEFAULT_DISPLAY }, representation: 'binary-labels', method: `Labels/masks: nearest-neighbour. Continuous maps: trilinear sampling with zero outside source, then threshold. Exact binary counts on FSL shared grid; no new anatomical registration. A: ${JSON.stringify(a.selection)}; B: ${JSON.stringify(b.selection)}.`
@@ -228,5 +235,5 @@ export function roiSliceStyle(value, display = ROI_DEFAULT_DISPLAY) {
 }
 
 export function serializableVolume(volume) {
-  return Object.fromEntries(['data', 'shape', 'affine', 'order', 'space', 'canOverlayOnTarget', 'alignmentStatus', 'labels', 'source', 'thresholdPercent','kind','custom','name','provenance'].map(key => [key, volume[key]]));
+  return Object.fromEntries(['data', 'shape', 'affine', 'order', 'space', 'dtype', 'canOverlayOnTarget', 'alignmentStatus', 'labels', 'source', 'thresholdPercent','kind','custom','name','provenance','identity','sourceIdentities','sourceGrid','transforms','encoding','spatialEvidence','identityVerification'].map(key => [key, volume[key]]));
 }

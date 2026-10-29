@@ -55,7 +55,7 @@ test('documented manifest upgrade deterministically rebuilds source identities a
     assert.equal(afterSourceChange.atlases['ba-legacy'].labels[0].labelMetadataSource.sourceSha256,actualDigest);
     const originalFetch=globalThis.fetch;
     try {
-      globalThis.fetch=async url=>String(url).endsWith('manifest.json')?{ok:true,json:async()=>afterSourceChange}:{ok:true,arrayBuffer:async()=>{
+      globalThis.fetch=async url=>String(url).endsWith('asset-identities.json')?{ok:true,json:async()=>read(path.join(root,'public/data/asset-identities.json'))}:String(url).endsWith('manifest.json')?{ok:true,json:async()=>afterSourceChange}:{ok:true,arrayBuffer:async()=>{
         const bytes=fs.readFileSync(path.join(root,'public',String(url).replace(/^\//,'')));
         return bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength);
       }};

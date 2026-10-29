@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { atlasRegionKey, makeAtlasRegionRef } from '../lib/atlas-identity.js';
 import { serializeAtlasSelection } from '../lib/atlas-selection.js';
 import { loadAnatomyVolume, loadAtlas, makeSliceCanvas, sliceWorldPoint } from '../lib/volume.js';
-import { positiveLabels, ROI_COLORS, ROI_DEFAULT_DISPLAY, serializableVolume, comparisonMaskVolume } from '../lib/roi.js';
+import { positiveLabels, ROI_COLORS, ROI_DEFAULT_DISPLAY, serializableVolume, comparisonMaskVolume, normalizeROISelection } from '../lib/roi.js';
+import { prepareComparisonManifest, prepareLocalVolumeProvenance, makeComputationManifest, compareComputationManifest, exportComparisonBundle } from '../lib/computation-manifest.js';
 import { makeComparisonGrid } from '../lib/roi-grid.js';
 import { parseNifti, exportNifti, parseLabelTable, MAX_NIFTI_FILE_BYTES } from '../lib/nifti.js';
 import { registerCustomVolume, getCustomVolume, listCustomVolumes, subscribeCustomVolumes } from '../lib/custom-volumes.js';
@@ -17,6 +18,8 @@ const TEXT = {
   },
 };
 const ATLAS_NAMES = { dk: 'Desikan–Killiany (DK)', ho: 'Harvard–Oxford', jhu: 'JHU ICBM-DTI-81', ba: 'Talairach BA → MNI', 'ba-histology': 'Jülich BA', aal: 'AAL', aal3: 'AAL3', 'ba-legacy': 'Legacy BA' };
+Object.assign(TEXT.zh, {provenanceDetails:'计算来源', 'computation-provenance-required':'缺少源文件身份或变换记录，无法核对本次计算。', 'calculation-volume-byte-digest-mismatch':'当前体积数据与记录的摘要不一致，请重新载入来源。', 'result-manifest-mismatch':'计算来源与当前输入不一致，请重新计算。'});
+Object.assign(TEXT.en, {provenanceDetails:'Computation sources', 'computation-provenance-required':'Source-file identities or transform records are missing; this comparison cannot be verified.', 'calculation-volume-byte-digest-mismatch':'Volume data differ from their recorded digest. Reload the source.', 'result-manifest-mismatch':'Computation provenance differs from the current inputs. Compute again.'});
 Object.assign(TEXT.zh, {
   spacing:'采样间距', gridHint:'1 mm 是输出采样间距，不代表 1 mm 定位精度；AAL/AAL3 配准场估计于 2 mm。', sampling:'采样检查', sourceSample:'源网格：体素 / mm³', targetSample:'共同网格：体素 / mm³', lostLabels:'采样后消失的标签', absentLabels:'源数据不存在的标签', 'retained':'所选标签均有保留', 'partial-loss':'部分所选标签缺失', 'empty-target':'源区域存在，但在共同网格内为空', 'empty-source':'源选择没有体素，已停止计算', confirmLoss:'确认采样损失并计算', lossWarning:'共同网格未保留全部所选区域。确认后将生成带此警示的结果。', cancelPreflight:'取消采样检查', sourceMissing:'源选择缺少标签，已停止计算。', 'unsupported-reference-grid':'此参考网格不在支持的 NLin6Asym 标准网格中。',
 });
@@ -46,12 +49,6 @@ TEXT.zh.restoreAborted = '先前的 ROI 对照未能完整恢复；请核对来�
 TEXT.en.restoreAborted = 'The previous ROI comparison could not be fully restored. Check the sources and selections, then compute again.';
 const alignmentKey = status => status === 'user-declared' ? 'declared' : status === 'verified-native' ? 'native' : status === 'published-affine' ? 'affine' : status === 'registered' ? 'registered' : 'published';
 const localizedLabel = (label, language) => language === 'zh' && label?.zh ? label.zh : label?.name;
-const safeCSV = value => {
-  const raw = String(value ?? '');
-  // Imported labels and provenance are text, even when they start like spreadsheet formulas.
-  const text = typeof value === 'string' && /^[=+@\-\t\r\n]/.test(raw) ? `'${raw}` : raw;
-  return `"${text.replaceAll('"', '""')}"`;
-};
 const formatRatio = value => value == null ? '—' : value.toFixed(4);
 const formatPercent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
 
@@ -209,6 +206,10 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       if (requestId !== sequence.current) return;
       setAnatomy(target);
       const grid = makeComparisonGrid(target, resolutionMm);
+      const selectionA = normalizeROISelection(sourceA.volume, { labels: aLabels, threshold: aThreshold, tail: aTail });
+      const selectionB = normalizeROISelection(sourceB.volume, { labels: bLabels, threshold: bThreshold, tail: bTail });
+      const manifest = await prepareComparisonManifest(sourceA.volume, selectionA, sourceB.volume, selectionB, grid);
+      if (requestId !== sequence.current) return;
       const current = new Worker(new URL('../lib/roi.worker.js', import.meta.url), { type: 'module' }); worker.current = current;
       current.onmessage = ({ data }) => {
         if (requestId !== sequence.current || data.requestId !== requestId) return;
@@ -219,14 +220,15 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
         }
         setBusy(false); current.terminate(); worker.current = null;
         if (data.error) { abortRestore('compute-failed'); setError(data.error); return; }
+        if (!compareComputationManifest(manifest, data.comparison?.manifest).matches) { abortRestore('compute-failed'); setError('result-manifest-mismatch'); return; }
         restoringRequest.current = false;
         setPreflight(null);
-        const result = { ...data.comparison, display: { ...displayRef.current } };
+        const result = { ...data.comparison, manifest: makeComputationManifest(data.comparison.manifest), display: { ...displayRef.current } };
         setComparison(result); setPoint(result.center || [0, 0, 0]); callbacks.current.onComparisonChange?.(result);
       };
       current.onerror = () => { if (requestId === sequence.current) { abortRestore('worker-failed'); setBusy(false); setError('computeError'); current.terminate(); worker.current = null; } };
       const describe = (source, atlasId, labels) => ({ atlasId, regionRefs:refsFor(atlasId,source,labels), name: source.labels.length ? source.labels.filter(label => labels.includes(label.id)).map(label => label.name).join(' + ') : source.volume.name });
-      current.postMessage({ requestId, volumeA: serializableVolume(sourceA.volume), volumeB: serializableVolume(sourceB.volume), selectionA: { labels: aLabels, threshold: aThreshold, tail: aTail }, selectionB: { labels: bLabels, threshold: bThreshold, tail: bTail }, target: grid, descriptors: { A: describe(sourceA, aAtlas, aLabels), B: describe(sourceB, bAtlas, bLabels) } });
+      current.postMessage({ requestId, volumeA: serializableVolume(sourceA.volume), volumeB: serializableVolume(sourceB.volume), selectionA, selectionB, target: grid, manifest, descriptors: { A: describe(sourceA, aAtlas, aLabels), B: describe(sourceB, bAtlas, bLabels) } });
     } catch (problem) { if (requestId === sequence.current) { abortRestore('compute-failed'); setBusy(false); setError(problem.message); } }
   }
   useEffect(() => { if (restore.current && ready && !busy) compute(); }, [ready, selectionKey, sourceA.volume, sourceB.volume, restoreEpoch]);
@@ -240,17 +242,10 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     worker.current.postMessage({requestId:preflight.requestId, action:'confirm'});
     setPreflight(null);
   }
-  function exportMetrics() {
+  function exportMetrics(format = 'csv') {
     if (!comparison) return;
-    const lines = [['metric', 'value'], ...Object.entries(comparison.metrics)];
-    if (comparison.probabilityMetrics) lines.push(...Object.entries(comparison.probabilityMetrics).map(([key, value]) => [`probability ${key}`, value]));
-    for (const key of ['A', 'B']) {
-      const source = comparison[key];
-      lines.push([`${key} atlas`, source.atlasId], [`${key} label ID`, source.labelId], [`${key} label IDs`, source.labelIds.join(' + ')], [`${key} label name`, source.name], [`${key} alignment`, source.alignmentStatus], [`${key} space`, source.space], [`${key} source`, source.source], [`${key} provenance`, source.provenance], [`${key} selection`, JSON.stringify(source.selection)], [`${key} interpolation`, source.interpolation], [`${key} source voxel count`, source.sourceLabelVoxels]);
-      lines.push([`${key} sampling`, JSON.stringify(comparison.sampling[key])]);
-    }
-    lines.push(['target space', comparison.grid.space], ['voxel volume mm3', comparison.grid.voxelVolumeMm3], ['shape', comparison.grid.shape.join(' × ')], ['affine row-major', comparison.grid.affine.join(' ')], ['method', comparison.method]);
-    download('\ufeff' + lines.map(row => row.map(safeCSV).join(',')).join('\r\n'), `${t.downloadName}-${comparison.A.atlasId}-${comparison.B.atlasId}.csv`, 'text/csv;charset=utf-8');
+    const bundle = exportComparisonBundle(comparison);
+    download((format === 'csv' ? '\ufeff' : '') + bundle[format], `${t.downloadName}-${comparison.A.atlasId}-${comparison.B.atlasId}.${format}`, format === 'json' ? 'application/json' : 'text/csv;charset=utf-8');
   }
   async function importVolume() {
     if (!importFile || importBusy) return;
@@ -260,13 +255,15 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       const accepted = space === 'MNI152NLin6Asym' && aligned;
       if (accepted && !provenance.trim()) throw new Error('provenanceRequired');
       if (importFile.size > MAX_NIFTI_FILE_BYTES) throw new Error('nifti-file-too-large');
-      const volume = await parseNifti(await importFile.arrayBuffer(), { name: importFile.name.replace(/\.nii(\.gz)?$/i, ''), kind: importKind, space });
+      const originalBytes = new Uint8Array(await importFile.arrayBuffer());
+      const volume = await parseNifti(originalBytes.buffer, { name: importFile.name.replace(/\.nii(\.gz)?$/i, ''), kind: importKind, space });
       if (labelFile) {
         if (labelFile.size > 2 * 1024 * 1024) throw new Error('labels-invalid-table');
         volume.labels = parseLabelTable(await labelFile.text(), /\.json$/i.test(labelFile.name) ? 'json' : 'csv');
       }
       Object.assign(volume, { canOverlayOnTarget: accepted, alignmentStatus: accepted ? 'user-declared' : 'unverified', provenance: provenance.trim(), source: importFile.name, metadata: { ...volume.metadata, userDeclaredAligned: accepted, referenceSpace: space } });
-      const id = registerCustomVolume(volume);
+      const identifiedVolume = await prepareLocalVolumeProvenance(volume, originalBytes, { id: importFile.name });
+      const id = registerCustomVolume(identifiedVolume);
       if (accepted) { setBAtlas(id); setBLabels([]); setBThreshold(importKind === 'probability' ? .5 : 0); }
       setImportMessage({ name: volume.name, aligned: accepted, conflict: volume.metadata.affineConflict });
     } catch (problem) { setImportError(problem.message); }
@@ -311,7 +308,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       {identityMismatch&&<p className="roi-warning" role="alert">{language==='en'?'Saved atlas label identity is unavailable or has changed. Select the source labels again.':'保存的图谱标签身份不可用或版本已改变。请重新选择来源标签。'}</p>}
       <label className="roi-grid"><strong>{t.grid}</strong> <select aria-label="ROI shared grid spacing" value={resolutionMm} onChange={event => changeSelection(() => setResolutionMm(+event.target.value))}><option value="2">2 mm · 91 × 109 × 91</option><option value="1">1 mm · 181 × 217 × 181</option></select></label>
       <p className="roi-note">{t.gridHint}</p>
-      <div className="roi-actions"><button type="button" className="roi-primary" onClick={compute} disabled={busy || !ready || missingThreshold} aria-label="Compute ROI overlap">{busy ? t.computing : t.compare}</button>{busy && <button type="button" onClick={clear} aria-label="Cancel ROI computation">{t.cancelCompute}</button>}{comparison && <><button type="button" onClick={clear} aria-label="Clear ROI overlay">{t.clear}</button><button type="button" onClick={exportMetrics} aria-label="Export ROI overlap metrics CSV">{t.export}</button></>}</div>
+      <div className="roi-actions"><button type="button" className="roi-primary" onClick={compute} disabled={busy || !ready || missingThreshold} aria-label="Compute ROI overlap">{busy ? t.computing : t.compare}</button>{busy && <button type="button" onClick={clear} aria-label="Cancel ROI computation">{t.cancelCompute}</button>}{comparison && <><button type="button" onClick={clear} aria-label="Clear ROI overlay">{t.clear}</button><button type="button" onClick={() => exportMetrics('csv')} aria-label="Export ROI overlap metrics CSV">{t.export}</button><button type="button" onClick={() => exportMetrics('json')} aria-label="Export ROI provenance JSON">{language === 'en' ? 'Export provenance JSON' : '导出来源 JSON'}</button></>}</div>
       {preflight && <div aria-live="polite">{samplingBlock(preflight.sampling, preflight.grid)}{preflight.blocked && <p className="roi-warning" role="alert">{t.sourceMissing}</p>}{preflight.requiresConfirmation && <><p className="roi-warning" role="alert">{t.lossWarning}</p><div className="roi-actions"><button type="button" className="roi-primary" aria-label="Confirm ROI sampling loss" onClick={confirmSamplingLoss}>{t.confirmLoss}</button><button type="button" aria-label="Cancel ROI sampling preflight" onClick={clear}>{t.cancelPreflight}</button></div></>}</div>}
       {restoreWarning && <p role="alert" className="roi-warning">{t.restoreAborted}</p>}{error && <p role="alert" className="roi-error">{t[error] || t.computeError}</p>}{!comparison && !busy && <p className="roi-empty">{t.waiting}</p>}{busy && <p className="roi-note" role="status">{t.computing}</p>}
       {comparison && <div className="roi-result" aria-live="polite">{samplingBlock(comparison.sampling, comparison.grid)}<h3>{t.binary}</h3><div className="roi-metrics"><div><span>Dice</span><strong>{formatRatio(comparison.metrics.dice)}</strong><small>2|A ∩ B| / (|A| + |B|)</small></div><div><span>Jaccard</span><strong>{formatRatio(comparison.metrics.jaccard)}</strong><small>|A ∩ B| / |A ∪ B|</small></div><div><span>{t.coveredA}</span><strong>{formatPercent(comparison.metrics.aCoveredByB)}</strong></div><div><span>{t.coveredB}</span><strong>{formatPercent(comparison.metrics.bCoveredByA)}</strong></div></div>
@@ -319,6 +316,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
         <p className="roi-grid"><strong>{t.grid}</strong> {comparison.grid.space} · {comparison.grid.shape.join(' × ')} · {t.resolution} {comparison.grid.voxelVolumeMm3.toLocaleString()} mm³</p>
         <table className="roi-counts"><thead><tr><th>{t.part}</th><th>{t.voxels}</th><th>{t.volume}</th></tr></thead><tbody>{[['A','aVoxels','aMm3'],['B','bVoxels','bMm3'],['intersection','intersectionVoxels','intersectionMm3'],['aOnly','aOnlyVoxels','aOnlyMm3'],['bOnly','bOnlyVoxels','bOnlyMm3'],['union','unionVoxels','unionMm3']].map(([key,count,volume]) => <tr key={key}><td>{ROI_COLORS[key] && <i style={{background:ROI_COLORS[key]}}/>}{t[key]}</td><td>{comparison.metrics[count].toLocaleString()}</td><td>{comparison.metrics[volume].toLocaleString(undefined,{maximumFractionDigits:2})}</td></tr>)}</tbody></table>
         <div className="roi-actions roi-export-masks"><span>{t.maskExport}</span>{['A','B','intersection','union'].map(part => <button key={part} aria-label={`Export ROI ${part} NIfTI mask`} onClick={() => download(exportNifti(comparisonMaskVolume(comparison, part)), `ROI-${part}.nii`, 'application/octet-stream')}>{t[part]}</button>)}</div>
+        <details className="roi-provenance"><summary>{t.provenanceDetails}</summary><p>{comparison.manifest.appVersion} · {comparison.manifest.algorithmVersion}</p>{comparison.manifest.inputs.slice(0,2).map((input,index)=><p key={index} style={{overflowWrap:'anywhere'}}><strong>{index?'B':'A'}</strong> · {input.id}<br/><code>SHA-256 {input.sha256}</code></p>)}</details>
         {!!comparison.surfaceWarnings?.length && <p className="roi-warning">{t.surfaceOmitted} ({comparison.surfaceWarnings.map(key => t[key]).join(', ')})</p>}
         {comparison.metrics.aVoxels > 0 && comparison.metrics.bVoxels > 0 && comparison.metrics.intersectionVoxels === 0 && <p className="roi-note">{t.noOverlap}</p>}{(!comparison.metrics.aVoxels || !comparison.metrics.bVoxels) && <p className="roi-warning">{t.emptyTarget}</p>}
         <fieldset className="roi-display"><legend>{t.showControls}</legend><label className="roi-mode"><span>{t.view}</span><select aria-label="ROI display mode" value={display.mode} onChange={event => changeDisplay({mode:event.target.value})}>{['parts','overlap','A','B'].map(mode=><option key={mode} value={mode}>{t[mode]}</option>)}</select></label><div className="roi-opacity">{[['opacityA','A'],['opacityB','B'],['opacityOverlap','intersection']].map(([key,color])=><label key={key}><span><i style={{background:ROI_COLORS[color]}}/>{t[key]}<output>{Math.round(display[key]*100)}%</output></span><input type="range" min="0" max="1" step="0.05" value={display[key]} onChange={event=>changeDisplay({[key]:+event.target.value})} aria-label={key==='opacityA'?'ROI A opacity':key==='opacityB'?'ROI B opacity':'ROI intersection opacity'}/></label>)}</div><label className="roi-xray"><input type="checkbox" checked={display.xray} onChange={event=>changeDisplay({xray:event.target.checked})} aria-label="ROI X-ray view"/>{t.xray}</label><p className="roi-note">{t.depthHint} {t.anatomyHint}</p></fieldset>

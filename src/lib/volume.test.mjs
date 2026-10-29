@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { loadAtlas, makeSliceCanvas, prepareVolume } from './volume.js';
 import { makeAtlasRegionRef } from './atlas-identity.js';
+import { createHash } from 'node:crypto';
 
 test('slice rendering overlays aligned atlas voxels and leaves unavailable space uncoloured', () => {
   const original = globalThis.document;
@@ -31,9 +32,12 @@ test('atlas cache separates version, content digest and declared space while pre
   const metadata = { available:true,atlasId:'identity-fixture',atlasVersion:'v1',sha256:'a'.repeat(64),spaceId:'native-s1',space:'native-s1',spaceIdentitySource:{...source,spaceId:'native-s1'},data:'same-filename.bin',shape:[1,1,1],affine:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],dtype:'uint16',order:'x-fastest',labels:[{ id:8121,name:'Temporal_Pole_Sup_L',hemisphere:'L',tissue:'unknown',labelMetadataSource:source }] };
   const manifest = { atlases:{ 'identity-fixture':metadata,'identity-other':{...metadata,atlasId:'identity-other'} } };
   let downloads = 0;
-  globalThis.fetch = async url => String(url).endsWith('manifest.json')
+  let bytes = new Uint16Array([8121]);
+  const digest = () => createHash('sha256').update(new Uint8Array(bytes.buffer)).digest('hex');
+  metadata.sha256 = manifest.atlases['identity-other'].sha256 = digest();
+  globalThis.fetch = async url => String(url).endsWith('asset-identities.json') ? {ok:true,json:async()=>({assets:{}})} : String(url).endsWith('manifest.json')
     ? { ok:true,json:async () => manifest }
-    : { ok:true,arrayBuffer:async () => { downloads++; return new Uint16Array([8121]).buffer; } };
+    : { ok:true,arrayBuffer:async () => { downloads++; return bytes.buffer; } };
   try {
     const first = await loadAtlas('identity-fixture');
     assert.equal(makeAtlasRegionRef('identity-fixture', first, 8121).labelId, 8121);
@@ -44,15 +48,20 @@ test('atlas cache separates version, content digest and declared space while pre
     const nextVersion = await loadAtlas('identity-fixture');
     assert.notStrictEqual(nextVersion, first);
     assert.equal(first.atlasVersion, 'v1');
-    metadata.sha256 = 'b'.repeat(64);
+    bytes = new Uint16Array([8122]);
+    metadata.sha256 = digest();
     const nextBytes = await loadAtlas('identity-fixture');
     assert.notStrictEqual(nextBytes, nextVersion);
     metadata.spaceId = metadata.space = 'registered-s1';
     const nextSpace = await loadAtlas('identity-fixture');
     assert.notStrictEqual(nextSpace, nextBytes);
     assert.equal(nextSpace.spaceId, 'registered-s1');
+    manifest.atlases['identity-other'].sha256 = digest();
     assert.notStrictEqual(await loadAtlas('identity-other'), nextSpace);
     assert.equal(downloads, 5);
     assert.equal(first.sampleRAS(0,0,0), 8121);
+    metadata.atlasVersion = 'corruption';
+    bytes = new Uint16Array([8123]);
+    await assert.rejects(loadAtlas('identity-fixture'), /digest/);
   } finally { globalThis.fetch = original; }
 });
