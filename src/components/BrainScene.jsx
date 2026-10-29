@@ -11,6 +11,7 @@ import { atlasRegionKey, makeAtlasRegionRef, relationsForRegion } from '../lib/a
 import { pickDisplayedSurfaceRegion } from '../lib/atlas-surface-selection.js';
 import { queryableAtlasVolume } from '../lib/query-state.js';
 import { ANATOMY_MANIFEST_RESOURCE, resourceValue } from '../lib/atlas-resource.js';
+import { representationForAsset } from '../lib/spatial-qc.js';
 
 const PASTELS = ['#9ebdb2', '#e4bcaa', '#b6b7d3', '#b8cbb0', '#d9c797', '#a6becf', '#d5b0ba', '#b8c5d5', '#c9c1a7', '#98bfbf', '#d7c4b9', '#c2b5ca'];
 const axisColors = { x: '#c999a0', y: '#a3b6cb', z: '#87afa0' };
@@ -791,7 +792,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
             const object = structure && status.objects.get(structure.id);
             if (object) point.sub(object.position);
             const source = object?.userData.sourceMetadata;
-            if (source) p.onQueryStatus?.({ loaded: true, method: source.representation || 'atlas-segmentation', sourceStructureId: structure.id, nativeSpace: source.nativeSpace || source.space, displaySpace: source.displaySpace || source.space || source.nativeSpace, targetAlignment: source.targetAlignment, sourceMetadata: source, message: `${source.dataset || source.atlas || sceneText('解剖图谱', 'Anatomical atlas')} · ${source.targetAlignment?.verified === false ? sceneText('原生参考空间（未联合配准）', 'Native reference space; no joint registration') : source.representation === 'tractography' ? sceneText('群体扩散流线', 'Population tractography') : sceneText('图谱分割表面', 'Atlas segmentation surface')}` });
+            if (source) p.onQueryStatus?.({ loaded: true, method: source.representation || 'atlas-segmentation', sourceStructureId: structure.id, nativeSpace: source.nativeSpace || source.space, displaySpace: source.displaySpace || source.space || source.nativeSpace, targetAlignment: source.targetAlignment, sourceMetadata: source, message: `${source.dataset || source.atlas || sceneText('解剖图谱', 'Anatomical atlas')} · ${source.representation === 'illustrative-subdivision' ? sceneText('整体分割表面的示意分区；分区边界待独立复核', 'Illustrative subdivision of a source envelope; regional boundaries await independent review') : source.targetAlignment?.verified === false ? sceneText('原生参考空间（未联合配准）', 'Native reference space; no joint registration') : source.representation === 'tractography' ? sceneText('群体扩散流线', 'Population tractography') : sceneText('图谱分割表面', 'Atlas segmentation surface')}` });
             if (source?.regionRef) {
               const region=source.regionRef;
               p.onRegionSelect?.([region],point.toArray(),{atlasId:region.atlasId,atlasVersion:region.atlasVersion,coordinate:point.toArray(),method:'source-label-surface',requestId:status.atlasGeneration,selectionMode:start.shift?'add':'replace'});
@@ -875,7 +876,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
               const x = (data.positions[a * 3] + data.positions[b * 3] + data.positions[c * 3]) / 3;
               if (structure.hemisphere === 'L' ? x < (hasVermis ? -5 : 0) : structure.hemisphere === 'R' ? x >= (hasVermis ? 5 : 0) : Math.abs(x) <= 5) indices.push(a, b, c);
             }
-            applyActualAsset(structure.id, { ...data, indices }, { ...cerebellum, representation: 'atlas-segmentation', note: 'Diedrichsen 小脑整体表面；中线几何分侧', noteEn: 'Diedrichsen whole-cerebellum surface; geometric separation at the midline' }, false);
+            applyActualAsset(structure.id, { ...data, indices }, { ...cerebellum, representation: representationForAsset({id:structure.id},null), subdivisionId:structure.id, schematic:true, actualEnvelope:true, note: 'Diedrichsen 小脑整体表面；半球与蚓部由中线几何带示意划分，并非源标签分割', noteEn: 'Diedrichsen whole-cerebellum envelope; hemisphere and vermis boundaries are illustrative midline bands, not source label segmentations' }, false);
           }
           updateMaterials();
         } catch (error) { if (!destroyed) { propsRef.current.structures.filter(s => s.category === 'cerebellum').forEach(s => status.anatomyFailures.add(s.id)); console.warn('[NeuroAtlas anatomical asset]', 'cerebellum', error); } }
@@ -894,7 +895,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
               if (structure.id === 'midbrain' ? z > -22 : structure.id === 'pons' ? z <= -22 && z > -47 : structure.id === 'medulla' ? z <= -47 : false) indices.push(a, b, c);
             }
             if (!indices.length) continue;
-            applyActualAsset(structure.id, { ...data, indices }, { ...brainstem, representation: 'atlas-segmentation', schematic: true, actualEnvelope: true, note: 'HO 脑干真实外表面；中脑、脑桥和延髓界线为示意几何分段，并非核验后的解剖分割', noteEn: 'Real HO brainstem envelope; midbrain, pons and medulla boundaries are illustrative geometric divisions, not validated anatomical subdivisions' }, false);
+            applyActualAsset(structure.id, { ...data, indices }, { ...brainstem, representation: representationForAsset({id:structure.id},null), subdivisionId:structure.id, schematic: true, actualEnvelope: true, note: 'HO 脑干真实外表面；中脑、脑桥和延髓界线为示意几何分段，并非核验后的解剖分割', noteEn: 'Real HO brainstem envelope; midbrain, pons and medulla boundaries are illustrative geometric divisions, not validated anatomical subdivisions' }, false);
           }
           updateMaterials();
         } catch (error) { if (!destroyed) { propsRef.current.structures.filter(s => s.category === 'brainstem').forEach(s => status.anatomyFailures.add(s.id)); console.warn('[NeuroAtlas anatomical asset]', 'brainstem', error); } }

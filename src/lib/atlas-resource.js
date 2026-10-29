@@ -4,10 +4,12 @@ export const MAIN_MANIFEST_RESOURCE='manifest:main';
 export const ANATOMY_MANIFEST_RESOURCE='manifest:anatomy';
 export const BA_COVERAGE_RESOURCE='manifest:ba-coverage';
 export const ANATOMY_VOLUME_RESOURCE='volume:anatomy';
+export const SPATIAL_QC_RESOURCE='manifest:spatial-qc';
 const manifestFiles={
   [MAIN_MANIFEST_RESOURCE]:'manifest.json',
   [ANATOMY_MANIFEST_RESOURCE]:'anatomy/manifest.json',
   [BA_COVERAGE_RESOURCE]:'ba-v2/manifest.json',
+  [SPATIAL_QC_RESOURCE]:'spatial-qc/assessment.json',
 };
 const resources=new Map();
 const record=key=>{if(!resources.has(key))resources.set(key,{state:{status:'idle',generation:0,value:null,error:null},listeners:new Set(),pending:null,controller:null});return resources.get(key);};

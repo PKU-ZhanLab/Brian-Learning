@@ -17,6 +17,9 @@ jobs:
           node-version: 24.15.0
           cache: npm
       - run: npm ci
+      - run: node scripts/prepare-spatial-qc-sources.mjs
+      - run: node scripts/spatial-qc.mjs --check
+      - run: node scripts/validate-segmentation-source.mjs --check
       - run: npm run check
       - run: npm run build
       # The exact lockfile Playwright runner downloads its matching browser in CI.

@@ -22949,5 +22949,6 @@
   "aalSourceManifest": "aal-v3/manifest.json",
   "aalRegistrationReview": "aal-v3/root-review.json",
   "dataLicenseNotice": "/data/licenses/NOTICE-DATA.md",
-  "regionRelations": "atlas-region-relations.json"
+  "regionRelations": "atlas-region-relations.json",
+  "spatialQC": "spatial-qc/assessment.json"
 }

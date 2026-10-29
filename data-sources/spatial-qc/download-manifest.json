@@ -1,0 +1,51 @@
+{
+  "status": "candidate-not-integrated",
+  "sourceLicenseStatement": "README states CC BY; atlas_description references missing LICENSE file; attribution/version notice must accompany candidate evaluation",
+  "files": [
+    {
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/README.md",
+      "ref": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+      "bytes": 10904,
+      "gitBlobSha": "cfcba96abb20c1fdbcc8b36d65483facda644583",
+      "sha256": "f6c544b949f5a20059f9f154c93d892909f2a9bf6bba74396a9b15a5df55246e",
+      "retrievedAt": "2026-10-29T13:41:34.196Z"
+    },
+    {
+      "path": "Diedrichsen_2009/atlas_description.json",
+      "url": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atlas_description.json",
+      "ref": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+      "bytes": 1351,
+      "gitBlobSha": "4a24d3414d9b18ab7bd42d016238290a0dc66c38",
+      "sha256": "90240cabe8f1fab75bcf9af0d1e8b287cab76d04233095b978b650d2cb1405c1",
+      "retrievedAt": "2026-10-29T13:41:33.464Z"
+    },
+    {
+      "path": "Diedrichsen_2009/atl-Anatom.tsv",
+      "url": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atl-Anatom.tsv",
+      "ref": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+      "bytes": 767,
+      "gitBlobSha": "2dc2ba1d85805342470fdb46574e0890f32f3ac8",
+      "sha256": "dc682c847972bd37badaa979526cf22a25bc79cdf50f4f49c107391c517fe7ad",
+      "retrievedAt": "2026-10-29T13:41:33.541Z"
+    },
+    {
+      "path": "Diedrichsen_2009/atl-Anatom_space-MNI_dseg.nii",
+      "url": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atl-Anatom_space-MNI_dseg.nii",
+      "ref": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+      "bytes": 1324108,
+      "gitBlobSha": "3b53404f70f0d271e4b2a82e3460741ae61caa3d",
+      "sha256": "434471d89ff329e6e14cdecb66998018fe0dcadbbe47781429148d0017598b72",
+      "retrievedAt": "2026-10-29T13:42:55.155Z"
+    },
+    {
+      "path": "tpl-MNI152NLin6AsymC/tpl-MNI152NLin6AsymC_T1w.nii",
+      "url": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/tpl-MNI152NLin6AsymC/tpl-MNI152NLin6AsymC_T1w.nii",
+      "ref": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+      "bytes": 2647864,
+      "gitBlobSha": "79aa08b3c15f0fc0b3d922199542a938415191aa",
+      "sha256": "b482979d8d6359462a6f050b1217d1096af77f8f0c05aadc6c29803c6a1ae902",
+      "retrievedAt": "2026-10-29T13:42:51.017Z"
+    }
+  ]
+}
