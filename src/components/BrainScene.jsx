@@ -443,15 +443,13 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       const hornSelected = [...selected].some(id => id.includes('spinal-') && id.includes('horn'));
       status.objects.forEach((object, id) => {
         const structure = object.userData.structure; object.visible = isStructureVisible(structure);
-        const sourceRegion = object.userData.sourceMetadata?.regionRef;
-        const isSelected = selected.has(id) || Boolean(sourceRegion && selectedRegions.has(atlasRegionKey(sourceRegion)));
         object.position.x = p.exploded && structure.hemisphere !== 'M' ? sideOf(structure) * 12 : 0;
         object.traverse(child => { if (child.material) {
           const materials = Array.isArray(child.material) ? child.material : [child.material];
           materials.forEach(mat => {
-            mat.emissive?.set(isSelected ? '#286b4e' : '#000000'); mat.emissiveIntensity = isSelected ? 0.28 : 0;
-            if (mat.isLineBasicMaterial) mat.color.set(isSelected ? '#c28850' : structure.color || '#8fae9c');
-            const selectionOpacity = (graySelected || whiteSelected) && /spinal-(C\d|T\d|L\d|S\d|Co\d)/.test(id) ? 0.10 : graySelected && id === 'spinal-white' ? 0.12 : hornSelected && id === 'spinal-gray' ? 0.22 : selected.size > 0 && !selected.has(id) ? 0.82 : 1;
+            mat.emissive?.set('#000000'); mat.emissiveIntensity = 0;
+            if (mat.isLineBasicMaterial) mat.color.set(structure.color || '#8fae9c');
+            const selectionOpacity = (graySelected || whiteSelected) && /spinal-(C\d|T\d|L\d|S\d|Co\d)/.test(id) ? 0.10 : graySelected && id === 'spinal-white' ? 0.12 : hornSelected && id === 'spinal-gray' ? 0.22 : 1;
             mat.opacity = selectionOpacity * THREE.MathUtils.clamp(p.categoryOpacity?.[structure.category] ?? 1, 0, 1); mat.transparent = mat.opacity < 0.999;
             mat.depthWrite = !mat.transparent;
             child.renderOrder = mat.transparent ? ({ cerebellum: 12, brainstem: 14, subcortical: 16, ventricle: 17, tract: 18, cranial: 19, spinal: 20 }[structure.category] || 15) : 0;
@@ -466,13 +464,11 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         mesh.material.opacity = cortexOpacity; mesh.material.transparent = mesh.material.opacity < 0.999; mesh.material.depthWrite = !mesh.material.transparent; mesh.renderOrder = mesh.material.transparent ? 10 : 0;
         const colorAttribute = mesh.geometry.attributes.color, base = mesh.userData.baseColors, ids = mesh.userData.regionIds;
         if (!base || !colorAttribute) return;
-        const c = new THREE.Color(), hiddenColor = new THREE.Color('#dce3de'), highlight = new THREE.Color('#c08753'), muted = new THREE.Color('#dce2dc');
+        const c = new THREE.Color(), hiddenColor = new THREE.Color('#dce3de');
         for (let i = 0; i < colorAttribute.count; i++) {
           c.setRGB(base[i * 3], base[i * 3 + 1], base[i * 3 + 2]);
           const structure = ids[i];
           if (structure && (!isStructureVisible(structure) || (p.hiddenIds || []).includes(structure.id))) c.copy(hiddenColor);
-          else if ((mesh.userData.atlasRegions?.[i] && selectedRegions.has(atlasRegionKey(mesh.userData.atlasRegions[i]))) || (structure && selected.has(structure.id))) c.lerp(highlight, 0.46);
-          else if (selected.size > 0 || selectedRegions.size > 0) c.lerp(muted, 0.13);
           colorAttribute.setXYZ(i, c.r, c.g, c.b);
         }
         colorAttribute.needsUpdate = true;
@@ -489,12 +485,35 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         }
       });
       selectionGroup.children.forEach(disposeObject); selectionGroup.clear();
-      for (const id of selected) {
-        const structure = p.structures.find(s => s.id === id);
-        if (!structure || !isStructureVisible(structure)) continue;
-        const pin = new THREE.Mesh(new THREE.SphereGeometry(1.7, 12, 12), new THREE.MeshBasicMaterial({ color: '#f5d09a', depthTest: false }));
-        pin.position.copy(labelPosition(structure)); pin.renderOrder = 10; selectionGroup.add(pin);
+      // A separate contour marks categorical selections; the atlas palette stays intact.
+      for (const mesh of status.cortexMeshes) {
+        if (!mesh.visible || (!selected.size && !selectedRegions.size)) continue;
+        const positions = mesh.geometry.attributes.position, indices = mesh.geometry.index, segments = [];
+        if (!indices) continue;
+        const chosen = new Uint8Array(positions.count);
+        for (let index = 0; index < positions.count; index++) {
+          const ref = mesh.userData.atlasRegions?.[index], structure = mesh.userData.regionIds?.[index];
+          chosen[index] = Number(Boolean(ref && selectedRegions.has(atlasRegionKey(ref)) || structure && selected.has(structure.id)));
+        }
+        for (let i = 0; i < indices.count; i += 3) {
+          const triangle = [indices.getX(i), indices.getX(i + 1), indices.getX(i + 2)], crossings = [];
+          for (let edge = 0; edge < 3; edge++) {
+            const a = triangle[edge], b = triangle[(edge + 1) % 3];
+            if (chosen[a] !== chosen[b]) crossings.push([(positions.getX(a) + positions.getX(b)) / 2, (positions.getY(a) + positions.getY(b)) / 2, (positions.getZ(a) + positions.getZ(b)) / 2]);
+          }
+          if (crossings.length === 2) segments.push(...crossings[0], ...crossings[1]);
+        }
+        if (segments.length) {
+          const geometry = new THREE.BufferGeometry(); geometry.setAttribute('position', new THREE.Float32BufferAttribute(segments, 3));
+          const boundary = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({color:'#263e30',depthTest:false}));
+          boundary.position.copy(mesh.position); boundary.renderOrder = 1000; selectionGroup.add(boundary);
+        }
       }
+      status.objects.forEach((object,id) => {
+        const sourceRegion = object.userData.sourceMetadata?.regionRef;
+        if (!object.visible || !(selected.has(id) || sourceRegion && selectedRegions.has(atlasRegionKey(sourceRegion)))) return;
+        const boundary = new THREE.BoxHelper(object, '#263e30'); boundary.material.depthTest = false; boundary.renderOrder = 1000; selectionGroup.add(boundary);
+      });
       updateLabels(); roiGroup.visible = Boolean(p.roiComparison && !p.exploded); markerGroup.visible = !p.exploded; status.invalidate();
     }
     function colorCortex() {
@@ -748,8 +767,8 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
             start = null; setSelectionBox(null); return;
           } else if (hit.object.userData.category === 'study-marker') {
             const marker = hit.object.userData.marker;
-            p.onCoordinate?.(marker.position, { coordinateSpace: 'brain' }); p.onStudyMarkerSelect?.(marker);
-            p.onQueryStatus?.({ loaded: true, method: 'study-marker', mapping: 'none', position: marker.position, message: marker.label || marker.studyId || sceneText('研究坐标', 'Study coordinate') });
+            p.onStudyMarkerSelect?.(marker);
+            p.onQueryStatus?.({ loaded: true, method: 'study-marker', mapping: 'none', position: marker.position, message: `${marker.resultId} · ${marker.coordinateId}` });
             start = null; setSelectionBox(null); return;
           } else if (hit.object.userData.category === 'cortex') {
             point.sub(hit.object.position);

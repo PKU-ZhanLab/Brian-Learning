@@ -45,3 +45,45 @@ test('named view ownership rejects A to B reused-ID substitution and unknown-ori
  await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();await page.evaluate(()=>{const saved=JSON.parse(localStorage.getItem('neuroatlas-saved-views'));delete saved[0].projectId;localStorage.setItem('neuroatlas-saved-views',JSON.stringify(saved));});
  dialog=await files(page);await dialog.getByRole('textbox',{name:'View name'}).fill('Still unfinished');const unknownBefore=await storage(page);await dialog.getByRole('button',{name:'A coordinates'}).click();await expect(dialog).toBeVisible();await expect(dialog.getByRole('status')).toContainText('named-view-project-mismatch');await expect(dialog.getByRole('textbox',{name:'View name'})).toHaveValue('Still unfinished');expect(await storage(page)).toEqual(unknownBefore);
 });
+
+test('visiting paper B retains layer A and a real brain point returns to A’s exact finding and source',async({page})=>{
+ const local=evidence();local.references.push({id:'other-paper',title:'Synthetic unrelated paper B',url:'https://example.org/b'});
+ local.reviewEvents.push({...local.reviewEvents[0],id:'synthetic-result-check',subjectId:'private-result',recordVersion:'legacy-v1',scope:'Synthetic fixture only; not a scientific source audit'});
+ await page.goto('/?lang=en');const dialog=await files(page);
+ await open(dialog,await serializeProject({projectId:'source-return',view:{language:'en',mode:'research',atlas:'dk',visibleCategories:['cortex'],opacity:.2,layout:{preset:'evidence',panels:{modelWidth:440,active:'evidence'}},literature:{paperId:'private-paper'},camera:{position:[1,202,83],target:[1,2,3],up:[0,0,1],zoom:1,frameExtent:100},resultLayers:[]},evidence:local,volumes:[]}));
+ await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
+ await page.getByRole('button',{name:'View reported result coordinates',exact:true}).click();await page.getByRole('dialog',{name:'Paper result coordinates',exact:true}).getByRole('button',{name:'Save layer and show on brain',exact:true}).click();
+ await expect.poll(async()=>(await snapshot(page)).view.resultLayers.length).toBe(1);const original=(await snapshot(page)).view.resultLayers;expect(original[0].resultId).toBe('private-result');expect(original[0].coordinateIds).toEqual(['private-point-0','private-point-1']);
+ await page.getByRole('button',{name:'Back to papers',exact:true}).click();await page.locator('[data-reference-id="other-paper"] .paper-open').click();
+ await expect(page.locator('.paper-detail h2')).toHaveText('Synthetic unrelated paper B');
+ const bar=page.locator('.result-layer-bar');await expect(bar).toContainText('private-result');await expect(bar).toContainText('Synthetic local paper');expect((await snapshot(page)).view.resultLayers).toEqual(original);
+ const canvas=page.locator('.scene-wrap canvas').first();await expect(canvas).toBeVisible();const bounds=await canvas.boundingBox();await canvas.click({position:{x:bounds.width/2,y:bounds.height/2}});
+ const panel=page.getByRole('dialog',{name:'Paper result coordinates',exact:true});await expect(panel.locator('[data-result-id="private-result"]')).toBeVisible();await expect(panel).toContainText('Synthetic local result');await expect(panel).toContainText('Synthetic local paper');
+ await panel.getByRole('button',{name:'Locate result point private-point-0',exact:true}).click();await expect(panel.locator('tr[aria-selected="true"]')).toContainText('private-point-0');
+ await panel.getByRole('button',{name:'Open source paper',exact:true}).click();await expect(page.locator('.paper-detail h2')).toHaveText('Synthetic local paper');await expect(panel.locator('[data-result-id="private-result"]')).toBeVisible();
+ await panel.getByRole('button',{name:'Close result coordinates',exact:true}).click();
+ await bar.getByRole('button',{name:`Hide layer ${original[0].layerId}`,exact:true}).click();await expect.poll(async()=>(await snapshot(page)).view.resultLayers[0].visible).toBe(false);expect((await snapshot(page)).view.atlas).toBe('dk');
+ await bar.getByRole('button',{name:`Show layer ${original[0].layerId}`,exact:true}).click();await expect.poll(async()=>(await resolved(page)).markers.length).toBe(2);
+});
+
+test('clearing layers after selecting a private point preserves source restrictions in the shared view',async({page,context})=>{
+ await context.grantPermissions(['clipboard-read','clipboard-write']);await page.goto('/?lang=en');let dialog=await files(page);
+ await open(dialog,await serializeProject({projectId:'private-clear',view:{language:'en',atlas:'aal3-registered',resultLayers:layers()},evidence:evidence(),volumes:[]}));await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
+ await page.getByRole('button',{name:'Open result private-result',exact:true}).first().click();const panel=page.getByRole('dialog',{name:'Paper result coordinates',exact:true});await panel.getByRole('button',{name:'Locate result point private-point-0',exact:true}).click();await panel.getByRole('button',{name:'Close result coordinates',exact:true}).click();
+ await page.getByRole('button',{name:'Clear result layers',exact:true}).click();await expect.poll(async()=>(await snapshot(page)).view.resultLayers).toEqual([]);const current=(await snapshot(page)).view;expect(current.atlas).toBe('aal3-registered');expect(current.coordinateOrigin.resultId).toBe('private-result');expect(current.coordinateOrigin.cameraSensitive).toBe(true);expect(current.coordinateOrigin.explorerSensitive).toBe(true);
+ dialog=await files(page);await dialog.getByRole('button',{name:'Copy view link',exact:true}).click();const url=await page.evaluate(()=>navigator.clipboard.readText()),encoded=new URLSearchParams(new URL(url).hash.slice(1)).get('view'),shared=JSON.parse(Buffer.from(encoded,'base64url').toString('utf8'));
+ expect(shared.resultLayers).toEqual([]);expect(shared.camera).toBe(null);expect(shared.coordinate).not.toEqual([1,2,3]);expect(JSON.stringify(shared)).not.toMatch(/private-result|private-point|private-paper/);
+});
+
+test('native and unknown frames expose source coordinates without a main brain overlay action',async({page})=>{
+ const local=evidence();for(const point of local.locations)point.sourceSpaceId=null;
+ await page.goto('/?lang=en');const dialog=await files(page);await open(dialog,await serializeProject({projectId:'unknown-frame',view:{language:'en',resultLayers:[{...layers()[0],spaceId:null}]},evidence:local,volumes:[]}));await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
+ await expect(page.locator('.result-layer-bar')).toContainText('Independent coordinates');await page.getByRole('button',{name:'Open result private-result',exact:true}).click();const panel=page.getByRole('dialog',{name:'Paper result coordinates',exact:true});await expect(panel).toContainText('Unspecified frame');await expect(panel.getByRole('button',{name:'Save layer and show on brain',exact:true})).toHaveCount(0);await expect(panel.getByRole('button',{name:'Save result layer',exact:true})).toBeVisible();await expect(panel.getByRole('button',{name:'Locate result point private-point-0',exact:true})).toBeVisible();
+});
+
+test('compact layer disclosure keeps source, visibility, removal and clear controls reachable without color',async({page})=>{
+ await page.setViewportSize({width:390,height:844});await page.goto('/?lang=en');const dialog=await files(page);await open(dialog,await serializeProject({projectId:'compact-layer-controls',view:{language:'en',resultLayers:layers()},evidence:evidence(),volumes:[]}));await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
+ const bar=page.locator('.result-layer-bar');await expect(bar).not.toHaveAttribute('open');await expect(bar.locator('summary')).toContainText('private-result');await bar.locator('summary').click();
+ for(const name of ['Hide layer private-layer-name','Open result private-result','Remove layer private-layer-name','Clear result layers']){const control=bar.getByRole('button',{name,exact:true}).first();await expect(control).toBeVisible();const rect=await control.boundingBox();expect(rect.x).toBeGreaterThanOrEqual(0);expect(rect.x+rect.width).toBeLessThanOrEqual(390);}
+ await bar.getByRole('button',{name:'Remove layer private-layer-name',exact:true}).click();await expect.poll(async()=>(await snapshot(page)).view.resultLayers.map(l=>l.layerId)).toEqual(['hidden-private-layer']);await bar.getByRole('button',{name:'Clear result layers',exact:true}).click();await expect(bar).toHaveCount(0);
+});
