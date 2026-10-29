@@ -1,0 +1,115 @@
+
+> neuroatlas-brain-evidence@4.1.0 check
+> node scripts/check-data.mjs && node scripts/literature_validate.mjs && node --test src/lib/*.test.mjs
+
+PASS dk: 68 labels; 360 affine samples; SHA256 verified
+PASS aal: 116 labels; 1063 affine samples; SHA256 verified
+PASS aal3: 166 labels; 8553 affine samples; SHA256 verified
+PASS ho: 21 labels; 1163 affine samples; SHA256 verified
+PASS jhu: 49 labels; 126 affine samples; SHA256 verified
+PASS ba: 42 labels; 356 affine samples; SHA256 verified
+PASS ba-histology: 22 labels; 173 affine samples; SHA256 verified
+PASS aal-registered: 116 labels; 8180 affine samples; SHA256 verified
+PASS aal3-registered: 166 labels; 8186 affine samples; SHA256 verified
+PASS shared brain: source-matched AAL surface labels, unchanged pial/white hashes, hemisphere and medial-wall guards
+PASS AAL: native116/166 and estimated FSL116/166, source notices, unchanged reviewed field and explicit limits
+PASS anatomy: 67 bundled source-derived mappings, 0 on-demand source descriptors, 18 explicit gaps; hashes and finite geometry
+PASS evidence: 188 structures have four claim-level fields with valid reference links
+PASS precision: DK68 paired annotations, AAL native/estimated-space guards, BA probability thresholds and unavailable legacy BA
+PASS catalog: 188 structures, 105 references, 31 cord segments, all cross-references and hemispheres valid
+PASS geometry: 20 mesh assets, T1 size/hash, RAS/radiological conventions
+{
+  "status": "passed",
+  "papers": 118,
+  "legacyReadingRecords": 115,
+  "legacyStructureRecordsWithReadingLinks": 188,
+  "activeBrainStructuresWithReadingLinks": 150,
+  "regionLinks": 512,
+  "topics": 21,
+  "modalities": 18,
+  "comparisons": 3,
+  "figureLinks": 9,
+  "externalSourceImages": 2,
+  "rawHashChecks": 26,
+  "unavailableRawCaches": 0,
+  "resultMetadataHashChecks": 3,
+  "structuredPapers": 3,
+  "structuredFindings": 4,
+  "sourceCheckedCoordinates": 8,
+  "coordinateFrames": {
+    "MNI-unspecified": 8
+  }
+}
+✔ actual native labels and affine centroids do not create absent labels (0.9977ms)
+✔ slice navigation stays inside disconnected parcels even when the centroid is background (0.1156ms)
+✔ independent native geometry preserves both sides of label boundary and handedness (0.5804ms)
+✔ single label never borrows adjacent atlas labels (0.3403ms)
+✔ native statistical map thresholding does not claim target alignment (0.1813ms)
+✔ native T1 pair permits only its own labels without upgrading alignment (0.4855ms)
+✔ three views use RAS with radiological left/right and consistent crosshair coordinates (0.4538ms)
+✔ view links retain native source, slice coordinates and overlay opacity (0.8015ms)
+✔ curated primary-source subset has complete provenance and preserves generic MNI (2.0226ms)
+✔ invalid spaces, numeric strings, nonfinite/out-of-range coordinates and missing provenance are rejected (3.6576ms)
+✔ draft remains draft and cannot silently acquire a checked status (0.3288ms)
+✔ malformed packages return errors without throwing or changing stored data (0.5784ms)
+✔ roundtrip persists results and explicit relation provenance (1.8323ms)
+✔ upsert deduplicates DOI and rewrites imported findings to canonical paper ID (0.6805ms)
+✔ known builtin references and results permit local-only relation and result packages (0.1734ms)
+✔ unsafe source protocols and unlicensed rehosting are rejected (0.3693ms)
+✔ metadata DOI lookup is metadata only and falls back to Europe PMC (0.5873ms)
+✔ distinct DOI punctuation does not collapse imported paper IDs (0.211ms)
+✔ local storage corruption is reported and preserved (0.1081ms)
+✔ NIfTI sform, endian decoding and gzip preserve voxel values and negative axes (8.7675ms)
+✔ qform-only transforms honor rotation, qfac and translations (0.3718ms)
+✔ qform spacing must be positive before handedness is applied (1.1105ms)
+✔ sform wins conflicting qform but records both and flags conflict (0.1683ms)
+✔ metre and micron spatial units convert affine and offsets into mm (0.2709ms)
+✔ scaling applies once; continuous negative data require continuous kind (0.2555ms)
+✔ invalid, unsafe and unsupported headers/data reject explicitly (2.4801ms)
+✔ NIfTI export reorders z-fastest source and retains affine (0.2006ms)
+✔ label names parse quoted CSV and JSON, rejecting duplicate IDs (0.4353ms)
+✔ custom registry notifies local subscribers, stores typed data and removes entries (0.3223ms)
+✔ NIfTI parsing preserves explicit affine, datatype and label-mask counts (1.2588ms)
+✔ unspecified units require explicit source metadata and malformed data are rejected (0.3526ms)
+✔ PAM50 worker verifies source bytes, groups one download, and reports offline/hash failures (51.3423ms)
+✔ ROI metrics count exact intersection, union and physical volume (1.5498ms)
+✔ identical and disjoint masks have Dice 1 and 0 (0.2833ms)
+✔ nearest-neighbour sampling applies declared translation and axis reflection (0.3591ms)
+✔ z-fastest input is reordered without changing anatomy (0.179ms)
+✔ unverified alignment, background, missing labels and invalid geometry are rejected (0.863ms)
+✔ voxel surfaces expose six faces for one cell and omit a shared face for adjacent cells (0.4596ms)
+✔ public paths respect a repository deployment prefix (0.3324ms)
+✔ multiple selected labels form an exact union without double counting (0.1798ms)
+✔ statistical tails include threshold boundaries and exclude zero background (1.0137ms)
+✔ continuous resampling is trilinear before thresholding (0.3935ms)
+✔ probability metrics use full min/max weights and are distinct from binary Dice (0.5692ms)
+✔ custom imports cannot bypass native-space rejection or mismatch reference identity (0.3767ms)
+✔ A, B, intersection and union NIfTI exports round-trip exact binary counts and target affine (2.1492ms)
+✔ published DK left precentral and Juelich BA4a baseline remains 1732/1065/57 (52.0879ms)
+✔ oversized surfaces preserve exact metrics, masks and slices instead of failing the comparison (109.562ms)
+✔ overview frames the available brain centrally while the cord is absent (1.1462ms)
+✔ loaded whole CNS and brainstem fit in both wide and narrow viewports (0.5598ms)
+✔ ribbon preserves nonconsecutive IDs and resolves categorical ties without averaging (0.6233ms)
+✔ background, deep labels and medial wall never receive invented cortical labels (0.7403ms)
+✔ invalid surface correspondence and sampling outside ribbon are rejected (0.1937ms)
+✔ surface picking uses exactly the displayed labels, including uncovered vertices (0.0993ms)
+✔ slice rendering overlays aligned atlas voxels and leaves unavailable space uncoloured (1.2711ms)
+✔ public link preserves camera opacity ROI and filters without custom data (1.6156ms)
+✔ custom volumes are omitted from links and malformed input rejected (0.3542ms)
+✔ project round trip preserves binary data, notes, and user-declared frame (22.515ms)
+✔ optional camera extent and up restore while legacy snapshots remain unchanged (0.3238ms)
+✔ links keep only explicitly public reference IDs and strip every free-text query (0.6718ms)
+✔ project files retain local queries and full provenance without sending them to links (2.3936ms)
+✔ malformed label and display metadata fail before a restored volume reaches React (1.6408ms)
+✔ unknown metadata is not restored or allowed to override geometry and capabilities (1.3094ms)
+✔ original NIfTI warning survives repeated saves without nesting header history (3.944ms)
+✔ project eligibility never grants overlay to missing evidence or another template (4.3342ms)
+✔ export payload bound matches the NIfTI import limit (0.256ms)
+ℹ tests 65
+ℹ suites 0
+ℹ pass 65
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 522.7375

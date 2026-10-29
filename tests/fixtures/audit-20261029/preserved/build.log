@@ -1,0 +1,23 @@
+
+> neuroatlas-brain-evidence@4.1.0 build
+> vite build --outDir output/audit-20261029/build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 1615 modules transformed.
+rendering chunks...
+computing gzip size...
+output/audit-20261029/build/index.html                                    1.06 kB │ gzip:   0.69 kB
+output/audit-20261029/build/assets/atlas-explorer.worker-B-4hzXPK.js     24.92 kB
+output/audit-20261029/build/assets/pam50.worker-CHOnOclq.js              29.05 kB
+output/audit-20261029/build/assets/roi.worker-EOhEPV1C.js                29.84 kB
+output/audit-20261029/build/assets/index-CsPjJinD.css                    63.85 kB │ gzip:  13.87 kB
+output/audit-20261029/build/assets/react-PY5S7aRQ.js                     11.99 kB │ gzip:   4.23 kB
+output/audit-20261029/build/assets/three-CMR-PTWW.js                    515.05 kB │ gzip: 132.14 kB
+output/audit-20261029/build/assets/index-CpnIQWNN.js                  1,544.54 kB │ gzip: 349.66 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.79s
