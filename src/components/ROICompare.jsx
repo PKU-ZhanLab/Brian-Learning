@@ -12,7 +12,7 @@ import { positiveLabels, ROI_COLORS, ROI_DEFAULT_DISPLAY, serializableVolume, co
 import { prepareComparisonManifest, makeComputationManifest, compareComputationManifest, exportComparisonBundle } from '../lib/computation-manifest.js';
 import {restoreComputation,createComputationSnapshot} from '../lib/saved-computation.js';
 import { makeComparisonGrid } from '../lib/roi-grid.js';
-import { exportNifti } from '../lib/nifti.js';
+import {parseNiftiInWorker,exportNiftiInWorker} from '../lib/nifti-worker-client.js';
 import { newImportDraft, reduceImportDraft, stageVolumeImport } from '../lib/roi-import-state.js';
 import { getCustomVolume, listCustomVolumes, subscribeCustomVolumes } from '../lib/custom-volumes.js';
 import './ROICompare.css';
@@ -127,10 +127,12 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   const importDraftRef=useRef(importDraft),labelInput=useRef(null);
   const {kind:importKind,spaceId:importSpace,otherSpace,aligned,provenance}=importDraft;
   const [importBusy, setImportBusy] = useState(false), [importError, setImportError] = useState(''), [importMessage, setImportMessage] = useState(null);
-  const importGeneration=useRef(0),importMounted=useRef(true);
-  useEffect(()=>{importMounted.current=true;return()=>{importMounted.current=false;importGeneration.current++;};},[]);
+  const importGeneration=useRef(0),importMounted=useRef(true),importController=useRef(null),exportController=useRef(null);
+  const [imageExportBusy,setImageExportBusy]=useState(false),[imageNotice,setImageNotice]=useState('');
+  useEffect(()=>{importMounted.current=true;return()=>{importMounted.current=false;importGeneration.current++;importController.current?.abort();exportController.current?.abort();};},[]);
   function changeImportDraft(action){
     importGeneration.current++;
+    importController.current?.abort();importController.current=null;
     const next=reduceImportDraft(importDraftRef.current,action);importDraftRef.current=next;setImportDraft(next);
     setImportBusy(false);setImportError('');setImportMessage(null);
     if(action.type==='file-changed'&&labelInput.current)labelInput.current.value='';
@@ -155,6 +157,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     }
   }
   function invalidateWork() {
+    exportController.current?.abort();exportController.current=null;setImageExportBusy(false);
     sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setInspectedSnapshot(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
   }
   function changeSelection(update) {
@@ -318,12 +321,13 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     if (!importFile || importBusy) return;
     const request=++importGeneration.current,projectId=workspaceProjectId,epoch=workspaceEpoch,draft=importDraftRef.current;
     const isCurrent=()=>importMounted.current&&request===importGeneration.current&&draft===importDraftRef.current;
-    setImportBusy(true); setImportError(''); setImportMessage(null);
+    const controller=new AbortController();importController.current=controller;
+    setImportBusy(true); setImportError(''); setImportMessage(null);setImageNotice('');
     try {
-      const imported=await stageVolumeImport(draft,{file:importFile,isCurrent,stage:async(volume,summary)=>{
+      const imported=await stageVolumeImport(draft,{file:importFile,isCurrent,signal:controller.signal,parseVolume:parseNiftiInWorker,stage:async(volume,summary,{isCurrent:check})=>{
         if(!onImportVolume)throw Error('workspace-session-unavailable');
         // App retains W2 revision admission and the final atomic commit guard.
-        const id=await onImportVolume(volume,{projectId,epoch,isCurrent});
+        const id=await onImportVolume(volume,{projectId,epoch,isCurrent:check});
         return {id,volume,summary};
       }});
       if(!isCurrent())return;
@@ -331,7 +335,24 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       if (accepted) reselectRegion('B','source',() => { setBAtlas(id); setBLabels([]); setBThreshold(summary.kind === 'probability' ? .5 : 0); });
       setImportMessage({summary,aligned:accepted,conflict:volume.metadata.affineConflict});
     } catch (problem) { if(isCurrent())setImportError(problem.message); }
-    finally { if(isCurrent())setImportBusy(false); }
+    finally { if(isCurrent()){setImportBusy(false);importController.current=null;} }
+  }
+  function cancelImport(){
+    importGeneration.current++;importController.current?.abort();importController.current=null;setImportBusy(false);
+    setImageNotice(language==='en'?'Image import cancelled. Your file declaration is retained.':'影像导入已取消，当前文件声明仍保留。');
+  }
+  async function exportMask(part){
+    if(imageExportBusy||!comparison)return;
+    const controller=new AbortController();exportController.current=controller;setImageExportBusy(true);setImageNotice('');
+    try{
+      const result=await exportNiftiInWorker(comparisonMaskVolume(comparison,part),{gzip:false},{signal:controller.signal});
+      if(!controller.signal.aborted&&importMounted.current&&exportController.current===controller)download(result.bytes,`ROI-${part}${result.extension}`,'application/octet-stream');
+    }catch(problem){if(!controller.signal.aborted&&importMounted.current)setError(problem.message);}
+    finally{if(importMounted.current&&exportController.current===controller){exportController.current=null;setImageExportBusy(false);}}
+  }
+  function cancelExport(){
+    exportController.current?.abort();exportController.current=null;setImageExportBusy(false);
+    setImageNotice(language==='en'?'Image export cancelled.':'影像导出已取消。');
   }
   const errorText = code => NIFTI_ERRORS[code]?.[language === 'en' ? 1 : 0] || t[code] || (/too-long|budget/.test(code)?(language==='en'?'The file or declaration exceeds the supported size limit.':'文件或声明超过支持的长度上限。'):t.importError);
   const sourceBlock = (key, atlasId, setAtlas, labels, setLabels, threshold, setThreshold, tail, setTail, source) => {
@@ -392,9 +413,10 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     </div><label className="roi-import-provenance"><span>{t.provenance}</span><textarea rows={2} value={provenance} aria-label="Imported image provenance" onChange={event => changeImportDraft({type:'provenance-changed',value:event.target.value})} /></label>
       {importSpace === 'MNI152NLin6Asym' && <label className="roi-xray"><input type="checkbox" checked={aligned} aria-label="Confirm already aligned to FSL template" onChange={event => changeImportDraft({type:'alignment-changed',value:event.target.checked})} />{t.aligned}</label>}
       {importFile&&<dl className="roi-import-summary" aria-label="Image import summary"><div><dt>{t.file}</dt><dd>{importFile.name}</dd></div><div><dt>{t.kind}</dt><dd>{t[`${importKind}Kind`]}</dd></div><div><dt>{t.reference}</dt><dd>{importSpace==='other'?otherSpace||t.nativeSpace:importSpace==='native-unverified'?t.nativeSpace:importSpace}</dd></div><div><dt>{t.labelsFile}</dt><dd>{importDraft.labelFile?.file.name||(language==='en'?'None':'无')}</dd></div></dl>}
-      <p className="roi-note">{t.provenanceHint}</p><div className="roi-actions"><button onClick={importVolume} disabled={!importFile || importBusy} aria-label="Import local NIfTI">{importBusy ? t.importing : t.importButton}</button></div>
+      <p className="roi-note">{t.provenanceHint}</p><div className="roi-actions"><button onClick={importVolume} disabled={!importFile || importBusy} aria-label="Import local NIfTI">{importBusy ? t.importing : t.importButton}</button>{importBusy&&<button type="button" onClick={cancelImport} aria-label="Cancel NIfTI import">{language==='en'?'Cancel import':'取消导入'}</button>}</div>
       {importError && <p role="alert" className="roi-error">{errorText(importError)}</p>}{importMessage && <p className="roi-note" role="status">{t.importDone}: {importMessage.summary.fileName} · {t[`${importMessage.summary.kind}Kind`]} · {importMessage.summary.spaceId} · {importMessage.summary.labelFileName||(language==='en'?'No label table':'无标签表')} · {importMessage.aligned ? t.declared : t.nativeImport}{importMessage.conflict && <> · {t.conflict}</>}</p>}
     </details>
+    {imageNotice&&<p role="status" className="roi-note">{imageNotice}</p>}
     {!!importedVolumes.length && <div className="roi-imported-volumes"><h3>{t.importedVolumes}</h3>{onManageAssets&&<button type="button" onClick={onManageAssets}>{language==='en'?'Manage project assets':'管理项目影像'}</button>}{importedVolumes.map(([id, volume]) => <div key={id}><span><strong>{volume.name || id}</strong><small>{volume.space} · {volume.canOverlayOnTarget === true ? t.declared : t.blocked}</small>{volume.metadata?.affineConflict && <small className="roi-imported-warning">{t.conflict}</small>}</span>{onViewNative && <button type="button" onClick={() => onViewNative(id)} aria-label={`${t.viewNative}: ${volume.name || id}`}>{t.viewNative}</button>}</div>)}</div>}
     {!manifest ? <p role="status">{t.notLoaded}</p> : !allowed.length ? <p role="status">{t.noAtlases}</p> : <>
       <div className="roi-selectors">{sourceBlock('A', aAtlas, setAAtlas, aLabels, setALabels, aThreshold, setAThreshold, aTail, setATail, sourceA)}{sourceBlock('B', bAtlas, setBAtlas, bLabels, setBLabels, bThreshold, setBThreshold, bTail, setBTail, sourceB)}</div>
@@ -408,7 +430,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
         {comparison.probabilityMetrics ? <div className="roi-probability"><h3>{t.probabilityTitle}</h3><div className="roi-metrics"><div><span>{t.fuzzyDice}</span><strong>{formatRatio(comparison.probabilityMetrics.fuzzyDice)}</strong><small>2Σmin(p,q) / (Σp + Σq)</small></div><div><span>{t.fuzzyJaccard}</span><strong>{formatRatio(comparison.probabilityMetrics.fuzzyJaccard)}</strong><small>Σmin(p,q) / Σmax(p,q)</small></div></div><p className="roi-note">{t.probabilityHint}</p></div> : [comparison.A,comparison.B].some(source => source.selection.kind === 'probability') && <p className="roi-note">{t.probabilityOne}</p>}
         <p className="roi-grid"><strong>{t.grid}</strong> {comparison.grid.space} · {comparison.grid.shape.join(' × ')} · {t.resolution} {comparison.grid.voxelVolumeMm3.toLocaleString()} mm³</p>
         <table className="roi-counts"><thead><tr><th>{t.part}</th><th>{t.voxels}</th><th>{t.volume}</th></tr></thead><tbody>{[['A','aVoxels','aMm3'],['B','bVoxels','bMm3'],['intersection','intersectionVoxels','intersectionMm3'],['aOnly','aOnlyVoxels','aOnlyMm3'],['bOnly','bOnlyVoxels','bOnlyMm3'],['union','unionVoxels','unionMm3']].map(([key,count,volume]) => <tr key={key}><td>{ROI_COLORS[key] && <i style={{background:ROI_COLORS[key]}}/>}{t[key]}</td><td>{comparison.metrics[count].toLocaleString()}</td><td>{comparison.metrics[volume].toLocaleString(undefined,{maximumFractionDigits:2})}</td></tr>)}</tbody></table>
-        <div className="roi-actions roi-export-masks"><span>{t.maskExport}</span>{['A','B','intersection','union'].map(part => <button key={part} aria-label={`Export ROI ${part} NIfTI mask`} onClick={() => download(exportNifti(comparisonMaskVolume(comparison, part)), `ROI-${part}.nii`, 'application/octet-stream')}>{t[part]}</button>)}</div>
+        <div className="roi-actions roi-export-masks"><span>{t.maskExport}</span>{['A','B','intersection','union'].map(part => <button key={part} disabled={imageExportBusy} aria-label={`Export ROI ${part} NIfTI mask`} onClick={()=>exportMask(part)}>{t[part]}</button>)}{imageExportBusy&&<><span role="status">{language==='en'?'Exporting image…':'正在导出影像…'}</span><button type="button" onClick={cancelExport} aria-label="Cancel NIfTI export">{language==='en'?'Cancel export':'取消导出'}</button></>}</div>
         <details className="roi-provenance"><summary>{t.provenanceDetails}</summary><p>{comparison.manifest.appVersion} · {comparison.manifest.algorithmVersion}</p>{comparison.manifest.inputs.slice(0,2).map((input,index)=><p key={index} style={{overflowWrap:'anywhere'}}><strong>{index?'B':'A'}</strong> · {input.id}<br/><code>SHA-256 {input.sha256}</code></p>)}</details>
         {!!comparison.surfaceWarnings?.length && <p className="roi-warning">{t.surfaceOmitted} ({comparison.surfaceWarnings.map(key => t[key]).join(', ')})</p>}
         {comparison.metrics.aVoxels > 0 && comparison.metrics.bVoxels > 0 && comparison.metrics.intersectionVoxels === 0 && <p className="roi-note">{t.noOverlap}</p>}{(!comparison.metrics.aVoxels || !comparison.metrics.bVoxels) && <p className="roi-warning">{t.emptyTarget}</p>}

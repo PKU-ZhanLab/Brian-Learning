@@ -36,16 +36,19 @@ export function prepareImportSummary(draft,{file,labelFile=draft.labelFile?.file
  * `stage` is an optional host adapter; it must retain isCurrent through its commit.
  * Without it this returns a genuine W2 Stage, which still requires session.commit.
  */
-export async function stageVolumeImport(draft,{file,labelFile=draft.labelFile?.file,current,signal,isCurrent=()=>true,stage,knownEvidence}={}){
+export async function stageVolumeImport(draft,{file,labelFile=draft.labelFile?.file,current,signal,isCurrent=()=>true,stage,knownEvidence,parseVolume=parseNifti,onProgress}={}){
   const check=()=>{if(signal?.aborted)throw Error('import-cancelled');if(!isCurrent(draft.fileToken,current?.revision))throw Error('stale-workspace');};
   check();const summary=prepareImportSummary(draft,{file,labelFile});
   if(file.size>MAX_NIFTI_FILE_BYTES)throw Error('nifti-file-too-large');
   if(labelFile?.size>MAX_LABEL_FILE_BYTES)throw Error('labels-invalid-table');
   const originalBytes=new Uint8Array(await file.arrayBuffer());check();
-  const volume=await parseNifti(originalBytes,{name:summary.fileName.replace(/\.nii(\.gz)?$/i,''),kind:summary.kind,space:summary.spaceId});check();
+  // The browser supplies the worker parser; Node hosts retain the canonical injectable boundary.
+  // Keep the original bytes attached here: their hash identifies the actual selected file.
+  const volume=await parseVolume(originalBytes,{name:summary.fileName.replace(/\.nii(\.gz)?$/i,''),kind:summary.kind,space:summary.spaceId},{signal,onProgress});check();
   if(labelFile){const text=await labelFile.text();check();volume.labels=parseLabelTable(text,/\.json$/i.test(labelFile.name)?'json':'csv');}
   const accepted=summary.alignmentStatus==='user-declared';
   Object.assign(volume,{canOverlayOnTarget:accepted,alignmentStatus:summary.alignmentStatus,provenance:summary.provenance,source:summary.fileName,metadata:{...volume.metadata,userDeclaredAligned:accepted,referenceSpace:summary.spaceId}});
+  onProgress?.({phase:'identifying'});check();
   const identified=await prepareLocalVolumeProvenance(volume,originalBytes,{id:summary.fileName});check();
   if(stage)return stage(identified,summary,{isCurrent:()=>{check();return true;}});
   if(!current)throw Error('workspace-session-unavailable');

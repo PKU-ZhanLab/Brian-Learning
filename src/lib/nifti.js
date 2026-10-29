@@ -15,6 +15,11 @@ const TYPES = {
 };
 
 function fail(code) { throw new Error(code); }
+// Shared preflight for hosts and workers; header/decoded budgets remain below.
+export function assertNiftiFileSize(byteLength){
+  if(!Number.isSafeInteger(byteLength)||byteLength<0)fail('nifti-invalid-input');
+  if(byteLength>MAX_NIFTI_FILE_BYTES)fail('nifti-file-too-large');
+}
 export function assertNiftiVoxelValue(value,kind){
   if(!Number.isFinite(value)||Math.abs(value)>1e30)fail('nifti-nonfinite-data');
   if(kind==='label'&&(!Number.isSafeInteger(value)||value<0))fail('nifti-invalid-labels');
@@ -46,7 +51,7 @@ function decodeLimit(value,fallback,hardMaximum,code){
 }
 
 async function unpack(bytes, options) {
-  if (bytes.byteLength > MAX_NIFTI_FILE_BYTES) fail('nifti-file-too-large');
+  assertNiftiFileSize(bytes.byteLength);
   const maxInflatedBytes=decodeLimit(options.maxInflatedBytes,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_DECODED_BYTES,'inflated-budget');
   if (bytes[0] !== 31 || bytes[1] !== 139) {
     // Admit a complete header before considering the missing data of a virtual large file.

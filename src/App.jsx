@@ -1,22 +1,16 @@
 import {createDraftManager,captureDraftSafeWorkspace} from './lib/draft-store.js';
 import {applyUndoableAction,undoLast} from './lib/undo-history.js';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Brain, Search, ChevronDown, ChevronRight, Eye, EyeOff, Layers3, Scan, Move3D, RotateCcw, Focus, Maximize2, Minimize2, Download, BookOpen, GraduationCap, PencilLine, X, Plus, Minus, Check, SlidersHorizontal, Boxes, CircleHelp, ArrowUpRight, LocateFixed, Bookmark, Network, CheckCircle2, MousePointer2, SquareDashedMousePointer, FileDown, Upload, Trash2, ExternalLink, Compass, Info, Sparkles } from 'lucide-react';
-import BrainScene from './components/BrainScene.jsx';
-import SliceViews from './components/SliceViews.jsx';
 import CoordinateNavigator from './components/CoordinateNavigator.jsx';
 import TaskEntryPoints from './components/TaskEntryPoints.jsx';
 import {coordinateNavigationSpace,coordinateReferenceSpace,nextCoordinateOrigin,coordinateOutsideBounds} from './lib/coordinate-input.js';
 import AtlasLegend from './components/AtlasLegend.jsx';
-import LiteratureWorkspace from './components/LiteratureWorkspace.jsx';
 import WorkspaceLayout from './components/WorkspaceLayout.jsx';
 import {normalizeLayout,comparisonReturnScroll,scheduleLayoutSave} from './lib/workspace-layout.js';
-import ROICompare from './components/ROICompare.jsx';
 import {retainComputation} from './lib/saved-computation.js';
-import AtlasExplorer from './components/AtlasExplorer.jsx';
 import {assignSelectionToOperand} from './lib/selection-handoff.js';
 import {pushNavigation,replaceNavigationEntry,goBack,goForward} from './lib/navigation-history.js';
-import WorkspaceFiles from './components/WorkspaceFiles.jsx';
 import WorkspaceStatus from './components/WorkspaceStatus.jsx';
 import {resourceFeedback,workspaceToastMessage,describePublicLinkOmissions} from './lib/workspace-status.js';
 import ResultCoordinates from './components/ResultCoordinates.jsx';
@@ -46,6 +40,27 @@ import { MAIN_MANIFEST_RESOURCE, ANATOMY_MANIFEST_RESOURCE, BA_COVERAGE_RESOURCE
 import { beginQuery, invalidateQuery, acceptQueryResult, queryableAtlasVolume, queryDisplayState } from './lib/query-state.js';
 import { atlasEvidence } from './data/evidence.js';
 import { structures as catalogStructures, references as catalogReferences, atlasOptions, categories, networks, brodmannIndex, citationGB } from './data/catalog.js';
+
+// Boundaries are local to each panel: loading an optional workspace never hides
+// its host dialog, header, focus owner or the current scientific/session state.
+class WorkspaceLoadBoundary extends React.Component{
+  state={failed:false};
+  static getDerivedStateFromError(){return {failed:true};}
+  render(){
+    if(this.state.failed)return <div role="alert"><p>{this.props.language==='en'?'This panel could not be loaded. Your current project is retained.':'此面板未能载入，当前项目仍保留。'}</p>{this.props.onClose&&<button type="button" onClick={this.props.onClose}>{this.props.language==='en'?'Close':'关闭'}</button>}</div>;
+    return this.props.children;
+  }
+}
+function deferredWorkspace(load){
+  const Component=lazy(load);
+  return function DeferredWorkspace(props){return <WorkspaceLoadBoundary language={props.language} onClose={props.onClose}><Suspense fallback={<p role="status">{props.language==='en'?'Loading…':'正在载入…'}</p>}><Component {...props}/></Suspense></WorkspaceLoadBoundary>;};
+}
+const BrainScene=deferredWorkspace(()=>import('./components/BrainScene.jsx'));
+const SliceViews=deferredWorkspace(()=>import('./components/SliceViews.jsx'));
+const LiteratureWorkspace=deferredWorkspace(()=>import('./components/LiteratureWorkspace.jsx'));
+const ROICompare=deferredWorkspace(()=>import('./components/ROICompare.jsx'));
+const AtlasExplorer=deferredWorkspace(()=>import('./components/AtlasExplorer.jsx'));
+const WorkspaceFiles=deferredWorkspace(()=>import('./components/WorkspaceFiles.jsx'));
 
 const viewerStructures = catalogStructures.filter(s=>s.category!=='spinal');
 const viewerCategories = categories.filter(c=>c.id!=='spinal');

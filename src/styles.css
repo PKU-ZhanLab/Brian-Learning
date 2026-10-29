@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;450;500;550;600;650;700&family=Noto+Sans+SC:wght@400;450;500;550;600;650;700&display=swap');
 @import './styles/tokens.css';
 
 .coordinate-navigation-disclosure{flex-shrink:0;min-width:0;border-top:1px solid #dce6dc;max-height:45vh;overflow:auto}.coordinate-navigation-disclosure>summary{padding:8px 0;color:#304c3e;font-size:13px;cursor:pointer;overflow-wrap:anywhere}.coordinate-navigation-disclosure[open] .coordinate-summary-current{display:none}.center-panel:has(>.coordinate-navigation-disclosure[open]){overflow-y:auto}.roi-compare .coordinate-navigator select{font:inherit}
