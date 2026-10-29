@@ -186,3 +186,29 @@ test('a declared Boolean binding with no current source selection stays unresolv
   const resolved=auditTranscription(bundle,bundle.sourceArtifacts);assert.deepEqual(resolved.semanticReviewRequired,[]);
   assert.deepEqual(resolved.coverage.uncheckedReportedNumericFields,['results/axelrod2015-lffa/sample/included/value','results/axelrod2015-rffa/sample/included/value']);
 });
+
+test('real hashed artifact survives DOI alias merge and independent export with canonical active references',async()=>{
+  const {mergeEvidence,validateEvidenceImport}=await import('./evidence-workspace.js');
+  const {buildEvidencePackage,validateEvidencePackageClosure}=await import('./evidence-package.js');
+  const incoming=copy(),oldId='axelrod2015',canonicalId='canonical-axelrod';
+  const reference=incoming.references.find(r=>r.id===oldId),base={...copy(),references:copy().references.map(r=>r.id===oldId?{...r,id:canonicalId}:r)};
+  // Base must itself be an empty graph with the pre-existing canonical paper.
+  for(const key of ['readings','experiments','results','locations','claims','mappings','sourceArtifacts','reviewEvents','relations'])base[key]=[];
+  const sample=incoming.results.find(r=>r.referenceId===oldId).sample;
+  incoming.experiments=[{id:'alias-experiment',referenceId:oldId,task:'Explicit alias test experiment',species:'human',sample,modalities:['fMRI'],sourceRefs:['https://doi.org/'+reference.doi]}];
+  const {classifyMapping}=await import('./evidence-mapping.js');
+  incoming.mappings=[classifyMapping({id:'alias-mapping',referenceId:oldId,claimId:incoming.claims.find(c=>c.referenceId===oldId).id,targetConceptId:'fusiform-r'})];
+  const originalArtifact=structuredClone(incoming.sourceArtifacts.find(a=>a.referenceId===oldId));
+  const merged=mergeEvidence(base,incoming);
+  assert.deepEqual(merged.sourceArtifacts.find(a=>a.id===originalArtifact.id),originalArtifact);
+  for(const key of ['results','claims','experiments','mappings'])assert.ok(merged[key].filter(r=>r.referenceId===canonicalId).length);
+  assert.ok(!merged.references.some(r=>r.id===oldId));
+  assert.ok(merged.referenceAliases.some(a=>a.aliasId===oldId&&a.canonicalId===canonicalId&&a.originalReference.id===oldId));
+  const out=buildEvidencePackage({paperIds:[canonicalId],bundle:merged,includePrivate:true});
+  assert.equal(validateEvidencePackageClosure(out).valid,true);assert.equal(validateEvidenceImport(out).valid,true);
+  assert.deepEqual(out.sourceArtifacts[0],originalArtifact);assert.equal(verifySourceArtifact(out.sourceArtifacts[0],sourceExcerptBytes(originalArtifact)).valid,true);
+  const audit=auditTranscription(out,[originalArtifact]);assert.deepEqual(audit.integrityErrors,[]);assert.deepEqual(audit.semanticReviewRequired,[]);assert.deepEqual(audit.unavailableArtifacts,[]);
+  for(const mutate of [b=>b.references[0].title+=' changed',b=>b.references[0].fullAuthorList.reverse(),b=>b.references[0].url='https://example.org/wrong',b=>b.references[0].doi+='x']){
+    const wrong=structuredClone(out);mutate(wrong);const report=auditTranscription(wrong,[originalArtifact]);assert.ok(report.semanticReviewRequired.length||report.integrityErrors.length);
+  }
+});

@@ -2,6 +2,7 @@
 // Hashes establish byte identity; semantic comparisons establish only the listed
 // transcription checks. Neither establishes scientific quality or human review.
 import {createHash} from 'node:crypto';
+import {validateReferenceAliases,resolveReferenceAlias} from './evidence-schema.js';
 
 export const canonicalSourceJSON=value=>JSON.stringify(value&&typeof value==='object'
   ?Array.isArray(value)?value.map(item=>JSON.parse(canonicalSourceJSON(item)))
@@ -22,7 +23,8 @@ export const sourceArtifactRecordHash=artifact=>{
  * properties and numeric array offsets; no expressions or executable selectors. */
 export function sourceFieldValue(bundle,path){
   const [collection,id,...segments]=String(path).split('/');
-  let value=Array.isArray(bundle?.[collection])?bundle[collection].find(row=>row.id===id):undefined;
+  const resolved=collection==='references'&&validateReferenceAliases(bundle).valid?resolveReferenceAlias(bundle,id):id;
+  let value=Array.isArray(bundle?.[collection])?bundle[collection].find(row=>row.id===resolved):undefined;
   for(const key of segments){
     if(['__proto__','prototype','constructor'].includes(key)||value==null||!Object.hasOwn(value,key))return undefined;
     value=value[key];
@@ -80,6 +82,13 @@ export function verifySourceArtifact(artifact,bytes){
 
 export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[]){
   const integrityErrors=[],semanticReviewRequired=[],unavailableArtifacts=[],fields=new Set(),coordinates=[];
+  const aliases=validateReferenceAliases(bundle);integrityErrors.push(...aliases.errors);
+  const canonicalReference=id=>aliases.valid?resolveReferenceAlias(bundle,id):id;
+  const canonicalPath=path=>{const parts=path.split('/');if(parts[0]==='references')parts[1]=canonicalReference(parts[1]);return parts.join('/');};
+  if(aliases.valid)for(const alias of bundle?.referenceAliases||[]){
+    const current=bundle.references.find(r=>r.id===alias.canonicalId);
+    if(current.title!==alias.originalReference.title)semanticReviewRequired.push({path:`references/${alias.canonicalId}/title`,reason:'Current title differs from the preserved original bibliography identity; source verification is required. This compares the historical identity snapshot, not an unavailable primary-source title cell.'});
+  }
   const available=new Map(),verified=[];
   if(!Array.isArray(artifacts)){integrityErrors.push('artifact material must be an array');artifacts=[];}
   for(const artifact of artifacts){
@@ -138,7 +147,7 @@ export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[])
       // A paper-level excerpt may support several findings. A selected-result
       // package compares only extant records; required anchors for its actual
       // records are enforced below, so renaming a point cannot evade coverage.
-      const row=bundle?.[collection]?.find(row=>row.id===recordId);if(!row)continue;
+      const row=bundle?.[collection]?.find(row=>row.id===(collection==='references'?canonicalReference(recordId):recordId));if(!row)continue;
       // legacyV1 is retained historical data, never a required native-v2
       // provenance container. Native source locators live in artifact fields.
       if(segments[0]==='legacyV1'&&sourceFieldValue(bundle,field.path)===undefined)continue;
@@ -154,6 +163,7 @@ export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[])
       if(!selected.has(artifact.id))continue;
       activeArtifacts.add(artifact.id);
       fields.add(field.path);
+      fields.add(canonicalPath(field.path));
       const actual=sourceFieldValue(bundle,field.path),expected=decodeField(field);
       if(actual===undefined||canonicalSourceJSON(actual)!==canonicalSourceJSON(expected))semanticReviewRequired.push({artifactId:artifact.id,path:field.path,expected,actual:actual??null,locator:field.locator,reason:'transcribed field differs from the anchored minimal source cell'});
     }
@@ -165,7 +175,7 @@ export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[])
   }
   const requireField=(path,referenceId)=>{
     if(!fields.has(path)){
-      if(![...available.values()].some(a=>a.referenceId===referenceId))unavailableArtifacts.push(`reference:${referenceId}`);
+      if(![...available.values()].some(a=>canonicalReference(a.referenceId)===referenceId))unavailableArtifacts.push(`reference:${referenceId}`);
       else semanticReviewRequired.push({path,reason:'no verified source field anchor available'});
     }
   };

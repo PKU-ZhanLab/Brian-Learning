@@ -1,4 +1,5 @@
 import {EVIDENCE_SCHEMA,EVIDENCE_COLLECTIONS,emptyEvidence,migrateEvidence,validateEvidenceV2,normalizeDOI,safeSourceURL} from './evidence-schema.js';
+import {validateEvidencePackageClosure} from './evidence-package.js';
 export {EVIDENCE_SCHEMA,emptyEvidence,normalizeDOI,safeSourceURL,COORDINATE_SPACES,CURATION_STATUSES} from './evidence-schema.js';
 export const EVIDENCE_STORAGE_KEY='brain-model.evidence.v2';
 export const LEGACY_EVIDENCE_STORAGE_KEY='brain-model.evidence.v1';
@@ -10,7 +11,15 @@ export function validateEvidence(input,options={}) {
   catch(error){return {valid:false,errors:[String(error.message||error)],warnings:[],value:null};}
 }
 
-/** DOI deduplication rewrites every active reference edge, including artifacts and review subjects. */
+/** Files must explain their graph without relying on the current built-in library. */
+export function validateEvidenceImport(input) {
+  const report=validateEvidence(input);
+  if(!report.valid)return report;
+  const closure=validateEvidencePackageClosure(report.value);
+  return {...closure,warnings:[...new Set([...report.warnings,...closure.warnings])]};
+}
+
+/** DOI deduplication rewrites active reference edges; hashed source identities use explicit provenance aliases. */
 export function mergeEvidence(base,incoming,options={}) {
   const baseReport=validateEvidence(base,options);if(!baseReport.valid)throw Error(baseReport.errors.join('\n'));
   const previous=baseReport.value,context={...options,knownReferences:[...(options.knownReferences||[]),...previous.references],knownResults:[...(options.knownResults||[]),...previous.results]};
@@ -23,9 +32,19 @@ export function mergeEvidence(base,incoming,options={}) {
     return ['referenceId','sourceReferenceId','referenceIds','subjectId'].includes(key)&&typeof node==='string'?(remap.get(node)||node):node;
   };
   const next={...previous,schema:EVIDENCE_SCHEMA,dataVersion:report.value.dataVersion,references:[...references.values()]};
+  const aliasRows=[...(previous.referenceAliases||[]),...(report.value.referenceAliases||[]).map(a=>({...a,canonicalId:remap.get(a.canonicalId)||a.canonicalId}))];
+  for(const row of report.value.references)if(remap.get(row.id)!==row.id)aliasRows.push({aliasId:row.id,canonicalId:remap.get(row.id),originalReference:structuredClone(row)});
+  if(aliasRows.length){
+    const aliases=new Map();
+    for(const alias of aliasRows){const prior=aliases.get(alias.aliasId);if(prior&&prior.canonicalId!==alias.canonicalId)throw Error('Conflicting reference alias target');aliases.set(alias.aliasId,alias);}
+    next.referenceAliases=[...aliases.values()];
+  }
   const snapshots=[...(previous.legacyImports||[]),...(report.value.legacyImports||[]),...(report.value.legacyV1?[report.value.legacyV1]:[])];
   if(snapshots.length)next.legacyImports=[...new Map(snapshots.map(snapshot=>[JSON.stringify(snapshot),structuredClone(snapshot)])).values()];
-  for(const key of EVIDENCE_COLLECTIONS.filter(k=>k!=='references'))next[key]=[...new Map([...previous[key],...rewrite(report.value[key])].map(r=>[r.id,r])).values()];
+  for(const key of EVIDENCE_COLLECTIONS.filter(k=>k!=='references')){
+    const rows=key==='sourceArtifacts'?report.value[key].map(row=>row.schema==='source-artifact-v1'||row.schema==='source-reference-v1'?structuredClone(row):rewrite(row)):rewrite(report.value[key]);
+    next[key]=[...new Map([...previous[key],...rows].map(r=>[r.id,r])).values()];
+  }
   // A replacement result owns its location list. Explicitly removed points must
   // not survive as orphaned current locations after an editor save.
   const replacements=new Map(report.value.results.map(r=>[r.id,r]));

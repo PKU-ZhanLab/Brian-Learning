@@ -75,3 +75,35 @@ test('mapping: scalp ERP links require explicit contextual navigation',async({pa
   await expect(contextual).toContainText('Scalp electrodes are not source coordinates');
   await expect(contextual).toContainText('posterior temporal scalp electrodes (N170)');
 });
+
+// Authored for an isolated CI browser. Desktop execution belongs to root CUA.
+test('export: reading-only JSON reconstructs a genuinely non-builtin reading card',async({page})=>{
+  const {buildEvidencePackage,getBuiltinEvidenceBundle,validateEvidencePackageClosure}=await import('../../src/lib/evidence-package.js');
+  const expected=buildEvidencePackage({paperIds:['kanwisher1997'],bundle:getBuiltinEvidenceBundle()});
+  await page.goto('/?lang=en&mode=research');
+  const workspace=page.getByRole('region',{name:'Literature workspace'});
+  await workspace.getByRole('checkbox',{name:/Current region only/}).uncheck();
+  await workspace.getByRole('textbox',{name:'Search papers, authors or regions'}).fill('Kanwisher');
+  await workspace.locator('[data-reference-id="kanwisher1997"] .paper-open').click();
+  const firstDownload=page.waitForEvent('download');
+  await workspace.getByRole('button',{name:'Export this paper’s evidence',exact:true}).click();
+  const downloaded=JSON.parse(await readFile(await (await firstDownload).path(),'utf8'));
+  expect(validateEvidencePackageClosure(downloaded).valid).toBe(true);
+  expect(downloaded.results).toHaveLength(0);
+  for(const collection of ['readings','claims','mappings'])expect(downloaded[collection]).toEqual(expected[collection]);
+  const synthetic=structuredClone(downloaded),id='synthetic-e5-reading';
+  synthetic.references[0]={...synthetic.references[0],id,title:'Synthetic E5 reading fixture',doi:''};
+  for(const collection of ['readings','claims','mappings'])for(const row of synthetic[collection])row.referenceId=id;
+  await page.reload();
+  await workspace.locator('input[type=file]').setInputFiles({name:'synthetic-e5.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(synthetic))});
+  await expect(workspace.getByRole('status')).toContainText('Imported 1 papers');
+  await workspace.getByRole('textbox',{name:'Search papers, authors or regions'}).fill('Synthetic E5 reading fixture');
+  await workspace.locator(`[data-reference-id="${id}"] .paper-open`).click();
+  await expect(workspace.locator('.paper-detail')).toContainText(expected.readings[0].resultSummaries.en);
+  expect(await workspace.locator('[data-mapping-id]').evaluateAll(rows=>rows.map(row=>row.dataset.support))).toEqual(expected.mappings.map(mapping=>mapping.support));
+  const secondDownload=page.waitForEvent('download');
+  await workspace.getByRole('button',{name:'Export this paper’s evidence',exact:true}).click();
+  const restored=JSON.parse(await readFile(await (await secondDownload).path(),'utf8'));
+  for(const collection of ['readings','claims','mappings'])expect(restored[collection]).toEqual(synthetic[collection]);
+  expect(validateEvidencePackageClosure(restored).valid).toBe(true);
+});

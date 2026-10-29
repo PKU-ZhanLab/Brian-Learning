@@ -82,3 +82,24 @@ test('fresh editor checks require supplied identity date and scope and can only 
   for(const patch of [{actorName:''},{date:''},{date:'2026-02-30'},{scope:''},{actorType:'expert'},{stage:'human-reviewed'},{coordinateIds:['not-selected']}])assert.throws(()=>resultViewModelToEvidence(record,bundle,{...options,reviewIntent:{...intent,...patch}}));
   const submitted=resultViewModelToEvidence(record,bundle,{...options,reviewIntent:intent});const view=getResultViewModel(record.id,submitted);assert.equal(validateEvidenceV2(submitted,options).valid,true);assert.equal(view.reviewState.sourceChecked,true);assert.equal(view.reviewState.humanReviewed,false);assert.ok(view.reviewState.events.every(e=>e.actorType==='unknown'&&e.stage==='source-checked'));
 });
+
+test('reference aliases require one valid DOI-equivalent canonical target and original bibliography',()=>{
+  const original=structuredClone(fixture.references[0]),aliasId=original.id,canonicalId='canonical-paper';
+  const bundle={...migrateEvidence(fixture).value};
+  bundle.references=bundle.references.map(r=>r.id===aliasId?{...r,id:canonicalId}:r);
+  for(const key of ['results','claims'])for(const row of bundle[key])if(row.referenceId===aliasId)row.referenceId=canonicalId;
+  bundle.referenceAliases=[{aliasId,canonicalId,originalReference:original}];
+  assert.equal(validateEvidenceV2(bundle).valid,true);
+  for(const change of [b=>b.referenceAliases[0].canonicalId='missing',b=>b.referenceAliases[0].originalReference.doi='10.1000/wrong',b=>b.referenceAliases[0].originalReference.title='',b=>b.referenceAliases.push({...b.referenceAliases[0]}),b=>b.referenceAliases[0].aliasId=canonicalId]){
+    const bad=structuredClone(bundle);change(bad);assert.equal(validateEvidenceV2(bad).valid,false);
+  }
+});
+
+test('removing a canonical paper removes its provenance aliases without orphaning the remainder',async()=>{
+  const {removeEvidenceRecords}=await import('./evidence-schema.js');
+  const bundle=migrateEvidence(fixture).value,reference=bundle.references[0];
+  bundle.referenceAliases=[{aliasId:'former-paper',canonicalId:reference.id,originalReference:{...structuredClone(reference),id:'former-paper'}}];
+  assert.equal(validateEvidenceV2(bundle).valid,true);
+  const next=removeEvidenceRecords(bundle,{referenceIds:[reference.id]});
+  assert.deepEqual(next.referenceAliases,[]);assert.equal(validateEvidenceV2(next).valid,true);
+});

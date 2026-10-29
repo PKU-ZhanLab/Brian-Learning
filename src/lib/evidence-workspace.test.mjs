@@ -127,3 +127,28 @@ test('distinct DOI punctuation does not collapse imported paper IDs',async()=>{
   const rows=await lookupPaperMetadata('two articles',{fetcher});assert.notEqual(rows[0].id,rows[1].id);
 });
 test('local storage corruption is reported and preserved',()=>{const storage=store();storage.setItem(EVIDENCE_STORAGE_KEY,'{bad');const loaded=loadEvidence(storage);assert.ok(loaded.storageError);assert.equal(storage.getItem(EVIDENCE_STORAGE_KEY),'{bad');assert.deepEqual(loaded.results,[]);});
+
+test('independent package import and DOI alias merge preserve the complete reading graph',async()=>{
+  const {getBuiltinEvidenceBundle,buildEvidencePackage,getReadingViewModel}=await import('./evidence-package.js');
+  const original=buildEvidencePackage({paperIds:['kanwisher1997'],bundle:getBuiltinEvidenceBundle()});
+  const incoming=structuredClone(original),alias='imported-kanwisher';
+  incoming.references[0].id=alias;incoming.references[0].doi='https://doi.org/'+incoming.references[0].doi.toUpperCase();
+  for(const key of ['readings','claims','mappings','experiments'])for(const row of incoming[key])row.referenceId=alias;
+  const before=structuredClone(incoming),merged=mergeEvidence(original,incoming);
+  assert.equal(merged.references.length,1);
+  for(const key of ['readings','claims','mappings','experiments'])assert.ok(merged[key].every(row=>row.referenceId==='kanwisher1997'));
+  assert.deepEqual(getReadingViewModel('kanwisher1997',merged).resultSummaries,getReadingViewModel('kanwisher1997',original).resultSummaries);
+  assert.deepEqual(incoming,before);
+});
+
+test('file import validates package closure before any storage write',async()=>{
+  const api=await import('./evidence-workspace.js');
+  assert.equal(typeof api.validateEvidenceImport,'function','file import has a closed-graph validation boundary');
+  const {getBuiltinEvidenceBundle,buildEvidencePackage}=await import('./evidence-package.js');
+  const packageValue=buildEvidencePackage({paperIds:['kanwisher1997'],bundle:getBuiltinEvidenceBundle()});
+  assert.equal(api.validateEvidenceImport(JSON.stringify(packageValue)).valid,true);
+  const bad=structuredClone(packageValue);bad.readings[0].methodProvenance.source='missing-source';
+  const storage=store();storage.setItem(EVIDENCE_STORAGE_KEY,JSON.stringify(packageValue));const before=storage.getItem(EVIDENCE_STORAGE_KEY);
+  const report=api.validateEvidenceImport(bad);assert.equal(report.valid,false);assert.equal(storage.getItem(EVIDENCE_STORAGE_KEY),before);
+  assert.equal(api.validateEvidenceImport(fixture).valid,true);
+});

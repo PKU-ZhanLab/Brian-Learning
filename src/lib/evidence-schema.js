@@ -70,6 +70,24 @@ export function validateEvidenceV1(input, {knownReferences = [], knownResults = 
 export const EVIDENCE_SCHEMA = 'brain-evidence-v2';
 export const EVIDENCE_COLLECTIONS = ['references','readings','experiments','results','locations','claims','mappings','sourceArtifacts','reviewEvents','relations'];
 export const emptyEvidence = () => ({schema:EVIDENCE_SCHEMA,dataVersion:'2.0.0',...Object.fromEntries(EVIDENCE_COLLECTIONS.map(key=>[key,[]]))});
+
+/** Provenance aliases bind immutable source IDs to one current bibliography row.
+ * They never create a second visible paper or an alias chain. */
+export function validateReferenceAliases(bundle) {
+  const errors=[],aliases=bundle?.referenceAliases??[];
+  if(!Array.isArray(aliases))return {valid:false,errors:['referenceAliases must be an array']};
+  const references=new Map((bundle?.references||[]).map(r=>[r.id,r])),seen=new Set();
+  for(const alias of aliases){
+    if(!alias||typeof alias!=='object'){errors.push('referenceAliases: expected object');continue;}
+    const {aliasId,canonicalId,originalReference}=alias,target=references.get(canonicalId);
+    if(typeof aliasId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(aliasId)||seen.has(aliasId)||references.has(aliasId)||!target||aliasId===canonicalId)errors.push('referenceAliases: unique absent alias and existing canonical target required');
+    seen.add(aliasId);
+    const metadata=validateEvidenceV1({schema:LEGACY_SCHEMA,references:originalReference?[originalReference]:[],results:[],relations:[]});
+    if(!originalReference||originalReference.id!==aliasId||!metadata.valid||!normalizeDOI(originalReference.doi)||normalizeDOI(originalReference.doi)!==normalizeDOI(target?.doi))errors.push('referenceAliases: original valid bibliography and matching normalized DOI required');
+  }
+  return {valid:errors.length===0,errors};
+}
+export const resolveReferenceAlias=(bundle,id)=>(bundle.referenceAliases||[]).find(a=>a.aliasId===id)?.canonicalId||id;
 export const missing = (reason='Not extracted from the source',state='not-extracted',sourceRefs=[]) => ({state,reason,sourceRefs});
 export const reported = (value,sourceRefs) => ({state:'reported',value,sourceRefs});
 const bi = (en) => ({en,zh:en});
@@ -184,8 +202,9 @@ export function removeEvidenceRecords(bundle,{referenceIds=[],resultIds=[],retai
   const experiments=new Set(bundle.experiments.filter(e=>references.has(e.referenceId)).map(e=>e.id));
   for(const r of bundle.results)if(references.has(resultReferenceId(r,bundle)))results.add(r.id);
   const claims=new Set(bundle.claims.filter(c=>references.has(c.referenceId)||experiments.has(c.experimentId)||results.has(c.resultId)).map(c=>c.id));
-  const dependent=row=>references.has(row.referenceId)||references.has(row.sourceReferenceId)||experiments.has(row.experimentId)||results.has(row.resultId)||claims.has(row.claimId);
+  const dependent=row=>references.has(resolveReferenceAlias(bundle,row.referenceId))||references.has(resolveReferenceAlias(bundle,row.sourceReferenceId))||experiments.has(row.experimentId)||results.has(row.resultId)||claims.has(row.claimId);
   next.references=next.references.filter(r=>!references.has(r.id));
+  if(next.referenceAliases)next.referenceAliases=next.referenceAliases.filter(a=>!references.has(a.canonicalId));
   next.results=next.results.filter(r=>!results.has(r.id));
   next.experiments=next.experiments.filter(e=>!experiments.has(e.id));
   next.readings=next.readings.filter(r=>!references.has(r.referenceId));
@@ -216,6 +235,7 @@ function validateEvidenceV2Model(input,{knownReferences=[],knownResults=[],known
   for(const key of EVIDENCE_COLLECTIONS)if(!Array.isArray(value[key]))errors.push(`${key} must be an array`);
   if(errors.length)return {valid:false,errors,warnings,value:null};
   if(typeof value.dataVersion!=='string'||!value.dataVersion.trim())errors.push('dataVersion is required');
+  errors.push(...validateReferenceAliases(value).errors);
   if(EVIDENCE_COLLECTIONS.reduce((n,k)=>n+value[k].length,0)>10000)errors.push('Maximum 10,000 records per package');
   const identifiers=new Map();
   for(const key of EVIDENCE_COLLECTIONS){const seen=new Set();for(const row of value[key]){if(!row||typeof row!=='object'||Array.isArray(row)){errors.push(`${key}: expected object`);continue;}if(typeof row.id!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(row.id))errors.push(`${key}: invalid identifier`);if(seen.has(row.id))errors.push(`${key}: duplicate id ${row.id}`);seen.add(row.id);}identifiers.set(key,seen);}
