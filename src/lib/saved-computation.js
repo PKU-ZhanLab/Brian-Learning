@@ -9,7 +9,7 @@ function gridCount(grid){
  const count=grid.shape.reduce((a,b)=>a*b,1);if(!Number.isSafeInteger(count)||count>MAX_CLASSES)throw Error('snapshot-grid');return count;
 }
 function metadata(input){
- if(!object(input)||(input.id!=null&&(typeof input.id!=='string'||!input.id||input.id.length>2000)))throw Error('snapshot-id');
+ if(!object(input)||(input.id!=null&&(typeof input.id!=='string'||!input.id)))throw Error('snapshot-id');
  const {classes,classesGzip,classCount,classEncoding,maskA,maskB,surfaces,...rest}=input;
  const value=JSON.parse(boundedJsonStringify(rest,MAX_SNAPSHOT_METADATA_BYTES,'snapshot-metadata-budget'));
  value.manifest??=null;
@@ -32,7 +32,24 @@ async function streamBytes(stream,limit,code){
  const bytes=new Uint8Array(length);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}return bytes;
 }
 function base64(bytes){let text='';for(let i=0;i<bytes.length;i+=32768)text+=String.fromCharCode(...bytes.subarray(i,i+32768));return btoa(text);}
-function encodedBytes(text){if(typeof text!=='string'||text.length>4*Math.ceil(MAX_COMPRESSED_ASSET_BYTES/3)||!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(text))throw Error('snapshot-encoded-budget');return text.length/4*3-(text.endsWith('==')?2:text.endsWith('=')?1:0);}
+function encodedBytes(text){
+ if(typeof text!=='string'||text.length>4*Math.ceil(MAX_COMPRESSED_ASSET_BYTES/3)||text.length%4!==0)throw Error('snapshot-encoded-budget');
+ const padding=text.endsWith('==')?2:text.endsWith('=')?1:0,payloadLength=text.length-padding;
+ let last=0;
+ // Constant-stack, linear admission, including canonical unused final sextet bits.
+ for(let i=0;i<payloadLength;i++){
+  const code=text.charCodeAt(i);
+  if(code>=65&&code<=90)last=code-65;
+  else if(code>=97&&code<=122)last=code-71;
+  else if(code>=48&&code<=57)last=code+4;
+  else if(code===43)last=62;
+  else if(code===47)last=63;
+  else throw Error('snapshot-encoded-budget');
+ }
+ const bytes=text.length/4*3-padding;
+ if((padding===2&&(last&15)!==0)||(padding===1&&(last&3)!==0)||bytes>MAX_COMPRESSED_ASSET_BYTES)throw Error('snapshot-encoded-budget');
+ return bytes;
+}
 export async function encodeSavedComputation(input,{maxRawBytes=MAX_WORKSPACE_RAW_PAYLOAD_BYTES}={}){
  const usage=savedComputationUsage(input);if(usage.rawPayloadBytes>maxRawBytes)throw Error('snapshot-budget');
  if(input==null)return {value:null,rawPayloadBytes:0,compressedBytes:0};
