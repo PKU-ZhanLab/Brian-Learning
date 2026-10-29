@@ -122,6 +122,16 @@ export function getResultViewModel(resultId,bundle) {
   return {...old,id:r.id,referenceId:resultReferenceId(r,bundle),finding:r.finding,condition:r.contrast,sample:old.sample||bi(r.sample?.perAnalysis?.state==='reported'?`n = ${r.sample.perAnalysis.value}`:r.sample?.perAnalysis?.reason||'Sample not extracted'),roiDefinition:old.roiDefinition||bi('ROI definition not extracted'),direction:old.direction||bi(r.statistics.reason||'Statistics not extracted'),modalities:r.modalities,topics:old.topics||[],coordinates,regionIds:old.regionIds||bundle.mappings.filter(m=>m.resultId===r.id).map(m=>m.targetConceptId).filter(Boolean),figures:old.figures||[],sourceUrl:old.sourceUrl||claims.flatMap(c=>c.sourceRefs)[0]||'',limitations:old.limitations||bi((r.limitations||[]).map(v=>typeof v==='string'?v:v.en||v.zh).join(' ')),reviewState,curationStatus:reviewState.sourceChecked?'source-checked':'draft'};
 }
 
+/** Validate explicit editor action, never a claim inferred from inherited status fields. */
+export function validateSourceCheckIntent(intent,record) {
+  if(!intent||typeof intent!=='object'||typeof intent.result!=='boolean'||!Array.isArray(intent.coordinateIds)||intent.coordinateIds.some(id=>typeof id!=='string'))throw Error('Source-check intent must name the result and coordinate selections');
+  if(!['ai','human','unknown'].includes(intent.actorType)||typeof intent.actorName!=='string'||!intent.actorName.trim()||!validDate(intent.date)||typeof intent.scope!=='string'||!intent.scope.trim())throw Error('Supply the current source reviewer/tool name, actor type, valid date and checked scope');
+  if(intent.stage&&intent.stage!=='source-checked')throw Error('The editor records source checks only');
+  if(intent.result&&record.curationStatus!=='source-checked')throw Error('The finding must be explicitly marked source-checked');
+  for(const id of intent.coordinateIds)if(!record.coordinates.some(c=>c.id===id&&c.status==='source-checked'))throw Error(`Coordinate ${id} must be explicitly marked source-checked`);
+  return intent;
+}
+
 /** Convert an existing editor's text fields at this boundary, retaining structured fields it cannot edit. */
 export function resultViewModelToEvidence(record,bundle,options={}) {
   const clean=structuredClone(record);delete clean.reviewState;
@@ -137,6 +147,14 @@ export function resultViewModelToEvidence(record,bundle,options={}) {
   // for the new version can certify the edited result or its locations.
   const subjects=new Set([record.id,...converted.locations.map(l=>l.id)]);
   converted.reviewEvents=structuredClone((bundle?.reviewEvents||[]).filter(e=>subjects.has(e.subjectId)));
+  if(options.reviewIntent){
+    const intent=validateSourceCheckIntent(options.reviewIntent,record);
+    const checkedSubjects=[...(intent.result?[record.id]:[]),...new Set(intent.coordinateIds)];
+    for(const subjectId of checkedSubjects){
+      const coordinate=record.coordinates.find(c=>c.id===subjectId);
+      converted.reviewEvents.push({id:`${subjectId}:source-check:${version}`,subjectId,stage:'source-checked',actorType:intent.actorType,actorName:intent.actorName,date:intent.date,scope:intent.scope,sourceRefs:[coordinate?.sourceUrl||record.sourceUrl],limitations:[bi('Source checking records only the supplied scope; it does not certify study quality, spatial alignment or expert/human review.')],recordVersion:version});
+    }
+  }
   return converted;
 }
 

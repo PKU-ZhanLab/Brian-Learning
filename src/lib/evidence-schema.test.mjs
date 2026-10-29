@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {migrateEvidence, validateEvidenceV2, deriveReviewState, getResultViewModel} from './evidence-schema.js';
+import {migrateEvidence, validateEvidenceV2, deriveReviewState, getResultViewModel,resultViewModelToEvidence} from './evidence-schema.js';
 import {literatureByReferenceId} from '../data/literature.js';
 import {references} from '../data/references.js';
 import {additionalReferences} from '../data/references-expanded.js';
@@ -75,4 +75,10 @@ test('each statistic requires a safe resolvable source and malformed statistics 
     const b=structuredClone(curatedEvidence);b.results[1].statistics.value=[bad];let report;assert.doesNotThrow(()=>{report=validateEvidenceV2(b);});assert.equal(report.valid,false,JSON.stringify(bad));assert.ok(report.errors.some(e=>e.includes('statistics')));
   }
   const b=structuredClone(curatedEvidence);b.sourceArtifacts=[{id:'statistic-source'}];b.results[1].statistics.value[0].sourceRefs=['statistic-source'];assert.equal(validateEvidenceV2(b).valid,true);
+});
+test('fresh editor checks require supplied identity date and scope and can only produce source-check events',()=>{
+  const bundle=migrateEvidence(fixture).value,record=getResultViewModel(bundle.results[0].id,bundle),intent={result:true,coordinateIds:[],actorType:'unknown',actorName:'Supplied annotator',date:'2026-10-29',scope:'Selected Table 1 cells'};
+  const options={knownReferences:bundle.references};
+  for(const patch of [{actorName:''},{date:''},{date:'2026-02-30'},{scope:''},{actorType:'expert'},{stage:'human-reviewed'},{coordinateIds:['not-selected']}])assert.throws(()=>resultViewModelToEvidence(record,bundle,{...options,reviewIntent:{...intent,...patch}}));
+  const submitted=resultViewModelToEvidence(record,bundle,{...options,reviewIntent:intent});const view=getResultViewModel(record.id,submitted);assert.equal(validateEvidenceV2(submitted,options).valid,true);assert.equal(view.reviewState.sourceChecked,true);assert.equal(view.reviewState.humanReviewed,false);assert.ok(view.reviewState.events.every(e=>e.actorType==='unknown'&&e.stage==='source-checked'));
 });
