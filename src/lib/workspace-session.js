@@ -71,8 +71,9 @@ export function createWorkspaceSession({storage,initial,knownEvidence}={}){
   if(!storage||typeof storage.setItem!=='function')throw Error('workspace-storage-unavailable');
   let current=freeze({...initial,drafts:initial.drafts??[],volumes:initial.volumes??[],evidence:initial.evidence??emptyEvidence(),roiSnapshot:initial.roiSnapshot??null,recomputedSnapshot:initial.recomputedSnapshot??null});
   publishCustomVolumeReplacement(prepareCustomVolumeReplacement(current.projectId,current.volumes),{notify:false});
-  const listeners=new Set();let committing=false;
-  return {getSnapshot:()=>current,subscribe(callback){listeners.add(callback);return()=>listeners.delete(callback);},async stage(candidate){return stageWorkspaceChange(candidate,{current,knownEvidence});},commit(stage){
+  const listeners=new Set();let committing=false,queue=Promise.resolve();
+  const transact=update=>{const result=queue.then(async()=>{for(let attempt=0;attempt<5;attempt++){const base=current,candidate=await update(base),stage=await stageWorkspaceChange(candidate,{current:base,knownEvidence});if(current!==base)continue;return api.commit(stage);}throw Error('stale-workspace');});queue=result.catch(()=>{});return result;};
+  const api={transact,getSnapshot:()=>current,subscribe(callback){listeners.add(callback);return()=>listeners.delete(callback);},async stage(candidate){return stageWorkspaceChange(candidate,{current,knownEvidence});},commit(stage){
     if(committing)throw Error('workspace-commit-in-progress');
     const prepared=stages.get(stage);if(!prepared)throw Error('invalid-stage');
     if(stage.baseRevision!==current.revision||prepared.base!==current)throw Error('stale-workspace');
@@ -80,7 +81,7 @@ export function createWorkspaceSession({storage,initial,knownEvidence}={}){
     committing=true;
     try{current=prepared.next;if(prepared.replacement)publishCustomVolumeReplacement(prepared.replacement,{notify:false});for(const callback of [...listeners]){try{callback();}catch{/* Already committed; continue notifying peers. */}}if(prepared.replacement)notifyCustomVolumes();return current;}
     finally{committing=false;}
-  }};
+  }};return api;
 }
 
 /** Startup migration is read-only; legacy keys are retained byte for byte. */

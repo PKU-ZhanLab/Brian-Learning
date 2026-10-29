@@ -1,3 +1,4 @@
+import {validateDrafts} from './draft-store.js';
 import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_PROJECT_UTF8_BYTES,utf8ByteLength,boundedJsonStringify} from './workspace-limits.js';
 import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
 import {atlasRegionKey} from './atlas-identity.js';
@@ -66,12 +67,7 @@ export function validateMissingAssetIds(value=[]){
   if(!Array.isArray(value)||value.length>20000||new Set(value).size!==value.length||value.some(id=>typeof id!=='string'||!/^custom-[a-zA-Z0-9_-]{1,112}$/.test(id)))throw Error('invalid-missing-asset-ids');
   return [...value];
 }
-export function validateProjectDrafts(value=[],projectId){
-  if(!Array.isArray(value)||value.length>30)throw Error('draft-count');
-  const drafts=JSON.parse(boundedJsonStringify(value,1024*1024,'draft-json-budget')),ids=new Set();
-  for(const d of drafts){if(!d||typeof d!=='object'||typeof d.id!=='string'||!d.id||ids.has(d.id)||d.projectId!==projectId||typeof d.kind!=='string'||!d.kind.trim()||!(d.recordId===null||typeof d.recordId==='string')||!d.payload||typeof d.payload!=='object'||Array.isArray(d.payload)||typeof d.updatedAt!=='string'||!Number.isFinite(Date.parse(d.updatedAt)))throw Error('invalid-draft');boundedJsonStringify(d.payload,50000,'draft-payload-budget');ids.add(d.id);}
-  return drafts;
-}
+export const validateProjectDrafts=(value=[],projectId)=>validateDrafts(value,projectId);
 
 export function validateViewState(input,{savedProjectId,projectId}={}){
   if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Invalid view state');

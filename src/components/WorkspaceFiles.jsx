@@ -4,7 +4,7 @@ import {MAX_PROJECT_UTF8_BYTES} from '../lib/workspace-limits.js';
 import WorkspaceAssets from './WorkspaceAssets.jsx';
 import './WorkspaceFiles.css';
 
-export default function WorkspaceFiles({language='zh',onClose,getView,onRestoreView,onExportProject,onStageProject,onCommitProject,onShare,customVolumeCount=0,snapshot,onRemovePlan,onCommitRemoval,onExportPlan,onConfirmExport}){
+export default function WorkspaceFiles({language='zh',onClose,getView,onRestoreView,onExportProject,onStageProject,onCommitProject,onShare,customVolumeCount=0,snapshot,onRemovePlan,onCommitRemoval,onExportPlan,onConfirmExport,draftState,onFlushDrafts,undoEntries=[],onUndo}){
   const en=language==='en',t=(zh,eng)=>en?eng:zh;
   const [name,setName]=useState(''),[saved,setSaved]=useState(()=>readSavedViews()),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[pending,setPending]=useState(null);
   const actionTrigger=useRef(null),input=useRef(null),importButton=useRef(null),mergeButton=useRef(null),pickerMode=useRef('open'),epoch=useRef(0),mounted=useRef(true);
@@ -27,6 +27,8 @@ export default function WorkspaceFiles({language='zh',onClose,getView,onRestoreV
   const confirmAsset=()=>run(async()=>{if(pending.preview.mode==='remove')await onCommitRemoval(pending);else await onConfirmExport(pending);setPending(null);});
   return <div className="workspace-files-backdrop"><section className="workspace-files" aria-busy={busy}>
     <header><h2>{t('保存与分享','Save and share')}</h2><button onClick={onClose} aria-label={t('关闭保存窗口','Close save dialog')}>×</button></header>
+    {!!undoEntries.length&&<button disabled={busy} onClick={()=>run(onUndo)}>{t('撤销：','Undo: ')}{undoEntries.at(-1).label}</button>}
+    {draftState&&<p role="status">{draftState.error?t('草稿未保存：','Draft not saved: ')+draftState.error:draftState.dirty?t('草稿待保存','Draft pending save'):t('草稿已保存','Drafts saved')}{draftState.dirty&&<button disabled={busy} onClick={()=>run(onFlushDrafts)}>{t('重试保存草稿','Retry saving drafts')}</button>}</p>}
     <p>{t('项目文件包含视图、批注、论文记录和本项目的影像。','Project files contain views, notes, evidence records and this project’s volumes.')}</p>
     <div className="workspace-file-actions"><button disabled={busy} onClick={()=>snapshot?exportPlan({assetIds:snapshot.volumes.filter(v=>!v.projectId||v.projectId===snapshot.projectId).map(v=>v.id),dependentPolicy:'include'}):run(onExportProject)}>{t('导出完整项目','Export project')}</button><button ref={importButton} disabled={busy} onClick={()=>pick('open')}>{t('打开项目文件','Open project file')}</button><button ref={mergeButton} disabled={busy} onClick={()=>pick('merge')}>{t('合并到当前项目','Merge into current project')}</button><button disabled={busy} onClick={()=>run(onShare)}>{t('复制视图链接','Copy view link')}</button></div>
     <input type="file" accept=".json,.neuroatlas" hidden ref={input} onChange={stageFile}/>

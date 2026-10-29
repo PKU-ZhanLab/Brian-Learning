@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Plus, Trash2, X, Save} from 'lucide-react';
 import {COORDINATE_SPACES} from '../lib/evidence-workspace.js';
 import {createEvidenceEditorState,updateEvidenceEditorField,prepareEvidenceEditorSubmission} from '../lib/evidence-editor.js';
@@ -12,20 +12,23 @@ export function RegionPicker({value=[],onChange,structures=[],language='zh'}) {
   return <div className="evidence-region-picker"><div className="paper-region-tags">{value.map(key=><button type="button" key={key} onClick={()=>onChange(value.filter(x=>x!==key))}>{structures.find(s=>s.id===key)?.[en?'en':'name']||key}<X size={11}/></button>)}</div><input value={query} onChange={e=>setQuery(e.target.value)} aria-label={en?'Find a region link':'查找关联脑区'} placeholder={en?'Find and add a region…':'搜索并添加脑区…'}/><select aria-label={en?'Add a region link':'添加脑区关联'} value="" onChange={e=>{if(e.target.value)onChange([...new Set([...value,e.target.value])]);}}><option value="">{en?'Choose a region':'选择脑区'}</option>{structures.filter(s=>!value.includes(s.id)&&`${s.name} ${s.en} ${s.id}`.toLowerCase().includes(query.toLowerCase())).map(s=><option key={s.id} value={s.id}>{en?s.en:s.name}</option>)}</select></div>;
 }
 
-export default function EvidenceEditor({kind='result',record,referenceId,references=[],results=[],structures=[],language='zh',onSave,onCancel}) {
+export default function EvidenceEditor({kind='result',record,referenceId,references=[],results=[],structures=[],language='zh',onSave,onCancel,onDraftChange,onDiscardDraft,draftStatus}) {
   const en=language==='en', t=(zh,eng)=>en?eng:zh;
   const reference=references.find(r=>r.id===(record?.referenceId||referenceId))||references[0];
   const [editorState,setEditorState]=useState(()=>createEvidenceEditorState(record || (kind==='paper'?{id:id('paper'),title:'',authors:'',year:new Date().getFullYear(),journal:'',doi:'',url:'',verificationStatus:'metadata-only'}:kind==='relation'?{id:id('relation'),fromResultId:results[0]?.id||'',toResultId:results[1]?.id||'',type:'complementary',rationale:'',annotator:'',sourceUrl:''}:{id:id('result'),referenceId:reference?.id||'',finding:'',condition:'',sample:'',modalities:[],topics:[],roiDefinition:'',direction:'',regionIds:[],sourceUrl:reference?.url||(reference?.doi?`https://doi.org/${reference.doi}`:''),curationStatus:'draft',curationNote:'',annotator:'',coordinates:[],figures:[]})));
   const {draft,reviewIntent,reviewDetails}=editorState;
-  const [error,setError]=useState('');
-  const set=(key,value,checkOptions={})=>setEditorState(state=>updateEvidenceEditorField(state,key,value,{...checkOptions,kind}));
+  const editorRef=useRef(editorState);editorRef.current=editorState;
+  const [error,setError]=useState(''),[saving,setSaving]=useState(false);
+  const set=(key,value,checkOptions={})=>{const next=updateEvidenceEditorField(editorRef.current,key,value,{...checkOptions,kind});editorRef.current=next;setEditorState(next);onDraftChange?.(next.draft);};
   const localized=(key,value)=>set(key,typeof draft[key]==='object'?{...draft[key],[language]:value}:value);
   const field=(key,label,{multiline=false,required=false,type='text',localizedValue=true}={})=><label className="evidence-field">{label}{multiline?<textarea rows={3} required={required} value={read(draft[key],language)} onChange={e=>localizedValue?localized(key,e.target.value):set(key,e.target.value)}/>:<input type={type} required={required} value={read(draft[key],language)} onChange={e=>type==='number'?set(key,e.target.value===''?undefined:Number(e.target.value)):localizedValue?localized(key,e.target.value):set(key,e.target.value)}/>}</label>;
   const patchRow=(key,index,patch)=>set(key,draft[key].map((r,i)=>i===index?{...r,...patch,...(key==='coordinates'&&!Object.hasOwn(patch,'status')?{status:'draft'}:{})}:r),key==='coordinates'?{coordinateCheckId:patch.status==='source-checked'?draft[key][index].id:null,statusOnly:Object.keys(patch).every(k=>k==='status')}:{});
   const updateRowText=(key,index,field,value)=>patchRow(key,index,{[field]:typeof draft[key][index][field]==='object'?{...draft[key][index][field],[language]:value}:value});
-  const submit=async e=>{e.preventDefault();setError('');try {const {record:value,reviewIntent:freshReview}=prepareEvidenceEditorSubmission(kind,editorState);await onSave(value,freshReview);}catch(e){setError(e.message||String(e));}};
-  return <form className="evidence-editor" onSubmit={submit}>
+  const submit=async e=>{e.preventDefault();if(saving)return;setSaving(true);setError('');try {const {record:value,reviewIntent:freshReview}=prepareEvidenceEditorSubmission(kind,editorState);await onSave(value,freshReview);}catch(e){setError(e.message||String(e));}finally{setSaving(false);}};
+  return <form className="evidence-editor" onSubmit={submit} aria-busy={saving}><fieldset disabled={saving} style={{border:0,padding:0,margin:0,minWidth:0}}>
     <div className="evidence-editor-heading"><h3>{kind==='paper'?t('编辑论文元数据','Edit paper metadata'):kind==='relation'?t('标注结果关系','Annotate a result relation'):t('编辑结构化结果','Edit structured finding')}</h3><button type="button" aria-label={t('取消编辑','Cancel editing')} onClick={onCancel}><X size={16}/></button></div>
+    {draftStatus&&<p role="status">{draftStatus.error?t('草稿未保存：','Draft not saved: ')+draftStatus.error:draftStatus.dirty?t('草稿待保存','Draft pending save'):t('草稿已保存','Draft saved')}</p>}
+    {onDiscardDraft&&<button type="button" className="text-button" onClick={async()=>{try{await onDiscardDraft(draft.id);onCancel();}catch(error){setError(error.message);}}}>{t('丢弃此草稿','Discard this draft')}</button>}
     {kind==='paper'?<>
       <p className="evidence-note">{t('保存元数据不会创建已核对的研究结论。','Saving metadata does not create a source-checked finding.')}</p>
       {field('title',t('标题','Title'),{required:true})}{field('authors',t('作者','Authors'))}<div className="evidence-two-columns">{field('year',t('年份','Year'),{type:'number',localizedValue:false})}{field('journal',t('期刊','Journal'))}</div>{field('doi','DOI',{localizedValue:false})}{field('url',t('来源链接','Source URL'),{type:'url',localizedValue:false})}
@@ -49,5 +52,5 @@ export default function EvidenceEditor({kind='result',record,referenceId,referen
       <fieldset><legend>{t('原文结果图','Source figures')}</legend>{draft.figures.map((f,i)=><div className="evidence-row" key={f.id||i}><div className="evidence-row-heading"><strong>{t('图','Figure')} {i+1}</strong><button type="button" aria-label={t('删除图','Remove figure')} onClick={()=>set('figures',draft.figures.filter((_,j)=>j!==i))}><Trash2 size={13}/></button></div>{['url','imageUrl','sourceUrl','license','caption'].map((k,j)=><label className="evidence-field" key={k}>{[t('原文图页面链接','Figure page URL'),t('外部图片链接（可选）','External image URL (optional)'),t('出版来源链接','Publication source URL'),t('许可与作者署名','License and attribution'),t('图注与解释','Caption and interpretation')][j]}<input type={/Url$|^url$/.test(k)?'url':'text'} required={k!=='imageUrl'} value={read(f[k],language)} onChange={e=>updateRowText('figures',i,k,e.target.value)}/></label>)}<RegionPicker value={f.regionIds} onChange={v=>patchRow('figures',i,{regionIds:v})} structures={structures} language={language}/><p className="evidence-note">{t('点击图像将使用以上手工脑区关联；不会从图像像素推断坐标。','Image clicks use these manual region links; coordinates are not inferred from pixels.')}</p></div>)}<button type="button" className="evidence-add" onClick={()=>set('figures',[...draft.figures,{id:id('figure'),url:'',imageUrl:'',sourceUrl:draft.sourceUrl,license:'',caption:'',regionIds:[]}])}><Plus size={13}/>{t('添加结果图','Add figure')}</button><p className="evidence-note">{t('图片保留为外部链接；记录许可与署名。无转载许可时使用原文页面链接。','Images remain external links with license and attribution. Use the source page when reproduction rights are unavailable.')}</p></fieldset>
     </>}
     {error&&<div className="evidence-error" role="alert">{error}</div>}<div className="evidence-editor-actions"><button type="button" onClick={onCancel}>{t('取消','Cancel')}</button><button type="submit"><Save size={14}/>{t('保存到本地证据库','Save to local evidence')}</button></div>
-  </form>;
+  </fieldset></form>;
 }
