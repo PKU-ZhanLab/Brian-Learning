@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "protocolVersion": "spatial-qc-protocol-v1",
-  "algorithmVersion": "spatial-qc-gates-v1",
+  "protocolVersion": "spatial-qc-protocol-v2",
+  "algorithmVersion": "spatial-qc-gates-v2",
   "requiredCoverage": [
     "whole-volume-axial",
     "whole-volume-coronal",
@@ -192,8 +192,8 @@
       "id": "protocol",
       "path": "docs/validation/spatial-qc-protocol.md",
       "kind": "protocol",
-      "sha256": "0b3122f97b591b3071784cbcb69d2bba0405aebcb1da3c39f8102af07bcfede7",
-      "version": "sha256:0b3122f97b591b3071784cbcb69d2bba0405aebcb1da3c39f8102af07bcfede7"
+      "sha256": "9b98817721cf401c4c98ce129ba679e7dfe4e49838119356f89b10ef593c2306",
+      "version": "sha256:9b98817721cf401c4c98ce129ba679e7dfe4e49838119356f89b10ef593c2306"
     },
     {
       "id": "source-preparation",
@@ -372,5 +372,6 @@
     "Historical AI scope: three central planes only; no genuine independent reviewer records supplied.",
     "No independent whole-brain, deep-nucleus, brainstem or vermis measurements.",
     "Candidate acquisition/grid checks do not resolve licensing or certify regional anatomy."
-  ]
+  ],
+  "protocolSha256": "9b98817721cf401c4c98ce129ba679e7dfe4e49838119356f89b10ef593c2306"
 }

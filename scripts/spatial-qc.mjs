@@ -13,6 +13,23 @@ const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const local=file=>{const target=path.resolve(root,file);if(!target.startsWith(root+path.sep))throw Error(`QC input escapes checkout: ${file}`);return target;};
 const json=async file=>JSON.parse(await readFile(local(file),'utf8'));
 
+/** Inputs have already been byte-verified. Recheck review bytes at their point of consumption. */
+export async function loadLockedReviews({registry,inputs,readBytes}){
+ if(!Array.isArray(registry.reviewFiles)||new Set(registry.reviewFiles).size!==registry.reviewFiles.length)throw Error('Review file list must contain unique locked paths');
+ const records=[];
+ for(const file of registry.reviewFiles){
+  const input=inputs.find(input=>input.path===file&&input.sha256===input.expectedSha256);
+  if(!input)throw Error(`Review file is not a verified locked input: ${file}`);
+  const bytes=await readBytes(file);if(digest(bytes)!==input.sha256)throw Error(`Review file hash changed before evaluation: ${file}`);
+  const record=JSON.parse(bytes.toString('utf8'));
+  if(record?.reviewer?.kind==='human'||record?.evidenceSha256!=null){
+   if(!/^[a-f\d]{64}$/.test(record.evidenceSha256||'')||!inputs.some(input=>input.sha256===record.evidenceSha256&&input.sha256===input.expectedSha256))throw Error(`Human review evidence is not a verified locked input: ${file}`);
+  }
+  records.push({path:file,sha256:input.sha256,record});
+ }
+ return records;
+}
+
 export async function loadLockedInputs(){
  await prepareSpatialQCSources({checkOnly:true});
  const registryBytes=await readFile(local(registryPath)),registry=JSON.parse(registryBytes);
@@ -27,7 +44,12 @@ export async function loadLockedInputs(){
  const lockedEvidence=hash=>inputs.some(input=>input.sha256===hash&&input.expectedSha256===hash);
  for(const reference of registry.references)if(!lockedEvidence(reference.sha256))throw Error(`${reference.id}: independent reference bytes are not locked`);
  for(const measurement of registry.measurements)if(!lockedEvidence(measurement.evidenceSha256))throw Error(`${measurement.regionId}: measurement evidence bytes are not locked`);
- return {registry,inputs,assets,transforms};
+ if(registry.measurements.length||registry.thresholds.length){
+  if(!lockedEvidence(registry.protocolSha256))throw Error('Comparison protocol evidence bytes are not locked');
+  for(const threshold of registry.thresholds)if(!lockedEvidence(threshold.evidenceSha256))throw Error(`${threshold.regionId}: threshold evidence bytes are not locked`);
+ }
+ const reviewRecords=await loadLockedReviews({registry,inputs,readBytes:file=>readFile(local(file))});
+ return {registry,inputs,assets,transforms,reviewRecords};
 }
 
 export async function inspectSegmentationCandidate(candidate,inputs){
@@ -49,8 +71,8 @@ export async function inspectSegmentationCandidate(candidate,inputs){
 }
 
 export async function buildAssessment(){
- const {registry,inputs,assets,transforms}=await loadLockedInputs();
- const reviews=await Promise.all(registry.reviewFiles.map(json));
+ const {registry,inputs,assets,transforms,reviewRecords}=await loadLockedInputs();
+ const reviews=reviewRecords.map(review=>review.record);
  const assessment=evaluateSpatialQC({assets:assets.filter(asset=>registry.assessedAssetIds.includes(asset.id)),transforms,referenceSet:registry,measurements:registry.measurements,reviews});
  const manifest=await json('public/data/manifest.json');
  const labelChecks=[];
@@ -69,7 +91,7 @@ export async function buildAssessment(){
  for(const candidate of registry.segmentationCandidates){
   candidateChecks.push(await inspectSegmentationCandidate(candidate,inputs));
  }
- return {schemaVersion:1,protocolVersion:registry.protocolVersion,algorithmVersion:registry.algorithmVersion,...assessment,automatedChecks:assessment.automatedChecks.concat(labelChecks),inputs,thresholds:registry.thresholds,independentReferences:registry.references,coverageRegions:registry.coverageRegions,historicalReviewScope:'Three central orthogonal planes; AI review only.',segmentationSources:candidateChecks,excludedSources:registry.excludedSources};
+ return {schemaVersion:1,protocolVersion:registry.protocolVersion,protocolSha256:registry.protocolSha256,algorithmVersion:registry.algorithmVersion,...assessment,automatedChecks:assessment.automatedChecks.concat(labelChecks),inputs,reviewRecords,thresholds:registry.thresholds,independentReferences:registry.references,coverageRegions:registry.coverageRegions,historicalReviewScope:'Three central orthogonal planes; AI review only.',segmentationSources:candidateChecks,excludedSources:registry.excludedSources};
 }
 
 export async function runSpatialQC({check=false}={}){

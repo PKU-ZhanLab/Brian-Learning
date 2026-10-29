@@ -11,9 +11,16 @@ const validReference=(ref,assets)=>ref?.independent===true&&nonempty(ref.id)&&no
 const sameHashes=(a,b)=>Array.isArray(a)&&a.length===b.length&&a.every((value,index)=>value===b[index]);
 const actualHuman=review=>review?.reviewer?.kind==='human'&&nonempty(review.reviewer.id)&&nonempty(review.reviewer.name)&&!/(?:\bAI\b|agent|automated|bot|system)/i.test(review.reviewer.name)&&/^\d{4}-\d{2}-\d{2}$/.test(review.date||'')&&Number.isFinite(Date.parse(review.date))&&new Date(review.date).toISOString().slice(0,10)===review.date&&digest(review.evidenceSha256)&&review.verdict==='pass'&&Array.isArray(review.scope);
 const metric=(value,maximum)=>Number.isFinite(value)&&value>=0&&Number.isFinite(maximum)&&maximum>=0&&value<=maximum;
+const canonical=value=>JSON.stringify(value,(_,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.keys(item).sort().map(key=>[key,item[key]])):item);
+const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
+
+/** The immutable comparison a person reviewed; generated from actual accepted inputs, never a caller-supplied status. */
+export function makeSpatialReviewContext({asset,reference,transforms=[],measurement,referenceSet,threshold}){
+ return freeze(structuredClone({schemaVersion:1,regionId:measurement.regionId,asset:{id:asset.id,version:asset.version,sha256:asset.sha256,spaceId:asset.spaceId},reference:{...reference},transforms:transforms.map(({id,sha256,version,sourceSpaceId,targetSpaceId})=>({id,sha256,...(version?{version}:{}),...(sourceSpaceId?{sourceSpaceId}:{}),...(targetSpaceId?{targetSpaceId}:{})})),measurement:{...measurement},protocol:{version:referenceSet.protocolVersion,sha256:referenceSet.protocolSha256,threshold:{...threshold}}}));
+}
 
 /** No supplied status, boolean assertion or numerical registration QA can certify anatomy. */
-export function evaluateSpatialQC({assets=[],transforms=[],referenceSet={},measurements=[],reviews=[]}={}) {
+export function evaluateSpatialQC({assets=[],lineageAssets=[],transforms=[],referenceSet={},measurements=[],reviews=[]}={}) {
  const required=unique(list(referenceSet.requiredCoverage).filter(nonempty));
  const automatedChecks=[...assets.map(asset=>({id:asset.id,kind:'asset-integrity',passed:validIdentity(asset)})),...transforms.map(transform=>({id:transform.id,kind:'transform-integrity',passed:transformValid(transform)}))];
  if(!assets.length)automatedChecks.push({id:'assets',kind:'asset-integrity',passed:false});
@@ -21,20 +28,20 @@ export function evaluateSpatialQC({assets=[],transforms=[],referenceSet={},measu
  const independentCoverage=[],humanReviewScope=[],rows=[];
  for(const regionId of required){
   const candidates=list(measurements).filter(row=>row.regionId===regionId);
-  let accepted=null;
+  let accepted=null,acceptedContext=null;
   for(const row of candidates){
    const asset=assets.find(value=>value.id===row.assetId&&value.sha256===row.assetSha256);
-   const reference=list(referenceSet.references).find(value=>value.id===row.referenceId&&value.sha256===row.referenceSha256&&validReference(value,assets));
+   const reference=list(referenceSet.references).find(value=>value.id===row.referenceId&&value.sha256===row.referenceSha256&&validReference(value,assets.concat(lineageAssets)));
    const threshold=list(referenceSet.thresholds).find(value=>value.regionId===regionId&&value.referenceId===reference?.id&&nonempty(value.basis)&&nonempty(value.protocolVersion));
    const overlapRequired=reference?.hasIndependentSegmentation===true;
-   const passes=asset&&reference&&reference.spaceId===asset.spaceId&&threshold&&digest(row.evidenceSha256)&&sameHashes(row.transformSha256s,transforms.map(value=>value.sha256))&&metric(row.landmarkDistanceMm,threshold.landmarkDistanceMm)&&metric(row.boundaryDistanceMm,threshold.boundaryDistanceMm)&&(!overlapRequired||(Number.isFinite(row.overlap)&&row.overlap>=0&&row.overlap<=1&&Number.isFinite(threshold.minimumOverlap)&&threshold.minimumOverlap>=0&&threshold.minimumOverlap<=1&&row.overlap>=threshold.minimumOverlap));
-   if(passes){accepted=row;break;}
+   const passes=asset&&reference&&reference.spaceId===asset.spaceId&&threshold&&nonempty(referenceSet.protocolVersion)&&digest(referenceSet.protocolSha256)&&digest(threshold.evidenceSha256)&&digest(row.evidenceSha256)&&sameHashes(row.transformSha256s,transforms.map(value=>value.sha256))&&metric(row.landmarkDistanceMm,threshold.landmarkDistanceMm)&&metric(row.boundaryDistanceMm,threshold.boundaryDistanceMm)&&(!overlapRequired||(Number.isFinite(row.overlap)&&row.overlap>=0&&row.overlap<=1&&Number.isFinite(threshold.minimumOverlap)&&threshold.minimumOverlap>=0&&threshold.minimumOverlap<=1&&row.overlap>=threshold.minimumOverlap));
+   if(passes){accepted=row;acceptedContext=makeSpatialReviewContext({asset,reference,transforms,measurement:row,referenceSet,threshold});break;}
   }
   if(accepted){
    independentCoverage.push(regionId);
-   if(reviews.some(review=>actualHuman(review)&&review.scope.includes(regionId)&&review.assetSha256===accepted.assetSha256&&review.referenceId===accepted.referenceId))humanReviewScope.push(regionId);
+   if(reviews.some(review=>actualHuman(review)&&review.scope.includes(regionId)&&review.assetSha256===accepted.assetSha256&&review.referenceId===accepted.referenceId&&list(review.comparisonContexts).some(context=>canonical(context)===canonical(acceptedContext))))humanReviewScope.push(regionId);
   }
-  rows.push(accepted?{...accepted,status:'measured',units:{landmarkDistanceMm:'mm',boundaryDistanceMm:'mm',overlap:'Dice [0,1]'}}:{regionId,status:'unmeasured',landmarkDistanceMm:null,boundaryDistanceMm:null,overlap:null,submittedMeasurements:candidates,reason:candidates.length?'No independently bound measurement with predeclared passing thresholds; submitted values are retained separately.':'No independent regional measurements supplied.'});
+  rows.push(accepted?{...accepted,comparisonContext:acceptedContext,status:'measured',units:{landmarkDistanceMm:'mm',boundaryDistanceMm:'mm',overlap:'Dice [0,1]'}}:{regionId,status:'unmeasured',landmarkDistanceMm:null,boundaryDistanceMm:null,overlap:null,submittedMeasurements:candidates,reason:candidates.length?'No independently bound measurement with predeclared passing thresholds; submitted values are retained separately.':'No independent regional measurements supplied.'});
  }
  const missingCoverage=required.filter(region=>!independentCoverage.includes(region));
  const humanValidated=integrity&&required.length>0&&required.every(region=>humanReviewScope.includes(region));
@@ -85,10 +92,12 @@ export function validateSegmentationSource(candidate={},assetIndex=[]) {
  need(list(candidate.regionalQC?.referenceSet?.references).length>0&&candidate.regionalQC.referenceSet.references.every(reference=>lockedEvidence(reference.sha256)),'lockedIndependentReferenceEvidence');
  need(list(candidate.regionalQC?.measurements).length>0&&candidate.regionalQC.measurements.every(measurement=>lockedEvidence(measurement.evidenceSha256)),'lockedMeasurementEvidence');
  need(list(candidate.regionalQC?.reviews).length>0&&candidate.regionalQC.reviews.every(review=>lockedEvidence(review.evidenceSha256)),'lockedHumanReviewEvidence');
+ need(lockedEvidence(candidate.regionalQC?.referenceSet?.protocolSha256)&&list(candidate.regionalQC?.referenceSet?.thresholds).length>0&&candidate.regionalQC.referenceSet.thresholds.every(threshold=>lockedEvidence(threshold.evidenceSha256)),'lockedProtocolThresholdEvidence');
  const regionalAssets=asset?[{...asset,expectedSha256:index.find(value=>value.id===asset.id)?.sha256}]:[];
- if(original&&original.id!==asset?.id)regionalAssets.push(original);
- const regional=candidate.regionalQC&&evaluateSpatialQC({...candidate.regionalQC,assets:regionalAssets,transforms:list(candidate.transformChain)});
- need(regional&&regional.humanValidated&&regional.status==='reviewed'&&list(candidate.coverageStructures).every(id=>regional.independentCoverage.includes(id)&&regional.humanReviewScope.includes(id)),'independentRegionalHumanReview');
+ const lineageHashes=list(candidate.derivationSteps).map(step=>step.inputSha256);
+ const lineageAssets=index.filter(value=>value.id===original?.id||lineageHashes.includes(value.sha256));
+ const regional=candidate.regionalQC&&evaluateSpatialQC({...candidate.regionalQC,assets:regionalAssets,lineageAssets,transforms:list(candidate.transformChain)});
+ need(regional&&regional.humanValidated&&regional.status==='reviewed'&&list(candidate.coverageStructures).every(id=>regional.independentCoverage.includes(id)&&regional.humanReviewScope.includes(id)&&regional.measurements.some(row=>row.regionId===id&&row.status==='measured'&&row.assetId===asset?.id&&row.assetSha256===asset?.sha256)),'independentRegionalHumanReview');
  return {eligible:missing.length===0&&issues.length===0,missing,issues};
 }
 

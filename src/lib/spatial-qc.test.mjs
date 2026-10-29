@@ -2,15 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import {SPATIAL_QC_RESOURCE,ensureResource,getResourceState,retry} from './atlas-resource.js';
-import { evaluateSpatialQC, validateSegmentationSource, representationForAsset, spatialQCForRegion } from './spatial-qc.js';
+import { evaluateSpatialQC, validateSegmentationSource, representationForAsset, spatialQCForRegion, makeSpatialReviewContext } from './spatial-qc.js';
 
 const hash='a'.repeat(64), other='b'.repeat(64);
 const assets=[{id:'atlas',version:'v1',sha256:hash,expectedSha256:hash,spaceId:'test-space'}];
 const reference={id:'external',version:'v1',sha256:other,sourceUrl:'https://example.org/source',license:'CC BY 4.0',spaceId:'test-space',annotationMethod:'independent manual delineation',independent:true,derivedFromAssetIds:[]};
-const referenceSet={requiredCoverage:['aal3-label-134'],references:[reference],thresholds:[{regionId:'aal3-label-134',referenceId:'external',landmarkDistanceMm:2,boundaryDistanceMm:3,basis:'Predeclared test protocol',protocolVersion:'fixture-v1'}]};
+const protocolHash='d'.repeat(64),thresholdHash='e'.repeat(64);
+const protocolInputs=[protocolHash,thresholdHash].map((sha256,index)=>({id:`protocol-evidence-${index}`,sha256,expectedSha256:sha256}));
+const referenceSet={protocolVersion:'fixture-protocol-v1',protocolSha256:protocolHash,requiredCoverage:['aal3-label-134'],references:[reference],thresholds:[{regionId:'aal3-label-134',referenceId:'external',landmarkDistanceMm:2,boundaryDistanceMm:3,basis:'Predeclared test protocol',protocolVersion:'fixture-v1',evidenceSha256:thresholdHash}]};
 const measurement={regionId:'aal3-label-134',referenceId:'external',assetId:'atlas',assetSha256:hash,referenceSha256:other,transformSha256s:[],landmarkDistanceMm:1,boundaryDistanceMm:2,overlap:null,evidenceSha256:hash};
 // Synthetic test records only. They are never copied to the production registry.
-const review={reviewer:{id:'fixture-reviewer',name:'Synthetic test reviewer',kind:'human'},date:'2026-10-29',scope:['aal3-label-134'],assetSha256:hash,referenceId:'external',evidenceSha256:hash,verdict:'pass'};
+const review={reviewer:{id:'fixture-reviewer',name:'Synthetic test reviewer',kind:'human'},date:'2026-10-29',scope:['aal3-label-134'],assetSha256:hash,referenceId:'external',evidenceSha256:hash,verdict:'pass',comparisonContexts:[makeSpatialReviewContext({asset:assets[0],reference,measurement,referenceSet,threshold:referenceSet.thresholds[0]})]};
 
 test('historical three-plane AI review never becomes whole-volume or human validation',async()=>{
  const historical=JSON.parse(await readFile(new URL('../../public/data/aal-v3/root-review.json',import.meta.url)));
@@ -47,7 +49,7 @@ test('geometric brainstem divisions and vermis midline bands are ineligible',()=
 test('source replacement is gated per structure, with a complete positive fixture',()=>{
  const qc=evaluateSpatialQC({assets,transforms:[],referenceSet,measurements:[measurement],reviews:[review]});
  const candidate={id:'candidate',originalSegmentation:{assetId:'atlas',sourceUrl:'https://example.org/source',version:'v1',license:{id:'CC-BY-4.0',publicRedistributionAllowed:true,reviewStatus:'resolved',sourceUrl:'https://example.org/license'}},asset:{...assets[0]},originalLabelDictionary:{assetId:'atlas',sha256:hash,labelIds:[134]},sourceSpace:{id:'test-space',sourceUrl:'https://example.org/space'},targetSpaceId:'test-space',transformChain:[],derivationSteps:[{method:'native discrete labels',interpolation:'none',inputSha256:hash,outputSha256:hash}],coverageStructures:['aal3-label-134'],regionalQC:{referenceSet,measurements:[measurement],reviews:[review]}};
- const index=assets.concat({id:'external',version:'v1',sha256:other,expectedSha256:other,spaceId:'test-space'});
+ const index=assets.concat({id:'external',version:'v1',sha256:other,expectedSha256:other,spaceId:'test-space'},protocolInputs);
  const gate=validateSegmentationSource(candidate,index);assert.equal(gate.eligible,true,JSON.stringify(gate));
  assert.equal(validateSegmentationSource(candidate,assets).eligible,false,'External reference bytes must be in the verified input index');
  const assessment={...qc,segmentationSources:[{candidateId:'candidate',assetSha256:hash,coverageStructures:['aal3-label-134'],...gate}]};
@@ -81,4 +83,29 @@ test('QC consumers share report loading/failure/retry without upgrading a partia
   assert.equal((await a).status,'error');assert.equal(getResourceState(SPATIAL_QC_RESOURCE).value,null);
   const recovered=await retry(SPATIAL_QC_RESOURCE);assert.equal(recovered.value.status,'partial');assert.equal(recovered.value.humanValidated,false);assert.equal(calls,2);
  }finally{globalThis.fetch=original;}
+});
+test('source evidence cannot validate a distinct derived output and source lineage stays excluded',()=>{
+ const derived={...assets[0],id:'derived',sha256:'c'.repeat(64),expectedSha256:'c'.repeat(64)};
+ const candidate={id:'derived-candidate',originalSegmentation:{assetId:'atlas',sourceUrl:'https://example.org/source',version:'v1',license:{id:'CC-BY-4.0',publicRedistributionAllowed:true,reviewStatus:'resolved',sourceUrl:'https://example.org/license'}},asset:derived,originalLabelDictionary:{assetId:'atlas',sha256:hash,labelIds:[134]},sourceSpace:{id:'test-space',sourceUrl:'https://example.org/space'},targetSpaceId:'test-space',transformChain:[],derivationSteps:[{method:'changed source labels',interpolation:'none',inputSha256:hash,outputSha256:derived.sha256}],coverageStructures:['aal3-label-134'],regionalQC:{referenceSet,measurements:[measurement],reviews:[review]}};
+ const index=assets.concat(derived,{id:'external',version:'v1',sha256:other,expectedSha256:other,spaceId:'test-space'},protocolInputs);
+ assert.equal(validateSegmentationSource(candidate,index).eligible,false,'source-only evidence cannot qualify changed output');
+ const changedMeasurement={...measurement,assetId:derived.id,assetSha256:derived.sha256};
+ const changedReview={...review,assetSha256:derived.sha256,comparisonContexts:[makeSpatialReviewContext({asset:derived,reference,measurement:changedMeasurement,referenceSet,threshold:referenceSet.thresholds[0]})]};
+ assert.equal(validateSegmentationSource({...candidate,regionalQC:{referenceSet,measurements:[changedMeasurement],reviews:[changedReview]}},index).eligible,true,'an actual output-scoped comparison and review can qualify the synthetic output');
+ assert.equal(evaluateSpatialQC({assets:[derived],lineageAssets:assets,referenceSet:{...referenceSet,references:[{...reference,derivedFromAssetIds:['atlas']}]},measurements:[changedMeasurement],reviews:[{...review,assetSha256:derived.sha256}]}).independentCoverage.length,0);
+});
+test('human review cannot be reused across reference, transform, measurement or threshold contexts',()=>{
+ const changedReference={...reference,version:'v2',sha256:'c'.repeat(64)},transform={id:'field',sha256:'c'.repeat(64),expectedSha256:'c'.repeat(64)};
+ const changes=[{referenceSet:{...referenceSet,references:[changedReference]},measurements:[{...measurement,referenceSha256:changedReference.sha256}]},{referenceSet:{...referenceSet,references:[{...reference,version:'v2'}]}},{assets:[{...assets[0],version:'v2'}]},{transforms:[transform],measurements:[{...measurement,transformSha256s:[transform.sha256]}]},{measurements:[{...measurement,landmarkDistanceMm:.9}]},{measurements:[{...measurement,evidenceSha256:'f'.repeat(64)}]},{referenceSet:{...referenceSet,thresholds:[{...referenceSet.thresholds[0],landmarkDistanceMm:2.5}]}},{referenceSet:{...referenceSet,thresholds:[{...referenceSet.thresholds[0],evidenceSha256:'f'.repeat(64)}]}},{referenceSet:{...referenceSet,protocolVersion:'changed-protocol'}},{referenceSet:{...referenceSet,protocolSha256:'f'.repeat(64)}}];
+ for(const change of changes){
+  const input={assets,transforms:[],referenceSet,measurements:[measurement],reviews:[review],...change},qc=evaluateSpatialQC(input);
+  assert.deepEqual(qc.independentCoverage,['aal3-label-134'],'the new automated comparison still passes');assert.equal(qc.humanValidated,false,'old human approval must not follow the changed context');
+  const context=makeSpatialReviewContext({asset:input.assets[0],reference:input.referenceSet.references[0],transforms:input.transforms,measurement:input.measurements[0],referenceSet:input.referenceSet,threshold:input.referenceSet.thresholds[0]});
+  assert.equal(evaluateSpatialQC({...input,reviews:[{...review,assetSha256:input.measurements[0].assetSha256,comparisonContexts:[context]}]}).humanValidated,true,'a new context-specific synthetic review can pass');
+ }
+ const transforms=[transform,{id:'second-field',sha256:'f'.repeat(64),expectedSha256:'f'.repeat(64)}],measured={...measurement,transformSha256s:transforms.map(field=>field.sha256)};
+ const scopedReview={...review,comparisonContexts:[makeSpatialReviewContext({asset:assets[0],reference,transforms,measurement:measured,referenceSet,threshold:referenceSet.thresholds[0]})]};
+ assert.equal(evaluateSpatialQC({assets,transforms,referenceSet,measurements:[measured],reviews:[scopedReview]}).humanValidated,true);
+ assert.equal(evaluateSpatialQC({assets,transforms:transforms.toReversed(),referenceSet,measurements:[{...measured,transformSha256s:measured.transformSha256s.toReversed()}],reviews:[scopedReview]}).humanValidated,false,'transform order is part of the reviewed context');
+ assert.throws(()=>{review.comparisonContexts[0].asset.version='mutated';},TypeError,'generated review context is immutable');
 });

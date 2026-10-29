@@ -76,6 +76,7 @@ export async function prepareSpatialQCSources({root=projectRoot,manifest,fetchIm
 /** Check that source packaging can recreate every locked QC input without ignored research output. */
 export function assertSpatialQCSourcePackageInputs({registry,preparation,allowedSourceFiles}){
  validateManifest(preparation);
+ for(const reviewFile of registry.reviewFiles||[])if(!registry.lockedInputs.some(input=>input.path===reviewFile))throw Error(`Review file has no locked source-package input: ${reviewFile}`);
  for(const file of metadataFiles)if(!allowedSourceFiles.has(`data-sources/spatial-qc/${file}`))throw Error(`Source package omits QC metadata: ${file}`);
  for(const input of registry.lockedInputs){
   if(input.path.startsWith('data-cache/')){
