@@ -49,6 +49,12 @@ export function normalizeWorkspaceError(error,language='zh'){
   return value;
 }
 
+/** Success text may include user titles. Only explicitly caught errors classify. */
+export function workspaceToastMessage(notification,language='zh'){
+  if(typeof notification==='string')return notification;
+  return notification?.error?(notification.prefix||'')+normalizeWorkspaceError(notification.error,language):'';
+}
+
 export function resourceFeedback(state,language='zh',label){
   const en=language==='en',name=label||(en?'Data':'数据'),phase=state?.status||'loading';
   return {phase,message:phase==='error'?(en?`${name} could not be loaded. Retry loading.`:`${name}加载失败，请重试加载。`):phase==='loading'||phase==='idle'?(en?`Loading ${name.toLowerCase()}…`:`正在加载${name}…`):'',retryLabel:en?'Retry data loading':'重试加载数据'};

@@ -19,6 +19,54 @@ async function localProject(page){
   const dialog=await files(page);await upload(dialog.locator('input[type=file]'),text,'x8.neuroatlas');await dialog.getByRole('button',{name:'Confirm open',exact:true}).click();return dialog;
 }
 
+test('mounted ROI consumers recover from first manifest failure when resource identity appears at generation zero, retaining A and B',async({page})=>{
+  let manifests=0;
+  await page.route('**/data/manifest.json',route=>++manifests===1?route.fulfill({status:503,body:'synthetic first manifest failure'}):route.continue());
+  // Isolated component fixture: the actual ROICompare stays mounted with the
+  // same selected A/B props while manifest metadata changes from null to ready.
+  // This deliberately avoids App's later project-restore remount masking I1.
+  await page.route('**/src/App.jsx',route=>route.fulfill({contentType:'application/javascript',body:`
+    import React,{useEffect,useState} from '/node_modules/.vite/deps/react.js';
+    import ROICompare from '/src/components/ROICompare.jsx';
+    import {MAIN_MANIFEST_RESOURCE,resourceValue,retry,getResourceState,atlasResourceKey} from '/src/lib/atlas-resource.js';
+    import {atlasIdentityFor} from '/src/lib/volume.js';
+    const initial={aAtlas:'dk',aLabels:[2,3],bAtlas:'ba-histology',bLabels:[14],computed:false,snapshot:'none'};
+    export default function Fixture(){
+      const [manifest,setManifest]=useState(null),[failed,setFailed]=useState(false);
+      useEffect(()=>{resourceValue(MAIN_MANIFEST_RESOURCE).then(setManifest).catch(()=>setFailed(true));},[]);
+      const recover=async()=>{await retry(MAIN_MANIFEST_RESOURCE);const value=await resourceValue(MAIN_MANIFEST_RESOURCE);window.__x8SourceGenerations=['dk','ba-histology'].map(id=>getResourceState(atlasResourceKey(atlasIdentityFor(value.atlases[id]))).generation);setManifest(value);setFailed(false);};
+      return React.createElement(React.Fragment,null,
+        failed&&React.createElement('button',{onClick:recover},'Retry manifest fixture'),
+        React.createElement(ROICompare,{language:'en',manifest,initialState:initial,workspaceProjectId:'X8-mounted',workspaceEpoch:0,onStateChange:state=>{window.__x8MountedROI=state;}}));
+    }
+  `}));
+  await page.goto('/?lang=en&mode=roi');
+  await expect.poll(()=>page.evaluate(()=>window.__x8MountedROI?.aLabels)).toEqual([2,3]);
+  await expect.poll(()=>page.evaluate(()=>window.__x8MountedROI?.bLabels)).toEqual([14]);
+  await page.getByRole('button',{name:'Retry manifest fixture',exact:true}).click();
+  expect(await page.evaluate(()=>window.__x8SourceGenerations)).toEqual([0,0]);
+  await expect(page.getByLabel('ROI A label',{exact:true})).toHaveValues(['2','3']);
+  await expect(page.getByLabel('ROI B label',{exact:true})).toHaveValues(['14']);
+  await expect(page.getByLabel('ROI A label',{exact:true})).toBeEnabled();await expect(page.getByLabel('ROI B label',{exact:true})).toBeEnabled();
+  await expect(page.getByRole('button',{name:'Compute ROI overlap',exact:true})).toBeEnabled();
+  await expect(page.getByRole('alert')).toHaveCount(0);expect(manifests).toBe(2);
+});
+
+test('successful undo preserves user paper titles containing Quota and Unexpected verbatim',async({page})=>{
+  await page.goto('/?lang=en&mode=research');const library=work(page);
+  for(const title of ['Quota study','Unexpected observations']){
+    await library.getByRole('button',{name:'Add paper',exact:true}).click();const editor=library.locator('.evidence-editor');
+    await editor.getByRole('textbox',{name:'Title',exact:true}).fill(title);await editor.getByRole('textbox',{name:'Source URL',exact:true}).fill('https://example.org/title');
+    await editor.getByRole('button',{name:'Save to local evidence',exact:true}).click();await expect(editor).toHaveCount(0);
+    await expect.poll(async()=>JSON.parse(await durable(page)).evidence.references.some(row=>row.title===title)).toBe(true);
+    const history=library.locator('details').filter({has:page.locator('summary').filter({hasText:'Recent actions'})});await history.locator('summary').click();
+    await history.getByRole('button',{name:`Undo: ${title}`,exact:true}).click();
+    await expect(page.locator('.toast')).toHaveText(`Undone: ${title}`);
+    expect(JSON.parse(await durable(page)).evidence.references.some(row=>row.title===title)).toBe(false);
+    await expect(page.locator('.toast')).not.toContainText('Browser storage is full');await expect(page.locator('.toast')).not.toContainText('valid project JSON');
+  }
+});
+
 test('structured baseline, matching denominator and clearing filters stay distinct in both languages',async({page})=>{
   await page.goto('/?lang=en&mode=research');const library=work(page);
   await expect(library.locator('[data-evidence-counts]')).toContainText('3 papers · 4 findings · 8 coordinates');

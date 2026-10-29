@@ -74,7 +74,7 @@ function useSource(atlasId, version, metadata) {
       if (active) setState({ loading: false, atlasId, volume, labels: !volume.kind || volume.kind === 'label' ? positiveLabels(volume) : [], error: null });
     }).catch(error => { if (active) setState({ loading: false, atlasId, volume: null, labels: [], error: error.message }); });
     return () => { active = false; };
-  }, [atlasId, version, generation]);
+  }, [atlasId, version, key, generation]);
   return {...state,retry:key?()=>retry(key):undefined};
 }
 

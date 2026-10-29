@@ -11,10 +11,26 @@ import {createDraftManager} from './draft-store.js';
 import {emptyEvidence} from './evidence-schema.js';
 import {MAIN_MANIFEST_RESOURCE,getResourceState,ensureResource,retry,atlasResourceKey} from './atlas-resource.js';
 import {loadAtlas,atlasIdentityFor} from './volume.js';
+import {applyUndoableAction,undoLast} from './undo-history.js';
 
 const workspace=()=>({projectId:'feedback-project',revision:0,view:{atlas:'dk'},notes:[],evidence:emptyEvidence(),drafts:[],volumes:[],roiSnapshot:{id:'legacy-result',manifest:null,metrics:{dice:.42}},recomputedSnapshot:null});
 const draft=()=>({id:'draft-1',projectId:'feedback-project',kind:'paper',recordId:'paper-1',payload:{id:'paper-1',title:'Current private draft'},updatedAt:'2026-10-30T00:00:00.000Z'});
 function storage(){const entries=new Map();return {fail:false,getItem:key=>entries.get(key)??null,setItem(key,value){if(this.fail)throw new DOMException('Native quota reached','QuotaExceededError');entries.set(key,value);}};}
+
+test('successful undo keeps Quota and Unexpected paper titles verbatim while caught failures remain normalized',async()=>{
+  for(const title of ['Quota study','Unexpected observations']){
+    const session=createWorkspaceSession({storage:storage(),initial:workspace()});let action,undone;
+    await session.transact(base=>{
+      action=applyUndoableAction(base,{type:'change',patch:{evidence:{...base.evidence,references:[{id:'title-fixture',title,url:'https://example.org/title'}]}},label:title});return action.state;
+    });
+    await session.transact(base=>{undone=undoLast(action.undoState,base);return undone.state;});
+    assert.equal(session.getSnapshot().evidence.references.length,0);
+    assert.equal(feedback.workspaceToastMessage(`Undone: ${undone.label}`,'en'),`Undone: ${title}`);
+    assert.equal(feedback.workspaceToastMessage(`已撤销：${undone.label}`,'zh'),`已撤销：${title}`);
+  }
+  assert.match(feedback.workspaceToastMessage({error:new DOMException('quota','QuotaExceededError')},'en'),/Browser storage is full/);
+  assert.match(feedback.workspaceToastMessage({error:new SyntaxError('Unexpected token')},'en'),/valid project JSON/);
+});
 
 test('structured counts use distinct result references, independently of bibliography and E3 matching/selected papers',()=>{
   const bundle=getBuiltinEvidenceBundle(),hits=searchEvidence(buildEvidenceSearchIndex(bundle),{query:'Bosco'});
