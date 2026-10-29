@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { beginQuery, invalidateQuery, acceptQueryResult, queryableAtlasVolume } from './query-state.js';
+import { beginQuery, invalidateQuery, acceptQueryResult, queryableAtlasVolume, queryDisplayState } from './query-state.js';
 
 const context={atlasId:'aal',atlasVersion:'v1',coordinate:[-38.125,-20.5,54.75],method:'voxel',requestId:4};
 const sourceAsset={id:'aal',version:'v1',sha256:'a'.repeat(64),spaceId:'native'};
@@ -35,4 +35,24 @@ test('queryable volumes require the complete current identity and a known target
   assert.equal(queryableAtlasVolume({...volume,canOverlayOnTarget:false},'aal',identity),null);
   const unknown={...identity,spaceId:'MNI-unspecified'};
   assert.equal(queryableAtlasVolume({...volume,spaceId:unknown.spaceId,identity:unknown},'aal',unknown),null);
+});
+test('an idle query with a ready volume cannot be displayed as loading or completed background',()=>{
+  const ready=acceptQueryResult(beginQuery(null,context),context,result);
+  const source={resourceStatus:'ready',hasVolume:true};
+  const displayed=queryDisplayState(ready,source);
+  assert.equal(displayed.status,'ready');assert.strictEqual(displayed.result,result);
+  const idle=queryDisplayState(invalidateQuery(ready,'intentional clear'),source);
+  assert.deepEqual(idle,{status:'idle',result:null});
+  assert.deepEqual(queryDisplayState(null,source),idle);
+  assert.deepEqual(queryDisplayState({...ready,result:null},source),idle);
+  const background=acceptQueryResult(beginQuery(null,context),context,{...result,region:null,label:null});
+  assert.equal(queryDisplayState(background,source).status,'ready');
+  assert.equal(queryDisplayState(background,source).result.region,null);
+});
+test('query presentation keeps pending, failed and blocked source states distinct',()=>{
+  assert.deepEqual(queryDisplayState(null,{resourceStatus:'loading',hasVolume:false}),{status:'loading',result:null});
+  assert.deepEqual(queryDisplayState(null,{resourceStatus:'error',hasVolume:false}),{status:'error',result:null});
+  assert.deepEqual(queryDisplayState(beginQuery(null,context),{resourceStatus:'ready',hasVolume:true}),{status:'loading',result:null});
+  const ready=acceptQueryResult(beginQuery(null,context),context,result);
+  assert.deepEqual(queryDisplayState(ready,{blocked:true,resourceStatus:'ready',hasVolume:true}),{status:'idle',result:null});
 });

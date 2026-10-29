@@ -79,3 +79,30 @@ test('clicks during a new atlas load cannot query the previous volume',async({pa
   release();await expect(query).toHaveAttribute('data-query-status','ready');
   await expect(query).toHaveAttribute('data-query-source','public/data/aal-v3/aal-fsl1mm.bin');
 });
+
+test('opening an unmapped paper preserves the independent current-coordinate atlas query',async({page})=>{
+  await page.goto('/?lang=en');
+  await page.getByLabel('Choose an atlas',{exact:true}).selectOption('aal-registered');
+  const query=page.locator('.voxel-info');await expect(query).toHaveAttribute('data-query-status','ready');
+  const canvas=page.locator('.brain-scene canvas').first(),box=await canvas.boundingBox();
+  for(const [x,y] of [[.4,.4],[.5,.35],[.6,.4],[.4,.5],[.6,.5]]){
+    await canvas.click({position:{x:box.width*x,y:box.height*y}});
+    if(await query.getAttribute('data-query-method')==='cortical-ribbon'&&await query.getAttribute('data-query-label'))break;
+  }
+  await expect(query).toHaveAttribute('data-query-method','cortical-ribbon');
+  await expect(query).toHaveAttribute('data-query-label',/^\d+$/);
+  const attrs=['status','atlas','version','source','label','method','coordinate'];
+  const before=await Promise.all(attrs.map(name=>query.getAttribute(`data-query-${name}`)));
+  const text=await query.innerText();
+  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Evidence library',exact:true}).click();
+  await page.getByLabel('Search papers, authors or regions',{exact:true}).fill('Schaum');
+  await page.locator('.paper-card').filter({hasText:'Schaum'}).locator('.paper-open').click();
+  await expect(query).toHaveAttribute('data-query-status','ready');
+  expect(await Promise.all(attrs.map(name=>query.getAttribute(`data-query-${name}`)))).toEqual(before);
+  await expect(query).toHaveText(text);
+  await page.getByRole('button',{name:'Close evidence library',exact:true}).click();
+  await expect(query).toHaveAttribute('data-query-status','ready');
+  expect(await Promise.all(attrs.map(name=>query.getAttribute(`data-query-${name}`)))).toEqual(before);
+  await expect(page.getByRole('region',{name:'Atlas region details'})).toHaveCount(0);
+  await expect(page.locator('.structure-row.selected')).toHaveCount(0);
+});

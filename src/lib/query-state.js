@@ -20,3 +20,12 @@ export function queryableAtlasVolume(volume,atlasId,identity){
   if(!volume||!identity||volume.canOverlayOnTarget!==true||volume.atlasId!==atlasId||volume.atlasVersion!==identity.version||!identity.spaceId||/unknown|unspecified/i.test(identity.spaceId)||volume.spaceId!==identity.spaceId)return null;
   return ['id','version','sha256','spaceId'].every(key=>volume.identity?.[key]===identity[key])?volume:null;
 }
+/** An absent/idle query is not evidence of a completed background sample. */
+export function queryDisplayState(query,{blocked=false,resourceStatus='idle',hasVolume=false}={}){
+  if(blocked)return {status:'idle',result:null};
+  if(resourceStatus==='error'||query?.status==='error')return {status:'error',result:null};
+  if(resourceStatus==='loading'||resourceStatus==='idle'||!hasVolume)return {status:'loading',result:null};
+  if(query?.status==='loading')return {status:'loading',result:null};
+  if(query?.status==='ready'&&query.result)return {status:'ready',result:query.result};
+  return {status:'idle',result:null};
+}
