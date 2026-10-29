@@ -25,7 +25,7 @@ const point=v=>Array.isArray(v)&&v.length===3&&v.every(x=>Number.isFinite(x)&&Ma
 const coordinatePoint=v=>Array.isArray(v)&&v.length===3&&v.every(Number.isFinite)?[...v]:null;
 const finiteCoordinate=(v,fallback)=>Number.isFinite(v)?v:fallback;
 function coordinateOrigin(value){
-  const origin={kind:['manual','result','private'].includes(value?.kind)?value.kind:'unknown',cameraSensitive:value?.cameraSensitive!==false,imported:value?.imported===true};
+  const origin={kind:['manual','result','private'].includes(value?.kind)?value.kind:'unknown',cameraSensitive:value?.cameraSensitive!==false,explorerSensitive:value?.explorerSensitive!==false,imported:value?.imported===true};
   if(origin.kind==='result'){
     for(const key of ['resultId','sourceReferenceId','coordinateId','spaceId'])if(typeof value[key]!=='string'||!value[key]||value[key].length>160)return {...origin,kind:'unknown'};
     for(const key of ['resultId','sourceReferenceId','coordinateId','spaceId'])origin[key]=value[key];
@@ -82,7 +82,7 @@ export function validateViewState(input,{savedProjectId,projectId}={}){
   // default to it; explicit unknown/native contexts must remain independent.
   output.coordinateSpace=Object.hasOwn(input,'coordinateSpace')?(typeof input.coordinateSpace==='string'&&input.coordinateSpace.length<=500?input.coordinateSpace:null):'brain';
   output.coordinateOrigin=coordinateOrigin(input.coordinateOrigin);
-  if(projectId!==undefined&&savedProjectId!==projectId)output.coordinateOrigin.imported=true;
+  if(projectId!==undefined&&savedProjectId!==projectId)output.coordinateOrigin={...output.coordinateOrigin,imported:true,cameraSensitive:true,explorerSensitive:true};
   const s=input.slices||{};output.slices={enabled:s.enabled===true,x:finiteCoordinate(s.x,-38),y:finiteCoordinate(s.y,-20),z:finiteCoordinate(s.z,54),axis:['x','y','z'].includes(s.axis)?s.axis:'z'};
   if(input.roi){const r=input.roi;output.roi={aAtlas:r.aAtlas===''?'':boundedString(r.aAtlas,120)||'dk',bAtlas:r.bAtlas===''?'':boundedString(r.bAtlas,120)||'ba-histology',aLabels:Array.isArray(r.aLabels)?r.aLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],bLabels:Array.isArray(r.bLabels)?r.bLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],aThreshold:number(r.aThreshold,-1e12,1e12,0),bThreshold:number(r.bThreshold,-1e12,1e12,0),aTail:['negative','absolute'].includes(r.aTail)?r.aTail:'positive',bTail:['negative','absolute'].includes(r.bTail)?r.bTail:'positive',computed:r.computed===true,display:{mode:['parts','overlap','A','B'].includes(r.display?.mode)?r.display.mode:'parts',opacityA:number(r.display?.opacityA,0,1,.65),opacityB:number(r.display?.opacityB,0,1,.65),opacityOverlap:number(r.display?.opacityOverlap,0,1,.9),xray:r.display?.xray===true}};}
   if(input.literature){const l=input.literature,paperModality=boundedString(l.paperModality??l.modality,100);output.literature={query:boundedString(l.query,500),topic:boundedString(l.topic,100),modality:paperModality,paperModality,resultModality:boundedString(l.resultModality,100),scope:l.scope===true,paperId:boundedString(l.paperId,160)||null,compared:stringArray(l.compared,3),showCompare:l.showCompare===true,scopeRegionId:boundedString(l.scopeRegionId,120)||null,onlyResults:l.onlyResults===true};}
@@ -102,12 +102,18 @@ export function encodeView(input,{publicReferenceIds=[],publicResults,publicEvid
   const state=validateViewState(input);const omitted=[];
   if(state.coordinateSpace!=='brain'||!shareableCoordinate(state,{publicReferenceIds,publicResults,publicEvidence,evidence})){
     state.coordinateSpace='brain';state.coordinate=[-38,-20,54];state.slices={enabled:false,x:-38,y:-20,z:54,axis:'z'};state.camera=null;state.showSlices=false;
-    state.coordinateOrigin={kind:'manual',cameraSensitive:false,imported:false};
+    state.coordinateOrigin={kind:'manual',cameraSensitive:false,explorerSensitive:false,imported:false};
     if(state.atlasExplorer){state.atlasExplorer.slicePoint=[0,0,0];state.atlasExplorer.camera=null;}
     omitted.push('coordinate');
   }else if(state.coordinateOrigin.cameraSensitive){
     state.camera=null;state.coordinateOrigin.cameraSensitive=false;omitted.push('camera');
     if(state.atlasExplorer){state.atlasExplorer.slicePoint=[0,0,0];state.atlasExplorer.camera=null;}
+  }
+  // The explorer has its own retained reference/camera; resetting only the
+  // main BrainScene cannot release independently imported explorer locations.
+  if(state.atlasExplorer&&state.coordinateOrigin.explorerSensitive){
+    state.atlasExplorer.slicePoint=[0,0,0];state.atlasExplorer.camera=null;
+    state.coordinateOrigin.explorerSensitive=false;omitted.push('atlasExplorer.location');
   }
   // Main crosshairs are coupled. A copied public point ID cannot authorize
   // unrelated slice values from an imported view.
@@ -287,7 +293,7 @@ export async function parseProject(text){
   const view=validateViewState(p.view);if(!Array.isArray(p.volumes))throw Error('Invalid project content');
   // File claims cannot attest how a point or camera was obtained. Exact public
   // result references can still be independently authorized at link projection.
-  view.coordinateOrigin={...view.coordinateOrigin,cameraSensitive:true,imported:true};
+  view.coordinateOrigin={...view.coordinateOrigin,cameraSensitive:true,explorerSensitive:true,imported:true};
   const projectId=p.schema===PROJECT_SCHEMA?p.projectId:`project-${crypto.randomUUID()}`;
   if(typeof projectId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(projectId))throw Error('Invalid project ID');
   const drafts=validateProjectDrafts(p.schema===LEGACY_PROJECT_SCHEMA?[]:p.drafts??[],projectId);

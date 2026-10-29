@@ -1,5 +1,6 @@
 // Authored for an isolated permitted CI runner. Desktop verification belongs to root CUA.
 import {test,expect} from '@playwright/test';
+import {serializeProject,decodeView} from '../../src/lib/workspace-project.js';
 
 const navigator=page=>page.getByRole('group',{name:'Main coordinate navigation',exact:true});
 async function navigate(page,text,{space,convention}={}) {
@@ -73,6 +74,40 @@ test('a typed internal context name cannot authorize main-template lookup',async
   await expect(page.locator('.voxel-info')).toHaveAttribute('data-query-status','idle');
   await expect(page.locator('.voxel-info')).toHaveAttribute('data-query-source','');
   await expect(navigator(page).locator('output.coordinate-current')).toContainText('brain · RAS');
+});
+test('X1-R2 raw pam50 keeps its exact copy identity and both pasted batch points',async({page,context})=>{
+  await context.grantPermissions(['clipboard-read','clipboard-write']);
+  for(const space of ['pam50','PAM50 native straightened','schematic']){
+    await navigate(page,'10.25,20.5,30.75\n40.25,50.5,60.75',{space});
+    const nav=navigator(page),batch=nav.getByLabel('Batch point',{exact:true});
+    await expect(batch.locator('option')).toHaveCount(2);
+    await expect(nav.getByLabel('Reference space',{exact:true})).toHaveValue(space);
+    await batch.selectOption('1');
+    await expect(nav.locator('output.coordinate-current')).toHaveText(`${space} · RAS · 40.25, 50.5, 60.75 mm`);
+    await nav.getByRole('button',{name:'Copy coordinate',exact:true}).click();
+    await expect.poll(()=>page.evaluate(()=>navigator.clipboard.readText())).toBe(`${space} · RAS · 40.25, 50.5, 60.75 mm`);
+    await expect(page.locator('.voxel-info')).toHaveAttribute('data-query-status','idle');
+    await expect(batch.locator('option')).toHaveCount(2);
+  }
+});
+test('X1-R1 main manual navigation and Reset view do not release imported explorer positions',async({page,context})=>{
+  await context.grantPermissions(['clipboard-read','clipboard-write']);
+  const text=await serializeProject({projectId:'synthetic-explorer-privacy',view:{language:'en',atlasExplorer:{atlas:'aal3',display:'slices',slicePoint:[111.25,222.5,333.75],camera:{position:[901,902,903],target:[801,802,803],zoom:1}},coordinateOrigin:{kind:'manual',cameraSensitive:false,explorerSensitive:false,imported:false}},volumes:[]});
+  await page.getByRole('button',{name:'Projects & views',exact:true}).click();
+  const dialog=page.getByRole('dialog',{name:'Save and share',exact:true});
+  await dialog.locator('input[type=file]').setInputFiles({name:'synthetic-explorer-private.neuroatlas',mimeType:'application/json',buffer:Buffer.from(text)});
+  await dialog.getByRole('button',{name:'Confirm open',exact:true}).click();
+  await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
+  await navigate(page,'10,20,30',{space:'MNI152NLin6Asym'});
+  await page.getByRole('button',{name:'Reset view',exact:true}).click();
+  await page.getByRole('button',{name:'Share view',exact:true}).click();
+  const link=await page.evaluate(()=>navigator.clipboard.readText()),encoded=new URLSearchParams(new URL(link).hash.slice(1)).get('view'),shared=decodeView(encoded);
+  expect(shared.coordinate).toEqual([10,20,30]);expect(shared.atlasExplorer.slicePoint).toEqual([0,0,0]);expect(shared.atlasExplorer.camera).toBeNull();
+  for(const value of ['111.25','222.5','333.75','901','902','903','801','802','803'])expect(JSON.stringify(shared)).not.toContain(value);
+  // Projection must retain the visible private context rather than resetting it.
+  await page.getByRole('navigation',{name:'Main navigation',exact:true}).getByRole('button',{name:'Atlas labels',exact:true}).click();
+  const native=page.getByRole('group',{name:'Native coordinate navigation',exact:true});
+  await expect(native.locator('output.coordinate-current')).toContainText('111.25, 222.5, 333.75');
 });
 test('native slices share precise input while keeping their source reference and main position separate',async({page})=>{
   const before=await page.locator('.voxel-info').getAttribute('data-query-coordinate');

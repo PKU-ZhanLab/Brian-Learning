@@ -41,15 +41,17 @@ export function formatCoordinate(point,spaceId) {
   return `${spaceId} · RAS · ${point.join(', ')} mm`;
 }
 
-// Keep arbitrary typed reference names from colliding with App's legacy sentinel.
+// Keep arbitrary typed reference names from colliding with App's legacy contexts.
 export function coordinateNavigationSpace(spaceId) {
   if(spaceId==='MNI152NLin6Asym')return 'brain';
-  return spaceId==='brain'||spaceId?.startsWith('independent:')?`independent:${spaceId}`:spaceId;
+  return ['brain','pam50','schematic'].includes(spaceId)||spaceId?.startsWith('independent:')?`independent:${spaceId}`:spaceId;
 }
 export function coordinateReferenceSpace(context) {
-  return context==='brain'?'MNI152NLin6Asym':context?.startsWith('independent:')?context.slice('independent:'.length):context;
+  if(context==='brain')return 'MNI152NLin6Asym';
+  if(context==='pam50')return 'PAM50 native straightened';
+  return context?.startsWith('independent:')?context.slice('independent:'.length):context;
 }
 
 export function nextCoordinateOrigin(current,source={kind:'unknown'}) {
-  return {...source,cameraSensitive:current?.cameraSensitive!==false||source.kind!=='manual'||source.cameraSensitive===true};
+  return {...source,cameraSensitive:current?.cameraSensitive!==false||source.kind!=='manual'||source.cameraSensitive===true,explorerSensitive:current?.explorerSensitive!==false||source.explorerSensitive===true};
 }

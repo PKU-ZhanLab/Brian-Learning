@@ -53,3 +53,22 @@ test('new manual points release coordinate provenance without clearing an earlie
   const stepped=nextCoordinateOrigin(privateOrigin,privateOrigin);assert.equal(stepped.kind,'private');assert.equal(stepped.cameraSensitive,true);
   const reset={...privateOrigin,cameraSensitive:false};assert.equal(nextCoordinateOrigin(reset,{kind:'manual'}).cameraSensitive,false);
 });
+test('X1-R1 main manual navigation and reset cannot release independent explorer provenance',()=>{
+  const imported={kind:'manual',imported:true,cameraSensitive:true,explorerSensitive:true};
+  const manual=nextCoordinateOrigin(imported,{kind:'manual',imported:false,explorerSensitive:false});
+  assert.equal(manual.explorerSensitive,true);
+  const mainReset={...manual,cameraSensitive:false};assert.equal(mainReset.explorerSensitive,true);
+  assert.equal(nextCoordinateOrigin(mainReset,{kind:'manual',imported:false}).explorerSensitive,true);
+});
+test('X1-R2 typed legacy context names preserve raw identity and batch parent handshake',()=>{
+  assert.equal(coordinateReferenceSpace('pam50'),'PAM50 native straightened');
+  assert.equal(coordinateReferenceSpace('schematic'),'schematic');
+  for(const rawSpace of ['pam50','schematic','PAM50 native straightened']){
+    const parsed=parseCoordinateInput('10.25,20.5,30.75\n40.25,50.5,60.75',{...options,spaceId:rawSpace});assert.equal(parsed.points.length,2);
+    const context=coordinateNavigationSpace(rawSpace);assert.notEqual(context,'brain');
+    if(['pam50','schematic'].includes(rawSpace))assert.notEqual(context,rawSpace);
+    const returnedReference=coordinateReferenceSpace(context);assert.equal(returnedReference,rawSpace);
+    assert.equal(JSON.stringify([parsed.points[0],returnedReference]),JSON.stringify([parsed.points[0],rawSpace]));
+    assert.equal(formatCoordinate(parsed.points[1],returnedReference),`${rawSpace} · RAS · 40.25, 50.5, 60.75 mm`);
+  }
+});

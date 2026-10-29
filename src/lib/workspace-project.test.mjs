@@ -4,7 +4,7 @@ import {encodeView,decodeView,validateViewState,validateCamera,serializeProject,
 import {MAX_NIFTI_FILE_BYTES} from './nifti.js';
 import {migrateEvidence} from './evidence-schema.js';
 import {resolveResultLayers} from './result-layers.js';
-import {coordinateNavigationSpace,coordinateReferenceSpace,formatCoordinate} from './coordinate-input.js';
+import {coordinateNavigationSpace,coordinateReferenceSpace,formatCoordinate,nextCoordinateOrigin} from './coordinate-input.js';
 
 const syntheticEvidence=()=>migrateEvidence({schema:'brain-evidence-v1',references:[{id:'public-paper',title:'Synthetic public paper',url:'https://example.org/paper'}],results:[{id:'public-result',referenceId:'public-paper',finding:'Synthetic coordinates',condition:'task',sample:'n=2',roiDefinition:'table',direction:'positive',annotator:'unknown',modalities:['fmri'],regionIds:[],sourceUrl:'https://example.org/paper',curationStatus:'draft',limitations:'synthetic',coordinates:[[1,2,3],[-1,2,3]].map((xyz,i)=>({id:`public-point-${i}`,x:xyz[0],y:xyz[1],z:xyz[2],space:'MNI152NLin6Asym',status:'source-checked',label:'peak',sourceTable:'1',sourceRow:String(i+1),frameNote:'synthetic frame',sourceUrl:'https://example.org/paper'})),figures:[]}],relations:[]}).value;
 
@@ -19,13 +19,28 @@ test('coordinate context survives named and project views, including explicit un
   }
 });
 test('reserved-looking raw source labels remain distinct in named/project display and copy',async()=>{
-  for(const rawSpace of ['brain','independent:brain','independent:independent:brain']){
+  for(const rawSpace of ['brain','independent:brain','independent:independent:brain','pam50','schematic','PAM50 native straightened']){
     const input={coordinateSpace:coordinateNavigationSpace(rawSpace),coordinate:[10.25,20.5,30.75]};
     for(const restored of [validateViewState(input),(await parseProject(await serializeProject({view:input,volumes:[]}))).view]){
       assert.notEqual(restored.coordinateSpace,'brain');assert.equal(coordinateReferenceSpace(restored.coordinateSpace),rawSpace);
       assert.equal(formatCoordinate(restored.coordinate,coordinateReferenceSpace(restored.coordinateSpace)),`${rawSpace} · RAS · 10.25, 20.5, 30.75 mm`);
     }
   }
+});
+test('X1-R1 imported explorer coordinates stay private after manual main input and main reset',async()=>{
+  const explorer=validateViewState({atlasExplorer:{atlas:'aal3',slicePoint:[111.25,222.5,333.75],camera:{position:[901,902,903],target:[801,802,803],zoom:1}}}).atlasExplorer;
+  const imported=await parseProject(await serializeProject({view:{atlasExplorer:explorer,coordinateOrigin:{kind:'manual',imported:false,cameraSensitive:false,explorerSensitive:false}},volumes:[]}));
+  assert.equal(imported.view.coordinateOrigin.explorerSensitive,true);
+  const manual=nextCoordinateOrigin(imported.view.coordinateOrigin,{kind:'manual',imported:false});
+  const reset={...imported.view,coordinate:[10,20,30],slices:{x:10,y:20,z:30},coordinateOrigin:{...manual,cameraSensitive:false}};
+  const shared=encodeView(reset),publicView=decodeView(shared.encoded);
+  assert.deepEqual(publicView.coordinate,[10,20,30]);assert.ok(shared.omitted.includes('atlasExplorer.location'));
+  assert.deepEqual(publicView.atlasExplorer.slicePoint,[0,0,0]);assert.equal(publicView.atlasExplorer.camera,null);
+  for(const value of ['111.25','222.5','333.75','901','902','903','801','802','803'])assert.equal(JSON.stringify(publicView).includes(value),false,value);
+  assert.deepEqual(reset.atlasExplorer,explorer); // Projection preserves the visible private context.
+  for(const restored of [validateViewState(reset),(await parseProject(await serializeProject({view:reset,volumes:[]}))).view])assert.deepEqual(restored.atlasExplorer,explorer);
+  const legacy=validateViewState({...reset,coordinateOrigin:{kind:'manual',cameraSensitive:false,imported:false}});
+  assert.ok(encodeView(legacy).omitted.includes('atlasExplorer.location'));
 });
 test('public projection resets coupled independent coordinates and reports omission without leaking private context',()=>{
   const input={coordinateSpace:'private patient reference',coordinate:[12345.25,-200.5,54.1],slices:{enabled:true,x:12345.25,y:-200.5,z:54.1},camera:{position:[901,902,903],target:[801,802,803]},atlasExplorer:{atlas:'aal3',slicePoint:[12345.25,-200.5,54.1],camera:{position:[901,902,903],target:[801,802,803]}},atlasSelectionQuery:{coordinate:[12345.25,-200.5,54.1]}};
