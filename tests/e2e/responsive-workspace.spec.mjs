@@ -12,14 +12,14 @@ const work=page=>page.getByRole('region',{name:'Literature workspace',exact:true
 const settingsButton=page=>page.locator('.header-actions').getByRole('button',{name:'Display settings',exact:true});
 const settingsDialog=page=>page.getByRole('dialog',{name:'Display settings',exact:true});
 
-async function setup(page,{mode='research',layers=false,comparison=false}={}){
+async function setup(page,{mode='research',layers=false,comparison=false,atlas='dk',layoutPreset='evidence'}={}){
   const evidence=syntheticResultEvidence();
   evidence.references[0].title=longTitle;
   evidence.results[0].finding='X7 long synthetic finding: '+('An observation with a precisely identified source. '.repeat(12));
   evidence.results[0].limitations=[longLimit];
   evidence.results[0].legacyV1.limitations=longLimit;
   evidence.references.push({id:'x7-second-paper',title:'X7 second synthetic title '+('Long comparison title. '.repeat(8)),url:'https://example.org/x7-second'});
-  const view=validateViewState({language:'en',mode,hiddenIds:['precentral-l'],showSlices:true,layout:{preset:comparison?'compare':'evidence',panels:{active:'evidence',modelWidth:440}},literature:{paperId:comparison?null:'private-paper',compared:comparison?['private-paper','x7-second-paper']:[],showCompare:comparison},resultLayers:layers?syntheticResultLayers():[]});
+  const view=validateViewState({language:'en',mode,atlas,hiddenIds:['precentral-l'],showSlices:true,layout:{preset:comparison?'compare':layoutPreset,panels:{active:layoutPreset==='model'?'model':'evidence',modelWidth:440}},literature:{paperId:comparison?null:'private-paper',compared:comparison?['private-paper','x7-second-paper']:[],showCompare:comparison},resultLayers:layers?syntheticResultLayers():[]});
   // The same transactional admission used by the normal project open path.
   await preflightResultLayerProject({projectId:'x7-isolated',view,evidence,notes:[],volumes:[]});
   const initial={schema:storageKey,projectId:'x7-isolated',revision:0,notes:[],drafts:[],view,evidence};
@@ -96,7 +96,9 @@ for(const size of [{width:390,height:844},{width:650,height:844},{width:1366,hei
   await expect(actions.getByRole('button')).toHaveCount(3);
   for(const button of await actions.getByRole('button').all()){
     await button.scrollIntoViewIfNeeded();await expect(button).toBeInViewport();
+    expect(await button.evaluate(element=>parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(13);
   }
+  expect(await actions.locator('.count-badge').evaluate(element=>parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(13);
   await page.getByRole('button',{name:'Projects & views',exact:true}).click();
   const files=page.getByRole('dialog',{name:'Save and share',exact:true});
   await expect(files.getByRole('button',{name:'Export project',exact:true})).toBeVisible();
@@ -163,6 +165,8 @@ test('ordinary research text contrast, compact exceptions and selected/focus bou
   for(const value of measurements){expect(value.fontSize,value.selector).toBeGreaterThanOrEqual(12);expect(value.contrast,value.selector).toBeGreaterThanOrEqual(4.5);}
   await testInfo.attach('computed-reading-styles',{body:JSON.stringify(measurements,null,2),contentType:'application/json'});
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Anatomy',exact:true}).click();
+  const count=page.locator('.group-count').first();await expect(count).toBeVisible();
+  expect(await count.evaluate(element=>parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(13);
   const selected=page.locator('.structure-row.selected').first();
   await expect(selected.getByRole('button').first()).toHaveAttribute('aria-pressed','true');
   expect(await selected.evaluate(element=>parseFloat(getComputedStyle(element).borderLeftWidth))).toBeGreaterThanOrEqual(2);
@@ -192,4 +196,61 @@ test('atlas close, handoff and resize do not invoke a disposed canvas',async({pa
   await atlas.getByRole('button',{name:'Set selection as ROI A',exact:true}).click();
   await expect(atlas).toHaveCount(0);await page.setViewportSize({width:390,height:844});
   expect(errors.filter(message=>/getBoundingClientRect|ResizeObserver|disposed|null/i.test(message))).toEqual([]);
+});
+
+// X7 I2 RED at 05c7306: the last action extended below the overflow-hidden
+// canvas, and its center hit Enter coordinates instead of its own button.
+for(const mode of ['anatomy','research'])for(const size of [{width:1366,height:768},{width:390,height:844},{width:683,height:384}])test(`all model action centers hit their own controls in ${mode} at ${size.width}×${size.height}`,async({page},testInfo)=>{
+  // 683×384 checks 200% reflow equivalence; real browser zoom belongs to root CUA.
+  await page.setViewportSize(size);await setup(page,{mode,layoutPreset:'model'});
+  const tools=page.locator('.viewer-tools');
+  await expect(tools.getByRole('button')).toHaveCount(6);
+  const controls=[...await tools.getByRole('button').all(),page.locator('.model-data-notes')];
+  const measurements=[];
+  for(const control of controls){
+    await control.scrollIntoViewIfNeeded();await control.focus();await expect(control).toBeFocused();
+    const result=await control.evaluate(button=>{
+      const rect=button.getBoundingClientRect(),x=rect.left+rect.width/2,y=rect.top+rect.height/2,hit=document.elementFromPoint(x,y);
+      const notes=document.querySelector('.model-data-notes'),notesRect=notes.getBoundingClientRect();
+      const overlap=button===notes?0:Math.max(0,Math.min(rect.right,notesRect.right)-Math.max(rect.left,notesRect.left))*Math.max(0,Math.min(rect.bottom,notesRect.bottom)-Math.max(rect.top,notesRect.top));
+      return {name:button.getAttribute('aria-label')||button.textContent.trim(),width:rect.width,height:rect.height,x,y,ownCenter:hit!==null&&button.contains(hit),hitName:hit?.closest('button,summary')?.getAttribute('aria-label')||hit?.closest('button,summary')?.textContent.trim(),overlapWithNotes:overlap};
+    });
+    measurements.push(result);
+    // Browser/device scaling may round a CSS 40px target by a fraction of a px.
+    expect(result.width,result.name).toBeGreaterThanOrEqual(39.5);expect(result.height,result.name).toBeGreaterThanOrEqual(39.5);
+    expect(result.ownCenter,JSON.stringify(result)).toBe(true);
+    expect(result.overlapWithNotes,result.name).toBe(0);
+  }
+  await testInfo.attach('model-control-center-hit-tests',{body:JSON.stringify(measurements,null,2),contentType:'application/json'});
+  await noPageOverflow(page);await recordViewport(page,testInfo,`model-controls-${mode}-${size.width}`);
+});
+
+// X7 I1: source identity and interpretation stay beside the model even when
+// research layout hides the atlas sidebar and the right-hand voxel information.
+for(const layoutPreset of ['model','evidence'])for(const source of [
+  {atlas:'aal-registered',method:'Cortical ribbon labels'},
+  {atlas:'ho',method:'Volume atlas'},
+  {atlas:'aal',method:'Volume atlas',warning:'Unverified alignment · overlay disabled'},
+])test(`research ${layoutPreset} retains keyboard-readable ${source.atlas} method and provenance`,async({page},testInfo)=>{
+  await page.setViewportSize({width:1366,height:768});await setup(page,{atlas:source.atlas,layoutPreset});
+  const context=page.locator('.model-provenance'),summary=context.locator('summary');
+  await expect(page.locator('.left-panel')).toBeHidden();
+  await expect(page.locator('.right-panel>.voxel-info')).toBeHidden();
+  await expect(context).toHaveAttribute('data-atlas-context',source.atlas);
+  await expect(summary).toContainText(source.method);
+  if(source.warning)await expect(summary).toContainText(source.warning);
+  await summary.scrollIntoViewIfNeeded();await expect(summary).toBeInViewport();
+  await summary.focus();await summary.press('Enter');
+  await expect(context).toHaveAttribute('open');
+  await expect(context).toContainText('Model reference');await expect(context).toContainText('MNI152NLin6Asym · RAS · mm');
+  await expect(context).toContainText('Atlas reference');await expect(context).toContainText('Spatial relationship');
+  await expect(context).toContainText('Atlas version');await expect(context).toContainText('sha256:');
+  await summary.press('Enter');await expect(context).not.toHaveAttribute('open');
+  // Resize the same model/provenance context, then use the existing panel switch.
+  await page.setViewportSize({width:683,height:384});
+  await page.getByRole('group',{name:'Visible panel',exact:true}).getByRole('button',{name:'Model',exact:true}).click();
+  await summary.scrollIntoViewIfNeeded();await expect(summary).toBeInViewport();await expect(summary).toContainText(source.method);
+  if(source.warning)await expect(summary).toContainText(source.warning);
+  await summary.focus();await summary.press('Enter');await expect(context).toContainText('Atlas reference');
+  await noPageOverflow(page);await recordViewport(page,testInfo,`provenance-${layoutPreset}-${source.atlas}-reflow`);
 });

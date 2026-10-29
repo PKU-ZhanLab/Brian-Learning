@@ -71,7 +71,7 @@
 .app-shell .research-navigation ol{right:auto;left:0;max-width:calc(100vw - 32px)}
 .app-shell .viewer-top{height:auto;min-height:48px;padding:0 0 8px;gap:8px;flex-wrap:wrap;flex-shrink:0}.app-shell .viewer-top .eyebrow{display:none}.app-shell .viewer-top h1{font-size:19px;margin:0;letter-spacing:0}.app-shell .viewer-top-actions{gap:4px}
 .app-shell .center-panel{overflow-y:auto;scrollbar-width:thin}.app-shell .scene-wrap{min-height:240px;flex-shrink:0}.app-shell .overview-panel .scene-wrap{min-height:300px}
-.app-shell .model-meta{top:10px;left:10px;max-width:calc(100% - 170px)}.app-shell .meta-caption{display:none}.app-shell .meta-pill{font-size:12px;overflow-wrap:anywhere;line-height:1.6}.app-shell .view-selector{top:10px;right:10px;flex-wrap:wrap;max-width:165px}.app-shell .view-selector button{min-height:32px;font-size:12px;padding:4px 6px}
+.app-shell .model-meta{top:10px;left:10px;max-width:calc(100% - 170px)}.app-shell .meta-pill{font-size:12px;overflow-wrap:anywhere;line-height:1.6}.app-shell .view-selector{top:10px;right:10px;flex-wrap:wrap;max-width:165px}.app-shell .view-selector button{min-height:32px;font-size:12px;padding:4px 6px}
 .app-shell .viewer-tools{right:10px;top:65px;padding:3px}.app-shell .viewer-tools .icon-button{min-height:40px}.app-shell .atlas-legend-button{top:60px;left:10px;font-size:12px;padding:6px 8px;min-height:40px;color:var(--text-secondary)}
 .app-shell .scene-bottom{font-size:12px;left:10px;bottom:8px}.app-shell .scene-bottom>span{max-width:70%;line-height:1.5}.app-shell .scene-bottom>button{font-size:12px;min-height:32px}.app-shell .view-legend{bottom:54px;left:10px;max-width:calc(100% - 64px);gap:4px 8px}.app-shell .view-legend span{font-size:12px}
 .app-shell .coordinates-bar{height:auto;min-height:40px;flex-shrink:0}.app-shell .coordinates-bar button{font-size:13px}.app-shell .coordinate-navigation-disclosure>summary{font-size:13px;line-height:1.65}
@@ -96,3 +96,19 @@
 .app-shell .quiz-panel :is(p,.quiz-options button,.quiz-feedback p,.quiz-score){font-size:14px;color:var(--text-secondary);line-height:1.8}.app-shell .quiz-panel :is(h2,.quiz-heading,.quiz-question,.quiz-feedback strong){color:var(--text-primary)}
 
 @media(max-width:650px){.app-shell .header-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 8px}.app-shell .header-actions>button,.app-shell .workspace-actions>summary{width:100%;justify-content:center}.app-shell .header-actions>button{white-space:normal;overflow-wrap:anywhere}.app-shell .workspace-actions{grid-column:2}.app-shell .workspace-actions>div{max-width:calc(100vw - 20px)}}
+
+/* X7 I1/I2: reserve context and action space outside the clipped canvas. */
+.app-shell .model-provenance{flex-shrink:0;min-width:0;margin:0 0 8px;border:1px solid var(--surface-border);border-radius:6px;background:var(--surface-paper);color:var(--text-primary);font-size:13px}
+.app-shell .model-provenance>summary{display:flex;align-items:center;gap:5px 8px;flex-wrap:wrap;list-style:none;cursor:pointer;min-height:40px;padding:7px 10px;line-height:1.65;overflow-wrap:anywhere}
+.app-shell .model-provenance>summary:after{content:'▾';margin-left:auto}.app-shell .model-provenance[open]>summary:after{content:'▴'}.app-shell .model-provenance>summary strong{font-weight:600}.app-shell .model-provenance>summary>span{color:var(--text-secondary)}.app-shell .model-provenance>summary>.model-provenance-warning{color:#764719;font-weight:550}
+.app-shell .model-provenance>div{padding:2px 12px 12px;border-top:1px solid var(--surface-border)}.app-shell .model-provenance dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:5px 10px;margin:10px 0 0;font-size:13px;line-height:1.7}.app-shell .model-provenance dt{color:var(--text-secondary)}.app-shell .model-provenance dd{margin:0;overflow-wrap:anywhere}.app-shell .model-provenance p{margin:10px 0 0;font-size:13px;line-height:1.75;color:var(--text-secondary)}
+.app-shell .model-control-bar{display:flex;align-items:center;justify-content:space-between;gap:4px 8px;flex-wrap:wrap;flex-shrink:0;min-width:0;padding:5px 0;background:var(--surface-page)}
+.app-shell .model-control-bar .viewer-tools{position:static;inset:auto;display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;max-width:100%;gap:2px;padding:3px;border:1px solid var(--surface-border);background:var(--surface-paper);box-shadow:none}
+.app-shell .model-control-bar .viewer-tools>.icon-button{width:40px;min-width:40px;height:40px;min-height:40px;flex:none;color:var(--text-secondary)}.app-shell .model-control-bar .viewer-tools>span{width:1px;height:22px;flex:none;margin:0 3px;background:var(--surface-border)}
+.app-shell .model-control-bar>.model-data-notes{min-height:40px;padding:6px 8px;font-size:13px;color:var(--text-secondary);border:1px solid var(--surface-border);border-radius:6px;background:var(--surface-paper);white-space:normal;text-align:left}
+@media(max-width:650px){.app-shell .model-provenance dl{grid-template-columns:minmax(0,1fr)}.app-shell .model-provenance dt:not(:first-child){margin-top:5px}.app-shell .model-control-bar{justify-content:flex-start}.app-shell .model-control-bar .viewer-tools{gap:2px}}
+
+/* Root measured 11px menu text / 9px badge at390 before this override. */
+.app-shell .workspace-actions button{font-size:var(--font-assist)}.app-shell .workspace-actions .count-badge{font-size:var(--font-assist);line-height:1.5;min-width:24px}
+
+.app-shell .group-count{font-size:var(--font-assist);line-height:1.5;min-width:2ch}
