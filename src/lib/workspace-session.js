@@ -1,5 +1,6 @@
 import {parseProject,prepareProjectPayload,validateViewState,validateProjectDrafts,validateProjectNotes,validateMissingAssetIds} from './workspace-project.js';
 import {savedComputationUsage} from './saved-computation.js';
+import {validateResultLayers} from './result-layers.js';
 import {referencedAssetIds} from './workspace-assets.js';
 import {boundedJsonStringify,utf8ByteLength,assertWorkspaceBudget,MAX_PROJECT_UTF8_BYTES} from './workspace-limits.js';
 import {emptyEvidence,EVIDENCE_COLLECTIONS} from './evidence-schema.js';
@@ -31,17 +32,7 @@ function assertReferences(snapshot,known){
   const scan=node=>{if(Array.isArray(node)){node.forEach(scan);return;}if(!object(node)||ArrayBuffer.isView(node))return;for(const [key,value]of Object.entries(node)){if(['atlas','atlasId','aAtlas','bAtlas','volumeId','assetId','sourceAssetId'].includes(key))asset(value);if(['inputs','derivedAsset'].includes(key)){for(const identity of Array.isArray(value)?value:[value])asset(identity?.id);}if(!['legacyV1','legacyImports','payload'].includes(key))scan(value);}};
   scan(snapshot.view);historical=true;scan(snapshot.notes);scan(snapshot.roiSnapshot);scan(snapshot.recomputedSnapshot);scan(snapshot.evidence);
   for(const key of ['roiSnapshot','recomputedSnapshot'])if(referencedAssetIds(snapshot[key]).some(id=>missing.has(id))&&snapshot[key]?.status!=='missing-input')throw Error('missing-input-status-required');
-  const results=new Map([...(known?.results||[]),...snapshot.evidence.results].map(r=>[typeof r==='string'?r:r.id,r]));
-  const references=new Set([...(known?.references||[]),...snapshot.evidence.references].map(r=>typeof r==='string'?r:r.id));
-  const locations=new Map(snapshot.evidence.locations.map(l=>[l.id,l]));
-  for(const r of known?.locations||[])locations.set(r.id,r);
-  const layerIds=new Set();
-  for(const layer of snapshot.view.resultLayers){
-    if(!object(layer)||!identifier(layer.layerId)||layerIds.has(layer.layerId)||!results.has(layer.resultId)||!references.has(layer.sourceReferenceId)||!Array.isArray(layer.coordinateIds)||new Set(layer.coordinateIds).size!==layer.coordinateIds.length||!(layer.spaceId===null||typeof layer.spaceId==='string')||typeof layer.visible!=='boolean'||!object(layer.style))throw Error('invalid-result-layer-reference');
-    const result=results.get(layer.resultId);
-    for(const id of layer.coordinateIds){const location=locations.get(id)||result?.coordinates?.find(c=>c.id===id);if(!location||(location.resultId&&location.resultId!==layer.resultId))throw Error(`invalid-coordinate-reference: ${id}`);}
-    layerIds.add(layer.layerId);
-  }
+  snapshot.view.resultLayers=validateResultLayers(snapshot.view.resultLayers,{evidence:snapshot.evidence,publicEvidence:known});
 }
 
 const cloneSnapshot=value=>{if(value==null)return null;const {maskA,maskB,surfaces,...saved}=value;return structuredClone(saved);};
@@ -92,7 +83,8 @@ export function restoreWorkspaceInitial({storage,fallback,knownEvidence,legacyNo
   const raw=storage?.getItem(WORKSPACE_STORAGE_KEY);
   if(raw){
     const saved=json(JSON.parse(raw),32*1024*1024);if(saved.schema!==WORKSPACE_STORAGE_KEY||!identifier(saved.projectId)||!Number.isSafeInteger(saved.revision)||saved.revision<0)throw Error('invalid-workspace-envelope');
-    return {...fallback,...saved,view:checkedView(saved.view),notes:validateProjectNotes(saved.notes),evidence:checkedEvidence(saved.evidence,knownEvidence).value,drafts:validateProjectDrafts(saved.drafts??[],saved.projectId),missingAssetIds:validateMissingAssetIds(saved.missingAssetIds??[]),volumes:[],roiSnapshot:null,recomputedSnapshot:null};
+    const restored={...fallback,...saved,view:checkedView(saved.view),notes:validateProjectNotes(saved.notes),evidence:checkedEvidence(saved.evidence,knownEvidence).value,drafts:validateProjectDrafts(saved.drafts??[],saved.projectId),missingAssetIds:validateMissingAssetIds(saved.missingAssetIds??[]),volumes:[],roiSnapshot:null,recomputedSnapshot:null};
+    restored.view.resultLayers=validateResultLayers(restored.view.resultLayers,{evidence:restored.evidence,publicEvidence:knownEvidence});return restored;
   }
   const legacyNotes=storage?.getItem(legacyNotesKey),legacyEvidence=loadEvidence(storage,contextOptions(knownEvidence));
   if(legacyEvidence.storageError)throw Error(legacyEvidence.storageError);

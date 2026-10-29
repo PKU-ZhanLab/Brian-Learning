@@ -2,10 +2,11 @@ import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_B
 import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
 import {atlasRegionKey} from './atlas-identity.js';
 import {savedComputationUsage,encodeSavedComputation,inspectEncodedSavedComputation,decodeSavedComputation} from './saved-computation.js';
+import {validateResultLayers,projectPublicResultLayers} from './result-layers.js';
 
 export const PROJECT_SCHEMA='neuroatlas-project-v2';
 export const LEGACY_PROJECT_SCHEMA='neuroatlas-project-v1';
-export const VIEW_SCHEMA='neuroatlas-view-v1';
+export const VIEW_SCHEMA='neuroatlas-view-v2';
 const MAX_FILE_BYTES=MAX_PROJECT_UTF8_BYTES;
 const boundedString=(v,max=500)=>typeof v==='string'?v.slice(0,max):'';
 const number=(v,min,max,fallback)=>Number.isFinite(v)?Math.min(max,Math.max(min,v)):fallback;
@@ -47,7 +48,7 @@ export function validateViewState(input){
   if(input.atlasExplorer){const a=input.atlasExplorer;output.atlasExplorer={atlas:boundedString(a.atlas,120)||'dk',query:boundedString(a.query,200),selected:Array.isArray(a.selected)?a.selected.filter(x=>Number.isInteger(x)&&x>0).slice(0,5000):[],opacity:number(a.opacity,0,1,1),camera:validateCamera(a.camera),threshold:number(a.threshold,0,1e12,.5),tail:['negative','absolute'].includes(a.tail)?a.tail:'positive',display:a.display==='slices'?'slices':'boundaries',slicePoint:point(a.slicePoint)?.map((n,i)=>Math.min([100,100,120][i],Math.max([-100,-140,-80][i],n)))||[0,0,0],sliceOpacity:number(a.sliceOpacity,0,1,.55)};}
   for(const key of ['atlasSelection','unresolvedAtlasSelection'])if(input[key]!==undefined)output[key]=regionRefs(input[key]);
   if(input.atlasSelectionQuery!==undefined)output.atlasSelectionQuery=safeObject(input.atlasSelectionQuery);
-  if(input.resultLayers!==undefined){if(!Array.isArray(input.resultLayers))throw Error('Invalid result layers');output.resultLayers=safeObject(input.resultLayers,2*1024*1024);}
+  output.resultLayers=input.schema==='neuroatlas-view-v1'?[]:validateResultLayers(safeObject(input.resultLayers??[],2*1024*1024));
   if(input.roi){for(const key of ['aRegionRefs','bRegionRefs','unresolvedRegionRefs'])if(input.roi[key]!==undefined)output.roi[key]=regionRefs(input.roi[key]);if(input.roi.resolutionMm!==undefined){if(![1,2].includes(input.roi.resolutionMm))throw Error('Invalid ROI grid spacing');output.roi.resolutionMm=input.roi.resolutionMm;}}
   return output;
 }
@@ -55,10 +56,10 @@ function bytesToBase64(bytes){let s='';for(let i=0;i<bytes.length;i+=32768)s+=St
 function encodedByteLength(text,maxBytes=MAX_FILE_BYTES){if(typeof text!=='string'||text.length>Math.ceil(maxBytes/3)*4||!/^[A-Za-z0-9+/]*={0,2}$/.test(text))throw Error('Invalid encoded data');const padding=text.endsWith('==')?2:text.endsWith('=')?1:0;const bytes=Math.floor(text.length*3/4)-padding;if(bytes>maxBytes)throw Error('Encoded data exceed the size limit');return bytes;}
 function base64ToBytes(text,maxBytes=MAX_FILE_BYTES){encodedByteLength(text,maxBytes);return Uint8Array.from(atob(text),c=>c.charCodeAt(0));}
 
-export function encodeView(input,{publicReferenceIds=[]}={}){
+export function encodeView(input,{publicReferenceIds=[],publicResults,publicEvidence,evidence}={}){
   const state=validateViewState(input);const omitted=[];
   const projectRegionRefs=(container,keys,prefix='')=>{for(const key of keys)if(container?.[key]){const original=container[key];container[key]=original.filter(ref=>!ref.atlasId.startsWith('custom-'));if(original.length!==container[key].length)omitted.push(`${prefix}${key}`);}};
-  if(state.resultLayers?.length)omitted.push('resultLayers');delete state.resultLayers;
+  const projection=projectPublicResultLayers(state.resultLayers,{publicReferenceIds,publicResults,publicEvidence,evidence});state.resultLayers=projection.layers;omitted.push(...projection.omitted);
   projectRegionRefs(state,['atlasSelection','unresolvedAtlasSelection']);
   if(state.atlasSelectionQuery){delete state.atlasSelectionQuery;omitted.push('atlasSelectionQuery');}
   if(state.atlas.startsWith('custom-')){state.atlas='dk';omitted.push('atlas');}

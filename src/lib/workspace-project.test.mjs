@@ -2,6 +2,29 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {encodeView,decodeView,validateViewState,validateCamera,serializeProject,prepareProjectPayload,parseProject,assertProjectVolumePayloadSize,validateProjectDrafts} from './workspace-project.js';
 import {MAX_NIFTI_FILE_BYTES} from './nifti.js';
+import {migrateEvidence} from './evidence-schema.js';
+import {resolveResultLayers} from './result-layers.js';
+
+const syntheticEvidence=()=>migrateEvidence({schema:'brain-evidence-v1',references:[{id:'public-paper',title:'Synthetic public paper',url:'https://example.org/paper'}],results:[{id:'public-result',referenceId:'public-paper',finding:'Synthetic coordinates',condition:'task',sample:'n=2',roiDefinition:'table',direction:'positive',annotator:'unknown',modalities:['fmri'],regionIds:[],sourceUrl:'https://example.org/paper',curationStatus:'draft',limitations:'synthetic',coordinates:[[1,2,3],[-1,2,3]].map((xyz,i)=>({id:`public-point-${i}`,x:xyz[0],y:xyz[1],z:xyz[2],space:'MNI152NLin6Asym',status:'source-checked',label:'peak',sourceTable:'1',sourceRow:String(i+1),frameNote:'synthetic frame',sourceUrl:'https://example.org/paper'})),figures:[]}],relations:[]}).value;
+
+test('project preserves local marker identity and visibility; public layer and hidden layer round trip',async()=>{
+ const evidence=syntheticEvidence(),layer={layerId:'private-layer-name',resultId:'public-result',sourceReferenceId:'public-paper',coordinateIds:['public-point-0','public-point-1'],spaceId:'MNI152NLin6Asym',visible:true,style:{color:'#123456',opacity:.25,size:20}},hidden={...layer,layerId:'hidden-layer',visible:false};
+ const project=await parseProject(await serializeProject({view:{resultLayers:[layer,hidden]},evidence,volumes:[]}));assert.deepEqual(project.view.resultLayers,[layer,hidden]);assert.equal(project.view.resultLayers[1].visible,false);assert.deepEqual(resolveResultLayers(project.view.resultLayers,{evidence:project.evidence}).markers.map(m=>m.position),[[1,2,3],[-1,2,3]]);
+ const shared=encodeView(project.view,{publicReferenceIds:['public-paper'],publicResults:evidence});const restored=decodeView(shared.encoded);assert.deepEqual(restored.resultLayers.map(l=>l.layerId),['public-layer-1','public-layer-2']);assert.deepEqual(restored.resultLayers[0].coordinateIds,layer.coordinateIds);assert.equal(restored.resultLayers[1].visible,false);assert.equal(JSON.stringify(restored).includes('private-layer-name'),false);assert.deepEqual(shared.omitted,[]);
+ const local=structuredClone(evidence);local.results[0].finding='Private reanalysis under a public paper';const omitted=encodeView(project.view,{publicReferenceIds:['public-paper'],publicResults:evidence,evidence:local});assert.deepEqual(decodeView(omitted.encoded).resultLayers,[]);assert.ok(omitted.omitted.includes('resultLayers'));
+});
+
+test('public result layers round trip without private identifiers and v1 views migrate empty',()=>{
+ const publicResults=migrateEvidence({schema:'brain-evidence-v1',references:[{id:'pub',title:'Public',url:'https://example.org'}],results:[],relations:[]}).value;
+ const privateLayer={layerId:'private-layer-name',resultId:'private-result',coordinateIds:['point'],sourceReferenceId:'pub',spaceId:null,visible:false,style:{}};
+ const shared=encodeView({resultLayers:[privateLayer]},{publicReferenceIds:['pub'],publicResults});const sharedText=JSON.stringify(decodeView(shared.encoded));assert.ok(!sharedText.includes('private-result'));assert.ok(!sharedText.includes('private-layer-name'));assert.ok(shared.omitted.includes('resultLayers'));
+ const old=btoa(JSON.stringify({schema:'neuroatlas-view-v1',resultLayers:[privateLayer]}));assert.deepEqual(decodeView(old).resultLayers,[]);assert.equal(validateViewState({}).schema,'neuroatlas-view-v2');
+});
+
+test('layer serialization retains the existing two MiB view payload budget',()=>{
+ const coordinateIds=Array.from({length:9000},(_,i)=>`coordinate-${i}-${'x'.repeat(140)}`),layer={layerId:'layer',resultId:'result',coordinateIds,sourceReferenceId:'paper',spaceId:null,visible:false,style:{}};
+ assert.throws(()=>validateViewState({resultLayers:[layer,{...layer,layerId:'layer-2'}]}),/View state is too large/);
+});
 test('paper and recorded-result method filters survive separately with a legacy paper fallback',async()=>{
   const literature={paperModality:'fMRI',resultModality:'MEG',modality:'EEG',query:'local search'};
   for(const restored of [validateViewState({literature}),decodeView(encodeView({literature}).encoded),(await parseProject(await serializeProject({view:{literature},volumes:[]}))).view]){

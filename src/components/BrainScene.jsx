@@ -625,8 +625,9 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       markerGroup.children.forEach(disposeObject); markerGroup.clear();
       for (const marker of propsRef.current.studyMarkers || []) {
         if (marker.verified !== true || marker.coordinateSpace !== 'MNI152NLin6Asym' || marker.position?.length !== 3 || !marker.position.every(Number.isFinite)) continue;
-        const radius = THREE.MathUtils.clamp(marker.radiusMm || 2, 0.5, 8);
-        const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 16, 12), new THREE.MeshBasicMaterial({ color: marker.color || '#b85163' }));
+        const radius = THREE.MathUtils.clamp(marker.radiusMm || 2, 1, 20);
+        const markerOpacity = THREE.MathUtils.clamp(marker.opacity ?? 1, 0, 1);
+        const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 16, 12), new THREE.MeshBasicMaterial({ color: marker.color || '#b85163', opacity: markerOpacity, transparent: markerOpacity < 1 }));
         mesh.position.set(...marker.position); mesh.userData = { category: 'study-marker', marker }; markerGroup.add(mesh);
       }
       markerGroup.visible = !propsRef.current.exploded; status.invalidate();

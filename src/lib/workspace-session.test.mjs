@@ -4,11 +4,23 @@ import {createWorkspaceSession,stageWorkspaceChange,stageProjectImport,mergeWork
 import {serializeProject as serializeWorkspaceProject} from './workspace-project.js';
 import {listCustomVolumes,subscribeCustomVolumes} from './custom-volumes.js';
 import {emptyEvidence,migrateEvidence} from './evidence-schema.js';
+import {resolveResultLayers} from './result-layers.js';
+import {readSavedViews,writeSavedViews} from './workspace-project.js';
 
 const volume=(id='custom-a',value=1)=>({id,name:id,data:Uint8Array.of(value),shape:[1,1,1],affine:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],kind:'label',space:'native-unverified',labels:[]});
 const makeWorkspace=(projectId='A',extra={})=>({projectId,revision:0,view:{atlas:'dk',camera:{position:[1,2,3],target:[0,0,0],zoom:1},resultLayers:[]},notes:[],evidence:emptyEvidence(),drafts:[],volumes:[],roiSnapshot:null,recomputedSnapshot:null,...extra});
 function memoryStorage(){const data=new Map([['language','en'],['neuroatlas-saved-views','sentinel'],['draft-sentinel','untouched'],['brain-model.evidence.v1','original']]);return {fail:false,writes:0,getItem:key=>data.get(key)??null,setItem(key,value){if(this.fail)throw new DOMException('full','QuotaExceededError');this.writes++;data.set(key,value);},entries:()=>[...data.entries()]};}
 const evidence=label=>migrateEvidence({schema:'brain-evidence-v1',references:[{id:'paper',title:label,url:'https://example.org/paper'}],results:[{id:'result',referenceId:'paper',finding:label,condition:'task',sample:'n=1',roiDefinition:'source ROI',direction:'positive',annotator:'unknown',modalities:['fmri'],regionIds:[],sourceUrl:'https://example.org/paper',curationStatus:'draft',limitations:'legacy',coordinates:[{id:'point',x:1,y:2,z:3,space:'MNI-unspecified',status:'draft',label:'peak',sourceTable:'1',sourceRow:'1',frameNote:'unknown template',sourceUrl:'https://example.org/paper'}],figures:[]}],relations:[]}).value;
+
+test('project and named views preserve local marker identity and visibility; missing coordinate rejects atomic restore',async()=>{
+ const local=evidence('Synthetic'),layer={layerId:'local-layer',resultId:'result',coordinateIds:['point'],sourceReferenceId:'paper',spaceId:'MNI-unspecified',visible:false,style:{color:'#123456',opacity:.5,size:2}};
+ const initial=makeWorkspace('A',{evidence:local,view:{resultLayers:[layer]}}),storage=memoryStorage(),session=createWorkspaceSession({storage,initial});
+ writeSavedViews([{id:'named',name:'Synthetic',view:initial.view}],storage);const named=readSavedViews(storage)[0].view;assert.deepEqual(named.resultLayers,[layer]);
+ const stage=await stageProjectImport(await serializeWorkspaceProject(initial),{current:session.getSnapshot()});assert.deepEqual(stage.next.view.resultLayers,[layer]);assert.deepEqual(resolveResultLayers(stage.next.view.resultLayers,{evidence:stage.next.evidence}).markers,[]);
+ const before=storage.entries(),snapshot=session.getSnapshot(),bad={...initial,view:{resultLayers:[{...layer,coordinateIds:['missing']}]}};
+ await assert.rejects(stageProjectImport(await serializeWorkspaceProject(bad),{current:snapshot}),/invalid-coordinate-reference/);assert.deepEqual(storage.entries(),before);assert.strictEqual(session.getSnapshot(),snapshot);
+ const wrongSource={...layer,sourceReferenceId:'other'};await assert.rejects(stageWorkspaceChange({...initial,view:{resultLayers:[wrongSource]}},{current:snapshot}),/invalid-result-layer-source/);
+});
 
 test('all failed stages preserve every storage key, view identity and project assets',async()=>{
  const storage=memoryStorage(),session=createWorkspaceSession({storage,initial:makeWorkspace('A',{volumes:[volume()]})});
