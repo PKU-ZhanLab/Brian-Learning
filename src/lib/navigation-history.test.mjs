@@ -5,6 +5,7 @@ import {validateViewState,encodeView,decodeView,parseProject,serializeProject} f
 import {emptyEvidence} from './evidence-schema.js';
 import {stageWorkspaceChange,mergeWorkspace,restoreWorkspaceInitial,WORKSPACE_STORAGE_KEY} from './workspace-session.js';
 import {planAssetRemoval} from './workspace-assets.js';
+import {assignSelectionToOperand} from './selection-handoff.js';
 const ref={atlasId:'aal3-registered',atlasVersion:'v1',spaceId:'MNI152NLin6Asym',hemisphere:'U',labelId:134};
 const entry=(mode,extra={})=>({view:{mode,coordinate:[1.125,-3.75,9.2],coordinateSpace:null,coordinateOrigin:{kind:'private',cameraSensitive:true,explorerSensitive:true,imported:false},atlasSelection:[ref],atlasSelectionQuery:{atlasId:ref.atlasId,atlasVersion:ref.atlasVersion,coordinate:[1.125,-3.75,9.2],method:'source',requestId:9},roi:{aAtlas:ref.atlasId,aLabels:[134,133],aRegionRefs:[ref],bAtlas:'dk',bLabels:[4],bThreshold:.33,bTail:'negative',snapshot:'original',computed:false},...extra},scroll:{roi:371,literature:0}});
 test('paper navigation restores the actual comparison, selection, unknown space and scroll without mutation',()=>{
@@ -78,4 +79,32 @@ test('incoming history remaps singular result-coordinate identities without rewr
   const before=structuredClone(current),merged=mergeWorkspace(current,incoming,(kind,id)=>`incoming-${kind}-${id}`);
   assert.deepEqual(merged.snapshot.view.navigationHistory.entries[0].view.coordinateOrigin,{kind:'result',resultId:'incoming-results-result',sourceReferenceId:'incoming-references-paper',coordinateId:'incoming-locations-point',spaceId:'MNI152NLin6Asym',imported:true,cameraSensitive:true,explorerSensitive:true});
   assert.deepEqual(current,before);
+});
+test('blank B survives the real view-adapter sequence: explorer navigation, full-set A handoff, history restore',()=>{
+  const cleared={...entry('roi').view,roi:{...entry('roi').view.roi,bAtlas:'custom-stat',bLabels:[],bRegionRefs:[],bThreshold:'',bTail:'negative'}};
+  // App captures via getWorkspaceView, normalizes the explorer target, hands off
+  // one operand, then normalizes again at restore/staging. Every step uses W6.
+  const captured=validateViewState(cleared);
+  const explorer=validateViewState({...captured,atlasExplorerOpen:true,atlasExplorer:{atlas:ref.atlasId,selected:[133,134]}});
+  let history=pushNavigation({projectId:'p',entries:[],index:-1},{view:captured,scroll:{left:50}}).history;
+  history=pushNavigation(history,{view:explorer,scroll:{atlas:30}}).history;
+  const roi=assignSelectionToOperand(explorer.roi,{side:'A',regions:[{...ref,labelId:133},ref]});
+  const target=validateViewState({...explorer,mode:'roi',atlasExplorerOpen:false,roi});
+  history=pushNavigation(history,{view:target,scroll:{}}).history;
+  const persisted=validateViewState({...target,navigationHistory:history});
+  for(const view of [captured,explorer,target,...persisted.navigationHistory.entries.map(visit=>visit.view),validateViewState(goBack(history).target.view)]){
+    assert.equal(view.roi.bThreshold,'');assert.equal(view.roi.bTail,'negative');assert.equal(view.roi.bAtlas,'custom-stat');
+    // ROICompare's existing missingThreshold gate must still receive its missing sentinel.
+    assert.equal(view.roi.bThreshold==='',true);
+  }
+  assert.deepEqual(target.roi.aLabels,[133,134]);assert.equal(target.roi.computed,false);
+});
+test('W6 keeps an explicit missing threshold distinct from legacy absent threshold defaults',async()=>{
+  const view=validateViewState({roi:{aThreshold:'',bThreshold:''}});
+  assert.equal(view.roi.aThreshold,'');assert.equal(view.roi.bThreshold,'');
+  const restored=await parseProject(await serializeProject({...workspace(),view}));
+  assert.equal(restored.view.roi.aThreshold,'');assert.equal(restored.view.roi.bThreshold,'');
+  const legacy=validateViewState({schema:'neuroatlas-view-v1',roi:{}});
+  assert.equal(legacy.roi.aThreshold,0);assert.equal(legacy.roi.bThreshold,0);
+  assert.equal(validateViewState({roi:{aThreshold:0,bThreshold:.75}}).roi.bThreshold,.75);
 });

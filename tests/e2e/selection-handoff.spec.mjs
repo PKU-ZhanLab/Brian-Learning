@@ -1,4 +1,5 @@
 import {test,expect} from '@playwright/test';
+import {exportNifti} from '../../src/lib/nifti.js';
 const nav=page=>page.getByRole('navigation',{name:'Main navigation'});
 async function selectTwo(page,atlas='aal3-registered'){
   await nav(page).getByRole('button',{name:'Atlas labels',exact:true}).click();
@@ -55,4 +56,32 @@ test('back and forward restore comparison/paper context and both panels scroll w
   await expect.poll(()=>page.locator('.literature-scroll').evaluate(el=>el.scrollTop)).toBe(paperScroll);
   await expect(page.getByRole('button',{name:'Compute ROI overlap',exact:true})).toHaveCount(0);
   expect(await page.evaluate(()=>window.__roiComputations)).toBe(0);
+});
+
+for(const kind of ['statistic','probability'])test(`cleared ${kind} B threshold stays missing and blocked after explorer multi-label A handoff`,async({page})=>{
+  await page.goto('/?lang=en&mode=roi');
+  await page.getByLabel('ROI A atlas',{exact:true}).selectOption('aal3-registered');
+  await page.getByLabel('ROI A label',{exact:true}).selectOption('134');
+  await page.locator('.roi-import>summary').click();
+  const volume={kind,shape:[2,1,1],affine:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],data:Float32Array.of(.8,.3)};
+  await page.getByLabel('Import NIfTI file',{exact:true}).setInputFiles({name:`blank-B-${kind}.nii`,mimeType:'application/octet-stream',buffer:Buffer.from(exportNifti(volume))});
+  await page.getByLabel('Imported image kind',{exact:true}).selectOption(kind);
+  await page.getByLabel('Imported reference space',{exact:true}).selectOption('MNI152NLin6Asym');
+  await page.getByLabel('Imported image provenance',{exact:true}).fill('Synthetic isolated regression image; declared test alignment.');
+  await page.getByLabel('Confirm already aligned to FSL template',{exact:true}).check();
+  await page.getByRole('button',{name:'Import local NIfTI',exact:true}).click();
+  await expect(page.getByLabel('ROI B atlas',{exact:true})).toHaveValue(/^custom-/);
+  const bAtlas=await page.getByLabel('ROI B atlas',{exact:true}).inputValue();
+  await page.getByLabel('ROI B threshold',{exact:true}).fill('0.75');
+  if(kind==='statistic')await page.getByLabel('ROI B tail',{exact:true}).selectOption('negative');
+  await expect(page.getByRole('button',{name:'Compute ROI overlap',exact:true})).toBeEnabled();
+  await page.getByLabel('ROI B threshold',{exact:true}).fill('');
+  await expect(page.getByRole('button',{name:'Compute ROI overlap',exact:true})).toBeDisabled();
+  await selectTwo(page);
+  await page.getByRole('button',{name:'Set selection as ROI A',exact:true}).click();
+  await expect(page.getByLabel('ROI A label',{exact:true})).toHaveValues(['133','134']);
+  await expect(page.getByLabel('ROI B atlas',{exact:true})).toHaveValue(bAtlas);
+  await expect(page.getByLabel('ROI B threshold',{exact:true})).toHaveValue('');
+  if(kind==='statistic')await expect(page.getByLabel('ROI B tail',{exact:true})).toHaveValue('negative');
+  await expect(page.getByRole('button',{name:'Compute ROI overlap',exact:true})).toBeDisabled();
 });
