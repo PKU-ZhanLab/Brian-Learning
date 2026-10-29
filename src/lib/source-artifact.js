@@ -80,7 +80,7 @@ export function verifySourceArtifact(artifact,bytes){
 
 export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[]){
   const integrityErrors=[],semanticReviewRequired=[],unavailableArtifacts=[],fields=new Set(),coordinates=[];
-  const available=new Map();
+  const available=new Map(),verified=[];
   if(!Array.isArray(artifacts)){integrityErrors.push('artifact material must be an array');artifacts=[];}
   for(const artifact of artifacts){
     if(!artifact||typeof artifact!=='object'||!text(artifact.id)){integrityErrors.push('artifact material has no identity');continue;}
@@ -89,12 +89,61 @@ export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[])
     let integrity;try{integrity=verifySourceArtifact(artifact,sourceExcerptBytes(artifact));}catch{integrity={valid:false,errors:['minimal excerpt material unavailable or malformed']};}
     integrityErrors.push(...integrity.errors.map(error=>`${artifact.id}: ${error}`));
     if(!integrity.valid)continue;
+    verified.push(artifact);
+  }
+  const resultReference=result=>result?.referenceId||bundle?.experiments?.find(row=>row.id===result?.experimentId)?.referenceId||bundle?.claims?.find(row=>result?.claimIds?.includes(row.id))?.referenceId;
+  const rowReference=(collection,row)=>collection==='references'?row.id:collection==='results'?resultReference(row):resultReference(bundle?.results?.find(result=>result.id===row.resultId));
+  const artifactIds=refs=>new Set((Array.isArray(refs)?refs:[]).filter(ref=>{
+    if(typeof ref!=='string'||/^https?:\/\//.test(ref))return false;
+    if(!available.has(ref))unavailableArtifacts.push(ref);
+    return true;
+  }));
+  const currentEvents=row=>artifactIds((bundle?.reviewEvents||[]).filter(event=>row.recordVersion&&event.subjectId===row.id&&event.recordVersion===row.recordVersion&&event.stage==='source-checked').flatMap(event=>event.sourceRefs||[]));
+  const paperSelections=new Map();
+  // Reference metadata can inherit an explicit selection from its current
+  // findings/locations. Merely retaining an artifact in the index is never a
+  // selection, and old review events never select for a new record version.
+  for(const collection of ['results','locations'])for(const row of bundle?.[collection]||[]){
+    const selected=new Set(),collect=node=>{
+      if(!node||typeof node!=='object')return;
+      for(const [key,value] of Object.entries(node)){
+        if(key==='sourceRefs')for(const id of artifactIds(value))selected.add(id);
+        else if(key!=='legacyV1')collect(value);
+      }
+    };
+    collect(row);
+    if(!selected.size)for(const id of currentEvents(row))selected.add(id);
+    const referenceId=rowReference(collection,row),paper=paperSelections.get(referenceId)||new Set();
+    for(const id of selected)paper.add(id);paperSelections.set(referenceId,paper);
+  }
+  const activeSources=(collection,row,segments)=>{
+    let selected=new Set(),node=row;
+    // The nearest explicit sourceRefs wins: e.g. a statistic's source can be
+    // more specific than the result's, or a location can use a corrected v2
+    // while another location from the same paper still uses v1.
+    for(let i=0;i<=segments.length;i++){
+      if(node&&typeof node==='object'){
+        const ids=artifactIds(node.sourceRefs);if(ids.size)selected=ids;
+      }
+      if(i<segments.length)node=node?.[segments[i]];
+    }
+    if(!selected.size)selected=currentEvents(row);
+    if(!selected.size&&collection==='references')selected=paperSelections.get(row.id)||new Set();
+    return selected;
+  };
+  const activeArtifacts=new Set();
+  for(const artifact of verified){
     for(const field of artifact.fields){
-      const [collection,recordId]=field.path.split('/');
+      const [collection,recordId,...segments]=field.path.split('/');
       // A paper-level excerpt may support several findings. A selected-result
       // package compares only extant records; required anchors for its actual
       // records are enforced below, so renaming a point cannot evade coverage.
-      if(!bundle?.[collection]?.some(row=>row.id===recordId))continue;
+      const row=bundle?.[collection]?.find(row=>row.id===recordId);if(!row)continue;
+      // legacyV1 is retained historical data, never a required native-v2
+      // provenance container. Native source locators live in artifact fields.
+      if(segments[0]==='legacyV1'&&sourceFieldValue(bundle,field.path)===undefined)continue;
+      if(!activeSources(collection,row,segments).has(artifact.id))continue;
+      activeArtifacts.add(artifact.id);
       fields.add(field.path);
       const actual=sourceFieldValue(bundle,field.path),expected=decodeField(field);
       if(actual===undefined||canonicalSourceJSON(actual)!==canonicalSourceJSON(expected))semanticReviewRequired.push({artifactId:artifact.id,path:field.path,expected,actual:actual??null,locator:field.locator,reason:'transcribed field differs from the anchored minimal source cell'});
@@ -111,7 +160,7 @@ export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[])
       else semanticReviewRequired.push({path,reason:'no verified source field anchor available'});
     }
   };
-  const referenceIds=new Set((bundle?.results||[]).map(row=>row.referenceId).filter(Boolean));
+  const referenceIds=new Set((bundle?.results||[]).map(resultReference).filter(Boolean));
   for(const referenceId of referenceIds){
     requireField(`references/${referenceId}/doi`,referenceId);
     requireField(`references/${referenceId}/url`,referenceId);
@@ -119,9 +168,13 @@ export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[])
     for(let i=0;i<(authors?.length||1);i++)requireField(`references/${referenceId}/fullAuthorList/${i}`,referenceId);
   }
   for(const location of bundle?.locations||[]){
-    const referenceId=bundle.results.find(row=>row.id===location.resultId)?.referenceId;
+    const referenceId=resultReference(bundle.results.find(row=>row.id===location.resultId));
     const paths=[0,1,2].map(axis=>`locations/${location.id}/xyz/${axis}`);
-    for(const tail of ['sourceSpaceId','sourceRefs/0','legacyV1/sourceTable'])paths.push(`locations/${location.id}/${tail}`);
+    paths.push(`locations/${location.id}/sourceSpaceId`);
+    if(Object.hasOwn(location.legacyV1||{},'sourceTable'))paths.push(`locations/${location.id}/legacyV1/sourceTable`);
+    // Legacy URL fields remain compared when bound. For a native record, a
+    // selected artifact ID plus verified per-axis locators is sufficient; no
+    // fixed URL-array offset or invented legacy snapshot is required.
     paths.forEach(path=>requireField(path,referenceId));
     if(paths.every(path=>fields.has(path)))coordinates.push(location.id);
     for(const ref of location.sourceRefs||[])if(!/^https?:\/\//.test(ref)&&!available.has(ref))unavailableArtifacts.push(ref);
@@ -139,6 +192,6 @@ export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[])
     };
     reportedLeaves(row,`${collection}/${row.id}`);
   }
-  return {integrityErrors,semanticReviewRequired,unavailableArtifacts:[...new Set(unavailableArtifacts)],coverage:{coordinates,fields:[...fields].sort(),uncheckedReportedNumericFields:uncheckedReportedNumericFields.sort()},
+  return {integrityErrors,semanticReviewRequired,unavailableArtifacts:[...new Set(unavailableArtifacts)],coverage:{coordinates,fields:[...fields].sort(),uncheckedReportedNumericFields:uncheckedReportedNumericFields.sort(),integrityCheckedArtifacts:verified.map(artifact=>artifact.id),currentComparedArtifacts:[...activeArtifacts]},
     scope:'Only listed primary-source cells and explicit normalizations were compared offline; this is AI-assisted transcription checking, not full-text re-review, spatial validation or human certification.',humanReview:'pending'};
 }

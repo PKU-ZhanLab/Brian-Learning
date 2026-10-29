@@ -3,15 +3,16 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {curatedEvidence} from '../data/results.js';
-import {auditTranscription,verifySourceArtifact,sourceExcerptBytes} from './source-artifact.js';
+import {auditTranscription,verifySourceArtifact,sourceExcerptBytes,sourceArtifactRecordHash} from './source-artifact.js';
 import {auditFromDisk} from '../../scripts/evidence-audit.mjs';
-import {removeEvidenceRecords} from './evidence-schema.js';
+import {removeEvidenceRecords,validateEvidenceV2} from './evidence-schema.js';
 
 const directory=new URL('../../data-sources/results/source-artifacts/',import.meta.url);
 const index=JSON.parse(await readFile(new URL('index.json',directory),'utf8'));
 const artifacts=await Promise.all(index.artifacts.map(async row=>JSON.parse(await readFile(new URL(row.file,directory),'utf8'))));
 const copy=()=>structuredClone(curatedEvidence);
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+const seal=artifact=>{artifact.sha256=sha(sourceExcerptBytes(artifact));artifact.recordSha256=sourceArtifactRecordHash(artifact);return artifact;};
 
 test('offline audit separates integrity and transcription',()=>{
   const artifact=artifacts[0];
@@ -113,4 +114,49 @@ test('correction status and analysis roles are semantic checks and raw Bosco pre
   const bosco=artifacts.find(row=>row.referenceId==='bosco2008');
   assert.equal(bosco.excerpt.cells.find(row=>row.id==='bosco-tpj-y').rawText,'−36.6');
   assert.equal(bosco.excerpt.cells.find(row=>row.id==='bosco-mt-sd-2').rawText,'3.0');
+});
+
+test('explicit current source versions permit additive corrections while preserving historical integrity and events',()=>{
+  const bundle=copy(),history=structuredClone(bundle.reviewEvents),original=structuredClone(bundle.sourceArtifacts[0]);
+  const corrected=structuredClone(original);corrected.id='schaum2021-v2';corrected.sourceVersion='Synthetic correction fixture v2, not a new real source observation';
+  const sourceCell=corrected.excerpt.cells.find(cell=>cell.id==='schaum-rifg-x');sourceCell.rawText='51';
+  corrected.fields.filter(field=>field.cellId===sourceCell.id).forEach(field=>{field.rawText='51';});seal(corrected);
+  bundle.sourceArtifacts.push(corrected);
+  const point=bundle.locations.find(row=>row.id==='schaum-rifg');point.xyz[0]=51;point.recordVersion='synthetic-current-v2';point.sourceRefs=point.sourceRefs.map(ref=>ref===original.id?corrected.id:ref);
+  bundle.results.find(row=>row.id==='schaum2021-meg-stop').sourceRefs=[corrected.id];
+  bundle.reviewEvents.push({...history.find(event=>event.subjectId===point.id&&event.stage==='source-checked'),id:'synthetic-v2-source-check',recordVersion:point.recordVersion,sourceRefs:[corrected.id]});
+  const unchanged=structuredClone(bundle),audit=auditTranscription(bundle,bundle.sourceArtifacts);
+  assert.deepEqual(audit.integrityErrors,[]);assert.deepEqual(audit.unavailableArtifacts,[]);assert.deepEqual(audit.semanticReviewRequired,[]);
+  assert(audit.coverage.integrityCheckedArtifacts.includes(original.id));assert(audit.coverage.integrityCheckedArtifacts.includes(corrected.id));
+  assert.deepEqual(auditTranscription(bundle,[...bundle.sourceArtifacts].reverse()).semanticReviewRequired,[],'artifact/index order is not version selection');
+  assert.equal(audit.coverage.coordinates.length,8);assert.deepEqual(bundle,unchanged);assert.deepEqual(bundle.sourceArtifacts[0],original);assert.deepEqual(bundle.reviewEvents.slice(0,history.length),history);
+  const wrong=structuredClone(bundle);wrong.locations.find(row=>row.id===point.id).xyz[0]=52;
+  const mismatch=auditTranscription(wrong,wrong.sourceArtifacts).semanticReviewRequired;
+  assert(mismatch.some(item=>item.artifactId===corrected.id&&item.path==='locations/schaum-rifg/xyz/0'&&item.expected===51));
+  assert(!mismatch.some(item=>item.artifactId===original.id&&item.path==='locations/schaum-rifg/xyz/0'));
+  const historicalTamper=structuredClone(bundle.sourceArtifacts);historicalTamper[0].excerpt.cells[0].rawText+='x';
+  assert(auditTranscription(bundle,historicalTamper).integrityErrors.some(error=>error.startsWith(original.id+':')));
+  // A higher version's presence is not selection. Explicitly choosing v1 still
+  // compares current x to 50 and leaves the unselected v2 as historical material.
+  const oldSelected=structuredClone(bundle);oldSelected.locations.find(row=>row.id===point.id).sourceRefs=point.sourceRefs.map(ref=>ref===corrected.id?original.id:ref);
+  const oldMismatch=auditTranscription(oldSelected,oldSelected.sourceArtifacts).semanticReviewRequired;
+  assert(oldMismatch.some(item=>item.artifactId===original.id&&item.path==='locations/schaum-rifg/xyz/0'&&item.expected===50));
+  oldSelected.locations.find(row=>row.id===point.id).xyz[0]=50;
+  assert.deepEqual(auditTranscription(oldSelected,oldSelected.sourceArtifacts).semanticReviewRequired,[],'explicit v1 remains valid even while a higher v2 is retained');
+});
+
+test('native v2 provenance uses verified source locators without fabricated legacy snapshots',()=>{
+  const native=copy();delete native.legacyV1;
+  for(const collection of ['results','locations'])for(const row of native[collection])delete row.legacyV1;
+  native.sourceArtifacts=native.sourceArtifacts.map(artifact=>{artifact.fields=artifact.fields.filter(field=>!field.path.includes('/legacyV1/'));return seal(artifact);});
+  assert.equal(validateEvidenceV2(native).valid,true);
+  assert(native.sourceArtifacts.every(artifact=>verifySourceArtifact(artifact,sourceExcerptBytes(artifact)).valid));
+  const snapshot=structuredClone(native),audit=auditTranscription(native,native.sourceArtifacts);
+  assert.deepEqual(audit.integrityErrors,[]);assert.deepEqual(audit.unavailableArtifacts,[]);assert.deepEqual(audit.semanticReviewRequired,[]);assert.equal(audit.coverage.coordinates.length,8);assert.deepEqual(native,snapshot);
+  const wrong=structuredClone(native);wrong.locations[0].xyz[0]=51;
+  assert(auditTranscription(wrong,wrong.sourceArtifacts).semanticReviewRequired.some(item=>item.path==='locations/schaum-rifg/xyz/0'));
+  const point=native.locations[0],artifactId=point.sourceRefs.find(ref=>ref==='schaum2021-v1');point.sourceRefs=[artifactId];
+  const selected=native.sourceArtifacts.find(artifact=>artifact.id===artifactId);selected.fields=selected.fields.filter(field=>field.path!==`locations/${point.id}/sourceRefs/0`);seal(selected);
+  assert.equal(validateEvidenceV2(native).valid,true);
+  const artifactOnly=auditTranscription(native,native.sourceArtifacts);assert.deepEqual(artifactOnly.semanticReviewRequired,[]);assert.equal(artifactOnly.coverage.coordinates.length,8);
 });
