@@ -42,7 +42,9 @@ export function translateUI(value,language='zh'){
 export function localizeUI(node,language){
   if(language!=='en')return node;
   if(typeof node==='string')return translateUI(node,language);
-  if(Array.isArray(node))return node.map(child=>localizeUI(child,language));
+  // React's child traversal carries explicit keys across cloned siblings and
+  // supplies stable positional keys for static JSX children.
+  if(Array.isArray(node))return React.Children.map(node,child=>localizeUI(child,language));
   if(!React.isValidElement(node)||node.props['data-user-content'])return node;
   const props={};for(const key of ['aria-label','title','placeholder','label'])if(typeof node.props[key]==='string')props[key]=translateUI(node.props[key],language);
   if(node.props.children!==undefined)props.children=localizeUI(node.props.children,language);

@@ -241,8 +241,9 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.98;
     renderer.localClippingEnabled = true;
-    renderer.domElement.style.cssText = 'width:100%;height:100%;display:block;touch-action:none;outline:none;';
+    renderer.domElement.style.cssText = 'width:100%;height:100%;display:block;touch-action:none;';
     renderer.domElement.setAttribute('aria-label', 'Interactive 3D brain: drag to rotate, right-drag to pan, scroll to zoom, click a structure for details');
+    renderer.domElement.setAttribute('aria-describedby', 'brain-keyboard-help');
     renderer.domElement.tabIndex = 0;
     container.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
@@ -791,6 +792,19 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     renderer.domElement.addEventListener('pointermove', pointerMove);
     renderer.domElement.addEventListener('pointerup', pointerUp);
     renderer.domElement.addEventListener('pointercancel', cancelPointer);
+    const keyboardView = event => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.isComposing) return;
+      const view = {'1':'oblique','2':'lateral','3':'anterior','4':'superior'}[event.key];
+      if (view) { status.autoOverview = false; setView(view); propsRef.current.onViewChange?.(view); }
+      else if (event.key === 'Home') { reset(); propsRef.current.onViewChange?.('oblique'); }
+      else if (['+', '=', '-', '_'].includes(event.key)) {
+        status.autoOverview = false;
+        camera.zoom = THREE.MathUtils.clamp(camera.zoom * (['+', '='].includes(event.key) ? 1.22 : .82), .12, 18);
+        camera.updateProjectionMatrix(); status.invalidate();
+      } else return;
+      event.preventDefault(); event.stopPropagation();
+    };
+    renderer.domElement.addEventListener('keydown', keyboardView);
     const suppressContext = event => event.preventDefault(); renderer.domElement.addEventListener('contextmenu', suppressContext);
     stateRef.current = status;
     rebuildStructures(); updateROI(); updateStudyMarkers(); reset();
@@ -901,6 +915,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       destroyed = true; cancelAnimationFrame(animation); resizeObserver.disconnect(); controls.dispose(); status.remotePAMLoader?.terminate();
       renderer.domElement.removeEventListener('pointerdown', pointerDown); renderer.domElement.removeEventListener('pointermove', pointerMove); renderer.domElement.removeEventListener('pointerup', pointerUp); renderer.domElement.removeEventListener('pointercancel', cancelPointer);
       renderer.domElement.removeEventListener('contextmenu', suppressContext);
+      renderer.domElement.removeEventListener('keydown', keyboardView);
       status.labelNodes.forEach(({ node }) => node.remove()); disposeObject(root); renderer.dispose(); renderer.domElement.remove(); stateRef.current = null;
     };
   }, []);
@@ -929,6 +944,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
   }, [props.atlas, props.volumeRevision]);
 
   return <div className="brain-scene" style={{ position: 'relative', width: '100%', height: '100%', minHeight: 0, overflow: 'hidden' }}>
+    <p id="brain-keyboard-help" className="visually-hidden">{sceneText('画布聚焦时：1 三维，2 矢状，3 冠状，4 轴位；加号或减号缩放，Home 重置。也可 Tab 到标准视角按钮。', 'With the canvas focused: 1 oblique, 2 lateral, 3 anterior, 4 superior; plus or minus to zoom, Home to reset. Tab also reaches the standard view buttons.')}</p>
     <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
     <div ref={overlayRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
       <div style={{ position: 'absolute', left: 20, bottom: 76, color: '#6c7f75', fontSize: 10 }}>
