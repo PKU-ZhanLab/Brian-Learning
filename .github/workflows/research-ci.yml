@@ -25,6 +25,8 @@ jobs:
       # The exact lockfile Playwright runner downloads its matching browser in CI.
       - run: node node_modules/@playwright/test/cli.js install --with-deps chromium
       - run: npm run test:e2e
+      - run: npm run build:public
+      - run: npm run test:e2e -- --config tests/e2e/public-result-page.config.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -32,4 +34,6 @@ jobs:
           path: |
             output/e2e-results
             output/e2e-report
+            output/e2e-public-results
+            output/e2e-public-report
           if-no-files-found: ignore

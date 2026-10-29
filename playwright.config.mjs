@@ -6,6 +6,8 @@ import {defineConfig, devices} from '@playwright/test';
 export default defineConfig({
   testDir: './tests/e2e',
   testMatch: '**/*.spec.mjs',
+  // Generated result pages require the dedicated public-build/Pages harness.
+  testIgnore: '**/public-result-page.spec.mjs',
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
