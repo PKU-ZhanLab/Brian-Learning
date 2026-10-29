@@ -1,12 +1,36 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {encodeView,decodeView,validateViewState,validateCamera,serializeProject,prepareProjectPayload,parseProject,assertProjectVolumePayloadSize} from './workspace-project.js';
+import {encodeView,decodeView,validateViewState,validateCamera,serializeProject,prepareProjectPayload,parseProject,assertProjectVolumePayloadSize,validateProjectDrafts} from './workspace-project.js';
 import {MAX_NIFTI_FILE_BYTES} from './nifti.js';
 test('public link preserves camera opacity ROI and filters without custom data',()=>{const state={atlas:'jhu',language:'en',opacity:.12,camera:{position:[1,2,3],target:[0,0,0],zoom:2},roi:{aAtlas:'dk',bAtlas:'jhu',aLabels:[1,2],bLabels:[5],display:{opacityA:0},computed:true},literature:{modality:'meg',query:'private note'},atlasExplorer:{atlas:'dk',selected:[2,3]}};const restored=decodeView(encodeView(state).encoded);assert.deepEqual(restored.camera,state.camera);assert.equal(restored.opacity,.12);assert.equal(restored.roi.display.opacityA,0);assert.deepEqual(restored.roi.aLabels,[1,2]);assert.equal(restored.literature.modality,'meg');assert.equal(restored.literature.query,'');});
 test('custom volumes are omitted from links and malformed input rejected',()=>{const v=encodeView({atlas:'custom-a',roi:{aAtlas:'custom-a'},mode:'roi'});assert.deepEqual(v.omitted,['atlas','ROI']);assert.equal(decodeView(v.encoded).atlas,'dk');assert.throws(()=>decodeView('!!'));assert.equal(validateViewState({camera:{position:[NaN,0,0]}}).camera,null);});
 test('project round trip preserves binary data, notes, and user-declared frame',async()=>{const volume={id:'custom-example',data:new Uint16Array([0,1,3,4]),shape:[2,2,1],affine:[-2,0,0,12,0,2,0,-8,0,0,2,2,0,0,0,1],space:'MNI152NLin6Asym',kind:'label',name:'my labels',provenance:'My registered FSL image',metadata:{affineConflict:true},alignmentStatus:'user-declared',canOverlayOnTarget:true,labels:[{id:3,name:'three'}]};const value=await parseProject(await serializeProject({view:{atlas:'dk'},notes:[{text:'keep my note'}],volumes:[volume]}));assert.deepEqual([...value.volumes[0].data],[0,1,3,4]);assert.deepEqual(value.volumes[0].affine,volume.affine);assert.equal(value.volumes[0].canOverlayOnTarget,true);assert.equal(value.notes[0].text,'keep my note');assert.equal(value.volumes[0].labels[0].name,'three');assert.equal(value.volumes[0].metadata.sourceImport.affineConflict,true);});
 
 const fixture=()=>({id:'custom-fixture',data:Uint8Array.of(0,1,1,0),shape:[2,2,1],affine:[2,0,0,0,0,2,0,0,0,0,2,0,0,0,0,1],kind:'mask',space:'MNI152NLin6Asym',name:'Fixture',source:'original.nii.gz',provenance:'Source DOI/example; aligned by pipeline',alignmentStatus:'user-declared',canOverlayOnTarget:true,labels:[{id:1,name:'Mask',zh:'掩膜'}],metadata:{affineConflict:true,qformCode:1,sformCode:4,originalSpatialUnits:1,description:'original header',geometryDoesNotVerifySpace:true}});
+
+test('v2 codec retains project ownership, precise atlas selection, region notes and drafts; v1 remains missing-provenance',async()=>{
+ const regionRef={atlasId:'dk',atlasVersion:'v1',labelId:1,hemisphere:'L',spaceId:'MNI152NLin6Asym'};
+ const draft={id:'draft',projectId:'project-A',kind:'result',recordId:null,payload:{finding:'unsaved'},updatedAt:'2026-10-29T01:00:00Z'};
+ const input={projectId:'project-A',view:{atlasSelection:[regionRef],unresolvedAtlasSelection:[],atlasSelectionQuery:{atlasId:'dk',atlasVersion:'v1',coordinate:[1,2,3],method:'voxel',requestId:1},resultLayers:[],roi:{aRegionRefs:[regionRef],bRegionRefs:[]}},notes:[{id:'note',text:'precise note',regionRef,queryContext:{atlasId:'dk',atlasVersion:'v1',coordinate:[1,2,3],method:'voxel',requestId:1}}],drafts:[draft],volumes:[]};
+ const text=await serializeProject(input),raw=JSON.parse(text);assert.equal(raw.schema,'neuroatlas-project-v2');assert.equal(raw.projectId,'project-A');
+ const restored=await parseProject(text);assert.deepEqual(restored.view.atlasSelection,[regionRef]);assert.deepEqual(restored.view.roi.aRegionRefs,[regionRef]);assert.deepEqual(restored.notes[0].regionRef,regionRef);assert.deepEqual(restored.notes[0].queryContext,input.notes[0].queryContext);assert.deepEqual(restored.drafts,[draft]);
+ const legacy=await parseProject(JSON.stringify({...raw,schema:'neuroatlas-project-v1',projectId:undefined,drafts:undefined}));assert.deepEqual(legacy.drafts,[]);assert.equal(legacy.provenanceStatus,'missing-provenance');
+});
+
+test('new private result layers and custom atlas identities never enter view links',()=>{
+ const privateRef={atlasId:'custom-private',atlasVersion:'private-version',labelId:1,hemisphere:'L',spaceId:'private-space'};
+ const link=encodeView({atlasSelection:[privateRef],unresolvedAtlasSelection:[privateRef],atlasSelectionQuery:{atlasId:'custom-private',coordinate:[1,2,3]},resultLayers:[{layerId:'private-layer',resultId:'private-result',coordinateIds:['private-coordinate'],sourceReferenceId:'private-paper',spaceId:'private-space',visible:true,style:{}}]});
+ const restored=JSON.stringify(decodeView(link.encoded));assert.ok(!restored.includes('private-'));assert.ok(!restored.includes('custom-private'));
+});
+
+test('draft admission uses exact UTF-8 payload/collection bounds and project ownership',()=>{
+ const draft={id:'d',projectId:'A',kind:'result',recordId:null,payload:{text:'x'.repeat(49989)},updatedAt:'2026-10-29T00:00:00Z'};
+ assert.equal(new TextEncoder().encode(JSON.stringify(draft.payload)).length,50000);assert.equal(validateProjectDrafts([draft],'A').length,1);
+ assert.throws(()=>validateProjectDrafts([{...draft,payload:{text:draft.payload.text+'x'}}],'A'),/draft-payload-budget/);
+ assert.throws(()=>validateProjectDrafts([{...draft,projectId:'B'}],'A'),/invalid-draft/);
+ assert.throws(()=>validateProjectDrafts(Array.from({length:31},(_,i)=>({...draft,id:`d${i}`,payload:{}})),'A'),/draft-count/);
+ assert.throws(()=>validateProjectDrafts(Array.from({length:30},(_,i)=>({...draft,id:`d${i}`})),'A'),/draft-json-budget/);
+});
 
 test('optional camera extent and up restore while legacy snapshots remain unchanged',()=>{
   const legacy={position:[1,2,3],target:[0,0,0],zoom:2};

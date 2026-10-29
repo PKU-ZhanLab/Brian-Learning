@@ -7,7 +7,7 @@ import { positiveLabels, ROI_COLORS, ROI_DEFAULT_DISPLAY, serializableVolume, co
 import { prepareComparisonManifest, prepareLocalVolumeProvenance, makeComputationManifest, compareComputationManifest, exportComparisonBundle } from '../lib/computation-manifest.js';
 import { makeComparisonGrid } from '../lib/roi-grid.js';
 import { parseNifti, exportNifti, parseLabelTable, MAX_NIFTI_FILE_BYTES } from '../lib/nifti.js';
-import { registerCustomVolume, getCustomVolume, listCustomVolumes, subscribeCustomVolumes } from '../lib/custom-volumes.js';
+import { getCustomVolume, listCustomVolumes, subscribeCustomVolumes } from '../lib/custom-volumes.js';
 import './ROICompare.css';
 
 const TEXT = {
@@ -86,7 +86,7 @@ function download(bytes, filename, type) {
   setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onClose, initialState, onStateChange, customVolumes, onViewNative, onRestoreAborted }) {
+export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onClose, initialState, onStateChange, customVolumes, onViewNative, onRestoreAborted, onImportVolume, workspaceProjectId, workspaceEpoch }) {
   const t = TEXT[language === 'en' ? 'en' : 'zh'];
   const callbacks = useRef({}); callbacks.current = { onComparisonChange, onStateChange, onRestoreAborted };
   const [registryVersion, setRegistryVersion] = useState(0);
@@ -106,6 +106,8 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   const [importFile, setImportFile] = useState(null), [labelFile, setLabelFile] = useState(null), [importKind, setImportKind] = useState('label');
   const [importSpace, setImportSpace] = useState('native-unverified'), [otherSpace, setOtherSpace] = useState(''), [aligned, setAligned] = useState(false), [provenance, setProvenance] = useState('');
   const [importBusy, setImportBusy] = useState(false), [importError, setImportError] = useState(''), [importMessage, setImportMessage] = useState(null);
+  const importGeneration=useRef(0),importMounted=useRef(true);
+  useEffect(()=>{importMounted.current=true;return()=>{importMounted.current=false;importGeneration.current++;};},[]);
   const worker = useRef(null), sequence = useRef(0), restore = useRef(!!initialState?.computed), lastInitial = useRef(initialState), displayRef = useRef(display);
   const restoringRequest = useRef(false), previousRegistryVersion = useRef(registryVersion);
   const [restoreEpoch, setRestoreEpoch] = useState(0);
@@ -254,6 +256,8 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   }
   async function importVolume() {
     if (!importFile || importBusy) return;
+    const request=++importGeneration.current,projectId=workspaceProjectId,epoch=workspaceEpoch;
+    const isCurrent=()=>importMounted.current&&request===importGeneration.current;
     setImportBusy(true); setImportError(''); setImportMessage(null);
     try {
       const space = importSpace === 'other' ? otherSpace.trim() || 'native-unverified' : importSpace;
@@ -268,11 +272,14 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       }
       Object.assign(volume, { canOverlayOnTarget: accepted, alignmentStatus: accepted ? 'user-declared' : 'unverified', provenance: provenance.trim(), source: importFile.name, metadata: { ...volume.metadata, userDeclaredAligned: accepted, referenceSpace: space } });
       const identifiedVolume = await prepareLocalVolumeProvenance(volume, originalBytes, { id: importFile.name });
-      const id = registerCustomVolume(identifiedVolume);
+      if(!isCurrent())throw Error('stale-workspace');
+      if(!onImportVolume)throw Error('workspace-session-unavailable');
+      const id = await onImportVolume(identifiedVolume,{projectId,epoch,isCurrent});
+      if(!isCurrent())return;
       if (accepted) reselectRegion('B','source',() => { setBAtlas(id); setBLabels([]); setBThreshold(importKind === 'probability' ? .5 : 0); });
       setImportMessage({ name: volume.name, aligned: accepted, conflict: volume.metadata.affineConflict });
-    } catch (problem) { setImportError(problem.message); }
-    finally { setImportBusy(false); }
+    } catch (problem) { if(isCurrent())setImportError(problem.message); }
+    finally { if(importMounted.current)setImportBusy(false); }
   }
   const errorText = code => NIFTI_ERRORS[code]?.[language === 'en' ? 1 : 0] || t[code] || t.importError;
   const sourceBlock = (key, atlasId, setAtlas, labels, setLabels, threshold, setThreshold, tail, setTail, source) => {
@@ -297,11 +304,11 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   </section>;
   return <section className="roi-compare" aria-label="ROI overlap comparison"><header className="roi-header"><div><h2>{t.title}</h2><p>{t.subtitle}</p></div>{onClose && <button type="button" className="roi-close" onClick={onClose} aria-label="Close ROI comparison" title={t.close}>×</button>}</header>
     <details className="roi-import"><summary>{t.importTitle}</summary><p className="roi-note">{t.localOnly}</p><div className="roi-import-grid">
-      <label><span>{t.file}</span><input type="file" accept=".nii,.nii.gz" aria-label="Import NIfTI file" onChange={event => { setImportFile(event.target.files[0] || null); setImportMessage(null); }} /></label>
+      <label><span>{t.file}</span><input type="file" accept=".nii,.nii.gz" aria-label="Import NIfTI file" onChange={event => { importGeneration.current++; setImportFile(event.target.files[0] || null); setImportMessage(null); }} /></label>
       <label><span>{t.kind}</span><select value={importKind} aria-label="Imported image kind" onChange={event => setImportKind(event.target.value)}>{['label','mask','statistic','probability'].map(kind => <option key={kind} value={kind}>{t[`${kind}Kind`]}</option>)}</select></label>
       <label><span>{t.reference}</span><select value={importSpace} aria-label="Imported reference space" onChange={event => { setImportSpace(event.target.value); setAligned(false); }}><option value="native-unverified">{t.nativeSpace}</option><option value="MNI152NLin6Asym">FSL MNI152NLin6Asym</option><option value="MNI152NLin2009cAsym">MNI152NLin2009cAsym</option><option value="other">{t.otherSpace}</option></select></label>
       {importSpace === 'other' && <label><span>{t.exactReference}</span><input value={otherSpace} onChange={event => setOtherSpace(event.target.value)} /></label>}
-      <label><span>{t.labelsFile}</span><input type="file" accept=".csv,.json" aria-label="Import label names" onChange={event => setLabelFile(event.target.files[0] || null)} /><small>{t.labelsHint}</small></label>
+      <label><span>{t.labelsFile}</span><input type="file" accept=".csv,.json" aria-label="Import label names" onChange={event => {importGeneration.current++;setLabelFile(event.target.files[0] || null);}} /><small>{t.labelsHint}</small></label>
     </div><label className="roi-import-provenance"><span>{t.provenance}</span><textarea rows={2} value={provenance} aria-label="Imported image provenance" onChange={event => setProvenance(event.target.value)} /></label>
       {importSpace === 'MNI152NLin6Asym' && <label className="roi-xray"><input type="checkbox" checked={aligned} aria-label="Confirm already aligned to FSL template" onChange={event => setAligned(event.target.checked)} />{t.aligned}</label>}
       <p className="roi-note">{t.provenanceHint}</p><div className="roi-actions"><button onClick={importVolume} disabled={!importFile || importBusy} aria-label="Import local NIfTI">{importBusy ? t.importing : t.importButton}</button></div>

@@ -1,7 +1,9 @@
 import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_PROJECT_UTF8_BYTES,utf8ByteLength,boundedJsonStringify} from './workspace-limits.js';
 import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
+import {atlasRegionKey} from './atlas-identity.js';
 
-export const PROJECT_SCHEMA='neuroatlas-project-v1';
+export const PROJECT_SCHEMA='neuroatlas-project-v2';
+export const LEGACY_PROJECT_SCHEMA='neuroatlas-project-v1';
 export const VIEW_SCHEMA='neuroatlas-view-v1';
 const MAX_FILE_BYTES=MAX_PROJECT_UTF8_BYTES;
 const boundedString=(v,max=500)=>typeof v==='string'?v.slice(0,max):'';
@@ -18,6 +20,19 @@ export function validateCamera(v){
 }
 const safeObject=(value,maxBytes=50000)=>JSON.parse(boundedJsonStringify(value??null,maxBytes,'View state is too large'));
 
+function regionRef(value){
+  atlasRegionKey(value);
+  if(!['atlasId','atlasVersion','spaceId'].every(key=>value[key].length<=160))throw Error('Invalid AtlasRegionRef length');
+  return {atlasId:value.atlasId,atlasVersion:value.atlasVersion,labelId:value.labelId,hemisphere:value.hemisphere,spaceId:value.spaceId};
+}
+const regionRefs=value=>{if(!Array.isArray(value)||value.length>5000)throw Error('Invalid atlas selection');return value.map(regionRef);};
+export function validateProjectDrafts(value=[],projectId){
+  if(!Array.isArray(value)||value.length>30)throw Error('draft-count');
+  const drafts=JSON.parse(boundedJsonStringify(value,1024*1024,'draft-json-budget')),ids=new Set();
+  for(const d of drafts){if(!d||typeof d!=='object'||typeof d.id!=='string'||!d.id||ids.has(d.id)||d.projectId!==projectId||typeof d.kind!=='string'||!d.kind.trim()||!(d.recordId===null||typeof d.recordId==='string')||!d.payload||typeof d.payload!=='object'||Array.isArray(d.payload)||typeof d.updatedAt!=='string'||!Number.isFinite(Date.parse(d.updatedAt)))throw Error('invalid-draft');boundedJsonStringify(d.payload,50000,'draft-payload-budget');ids.add(d.id);}
+  return drafts;
+}
+
 export function validateViewState(input){
   if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Invalid view state');
   const output={schema:VIEW_SCHEMA,language:input.language==='en'?'en':'zh',atlas:boundedString(input.atlas,120)||'dk',selectedIds:stringArray(input.selectedIds),visibleCategories:stringArray(input.visibleCategories,20),hiddenIds:stringArray(input.hiddenIds),hemisphere:['L','R'].includes(input.hemisphere)?input.hemisphere:'both',opacity:number(input.opacity,0,1,1),exploded:input.exploded===true,labels:input.labels===true,showSchematic:input.showSchematic===true,preset:boundedString(input.preset,40)||'cortex',view:boundedString(input.view,40)||'oblique',mode:['roi','research'].includes(input.mode)?input.mode:'anatomy',network:boundedString(input.network,80)||null,coordinate:point(input.coordinate)||[-38,-20,54],showSlices:input.showSlices===true,camera:validateCamera(input.camera),researchScope:input.researchScope===true,atlasExplorerOpen:input.atlasExplorerOpen===true};
@@ -25,6 +40,10 @@ export function validateViewState(input){
   if(input.roi){const r=input.roi;output.roi={aAtlas:boundedString(r.aAtlas,120)||'dk',bAtlas:boundedString(r.bAtlas,120)||'ba-histology',aLabels:Array.isArray(r.aLabels)?r.aLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],bLabels:Array.isArray(r.bLabels)?r.bLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],aThreshold:number(r.aThreshold,-1e12,1e12,0),bThreshold:number(r.bThreshold,-1e12,1e12,0),aTail:['negative','absolute'].includes(r.aTail)?r.aTail:'positive',bTail:['negative','absolute'].includes(r.bTail)?r.bTail:'positive',computed:r.computed===true,display:{mode:['parts','overlap','A','B'].includes(r.display?.mode)?r.display.mode:'parts',opacityA:number(r.display?.opacityA,0,1,.65),opacityB:number(r.display?.opacityB,0,1,.65),opacityOverlap:number(r.display?.opacityOverlap,0,1,.9),xray:r.display?.xray===true}};}
   if(input.literature){const l=input.literature;output.literature={query:boundedString(l.query,500),topic:boundedString(l.topic,100),modality:boundedString(l.modality,100),scope:l.scope===true,paperId:boundedString(l.paperId,160)||null,compared:stringArray(l.compared,3),showCompare:l.showCompare===true,scopeRegionId:boundedString(l.scopeRegionId,120)||null,onlyResults:l.onlyResults===true};}
   if(input.atlasExplorer){const a=input.atlasExplorer;output.atlasExplorer={atlas:boundedString(a.atlas,120)||'dk',query:boundedString(a.query,200),selected:Array.isArray(a.selected)?a.selected.filter(x=>Number.isInteger(x)&&x>0).slice(0,5000):[],opacity:number(a.opacity,0,1,1),camera:validateCamera(a.camera),threshold:number(a.threshold,0,1e12,.5),tail:['negative','absolute'].includes(a.tail)?a.tail:'positive',display:a.display==='slices'?'slices':'boundaries',slicePoint:point(a.slicePoint)?.map((n,i)=>Math.min([100,100,120][i],Math.max([-100,-140,-80][i],n)))||[0,0,0],sliceOpacity:number(a.sliceOpacity,0,1,.55)};}
+  for(const key of ['atlasSelection','unresolvedAtlasSelection'])if(input[key]!==undefined)output[key]=regionRefs(input[key]);
+  if(input.atlasSelectionQuery!==undefined)output.atlasSelectionQuery=safeObject(input.atlasSelectionQuery);
+  if(input.resultLayers!==undefined){if(!Array.isArray(input.resultLayers))throw Error('Invalid result layers');output.resultLayers=safeObject(input.resultLayers,2*1024*1024);}
+  if(input.roi){for(const key of ['aRegionRefs','bRegionRefs','unresolvedRegionRefs'])if(input.roi[key]!==undefined)output.roi[key]=regionRefs(input.roi[key]);if(input.roi.resolutionMm!==undefined){if(![1,2].includes(input.roi.resolutionMm))throw Error('Invalid ROI grid spacing');output.roi.resolutionMm=input.roi.resolutionMm;}}
   return output;
 }
 function bytesToBase64(bytes){let s='';for(let i=0;i<bytes.length;i+=32768)s+=String.fromCharCode(...bytes.subarray(i,i+32768));return btoa(s);}
@@ -33,6 +52,9 @@ function base64ToBytes(text,maxBytes=MAX_FILE_BYTES){encodedByteLength(text,maxB
 
 export function encodeView(input,{publicReferenceIds=[]}={}){
   const state=validateViewState(input);const omitted=[];
+  if(state.resultLayers?.length)omitted.push('resultLayers');delete state.resultLayers;
+  for(const key of ['atlasSelection','unresolvedAtlasSelection'])if(state[key]){const original=state[key];state[key]=original.filter(ref=>!ref.atlasId.startsWith('custom-'));if(original.length!==state[key].length)omitted.push(key);}
+  if(state.atlasSelectionQuery){delete state.atlasSelectionQuery;omitted.push('atlasSelectionQuery');}
   if(state.atlas.startsWith('custom-')){state.atlas='dk';omitted.push('atlas');}
   if(state.roi&&[state.roi.aAtlas,state.roi.bAtlas].some(id=>id.startsWith('custom-'))){delete state.roi;if(state.mode==='roi')state.mode='anatomy';omitted.push('ROI');}
   if(state.atlasExplorer?.atlas.startsWith('custom-')){delete state.atlasExplorer;state.atlasExplorerOpen=false;omitted.push('atlasExplorer');}
@@ -65,7 +87,8 @@ async function compressVolume(raw){
   const bytes=new Uint8Array(length);let at=0;for(const chunk of chunks){bytes.set(chunk,at);at+=chunk.length;}return bytes;
 }
 
-export async function prepareProjectPayload({view,notes=[],evidence=null,volumes=[]}){
+export async function prepareProjectPayload({projectId=`project-${crypto.randomUUID()}`,view,notes=[],evidence=null,drafts=[],volumes=[],provenanceStatus}){
+  if(typeof projectId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(projectId))throw Error('Invalid project ID');
   if(!Array.isArray(volumes))throw Error('Invalid project volumes');
   const usage={assetCount:volumes.length,rawPayloadBytes:0,compressedAssetBytes:[],projectUtf8Bytes:0};
   assertWorkspaceBudget(usage);
@@ -78,7 +101,7 @@ export async function prepareProjectPayload({view,notes=[],evidence=null,volumes
     assertWorkspaceBudget({...usage,rawPayloadBytes});usage.rawPayloadBytes+=rawPayloadBytes;assertWorkspaceBudget(usage);
     return {v,id,metadata,rawPayloadBytes};
   });
-  const project={schema:PROJECT_SCHEMA,createdAt:new Date().toISOString(),view:validateViewState(view),notes:projectNotes(notes),evidence:safeObject(evidence,20*1024*1024),volumes:entries};
+  const project={schema:PROJECT_SCHEMA,projectId,createdAt:new Date().toISOString(),view:validateViewState(view),notes:validateProjectNotes(notes),evidence:safeObject(evidence,20*1024*1024),drafts:validateProjectDrafts(drafts,projectId),volumes:entries,...(provenanceStatus==='missing-provenance'?{provenanceStatus}:{})};
   // Empty volumes already include the brackets. Entries contribute their exact UTF-8 size.
   let projectedBytes=utf8ByteLength(JSON.stringify(project));
   assertWorkspaceBudget({...usage,projectUtf8Bytes:projectedBytes});
@@ -96,12 +119,15 @@ export async function prepareProjectPayload({view,notes=[],evidence=null,volumes
 }
 export async function serializeProject(workspace){return (await prepareProjectPayload(workspace)).text;}
 
-function projectNotes(notes){
+export function validateProjectNotes(notes){
   if(!Array.isArray(notes)||notes.length>20000)throw Error('Invalid project content');
-  const normalized=[];let bytes=2;
+  const normalized=[],ids=new Set();let bytes=2;
   for(const n of notes){
     if(typeof n?.text!=='string'||n.text.length>100000)throw Error('Invalid project note');
     const entry={id:boundedString(n.id,160)||crypto.randomUUID(),text:n.text,structureId:boundedString(n.structureId,160),structureName:boundedString(n.structureName,500),createdAt:typeof n.createdAt==='string'&&Number.isFinite(Date.parse(n.createdAt))?n.createdAt:new Date().toISOString(),position:point(n.position),coordinateSpace:boundedString(n.coordinateSpace,50),coordinateFrame:boundedString(n.coordinateFrame,160)};
+    if(ids.has(entry.id))throw Error('duplicate-note');ids.add(entry.id);
+    if(n.regionRef!==undefined){entry.regionRef=regionRef(n.regionRef);delete entry.structureId;}
+    if(n.queryContext!==undefined)entry.queryContext=safeObject(n.queryContext);
     const comma=normalized.length?1:0;
     const text=boundedJsonStringify(entry,8*1024*1024-bytes-comma,'View state is too large');
     bytes+=comma+utf8ByteLength(text);normalized.push(entry);
@@ -111,9 +137,12 @@ function projectNotes(notes){
 export async function parseProject(text){
   if(typeof text!=='string')throw Error('Project exceeds 180 MB');
   const projectUtf8Bytes=utf8ByteLength(text);assertWorkspaceBudget({assetCount:0,rawPayloadBytes:0,projectUtf8Bytes});
-  const p=JSON.parse(text);if(!record(p)||p.schema!==PROJECT_SCHEMA)throw Error('Unsupported project format');
+  const p=JSON.parse(text);if(!record(p)||![PROJECT_SCHEMA,LEGACY_PROJECT_SCHEMA].includes(p.schema))throw Error('Unsupported project format');
   const view=validateViewState(p.view);if(!Array.isArray(p.volumes))throw Error('Invalid project content');
-  const notes=projectNotes(p.notes),evidence=safeObject(p.evidence,20*1024*1024);
+  const projectId=p.schema===PROJECT_SCHEMA?p.projectId:`project-${crypto.randomUUID()}`;
+  if(typeof projectId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(projectId))throw Error('Invalid project ID');
+  const drafts=validateProjectDrafts(p.schema===LEGACY_PROJECT_SCHEMA?[]:p.drafts??[],projectId);
+  const notes=validateProjectNotes(p.notes),evidence=safeObject(p.evidence,20*1024*1024);
   const ids=new Set(),volumes=[],usage={assetCount:p.volumes.length,rawPayloadBytes:0,compressedAssetBytes:[],projectUtf8Bytes};
   assertWorkspaceBudget(usage);
   const candidates=p.volumes.map(e=>{
@@ -129,7 +158,7 @@ export async function parseProject(text){
     const declared=meta.space==='MNI152NLin6Asym'&&meta.alignmentStatus==='user-declared'&&meta.canOverlayOnTarget&&meta.provenance.trim().length>0;
     volumes.push({...meta,...volume,id,metadata:{...volume.metadata,affineConflict:!!(volume.metadata.affineConflict||meta.metadata.affineConflict||meta.metadata.sourceImport?.affineConflict),sourceImport:meta.metadata.sourceImport||meta.metadata,userDeclaredAligned:declared,referenceSpace:meta.space,restoredFromProject:true},labels:meta.labels,custom:true,available:true,canOverlayOnTarget:declared,alignmentStatus:declared?'user-declared':'unverified'});
   }
-  const restored={schema:PROJECT_SCHEMA,view,notes,evidence,volumes};
+  const restored={schema:PROJECT_SCHEMA,projectId,view,notes,evidence,drafts,volumes,...(p.schema===LEGACY_PROJECT_SCHEMA||p.provenanceStatus==='missing-provenance'?{provenanceStatus:'missing-provenance'}:{})};
   // Restoration adds truthful header provenance; admit its actual next export too.
   await prepareProjectPayload(restored);
   return restored;

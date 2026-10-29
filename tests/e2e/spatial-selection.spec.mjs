@@ -16,7 +16,8 @@ test('unlinked actual label supports exact annotation and ROI entry without conc
   await page.getByRole('button',{name:'Annotate atlas label',exact:true}).click();
   await page.locator('#note-draft').fill('Independent actual-label annotation');
   await page.getByRole('button',{name:'Save note',exact:true}).click();
-  const note = await page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-notes')).at(-1));
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1')||'null')?.notes?.at(-1)?.text)).toBe('Independent actual-label annotation');
+  const note = await page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1')).notes.at(-1));
   expect(note.regionRef).toMatchObject({atlasId:'aal-registered',labelId:2101,hemisphere:'L'});
   expect(note.structureId).toBeUndefined();
   await page.keyboard.press('Escape');
@@ -41,7 +42,8 @@ test('temporal labels stay independent and deep native labels do not trigger a c
     await page.getByRole('button',{name:'Annotate atlas label',exact:true}).click();
     await page.locator('#note-draft').fill(`${atlas} second temporal label`);
     await page.getByRole('button',{name:'Save note',exact:true}).click();
-    const notes=await page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-notes')).slice(-2));
+    await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1')||'null')?.notes?.at(-1)?.text)).toBe(`${atlas} second temporal label`);
+    const notes=await page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1')).notes.slice(-2));
     expect(notes.map(note=>note.regionRef.labelId)).toEqual(ids);
     await page.keyboard.press('Escape');
     await pick(page,atlas,first);
