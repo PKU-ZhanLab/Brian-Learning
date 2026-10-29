@@ -86,12 +86,12 @@ function download(bytes, filename, type) {
   setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onClose, initialState, onStateChange, customVolumes, onViewNative, onRestoreAborted, onImportVolume, workspaceProjectId, workspaceEpoch }) {
+export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onClose, initialState, onStateChange, customVolumes, onViewNative, onRestoreAborted, onImportVolume, onManageAssets, workspaceProjectId, workspaceEpoch }) {
   const t = TEXT[language === 'en' ? 'en' : 'zh'];
   const callbacks = useRef({}); callbacks.current = { onComparisonChange, onStateChange, onRestoreAborted };
   const [registryVersion, setRegistryVersion] = useState(0);
   useEffect(() => subscribeCustomVolumes(() => { abortRestore('registry-changed'); invalidateWork(); setRegistryVersion(v => v + 1); }), []);
-  const [aAtlas, setAAtlas] = useState(initialState?.aAtlas || 'dk'), [bAtlas, setBAtlas] = useState(initialState?.bAtlas || 'ba-histology');
+  const [aAtlas, setAAtlas] = useState(initialState?.aAtlas ?? 'dk'), [bAtlas, setBAtlas] = useState(initialState?.bAtlas ?? 'ba-histology');
   const [aLabels, setALabels] = useState(initialState?.aLabels || []), [bLabels, setBLabels] = useState(initialState?.bLabels || []);
   const [expectedRegionRefs,setExpectedRegionRefs] = useState({A:initialState?.aRegionRefs ?? null,B:initialState?.bRegionRefs ?? null});
   const [aThreshold, setAThreshold] = useState(initialState?.aThreshold ?? .5), [bThreshold, setBThreshold] = useState(initialState?.bThreshold ?? .5);
@@ -146,7 +146,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     restoringRequest.current = false;
     setRestoreWarning('');
     restore.current = !!initialState.computed;
-    setAAtlas(initialState.aAtlas || 'dk'); setBAtlas(initialState.bAtlas || 'ba-histology');
+    setAAtlas(initialState.aAtlas ?? 'dk'); setBAtlas(initialState.bAtlas ?? 'ba-histology');
     setALabels(initialState.aLabels || []); setBLabels(initialState.bLabels || []);
     setExpectedRegionRefs({A:initialState.aRegionRefs ?? null,B:initialState.bRegionRefs ?? null});
     setAThreshold(initialState.aThreshold ?? .5); setBThreshold(initialState.bThreshold ?? .5);
@@ -158,8 +158,8 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   useEffect(() => {
     if (!allowed.length || !manifest) return;
     if (!allowed.includes(aAtlas) || !allowed.includes(bAtlas)) abortRestore('source-unavailable');
-    if (!allowed.includes(aAtlas)) setAAtlas(allowed[0]);
-    if (!allowed.includes(bAtlas)) setBAtlas(allowed.includes('ba-histology') ? 'ba-histology' : allowed[1] || allowed[0]);
+    if (aAtlas && !allowed.includes(aAtlas)) setAAtlas(allowed[0]);
+    if (bAtlas && !allowed.includes(bAtlas)) setBAtlas(allowed.includes('ba-histology') ? 'ba-histology' : allowed[1] || allowed[0]);
   }, [allowed.join('|'), aAtlas, bAtlas, manifest]);
   useEffect(() => {
     if (sourceA.labels.length) {
@@ -285,7 +285,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   const sourceBlock = (key, atlasId, setAtlas, labels, setLabels, threshold, setThreshold, tail, setTail, source) => {
     const kind = source.volume?.kind || 'label';
     return <fieldset className={`roi-source roi-source-${key.toLowerCase()}`}><legend>ROI {key}</legend>
-      <label><span>{t.atlas}</span><select aria-label={`ROI ${key} atlas`} value={atlasId} onChange={event => reselectRegion(key,'source',() => { setLabels([]); setAtlas(event.target.value); })}>{atlases.map(([id, meta]) => <option key={id} value={id} disabled={meta.canOverlayOnTarget !== true}>{ATLAS_NAMES[id] || meta.name || id}{meta.canOverlayOnTarget !== true ? ` · ${t.blocked}` : ''}</option>)}</select></label>
+      <label><span>{t.atlas}</span><select aria-label={`ROI ${key} atlas`} value={atlasId} onChange={event => reselectRegion(key,'source',() => { setLabels([]); setAtlas(event.target.value); })}><option value="">{language==='en'?'Choose a source':'请选择来源'}</option>{atlases.map(([id, meta]) => <option key={id} value={id} disabled={meta.canOverlayOnTarget !== true}>{ATLAS_NAMES[id] || meta.name || id}{meta.canOverlayOnTarget !== true ? ` · ${t.blocked}` : ''}</option>)}</select></label>
       {kind === 'label' && <label><span>{t.label}</span><select multiple size={5} aria-label={`ROI ${key} label`} value={labels.map(String)} disabled={source.loading || !source.labels.length} onChange={event => reselectRegion(key,'labels',() => setLabels([...event.target.selectedOptions].map(option => +option.value)))}>{source.labels.map(label => <option key={label.id} value={label.id}>{label.id} · {localizedLabel(label, language)} ({label.voxels.toLocaleString()} {t.voxels})</option>)}</select><small className="roi-note">{t.combine}</small></label>}
       {['statistic', 'probability'].includes(kind) && <><label><span>{t.thresholdValue}</span><input type="number" min="0" max={kind === 'probability' ? '1' : undefined} step="any" value={threshold} aria-label={`ROI ${key} threshold`} onChange={event => changeSelection(() => setThreshold(event.target.value === '' ? '' : +event.target.value))} /></label>{kind === 'statistic' && <label><span>{t.tail}</span><select aria-label={`ROI ${key} tail`} value={tail} onChange={event => changeSelection(() => setTail(event.target.value))}>{['positive','negative','absolute'].map(value => <option key={value} value={value}>{t[value]}</option>)}</select></label>}<p className="roi-note">{t.thresholdHint}</p></>}
       {kind === 'mask' && <p className="roi-note">{t.maskHint}</p>}
@@ -314,7 +314,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       <p className="roi-note">{t.provenanceHint}</p><div className="roi-actions"><button onClick={importVolume} disabled={!importFile || importBusy} aria-label="Import local NIfTI">{importBusy ? t.importing : t.importButton}</button></div>
       {importError && <p role="alert" className="roi-error">{errorText(importError)}</p>}{importMessage && <p className="roi-note" role="status">{t.importDone}: {importMessage.name} · {importMessage.aligned ? t.declared : t.nativeImport}{importMessage.conflict && <> · {t.conflict}</>}</p>}
     </details>
-    {!!importedVolumes.length && <div className="roi-imported-volumes"><h3>{t.importedVolumes}</h3>{importedVolumes.map(([id, volume]) => <div key={id}><span><strong>{volume.name || id}</strong><small>{volume.space} · {volume.canOverlayOnTarget === true ? t.declared : t.blocked}</small>{volume.metadata?.affineConflict && <small className="roi-imported-warning">{t.conflict}</small>}</span>{onViewNative && <button type="button" onClick={() => onViewNative(id)} aria-label={`${t.viewNative}: ${volume.name || id}`}>{t.viewNative}</button>}</div>)}</div>}
+    {!!importedVolumes.length && <div className="roi-imported-volumes"><h3>{t.importedVolumes}</h3>{onManageAssets&&<button type="button" onClick={onManageAssets}>{language==='en'?'Manage project assets':'管理项目影像'}</button>}{importedVolumes.map(([id, volume]) => <div key={id}><span><strong>{volume.name || id}</strong><small>{volume.space} · {volume.canOverlayOnTarget === true ? t.declared : t.blocked}</small>{volume.metadata?.affineConflict && <small className="roi-imported-warning">{t.conflict}</small>}</span>{onViewNative && <button type="button" onClick={() => onViewNative(id)} aria-label={`${t.viewNative}: ${volume.name || id}`}>{t.viewNative}</button>}</div>)}</div>}
     {!manifest ? <p role="status">{t.notLoaded}</p> : !allowed.length ? <p role="status">{t.noAtlases}</p> : <>
       <div className="roi-selectors">{sourceBlock('A', aAtlas, setAAtlas, aLabels, setALabels, aThreshold, setAThreshold, aTail, setATail, sourceA)}{sourceBlock('B', bAtlas, setBAtlas, bLabels, setBLabels, bThreshold, setBThreshold, bTail, setBTail, sourceB)}</div>
       {identityMismatch&&<p className="roi-warning" role="alert">{language==='en'?'Saved atlas label identity is unavailable or has changed. Select the source labels again.':'保存的图谱标签身份不可用或版本已改变。请重新选择来源标签。'}</p>}

@@ -1,6 +1,7 @@
 import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_PROJECT_UTF8_BYTES,utf8ByteLength,boundedJsonStringify} from './workspace-limits.js';
 import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
 import {atlasRegionKey} from './atlas-identity.js';
+import {savedComputationUsage,encodeSavedComputation,inspectEncodedSavedComputation,decodeSavedComputation} from './saved-computation.js';
 
 export const PROJECT_SCHEMA='neuroatlas-project-v2';
 export const LEGACY_PROJECT_SCHEMA='neuroatlas-project-v1';
@@ -26,6 +27,10 @@ function regionRef(value){
   return {atlasId:value.atlasId,atlasVersion:value.atlasVersion,labelId:value.labelId,hemisphere:value.hemisphere,spaceId:value.spaceId};
 }
 const regionRefs=value=>{if(!Array.isArray(value)||value.length>5000)throw Error('Invalid atlas selection');return value.map(regionRef);};
+export function validateMissingAssetIds(value=[]){
+  if(!Array.isArray(value)||value.length>20000||new Set(value).size!==value.length||value.some(id=>typeof id!=='string'||!/^custom-[a-zA-Z0-9_-]{1,112}$/.test(id)))throw Error('invalid-missing-asset-ids');
+  return [...value];
+}
 export function validateProjectDrafts(value=[],projectId){
   if(!Array.isArray(value)||value.length>30)throw Error('draft-count');
   const drafts=JSON.parse(boundedJsonStringify(value,1024*1024,'draft-json-budget')),ids=new Set();
@@ -37,7 +42,7 @@ export function validateViewState(input){
   if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Invalid view state');
   const output={schema:VIEW_SCHEMA,language:input.language==='en'?'en':'zh',atlas:boundedString(input.atlas,120)||'dk',selectedIds:stringArray(input.selectedIds),visibleCategories:stringArray(input.visibleCategories,20),hiddenIds:stringArray(input.hiddenIds),hemisphere:['L','R'].includes(input.hemisphere)?input.hemisphere:'both',opacity:number(input.opacity,0,1,1),exploded:input.exploded===true,labels:input.labels===true,showSchematic:input.showSchematic===true,preset:boundedString(input.preset,40)||'cortex',view:boundedString(input.view,40)||'oblique',mode:['roi','research'].includes(input.mode)?input.mode:'anatomy',network:boundedString(input.network,80)||null,coordinate:point(input.coordinate)||[-38,-20,54],showSlices:input.showSlices===true,camera:validateCamera(input.camera),researchScope:input.researchScope===true,atlasExplorerOpen:input.atlasExplorerOpen===true};
   const s=input.slices||{};output.slices={enabled:s.enabled===true,x:number(s.x,-100,100,-38),y:number(s.y,-140,100,-20),z:number(s.z,-80,120,54),axis:['x','y','z'].includes(s.axis)?s.axis:'z'};
-  if(input.roi){const r=input.roi;output.roi={aAtlas:boundedString(r.aAtlas,120)||'dk',bAtlas:boundedString(r.bAtlas,120)||'ba-histology',aLabels:Array.isArray(r.aLabels)?r.aLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],bLabels:Array.isArray(r.bLabels)?r.bLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],aThreshold:number(r.aThreshold,-1e12,1e12,0),bThreshold:number(r.bThreshold,-1e12,1e12,0),aTail:['negative','absolute'].includes(r.aTail)?r.aTail:'positive',bTail:['negative','absolute'].includes(r.bTail)?r.bTail:'positive',computed:r.computed===true,display:{mode:['parts','overlap','A','B'].includes(r.display?.mode)?r.display.mode:'parts',opacityA:number(r.display?.opacityA,0,1,.65),opacityB:number(r.display?.opacityB,0,1,.65),opacityOverlap:number(r.display?.opacityOverlap,0,1,.9),xray:r.display?.xray===true}};}
+  if(input.roi){const r=input.roi;output.roi={aAtlas:r.aAtlas===''?'':boundedString(r.aAtlas,120)||'dk',bAtlas:r.bAtlas===''?'':boundedString(r.bAtlas,120)||'ba-histology',aLabels:Array.isArray(r.aLabels)?r.aLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],bLabels:Array.isArray(r.bLabels)?r.bLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],aThreshold:number(r.aThreshold,-1e12,1e12,0),bThreshold:number(r.bThreshold,-1e12,1e12,0),aTail:['negative','absolute'].includes(r.aTail)?r.aTail:'positive',bTail:['negative','absolute'].includes(r.bTail)?r.bTail:'positive',computed:r.computed===true,display:{mode:['parts','overlap','A','B'].includes(r.display?.mode)?r.display.mode:'parts',opacityA:number(r.display?.opacityA,0,1,.65),opacityB:number(r.display?.opacityB,0,1,.65),opacityOverlap:number(r.display?.opacityOverlap,0,1,.9),xray:r.display?.xray===true}};}
   if(input.literature){const l=input.literature,paperModality=boundedString(l.paperModality??l.modality,100);output.literature={query:boundedString(l.query,500),topic:boundedString(l.topic,100),modality:paperModality,paperModality,resultModality:boundedString(l.resultModality,100),scope:l.scope===true,paperId:boundedString(l.paperId,160)||null,compared:stringArray(l.compared,3),showCompare:l.showCompare===true,scopeRegionId:boundedString(l.scopeRegionId,120)||null,onlyResults:l.onlyResults===true};}
   if(input.atlasExplorer){const a=input.atlasExplorer;output.atlasExplorer={atlas:boundedString(a.atlas,120)||'dk',query:boundedString(a.query,200),selected:Array.isArray(a.selected)?a.selected.filter(x=>Number.isInteger(x)&&x>0).slice(0,5000):[],opacity:number(a.opacity,0,1,1),camera:validateCamera(a.camera),threshold:number(a.threshold,0,1e12,.5),tail:['negative','absolute'].includes(a.tail)?a.tail:'positive',display:a.display==='slices'?'slices':'boundaries',slicePoint:point(a.slicePoint)?.map((n,i)=>Math.min([100,100,120][i],Math.max([-100,-140,-80][i],n)))||[0,0,0],sliceOpacity:number(a.sliceOpacity,0,1,.55)};}
   for(const key of ['atlasSelection','unresolvedAtlasSelection'])if(input[key]!==undefined)output[key]=regionRefs(input[key]);
@@ -89,12 +94,14 @@ async function compressVolume(raw){
   const bytes=new Uint8Array(length);let at=0;for(const chunk of chunks){bytes.set(chunk,at);at+=chunk.length;}return bytes;
 }
 
-export async function prepareProjectPayload({projectId=`project-${crypto.randomUUID()}`,view,notes=[],evidence=null,drafts=[],volumes=[],provenanceStatus}){
+export async function prepareProjectPayload({projectId=`project-${crypto.randomUUID()}`,view,notes=[],evidence=null,drafts=[],volumes=[],missingAssetIds=[],roiSnapshot=null,recomputedSnapshot=null,provenanceStatus}){
   if(typeof projectId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(projectId))throw Error('Invalid project ID');
   if(!Array.isArray(volumes))throw Error('Invalid project volumes');
   const usage={assetCount:volumes.length,rawPayloadBytes:0,compressedAssetBytes:[],projectUtf8Bytes:0};
   assertWorkspaceBudget(usage);
   const entries=[],encodedAssets=[],ids=new Set();
+  const snapshots={roiSnapshot,recomputedSnapshot};
+  for(const snapshot of Object.values(snapshots)){usage.rawPayloadBytes+=savedComputationUsage(snapshot).rawPayloadBytes;assertWorkspaceBudget(usage);}
   // Preflight every asset before the first binary export or compression allocation.
   const candidates=volumes.map(v=>{
     if(!record(v))throw Error('Invalid project volume');
@@ -103,7 +110,9 @@ export async function prepareProjectPayload({projectId=`project-${crypto.randomU
     assertWorkspaceBudget({...usage,rawPayloadBytes});usage.rawPayloadBytes+=rawPayloadBytes;assertWorkspaceBudget(usage);
     return {v,id,metadata,rawPayloadBytes};
   });
-  const project={schema:PROJECT_SCHEMA,projectId,createdAt:new Date().toISOString(),view:validateViewState(view),notes:validateProjectNotes(notes),evidence:safeObject(evidence,20*1024*1024),drafts:validateProjectDrafts(drafts,projectId),volumes:entries,...(provenanceStatus==='missing-provenance'?{provenanceStatus}:{})};
+  const encodedSnapshots={};
+  for(const [key,snapshot] of Object.entries(snapshots)){const encoded=await encodeSavedComputation(snapshot);encodedSnapshots[key]=encoded.value;if(snapshot)usage.compressedAssetBytes.push(encoded.compressedBytes);assertWorkspaceBudget(usage);}
+  const project={schema:PROJECT_SCHEMA,projectId,createdAt:new Date().toISOString(),view:validateViewState(view),notes:validateProjectNotes(notes),evidence:safeObject(evidence,20*1024*1024),drafts:validateProjectDrafts(drafts,projectId),volumes:entries,missingAssetIds:validateMissingAssetIds(missingAssetIds),...encodedSnapshots,...(provenanceStatus==='missing-provenance'?{provenanceStatus}:{})};
   // Empty volumes already include the brackets. Entries contribute their exact UTF-8 size.
   let projectedBytes=utf8ByteLength(JSON.stringify(project));
   assertWorkspaceBudget({...usage,projectUtf8Bytes:projectedBytes});
@@ -147,6 +156,8 @@ export async function parseProject(text){
   const notes=validateProjectNotes(p.notes),evidence=safeObject(p.evidence,20*1024*1024);
   const ids=new Set(),volumes=[],usage={assetCount:p.volumes.length,rawPayloadBytes:0,compressedAssetBytes:[],projectUtf8Bytes};
   assertWorkspaceBudget(usage);
+  const snapshotInputs=p.schema===LEGACY_PROJECT_SCHEMA?{roiSnapshot:null,recomputedSnapshot:null}:{roiSnapshot:p.roiSnapshot??null,recomputedSnapshot:p.recomputedSnapshot??null};
+  for(const snapshot of Object.values(snapshotInputs)){const declared=inspectEncodedSavedComputation(snapshot);usage.rawPayloadBytes+=declared.rawPayloadBytes;if(snapshot)usage.compressedAssetBytes.push(declared.compressedBytes);assertWorkspaceBudget(usage);}
   const candidates=p.volumes.map(e=>{
     if(!record(e))throw Error('Invalid project volume');
     const id=checkedVolumeId(e.id,ids),meta=validateVolumeMetadata(e.metadata);
@@ -160,7 +171,10 @@ export async function parseProject(text){
     const declared=meta.space==='MNI152NLin6Asym'&&meta.alignmentStatus==='user-declared'&&meta.canOverlayOnTarget&&meta.provenance.trim().length>0;
     volumes.push({...meta,...volume,id,metadata:{...volume.metadata,affineConflict:!!(volume.metadata.affineConflict||meta.metadata.affineConflict||meta.metadata.sourceImport?.affineConflict),sourceImport:meta.metadata.sourceImport||meta.metadata,userDeclaredAligned:declared,referenceSpace:meta.space,restoredFromProject:true},labels:meta.labels,custom:true,available:true,canOverlayOnTarget:declared,alignmentStatus:declared?'user-declared':'unverified'});
   }
-  const restored={schema:PROJECT_SCHEMA,projectId,view,notes,evidence,drafts,volumes,...(p.schema===LEGACY_PROJECT_SCHEMA||p.provenanceStatus==='missing-provenance'?{provenanceStatus:'missing-provenance'}:{})};
+  const snapshots={};for(const [key,snapshot]of Object.entries(snapshotInputs))snapshots[key]=await decodeSavedComputation(snapshot);
+  // Restoring a file never authorizes a new computation; W6 owns explicit recompute.
+  if(view.roi)view.roi.computed=false;
+  const restored={schema:PROJECT_SCHEMA,projectId,view,notes,evidence,drafts,volumes,...snapshots,missingAssetIds:validateMissingAssetIds(p.missingAssetIds??[]),...(p.schema===LEGACY_PROJECT_SCHEMA||p.provenanceStatus==='missing-provenance'?{provenanceStatus:'missing-provenance'}:{})};
   // Restoration adds truthful header provenance; admit its actual next export too.
   await prepareProjectPayload(restored);
   return restored;

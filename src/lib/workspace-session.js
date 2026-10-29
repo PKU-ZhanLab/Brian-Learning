@@ -1,4 +1,6 @@
-import {parseProject,prepareProjectPayload,validateViewState,validateProjectDrafts,validateProjectNotes} from './workspace-project.js';
+import {parseProject,prepareProjectPayload,validateViewState,validateProjectDrafts,validateProjectNotes,validateMissingAssetIds} from './workspace-project.js';
+import {savedComputationUsage} from './saved-computation.js';
+import {referencedAssetIds} from './workspace-assets.js';
 import {boundedJsonStringify,utf8ByteLength,assertWorkspaceBudget,MAX_PROJECT_UTF8_BYTES} from './workspace-limits.js';
 import {emptyEvidence,EVIDENCE_COLLECTIONS} from './evidence-schema.js';
 import {validateEvidence,loadEvidence} from './evidence-workspace.js';
@@ -22,9 +24,13 @@ function checkedEvidence(input,known){const bounded=json(input??emptyEvidence(),
 const checkedView=input=>{const view=validateViewState(json(input||{},2*1024*1024,'view-budget'));view.resultLayers??=[];return view;};
 function assertReferences(snapshot,known){
   const assets=new Set(snapshot.volumes.map(v=>v.id));
-  const asset=id=>{if(typeof id==='string'&&id.startsWith('custom-')&&!assets.has(id))throw Error(`missing-asset: ${id}`);};
+  const missing=new Set(validateMissingAssetIds(snapshot.missingAssetIds??[]));
+  if([...missing].some(id=>assets.has(id)))throw Error('missing-asset-identity-collision');
+  let historical=false;
+  const asset=id=>{if(typeof id==='string'&&id.startsWith('custom-')&&!assets.has(id)&&!(historical&&missing.has(id)))throw Error(`missing-asset: ${id}`);};
   const scan=node=>{if(Array.isArray(node)){node.forEach(scan);return;}if(!object(node)||ArrayBuffer.isView(node))return;for(const [key,value]of Object.entries(node)){if(['atlas','atlasId','aAtlas','bAtlas','volumeId','assetId','sourceAssetId'].includes(key))asset(value);if(['inputs','derivedAsset'].includes(key)){for(const identity of Array.isArray(value)?value:[value])asset(identity?.id);}if(!['legacyV1','legacyImports','payload'].includes(key))scan(value);}};
-  scan(snapshot.view);scan(snapshot.notes);scan(snapshot.roiSnapshot);scan(snapshot.recomputedSnapshot);scan(snapshot.evidence);
+  scan(snapshot.view);historical=true;scan(snapshot.notes);scan(snapshot.roiSnapshot);scan(snapshot.recomputedSnapshot);scan(snapshot.evidence);
+  for(const key of ['roiSnapshot','recomputedSnapshot'])if(referencedAssetIds(snapshot[key]).some(id=>missing.has(id))&&snapshot[key]?.status!=='missing-input')throw Error('missing-input-status-required');
   const results=new Map([...(known?.results||[]),...snapshot.evidence.results].map(r=>[typeof r==='string'?r:r.id,r]));
   const references=new Set([...(known?.references||[]),...snapshot.evidence.references].map(r=>typeof r==='string'?r:r.id));
   const locations=new Map(snapshot.evidence.locations.map(l=>[l.id,l]));
@@ -38,6 +44,8 @@ function assertReferences(snapshot,known){
   }
 }
 
+const cloneSnapshot=value=>{if(value==null)return null;const {maskA,maskB,surfaces,...saved}=value;return structuredClone(saved);};
+
 /** Full candidate admission. No storage, registry or React state is touched. */
 export async function stageWorkspaceChange(candidate,{current,knownEvidence,preview}={}){
   if(!current||!Number.isSafeInteger(current.revision)||current.revision<0||!identifier(current.projectId))throw Error('invalid-current-workspace');
@@ -46,19 +54,19 @@ export async function stageWorkspaceChange(candidate,{current,knownEvidence,prev
   if(!Array.isArray(candidateVolumes))throw Error('invalid-project-volumes');
   let rawPayloadBytes=0;assertWorkspaceBudget({assetCount:candidateVolumes.length,rawPayloadBytes});
   for(const volume of candidateVolumes){rawPayloadBytes+=352+(volume?.data||volume?.dataTypedArray)?.byteLength;assertWorkspaceBudget({assetCount:candidateVolumes.length,rawPayloadBytes});}
+  for(const key of ['roiSnapshot','recomputedSnapshot']){rawPayloadBytes+=savedComputationUsage(candidate[key]).rawPayloadBytes;assertWorkspaceBudget({assetCount:candidateVolumes.length,rawPayloadBytes});}
   const {value:evidence,warnings}=checkedEvidence(candidate.evidence,knownEvidence);
   const assetsChanged=candidate.projectId!==current.projectId||!sameContent(candidateVolumes,current.volumes);
-  const next={projectId:candidate.projectId,revision:current.revision+1,view:checkedView(candidate.view),notes:validateProjectNotes(candidate.notes??[]),evidence,drafts:validateProjectDrafts(candidate.drafts??[],candidate.projectId),volumes:assetsChanged?structuredClone(candidateVolumes):current.volumes,roiSnapshot:structuredClone(candidate.roiSnapshot??null),recomputedSnapshot:structuredClone(candidate.recomputedSnapshot??null)};
+  const next={projectId:candidate.projectId,revision:current.revision+1,view:checkedView(candidate.view),notes:validateProjectNotes(candidate.notes??[]),evidence,drafts:validateProjectDrafts(candidate.drafts??[],candidate.projectId),volumes:assetsChanged?structuredClone(candidateVolumes):current.volumes,missingAssetIds:validateMissingAssetIds(candidate.missingAssetIds??[]),roiSnapshot:cloneSnapshot(candidate.roiSnapshot),recomputedSnapshot:cloneSnapshot(candidate.recomputedSnapshot)};
   if(candidate.provenanceStatus)next.provenanceStatus=candidate.provenanceStatus;
   if(!Array.isArray(next.notes)||next.notes.some(n=>!object(n)||typeof n.text!=='string'))throw Error('invalid-notes');
   assertReferences(next,knownEvidence);
   const prepared=await prepareProjectPayload(next);
-  const snapshotBytes=boundedJsonStringify({roiSnapshot:next.roiSnapshot,recomputedSnapshot:next.recomputedSnapshot},MAX_PROJECT_UTF8_BYTES,'snapshot-budget');
-  assertWorkspaceBudget({...prepared.usage,rawPayloadBytes:prepared.usage.rawPayloadBytes+utf8ByteLength(snapshotBytes),projectUtf8Bytes:prepared.usage.projectUtf8Bytes+utf8ByteLength(snapshotBytes)+utf8ByteLength(JSON.stringify(next.drafts))});
-  const persistedJSON=boundedJsonStringify({schema:WORKSPACE_STORAGE_KEY,projectId:next.projectId,revision:next.revision,notes:next.notes,evidence:next.evidence,view:next.view,drafts:next.drafts},32*1024*1024,'workspace-storage-budget');
+  assertWorkspaceBudget(prepared.usage);
+  const persistedJSON=boundedJsonStringify({schema:WORKSPACE_STORAGE_KEY,projectId:next.projectId,revision:next.revision,notes:next.notes,evidence:next.evidence,view:next.view,drafts:next.drafts,missingAssetIds:next.missingAssetIds},32*1024*1024,'workspace-storage-budget');
   const replacement=assetsChanged?prepareCustomVolumeReplacement(next.projectId,next.volumes):null;
   freeze(next);
-  const stage=Object.freeze({baseRevision:current.revision,next,persistedJSON,preview:freeze(preview||{mode:'change',includedAssetIds:next.volumes.map(v=>v.id),removedAssetIds:current.volumes.filter(v=>!next.volumes.some(n=>n.id===v.id)).map(v=>v.id),collisions:[],remap:{},changedReferenceCounts:{}}),warnings:freeze(warnings)});
+  const stage=Object.freeze({baseRevision:current.revision,next,persistedJSON,projectText:prepared.text,preview:freeze(preview||{mode:'change',includedAssetIds:next.volumes.map(v=>v.id),removedAssetIds:current.volumes.filter(v=>!next.volumes.some(n=>n.id===v.id)).map(v=>v.id),collisions:[],remap:{},changedReferenceCounts:{}}),warnings:freeze(warnings)});
   stages.set(stage,{next,replacement,base:current});return stage;
 }
 
@@ -84,14 +92,14 @@ export function restoreWorkspaceInitial({storage,fallback,knownEvidence,legacyNo
   const raw=storage?.getItem(WORKSPACE_STORAGE_KEY);
   if(raw){
     const saved=json(JSON.parse(raw),32*1024*1024);if(saved.schema!==WORKSPACE_STORAGE_KEY||!identifier(saved.projectId)||!Number.isSafeInteger(saved.revision)||saved.revision<0)throw Error('invalid-workspace-envelope');
-    return {...fallback,...saved,view:checkedView(saved.view),notes:validateProjectNotes(saved.notes),evidence:checkedEvidence(saved.evidence,knownEvidence).value,drafts:validateProjectDrafts(saved.drafts??[],saved.projectId),volumes:[],roiSnapshot:null,recomputedSnapshot:null};
+    return {...fallback,...saved,view:checkedView(saved.view),notes:validateProjectNotes(saved.notes),evidence:checkedEvidence(saved.evidence,knownEvidence).value,drafts:validateProjectDrafts(saved.drafts??[],saved.projectId),missingAssetIds:validateMissingAssetIds(saved.missingAssetIds??[]),volumes:[],roiSnapshot:null,recomputedSnapshot:null};
   }
   const legacyNotes=storage?.getItem(legacyNotesKey),legacyEvidence=loadEvidence(storage,contextOptions(knownEvidence));
   if(legacyEvidence.storageError)throw Error(legacyEvidence.storageError);
   return {...fallback,notes:validateProjectNotes(legacyNotes?json(JSON.parse(legacyNotes),8*1024*1024):fallback.notes),evidence:legacyEvidence,drafts:fallback.drafts??[]};
 }
 
-const fields={referenceId:'references',sourceReferenceId:'references',referenceIds:'references',paperId:'references',compared:'references',experimentId:'experiments',resultId:'results',resultIds:'results',fromResultId:'results',toResultId:'results',locationIds:'locations',coordinateIds:'locations',claimId:'claims',claimIds:'claims',artifactId:'sourceArtifacts',sourceArtifactId:'sourceArtifacts',volumeId:'volumes',assetId:'volumes',sourceAssetId:'volumes',atlas:'volumes',atlasId:'volumes',aAtlas:'volumes',bAtlas:'volumes'};
+const fields={referenceId:'references',sourceReferenceId:'references',referenceIds:'references',paperId:'references',compared:'references',experimentId:'experiments',resultId:'results',resultIds:'results',fromResultId:'results',toResultId:'results',locationIds:'locations',coordinateIds:'locations',claimId:'claims',claimIds:'claims',artifactId:'sourceArtifacts',sourceArtifactId:'sourceArtifacts',volumeId:'volumes',assetId:'volumes',sourceAssetId:'volumes',missingAssetIds:'volumes',atlas:'volumes',atlasId:'volumes',aAtlas:'volumes',bAtlas:'volumes'};
 function rewriteIncoming(value,maps,counts,key='',parent=''){
   if(['legacyV1','legacyImports'].includes(key))return structuredClone(value);
   if(ArrayBuffer.isView(value))return value;
@@ -110,6 +118,9 @@ function rewriteIncoming(value,maps,counts,key='',parent=''){
 }
 /** Pure merge plan. Its snapshot still needs full staging before publication. */
 export function mergeWorkspace(current,incoming,makeId){
+  // Missing historical identities cannot silently bind to unrelated incoming bytes.
+  const currentMissing=current.missingAssetIds??[],incomingMissing=incoming.missingAssetIds??[];
+
   const collections={volumes:[current.volumes,incoming.volumes],notes:[current.notes,incoming.notes],drafts:[current.drafts??[],incoming.drafts??[]],resultLayers:[current.view.resultLayers??[],incoming.view.resultLayers??[]],...Object.fromEntries(EVIDENCE_COLLECTIONS.map(k=>[k,[current.evidence[k],incoming.evidence[k]]]))};
   const maps=new Map(Object.keys(collections).map(k=>[k,new Map()])),collisions=[],used=new Map(Object.entries(collections).map(([k,lists])=>[k,new Set(lists.flat().map(r=>k==='resultLayers'?r.layerId:r.id))]));
   const identity=(row,kind)=>kind==='resultLayers'?row.layerId:row.id;
@@ -127,6 +138,9 @@ export function mergeWorkspace(current,incoming,makeId){
     let next;for(let tries=0;tries<100;tries++){next=makeId?makeId(kind,id):`${kind==='volumes'?'custom-':''}${crypto.randomUUID()}`;if(identifier(next)&&(!['volumes'].includes(kind)||/^custom-[a-zA-Z0-9_-]{1,112}$/.test(next))&&!used.get(kind).has(next))break;next=null;}
     if(!next)throw Error('id-remap-exhausted');used.get(kind).add(next);maps.get(kind).set(id,next);collisions.push({recordKind:kind,id,incomingId:next});
   };
+  for(const id of [...currentMissing,...incomingMissing])used.get('volumes').add(id);
+  for(const id of currentMissing)if(incoming.volumes.some(v=>v.id===id))allocate('volumes',id);
+  for(const id of incomingMissing)if(current.volumes.some(v=>v.id===id))allocate('volumes',id);
   // Dependency changes can force an otherwise byte-identical child to separate.
   let changed=true;while(changed){changed=false;for(const [kind,[existing,rows]]of Object.entries(collections)){const old=new Map(existing.map(r=>[identity(r,kind),r]));for(const row of rows){const id=identity(row,kind);if(!maps.get(kind).has(id)&&old.has(id)&&!sameContent(old.get(id),rewriteRow(row,kind,{}))){allocate(kind,id);changed=true;}}}}
   const counts={},merged={};
@@ -136,7 +150,7 @@ export function mergeWorkspace(current,incoming,makeId){
     merged[kind]=next;
   }
   const snapshotFor=key=>incoming[key]==null?current[key]:rewriteIncoming(incoming[key],maps,counts);
-  const snapshot={...incoming,projectId:current.projectId,view:{...rewriteIncoming(incoming.view,maps,counts),resultLayers:merged.resultLayers},notes:merged.notes,drafts:merged.drafts,volumes:merged.volumes,evidence:{...current.evidence,...Object.fromEntries(EVIDENCE_COLLECTIONS.map(k=>[k,merged[k]]))},roiSnapshot:snapshotFor('roiSnapshot'),recomputedSnapshot:snapshotFor('recomputedSnapshot')};
+  const snapshot={...incoming,projectId:current.projectId,missingAssetIds:[...new Set([...currentMissing,...incomingMissing.map(id=>maps.get('volumes').get(id)||id)])],view:{...rewriteIncoming(incoming.view,maps,counts),resultLayers:merged.resultLayers},notes:merged.notes,drafts:merged.drafts,volumes:merged.volumes,evidence:{...current.evidence,...Object.fromEntries(EVIDENCE_COLLECTIONS.map(k=>[k,merged[k]]))},roiSnapshot:snapshotFor('roiSnapshot'),recomputedSnapshot:snapshotFor('recomputedSnapshot')};
   const legacy=[...(current.evidence.legacyImports||[]),...(incoming.evidence.legacyImports||[]),...(incoming.evidence.legacyV1?[incoming.evidence.legacyV1]:[])];if(legacy.length)snapshot.evidence.legacyImports=legacy;
   return {snapshot,preview:{mode:'merge',includedAssetIds:merged.volumes.map(v=>v.id),removedAssetIds:[],collisions,remap:Object.fromEntries([...maps].map(([k,v])=>[k,Object.fromEntries(v)])),changedReferenceCounts:counts}};
 }
@@ -146,7 +160,7 @@ export async function stageProjectImport(text,{current,currentView,mode='open',k
   if(typeof text!=='string')throw Error('invalid-project-text');
   assertWorkspaceBudget({assetCount:0,rawPayloadBytes:0,projectUtf8Bytes:utf8ByteLength(text)});
   const parsed=await parseProject(text);
-  const incoming={...parsed,projectId:projectId||parsed.projectId,revision:0,view:checkedView(parsed.view),evidence:checkedEvidence(parsed.evidence,knownEvidence).value,roiSnapshot:null,recomputedSnapshot:null};
+  const incoming={...parsed,projectId:projectId||parsed.projectId,revision:0,view:checkedView(parsed.view),evidence:checkedEvidence(parsed.evidence,knownEvidence).value};
   // Reject broken imports against their own asset closure before they can merge.
   assertReferences(incoming,knownEvidence);
   const merged=mode==='merge'?mergeWorkspace(currentView?{...current,view:checkedView(currentView)}:current,incoming,makeId):{snapshot:incoming,preview:{mode:'open',includedAssetIds:incoming.volumes.map(v=>v.id),removedAssetIds:current.volumes.map(v=>v.id),collisions:[],remap:{},changedReferenceCounts:{}}};

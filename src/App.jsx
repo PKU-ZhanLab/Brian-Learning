@@ -13,8 +13,9 @@ import AtlasRegionDetails from './components/AtlasRegionDetails.jsx';
 import { atlasRegionKey, makeAtlasRegionRef } from './lib/atlas-identity.js';
 import { buildRegionIndex, regionDetails, restoreAtlasSelection, selectAtlasRegions, serializeAtlasSelection } from './lib/atlas-selection.js';
 import {listCustomVolumes,subscribeCustomVolumes} from './lib/custom-volumes.js';
-import {encodeView,decodeView,validateViewState,serializeProject} from './lib/workspace-project.js';
+import {encodeView,decodeView,validateViewState} from './lib/workspace-project.js';
 import {emptyEvidence} from './lib/evidence-workspace.js';
+import {planAssetRemoval,planProjectExport} from './lib/workspace-assets.js';
 import {createWorkspaceSession,restoreWorkspaceInitial,stageWorkspaceChange,stageProjectImport,WORKSPACE_STORAGE_KEY} from './lib/workspace-session.js';
 import {assetURL} from './lib/assets.js';
 import {localizeStructure} from './i18n/catalog-en.js';
@@ -207,7 +208,7 @@ export default function App(){
   useEffect(()=>{const changed=()=>setViewHash(window.location.hash);window.addEventListener('hashchange',changed);return()=>window.removeEventListener('hashchange',changed);},[]);
   useEffect(()=>{if(sharedViewRestored.current===viewHash||!manifest||!sceneStatus?.loaded)return;sharedViewRestored.current=viewHash;const encoded=new URLSearchParams(viewHash.slice(1)).get('view');if(encoded){try{restoredSharedView.current=true;restoreWorkspaceView(decodeView(encoded));}catch(e){setToast(`${language==='en'?'Cannot restore view':'无法恢复视图'}: ${e.message}`);}}},[manifest,sceneStatus?.loaded,viewHash]);
   const shareView=async()=>{try{const {encoded,omitted}=encodeView(getWorkspaceView(),{publicReferenceIds:allReferences.map(r=>r.id)}),url=new URL(window.location.href);url.search='';url.hash=new URLSearchParams({view:encoded}).toString();const message=omitted.length?(language==='en'?'Link copied. Imported data require a project file.':'已复制链接；导入影像需要通过项目文件共享。'):(language==='en'?'Complete view link copied.':'已复制完整视图链接');try{await navigator.clipboard.writeText(url.href);setToast(message);}catch{download(url.href,'NeuroAtlas-view-link.txt');setToast(language==='en'?'View link exported as a text file.':'已将视图链接导出为文本文件。');}}catch(e){setToast(e.message);}};
-  const captureWorkspace=()=>({...workspaceSession.getSnapshot(),view:getWorkspaceView(),roiSnapshot:roiComparison});
+  const captureWorkspace=()=>({...workspaceSession.getSnapshot(),view:getWorkspaceView(),roiSnapshot:roiComparison??workspaceSession.getSnapshot().roiSnapshot});
   const changeWorkspace=async(patch,{base=workspaceSession.getSnapshot(),projectId=base.projectId}={})=>{
     if(base!==workspaceSession.getSnapshot()||projectId!==base.projectId)throw Error('stale-workspace');
     const stage=await stageWorkspaceChange({...captureWorkspace(),...patch},{current:base,knownEvidence:knownWorkspaceEvidence});
@@ -221,7 +222,21 @@ export default function App(){
     if(epoch!==projectEpoch.current||isCurrent?.()===false)throw Error('stale-workspace');
     workspaceSession.commit(stage);return id;
   };
-  const exportWorkspace=async()=>{const project=await serializeProject(captureWorkspace());download(project,`NeuroAtlas-project-${new Date().toISOString().slice(0,10)}.neuroatlas`,'application/json');};
+  const assetStages=useRef(new WeakMap());
+  const stageAssetAction=async(mode,options)=>{
+    const base=workspaceSession.getSnapshot(),captured=captureWorkspace();
+    const plan=mode==='remove'?planAssetRemoval(captured,options):planProjectExport(captured,options);
+    const preview=mode==='remove'?{mode,assetId:options,assetName:base.volumes.find(v=>v.id===options)?.name||options,dependentViewFields:plan.dependentViewFields,dependentResults:plan.dependentResults}:plan.preview;
+    const stage=await stageWorkspaceChange(mode==='remove'?plan.next:plan.workspace,{current:base,knownEvidence:knownWorkspaceEvidence,preview});
+    if(base!==workspaceSession.getSnapshot())throw Error('stale-workspace');
+    assetStages.current.set(stage,{base,mode});return stage;
+  };
+  const confirmAssetAction=(stage,mode)=>{
+    const action=assetStages.current.get(stage);if(!action||action.mode!==mode||action.base!==workspaceSession.getSnapshot())throw Error('stale-workspace');
+    if(mode==='export')download(stage.projectText,`NeuroAtlas-project-${new Date().toISOString().slice(0,10)}.neuroatlas`,'application/json');
+    else {const next=workspaceSession.commit(stage);importEpoch.current++;projectEpoch.current++;restoreWorkspaceView(next.view);setToast(language==='en'?'Asset removed.':'影像已移除。');}
+    assetStages.current.delete(stage);
+  };
   const stageWorkspaceImport=async(file,{mode})=>{
     if(file.size>180*1024*1024)throw Error(language==='en'?'Project exceeds 180 MiB':'项目文件超过 180 MiB');
     const request=++importEpoch.current,base=workspaceSession.getSnapshot();
@@ -275,7 +290,7 @@ export default function App(){
 
     <main className="workspace">
       <aside className="left-panel" inert={quiz&&!quiz.answered?true:undefined}>
-        {mode==='roi'?<ROICompare onRestoreAborted={()=>{restoreCamera.current=null;}} onViewNative={openAtlas} key={workspaceRevision} language={language} manifest={manifest} initialState={roiInitialState} workspaceProjectId={workspaceSnapshot.projectId} workspaceEpoch={projectEpoch.current} onImportVolume={registerWorkspaceVolume} onStateChange={value=>{roiState.current=value;}} onComparisonChange={handleRoiComparison} onClose={()=>{restoreCamera.current=null;setMode('anatomy');setRoiComparison(null);}}/>:<>
+        {mode==='roi'?<ROICompare onRestoreAborted={()=>{restoreCamera.current=null;}} onViewNative={openAtlas} key={workspaceRevision} language={language} manifest={manifest} initialState={roiInitialState} workspaceProjectId={workspaceSnapshot.projectId} workspaceEpoch={projectEpoch.current} onImportVolume={registerWorkspaceVolume} onManageAssets={()=>setShowWorkspaceFiles(true)} onStateChange={value=>{roiState.current=value;}} onComparisonChange={handleRoiComparison} onClose={()=>{restoreCamera.current=null;setMode('anatomy');setRoiComparison(null);}}/>:<>
         <div className="panel-heading"><span>解剖结构</span><IconButton label="数据与图谱说明" onClick={()=>setModal('data')}><SlidersHorizontal size={16}/></IconButton></div>
         <div className="atlas-control"><label htmlFor="atlas">当前图谱 <span>ATLAS</span></label><div className="select-wrap"><Layers3 size={16}/><select id="atlas" aria-label="选择脑图谱" value={atlas} onChange={e=>selectAtlas(e.target.value)}>{(manifest?Object.entries(manifest.atlases).filter(([id])=>!['aal','aal3'].includes(id)).map(([id,m])=>({id,label:id==='aal-registered'?'AAL · 116':id==='aal3-registered'?'AAL3 · 166':atlasOptions.find(a=>a.id===id)?.label||m.name||id,metadata:m})):atlasOptions).map(a=><option key={a.id} value={a.id} disabled={Boolean(manifest)&&!a.metadata?.available}>{a.label||a.name}{manifest&&!a.metadata?.available?(language==='en'?' · unavailable':' · 暂不可用'):a.metadata?.canOverlayOnTarget===false?(language==='en'?' · native viewer':' · 原生空间查看'):''}</option>)}</select><ChevronDown size={14}/></div><button className="atlas-status" onClick={()=>setModal('data')}><span className={liveAtlas?.available?'status-dot ready':'status-dot'}/>{liveAtlas?.available?alignmentLabel(liveAtlas.alignmentStatus,language):'结构术语索引'}<Info size={11}/></button><p className="atlas-availability-note">{language==='en'?'DK, AAL and AAL3 share one standard brain. AAL mappings are project estimates; source T1 slices remain available.':'DK、AAL、AAL3 共用标准脑形。AAL 映射为项目配准估计；保留原始 T1 三视图。'}</p>{['aal-registered','aal3-registered'].includes(atlas)&&<button className="atlas-native-entry" onClick={()=>{const v={atlas:atlas.replace('-registered',''),display:'slices',opacity:1};atlasState.current=v;setAtlasExplorerState(v);setShowAtlasExplorer(true);}}>{language==='en'?'Original T1 slices':'原始 T1 三视图'} <ArrowUpRight size={12}/></button>}</div>
         <button className="atlas-explorer-entry" onClick={()=>openAtlas()}><Layers3 size={14}/>{language==='en'?'Browse all atlas labels in 3D':'浏览完整图谱标签与三维分区'}<ArrowUpRight size={13}/></button><div className="segmented tree-tabs"><button aria-pressed={treeTab==='anatomy'} className={treeTab==='anatomy'?'selected':''} onClick={()=>setTreeTab('anatomy')}>结构目录</button><button aria-pressed={treeTab==='networks'} className={treeTab==='networks'?'selected':''} onClick={()=>setTreeTab('networks')}>功能网络</button></div>
@@ -318,7 +333,7 @@ export default function App(){
       ...(activeResult?[{id:'result-coordinates',modal:false,title:language==='en'?'Paper result coordinates':'论文结果坐标',returnFocusRef:resultTrigger,content:<ResultCoordinates result={activeResult} language={language} onClose={()=>setActiveResult(null)} onReturnFocus={()=>resultTrigger.current?.focus()} onOverlay={overlayResult}/>}]:[]),
       ...(showAtlasExplorer?[{id:'atlas-explorer',modal:true,title:language==='en'?'Atlas label explorer':'完整图谱分区',content:<AtlasExplorer key={`${workspaceRevision}-${atlasExplorerState?.atlas||'atlas'}`} manifest={manifest} language={language} initialState={atlasExplorerState} onStateChange={value=>{atlasState.current=value;}} onClose={()=>setShowAtlasExplorer(false)} onCompareLabel={compareAtlasLabel} onRegionSelect={(refs,pos,context)=>{selectRegions(refs,pos,context);setShowAtlasExplorer(false);}} onViewStandard={id=>{setShowAtlasExplorer(false);selectAtlas(id);}} onSave={()=>setShowWorkspaceFiles(true)} onShare={shareView} onImport={()=>{setShowAtlasExplorer(false);setMode('roi');setQuiz(null);}}/>}]:[]),
       ...(modal?[{id:'app-modal',modal:true,title:translateUI({refs:'参考文献总目录',notes:'研究批注',help:'使用指南',data:'图谱与数据来源',legend:'图谱图例'}[modal],language),content:genericDialogContent}]:[]),
-      ...(showWorkspaceFiles?[{id:'workspace-files',modal:true,title:language==='en'?'Save and share':'保存与分享',content:<WorkspaceFiles language={language} onClose={()=>setShowWorkspaceFiles(false)} getView={getWorkspaceView} onRestoreView={restoreWorkspaceView} onExportProject={exportWorkspace} onStageProject={stageWorkspaceImport} onCommitProject={commitWorkspaceImport} onShare={shareView} customVolumeCount={customVolumes.length}/>}]:[]),
+      ...(showWorkspaceFiles?[{id:'workspace-files',modal:true,title:language==='en'?'Save and share':'保存与分享',content:<WorkspaceFiles language={language} onClose={()=>setShowWorkspaceFiles(false)} getView={getWorkspaceView} onRestoreView={restoreWorkspaceView} snapshot={captureWorkspace()} onRemovePlan={id=>stageAssetAction('remove',id)} onCommitRemoval={stage=>confirmAssetAction(stage,'remove')} onExportPlan={options=>stageAssetAction('export',options)} onConfirmExport={stage=>confirmAssetAction(stage,'export')} onStageProject={stageWorkspaceImport} onCommitProject={commitWorkspaceImport} onShare={shareView} customVolumeCount={customVolumes.length}/>}]:[]),
     ]} onCloseTop={id=>{if(id==='workspace-files')setShowWorkspaceFiles(false);else if(id==='app-modal')setModal(null);else if(id==='atlas-explorer')setShowAtlasExplorer(false);else if(id==='result-coordinates')setActiveResult(null);}}/>
 
   </div>,language);
