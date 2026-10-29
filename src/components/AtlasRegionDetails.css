@@ -1,0 +1,8 @@
+.atlas-region-details{padding:20px;overflow:auto;min-height:0;color:var(--text,#263f35)}
+.atlas-region-details h2{font-size:22px;margin:0 0 18px;overflow-wrap:anywhere}
+.atlas-region-details dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:9px 12px;font-size:13px}
+.atlas-region-details dt{color:#576e62}.atlas-region-details dd{margin:0;overflow-wrap:anywhere}
+.atlas-region-source{font-size:12px;overflow-wrap:anywhere;color:#576e62}
+.atlas-region-actions{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.atlas-region-actions button,.atlas-region-details li button{border:1px solid #b9cbbf;background:#f0f6f1;border-radius:6px;padding:8px;color:inherit}
+.atlas-region-actions button:disabled{opacity:.5;cursor:not-allowed}

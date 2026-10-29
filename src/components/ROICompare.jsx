@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { atlasRegionKey, makeAtlasRegionRef } from '../lib/atlas-identity.js';
+import { serializeAtlasSelection } from '../lib/atlas-selection.js';
 import { loadAnatomyVolume, loadAtlas, makeSliceCanvas, sliceWorldPoint } from '../lib/volume.js';
 import { positiveLabels, ROI_COLORS, ROI_DEFAULT_DISPLAY, serializableVolume, comparisonMaskVolume } from '../lib/roi.js';
 import { makeComparisonGrid } from '../lib/roi-grid.js';
@@ -93,6 +95,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   useEffect(() => subscribeCustomVolumes(() => { abortRestore('registry-changed'); invalidateWork(); setRegistryVersion(v => v + 1); }), []);
   const [aAtlas, setAAtlas] = useState(initialState?.aAtlas || 'dk'), [bAtlas, setBAtlas] = useState(initialState?.bAtlas || 'ba-histology');
   const [aLabels, setALabels] = useState(initialState?.aLabels || []), [bLabels, setBLabels] = useState(initialState?.bLabels || []);
+  const [expectedRegionRefs,setExpectedRegionRefs] = useState({A:initialState?.aRegionRefs ?? null,B:initialState?.bRegionRefs ?? null});
   const [aThreshold, setAThreshold] = useState(initialState?.aThreshold ?? .5), [bThreshold, setBThreshold] = useState(initialState?.bThreshold ?? .5);
   const [aTail, setATail] = useState(initialState?.aTail || 'positive'), [bTail, setBTail] = useState(initialState?.bTail || 'positive');
   const [resolutionMm, setResolutionMm] = useState(initialState?.resolutionMm === 1 ? 1 : 2);
@@ -129,7 +132,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
   }
   function changeSelection(update) {
-    abortRestore('selection-changed'); invalidateWork(); setRestoreWarning(''); update();
+    abortRestore('selection-changed'); invalidateWork(); setRestoreWarning(''); setExpectedRegionRefs({A:null,B:null}); update();
   }
   useEffect(() => {
     if (lastInitial.current === initialState) return;
@@ -141,6 +144,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     restore.current = !!initialState.computed;
     setAAtlas(initialState.aAtlas || 'dk'); setBAtlas(initialState.bAtlas || 'ba-histology');
     setALabels(initialState.aLabels || []); setBLabels(initialState.bLabels || []);
+    setExpectedRegionRefs({A:initialState.aRegionRefs ?? null,B:initialState.bRegionRefs ?? null});
     setAThreshold(initialState.aThreshold ?? .5); setBThreshold(initialState.bThreshold ?? .5);
     setATail(initialState.aTail || 'positive'); setBTail(initialState.bTail || 'positive');
     setResolutionMm(initialState.resolutionMm === 1 ? 1 : 2);
@@ -166,6 +170,13 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     }
   }, [sourceB.labels, bLabelIds]);
   const selectionKey = JSON.stringify([aAtlas, bAtlas, aLabels, bLabels, aThreshold, bThreshold, aTail, bTail, resolutionMm]);
+  const refsFor = (id,source,labels) => source.atlasId === id && source.volume?.atlasVersion && source.volume?.spaceIdentitySource ? labels.map(label => makeAtlasRegionRef(id,source.volume,+label)) : [];
+  const currentRegionRefs = useMemo(()=>{
+    try { return {A:refsFor(aAtlas,sourceA,aLabels),B:refsFor(bAtlas,sourceB,bLabels)}; }
+    catch { return {A:[],B:[]}; }
+  },[selectionKey,sourceA,sourceB]);
+  const identityMismatch = ['A','B'].some(key => expectedRegionRefs[key]?.length && ((key === 'A' ? sourceA : sourceB).volume) && JSON.stringify(expectedRegionRefs[key].map(atlasRegionKey).sort()) !== JSON.stringify(currentRegionRefs[key].map(atlasRegionKey).sort()));
+  useEffect(()=>{if(identityMismatch){abortRestore('region-version-unavailable');invalidateWork();}},[identityMismatch]);
   useEffect(() => {
     if (previousRegistryVersion.current !== registryVersion) abortRestore('registry-changed');
     previousRegistryVersion.current = registryVersion;
@@ -181,10 +192,10 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   }, [selectionKey, sourceA, sourceB, aLabelIds, bLabelIds]);
   useEffect(() => () => { sequence.current++; worker.current?.terminate(); }, []);
   useEffect(() => {
-    callbacks.current.onStateChange?.({ aAtlas, bAtlas, aLabels, bLabels, aThreshold, bThreshold, aTail, bTail, resolutionMm, display, computed: !!comparison || restore.current || restoringRequest.current });
-  }, [selectionKey, display, comparison, busy, restoreWarning]);
+    callbacks.current.onStateChange?.({ aAtlas, bAtlas, aLabels, bLabels, aRegionRefs:serializeAtlasSelection(expectedRegionRefs.A ?? currentRegionRefs.A), bRegionRefs:serializeAtlasSelection(expectedRegionRefs.B ?? currentRegionRefs.B), aThreshold, bThreshold, aTail, bTail, resolutionMm, display, computed: !identityMismatch && (!!comparison || restore.current || restoringRequest.current) });
+  }, [selectionKey, display, comparison, busy, restoreWarning, currentRegionRefs, expectedRegionRefs, identityMismatch]);
 
-  const ready = sourceA.atlasId === aAtlas && sourceB.atlasId === bAtlas && sourceA.volume && sourceB.volume && !sourceA.loading && !sourceB.loading && ((sourceA.volume.kind || 'label') !== 'label' || (aLabels.length && aLabels.every(id => aLabelIds.has(+id)))) && ((sourceB.volume.kind || 'label') !== 'label' || (bLabels.length && bLabels.every(id => bLabelIds.has(+id))));
+  const ready = !identityMismatch && sourceA.atlasId === aAtlas && sourceB.atlasId === bAtlas && sourceA.volume && sourceB.volume && !sourceA.loading && !sourceB.loading && ((sourceA.volume.kind || 'label') !== 'label' || (aLabels.length && aLabels.every(id => aLabelIds.has(+id)))) && ((sourceB.volume.kind || 'label') !== 'label' || (bLabels.length && bLabels.every(id => bLabelIds.has(+id))));
   const missingThreshold = (['statistic','probability'].includes(sourceA.volume?.kind) && aThreshold === '') || (['statistic','probability'].includes(sourceB.volume?.kind) && bThreshold === '');
   async function compute() {
     if (!ready) return;
@@ -214,7 +225,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
         setComparison(result); setPoint(result.center || [0, 0, 0]); callbacks.current.onComparisonChange?.(result);
       };
       current.onerror = () => { if (requestId === sequence.current) { abortRestore('worker-failed'); setBusy(false); setError('computeError'); current.terminate(); worker.current = null; } };
-      const describe = (source, atlasId, labels) => ({ atlasId, name: source.labels.length ? source.labels.filter(label => labels.includes(label.id)).map(label => label.name).join(' + ') : source.volume.name });
+      const describe = (source, atlasId, labels) => ({ atlasId, regionRefs:refsFor(atlasId,source,labels), name: source.labels.length ? source.labels.filter(label => labels.includes(label.id)).map(label => label.name).join(' + ') : source.volume.name });
       current.postMessage({ requestId, volumeA: serializableVolume(sourceA.volume), volumeB: serializableVolume(sourceB.volume), selectionA: { labels: aLabels, threshold: aThreshold, tail: aTail }, selectionB: { labels: bLabels, threshold: bThreshold, tail: bTail }, target: grid, descriptors: { A: describe(sourceA, aAtlas, aLabels), B: describe(sourceB, bAtlas, bLabels) } });
     } catch (problem) { if (requestId === sequence.current) { abortRestore('compute-failed'); setBusy(false); setError(problem.message); } }
   }
@@ -297,6 +308,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     {!!importedVolumes.length && <div className="roi-imported-volumes"><h3>{t.importedVolumes}</h3>{importedVolumes.map(([id, volume]) => <div key={id}><span><strong>{volume.name || id}</strong><small>{volume.space} · {volume.canOverlayOnTarget === true ? t.declared : t.blocked}</small>{volume.metadata?.affineConflict && <small className="roi-imported-warning">{t.conflict}</small>}</span>{onViewNative && <button type="button" onClick={() => onViewNative(id)} aria-label={`${t.viewNative}: ${volume.name || id}`}>{t.viewNative}</button>}</div>)}</div>}
     {!manifest ? <p role="status">{t.notLoaded}</p> : !allowed.length ? <p role="status">{t.noAtlases}</p> : <>
       <div className="roi-selectors">{sourceBlock('A', aAtlas, setAAtlas, aLabels, setALabels, aThreshold, setAThreshold, aTail, setATail, sourceA)}{sourceBlock('B', bAtlas, setBAtlas, bLabels, setBLabels, bThreshold, setBThreshold, bTail, setBTail, sourceB)}</div>
+      {identityMismatch&&<p className="roi-warning" role="alert">{language==='en'?'Saved atlas label identity is unavailable or has changed. Select the source labels again.':'保存的图谱标签身份不可用或版本已改变。请重新选择来源标签。'}</p>}
       <label className="roi-grid"><strong>{t.grid}</strong> <select aria-label="ROI shared grid spacing" value={resolutionMm} onChange={event => changeSelection(() => setResolutionMm(+event.target.value))}><option value="2">2 mm · 91 × 109 × 91</option><option value="1">1 mm · 181 × 217 × 181</option></select></label>
       <p className="roi-note">{t.gridHint}</p>
       <div className="roi-actions"><button type="button" className="roi-primary" onClick={compute} disabled={busy || !ready || missingThreshold} aria-label="Compute ROI overlap">{busy ? t.computing : t.compare}</button>{busy && <button type="button" onClick={clear} aria-label="Cancel ROI computation">{t.cancelCompute}</button>}{comparison && <><button type="button" onClick={clear} aria-label="Clear ROI overlay">{t.clear}</button><button type="button" onClick={exportMetrics} aria-label="Export ROI overlap metrics CSV">{t.export}</button></>}</div>
