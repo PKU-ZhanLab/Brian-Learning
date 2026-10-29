@@ -35,7 +35,7 @@ test('abort, network errors, invalid counts and mismatched collection images rej
  await assert.rejects(()=>api.lookupStatMapsByDOI(doi,{fetcher:mock({[first]:page([collection(1)]),'https://neurovault.org/api/collections/1/images/':page([image(11,2)])})}),/image-collection-mismatch/);
 });
 const candidate={provider:'NeuroVault',collectionId:1,imageId:11,paperDOI:doi,sourceURL:'https://neurovault.org/images/11/',retrievedAt:'2026-10-29T00:00:00Z',upstreamVersion:'2026-10-29',asset:null,sourceSpaceId:null,status:'candidate',rights:{license:'unknown'}};
-const downloaded={provider:'NeuroVault',collectionId:1,imageId:11,upstreamVersion:'2026-10-29',sourceAsset:{id:'nv11',version:'bytes-v1',sha256:'a'.repeat(64),spaceId:null},sourceGrid:{shape:[2,2,2],voxelSize:[1,1,1],affine:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]],axisConvention:'RAS+'},rights:{license:'CC0-1.0'}};
+const downloaded={provider:'NeuroVault',collectionId:1,imageId:11,upstreamVersion:'2026-10-29',sourceAsset:{id:'nv11',version:'bytes-v1',sha256:'a'.repeat(64),spaceId:null},sourceGrid:{shape:[2,2,2],voxelSize:[1,1,1],affine:[[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]],axisConvention:'RAS+'},rights:{license:'CC0-1.0',sourceRefs:['https://neurovault.org/FAQ'],verifiedAt:'2026-10-30'}};
 test('upstream identity never establishes unknown space',()=>{
  const asset=api.resolveStatMapAsset(candidate,{...downloaded,derivedAsset:{id:'pretend',version:'1',sha256:'b'.repeat(64),spaceId:'MNI152NLin6Asym'}});
  assert.equal(asset.sourceSpaceId,null);assert.equal(asset.sourceAsset.spaceId,null);assert.equal(asset.derivedAsset,null);assert.equal(asset.transformRef,null);
@@ -47,14 +47,18 @@ test('download identity and original grid must bind the exact upstream version',
  assert.throws(()=>api.resolveStatMapAsset(candidate,{...downloaded,sourceGrid:{...downloaded.sourceGrid,affine:[]}}),/source-grid-required/);
  assert.throws(()=>api.resolveStatMapAsset({...candidate,asset:{...downloaded.sourceAsset,sha256:'b'.repeat(64)}},downloaded),/source-asset-mismatch/);
 });
-test('verified derivation records retain distinct identities and ordered versioned S5 transform evidence',()=>{
+const derivedFixture=()=>{
  const source={...downloaded.sourceAsset,spaceId:'MNI152NLin2009cAsym'},target={id:'target',version:'v2',sha256:'b'.repeat(64),spaceId:'MNI152NLin6Asym'},derived={id:'derived',version:'sha256:'+'c'.repeat(64),sha256:'c'.repeat(64),spaceId:target.spaceId};
  const transform={id:'fixture-warp',version:'sha256:'+'d'.repeat(64),sha256:'d'.repeat(64),sourceAsset:source,targetAsset:target};
  const grid=space=>({shape:[2,2,2],affine:downloaded.sourceGrid.affine.flat(),space,order:'x-fastest'});
  const manifest={appVersion:'4.1.0',algorithmVersion:'fixture-only',inputs:[source,target],transforms:[{id:transform.id,sha256:transform.sha256}],sourceGrids:[grid(source.spaceId),grid(target.spaceId)],targetGrid:grid(target.spaceId),interpolation:['trilinear','nearest-neighbour'],thresholds:[{kind:'statistic',threshold:0,tail:'positive'},{kind:'label',threshold:0,tail:'positive'}],labelSets:[[],[1]]};
  const derivation={sourceAsset:source,targetAsset:target,derivedAsset:derived,manifest,transforms:[transform],receipt:{identity:derived,identityVerification:'received-bytes'},error:{kind:'unknown',reason:'Fixture does not validate anatomical accuracy'},limitations:[{zh:'仅验证记录契约。',en:'Record contract fixture only.'}]};
  const known={...candidate,sourceSpaceId:source.spaceId},m={...downloaded,sourceAsset:source,derivation};
- const authority={schema:'neuroatlas-asset-identities-v1',assets:{fixture:{identity:derived,sourceIdentities:[source,target],transforms:manifest.transforms,verificationFiles:[{path:transform.id,sha256:transform.sha256}]}}};
+ const authority={schema:'neuroatlas-asset-identities-v1',assets:{fixture:{identity:derived,sourceIdentities:[source,target],transforms:manifest.transforms,verificationFiles:[{path:transform.id,sha256:transform.sha256}],sourceGrid:grid(target.spaceId)}}};
+ return {known,m,authority,derived,transform,manifest};
+};
+test('verified derivation records retain distinct identities and ordered versioned S5 transform evidence',()=>{
+ const {known,m,authority,derived,transform,manifest}=derivedFixture();
  const resolved=api.resolveStatMapAsset(known,m,{assetRegistry:authority});
  assert.deepEqual(resolved.derivedAsset,derived);assert.notDeepEqual(resolved.sourceAsset,resolved.derivedAsset);
  assert.equal(resolved.transformRef,transform.id);assert.deepEqual(resolved.derivation.transforms,[transform]);assert.deepEqual(resolved.derivation.manifest.transforms,manifest.transforms);
@@ -62,4 +66,20 @@ test('verified derivation records retain distinct identities and ordered version
   const bad=structuredClone(m);mutate(bad);assert.throws(()=>api.resolveStatMapAsset(known,bad,{assetRegistry:authority}),/derivation-/);
  }
  assert.throws(()=>api.resolveStatMapAsset(known,m),/derivation-authority/);
+});
+test('derived output shape, affine and order must match the immutable S5 asset grid',()=>{
+ for(const mutate of [x=>x.m.derivation.manifest.targetGrid.shape=[3,2,2],x=>x.m.derivation.manifest.targetGrid.affine[3]=999,x=>x.m.derivation.manifest.targetGrid.order='z-fastest',x=>delete x.authority.assets.fixture.sourceGrid]){
+  const fixture=derivedFixture();mutate(fixture);
+  assert.throws(()=>api.resolveStatMapAsset(fixture.known,fixture.m,{assetRegistry:fixture.authority}),/derivation-output-grid-/);
+ }
+ const fixture=derivedFixture();fixture.authority.assets.fixture.sourceGrid.affine=downloaded.sourceGrid.affine;
+ assert.deepEqual(api.resolveStatMapAsset(fixture.known,fixture.m,{assetRegistry:fixture.authority}).derivedAsset,fixture.derived,'equivalent flat and nested authoritative affine forms normalize through S5');
+});
+test('download-specific rights retain sourced original evidence without promoting the candidate',()=>{
+ const manifest=structuredClone(downloaded),before=structuredClone(candidate),record=api.resolveStatMapAsset(candidate,manifest);
+ assert.deepEqual(record.sourceRights,manifest.rights);assert.deepEqual(record.upstream,before);assert.equal(record.upstream.status,'candidate');assert.equal(record.sourceSpaceId,null);assert.equal(record.derivedAsset,null);
+ manifest.rights.sourceRefs.push('changed');assert.deepEqual(record.sourceRights,downloaded.rights,'download-rights provenance is defensively copied');
+ const {rights,...withoutRights}=downloaded,unknown=api.resolveStatMapAsset(candidate,withoutRights);
+ assert.equal(unknown.sourceRights.license,'unknown');assert.deepEqual(unknown.sourceRights.sourceRefs,[]);assert.equal(unknown.sourceRights.verifiedAt,null);assert.ok(unknown.sourceRights.reason);
+ for(const rights of [{license:'CC0-1.0'},{license:'CC0-1.0',sourceRefs:[]},{license:'CC0-1.0',sourceRefs:['']},{license:'CC0-1.0',sourceRefs:['https://neurovault.org/FAQ'],verifiedAt:'not-a-date'},{license:7,sourceRefs:['https://neurovault.org/FAQ']},[]])assert.throws(()=>api.resolveStatMapAsset(candidate,{...downloaded,rights}),/source-rights-/);
 });

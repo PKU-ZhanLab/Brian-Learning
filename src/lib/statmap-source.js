@@ -1,5 +1,5 @@
 import {normalizeDOI} from './evidence-schema.js';
-import {validateAssetIdentity,validateTransformIdentity,makeComputationManifest} from './computation-manifest.js';
+import {validateAssetIdentity,validateGridSpec,validateTransformIdentity,makeComputationManifest} from './computation-manifest.js';
 import s5Assets from '../../public/data/asset-identities.json' with {type:'json'};
 
 const origin='https://neurovault.org';
@@ -64,6 +64,15 @@ function sourceGrid(value){
  return structuredClone(value);
 }
 
+function sourceRights(value){
+ if(value==null)return {license:'unknown',sourceRefs:[],verifiedAt:null,reason:'No download-specific rights evidence supplied.'};
+ const text=entry=>typeof entry==='string'&&entry.trim().length>0;
+ if(typeof value!=='object'||Array.isArray(value)||!text(value.license)||!Array.isArray(value.sourceRefs)||!value.sourceRefs.every(text)||!['unknown','not-verified'].includes(value.license)&&!value.sourceRefs.length)throw fail('source-rights-evidence-required');
+ if(value.verifiedAt!==undefined&&value.verifiedAt!==null&&(!text(value.verifiedAt)||!/^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(value.verifiedAt)||!Number.isFinite(Date.parse(value.verifiedAt))||new Date(value.verifiedAt).toISOString().slice(0,10)!==value.verifiedAt.slice(0,10)))throw fail('source-rights-date-invalid');
+ if(value.basis!==undefined&&!(text(value.basis)||Array.isArray(value.basis)&&value.basis.length>0&&value.basis.every(text)))throw fail('source-rights-basis-invalid');
+ return structuredClone(value);
+}
+
 /** Bind downloaded original bytes to an exact upstream observation. Download
  * metadata cannot grant a candidate a template or transform. S5-produced
  * derivations, when available, are attached through the authority adapter. */
@@ -75,7 +84,7 @@ export function resolveStatMapAsset(candidate,downloadManifest,{assetRegistry=s5
  if(candidate.asset&&JSON.stringify(validateAssetIdentity(candidate.asset))!==JSON.stringify(identity))throw fail('source-asset-mismatch');
  const limitations=[{zh:'上游身份和文件哈希不证明空间、论文对比或人工复核。',en:'Upstream identity and a file hash do not verify space, paper contrast or human review.'}];
  if(!space)limitations.push({zh:'原图精确空间未知；保持独立原生网格，无图谱叠加。',en:'Exact source space is unknown; retain the independent native grid without atlas overlay.'});
- const record={upstream:structuredClone(candidate),sourceAsset:identity,sourceSpaceId:space,sourceGrid:sourceGrid(m.sourceGrid),derivedAsset:null,transformRef:null,limitations};
+ const record={upstream:structuredClone(candidate),sourceAsset:identity,sourceSpaceId:space,sourceGrid:sourceGrid(m.sourceGrid),sourceRights:sourceRights(m.rights),derivedAsset:null,transformRef:null,limitations};
  if(space&&m.derivation){
   try{
    const d=m.derivation,same=(a,b)=>JSON.stringify(validateAssetIdentity(a))===JSON.stringify(validateAssetIdentity(b));
@@ -84,6 +93,8 @@ export function resolveStatMapAsset(candidate,downloadManifest,{assetRegistry=s5
    if(!same(d.receipt?.identity,derived)||d.receipt.identityVerification!=='received-bytes')throw fail('derivation-receipt-required');
    const authority=Object.values(assetRegistry?.assets||{}).find(row=>same(row.identity,derived));
    if(assetRegistry?.schema!=='neuroatlas-asset-identities-v1'||!authority||!authority.sourceIdentities?.some(row=>same(row,identity))||!authority.sourceIdentities?.some(row=>same(row,target)))throw fail('derivation-authority-required');
+   let outputGrid;try{outputGrid=validateGridSpec(authority.sourceGrid);}catch{throw fail('derivation-output-grid-required');}
+   if(JSON.stringify(outputGrid)!==JSON.stringify(manifest.targetGrid))throw fail('derivation-output-grid-mismatch');
    if(!Array.isArray(d.transforms)||!d.transforms.length||JSON.stringify(authority.transforms)!==JSON.stringify(manifest.transforms)||d.transforms.length!==manifest.transforms.length)throw fail('derivation-chain-mismatch');
    let endpoint=identity;
    for(let i=0;i<d.transforms.length;i++){
