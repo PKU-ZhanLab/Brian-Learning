@@ -8,6 +8,16 @@ import {planAssetRemoval} from './workspace-assets.js';
 import {assignSelectionToOperand} from './selection-handoff.js';
 const ref={atlasId:'aal3-registered',atlasVersion:'v1',spaceId:'MNI152NLin6Asym',hemisphere:'U',labelId:134};
 const entry=(mode,extra={})=>({view:{mode,coordinate:[1.125,-3.75,9.2],coordinateSpace:null,coordinateOrigin:{kind:'private',cameraSensitive:true,explorerSensitive:true,imported:false},atlasSelection:[ref],atlasSelectionQuery:{atlasId:ref.atlasId,atlasVersion:ref.atlasVersion,coordinate:[1.125,-3.75,9.2],method:'source',requestId:9},roi:{aAtlas:ref.atlasId,aLabels:[134,133],aRegionRefs:[ref],bAtlas:'dk',bLabels:[4],bThreshold:.33,bTail:'negative',snapshot:'original',computed:false},...extra},scroll:{roi:371,literature:0}});
+test('independent structure, atlas detail and slice scrolls survive navigation and project serialization',async()=>{
+  const current={...entry('anatomy'),scroll:{tree:173,atlas:219,atlasDetails:87,atlasSlices:360,atlasWorkspace:45,model:75,reading:22,left:0,windowY:53}};
+  let history=pushNavigation({projectId:'p',entries:[],index:-1},current).history;
+  history=pushNavigation(history,entry('research')).history;
+  assert.deepEqual(goBack(history).target.scroll,current.scroll);
+  const project=await parseProject(await serializeProject({projectId:'p',view:{navigationHistory:history},notes:[],evidence:emptyEvidence(),volumes:[]}));
+  assert.deepEqual(goBack(project.view.navigationHistory).target.scroll,current.scroll);
+  for(const value of [-1,Infinity,1e8+1])assert.throws(()=>pushNavigation(history,{...current,scroll:{atlasDetails:value}}),/history-scroll/);
+  assert.throws(()=>pushNavigation(history,{...current,scroll:{unknown:1}}),/history-scroll/);
+});
 test('paper navigation restores the actual comparison, selection, unknown space and scroll without mutation',()=>{
   const comparison=entry('roi'),paper=entry('research',{literature:{paperId:'paper-a',compared:['paper-a','paper-b'],showCompare:true,query:'private text'}});
   let history=pushNavigation({projectId:'p',entries:[],index:-1},comparison).history;

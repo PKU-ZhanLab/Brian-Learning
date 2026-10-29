@@ -1,6 +1,6 @@
 import {boundedJsonStringify} from './workspace-limits.js';
 const clone=value=>JSON.parse(boundedJsonStringify(value,1536*1024,'navigation-history-budget'));
-const scrollKeys=new Set(['left','right','roi','detail','literature','atlas','windowX','windowY','matrixX']);
+const scrollKeys=new Set(['left','right','roi','tree','model','reading','detail','literature','atlas','atlasDetails','atlasSlices','atlasWorkspace','windowX','windowY','matrixX']);
 function entry(value,validateView=v=>v){
   if(!value?.view||typeof value.view!=='object'||Object.hasOwn(value.view,'navigationHistory'))throw Error('navigation-history-recursive');
   const scroll={};for(const [key,position]of Object.entries(value.scroll??{})){

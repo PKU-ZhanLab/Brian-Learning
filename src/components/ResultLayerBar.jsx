@@ -8,7 +8,7 @@ export default function ResultLayerBar({layers=[],results={},references={},unava
   const [expanded,setExpanded]=useState(()=>typeof matchMedia==='function'?!matchMedia('(max-width: 650px)').matches:true);
   useEffect(()=>{const query=window.matchMedia('(max-width: 650px)'),change=()=>setExpanded(!query.matches);query.addEventListener('change',change);return()=>query.removeEventListener('change',change);},[]);
   if(!layers.length)return null;
-  const names=[...new Set(layers.map(layer=>layer.resultId))].join(' · ');
+  const names=[...new Set(layers.map(layer=>`${layer.resultId} · ${references[layer.sourceReferenceId]?.title||layer.sourceReferenceId}`))].join(' / ');
   return <details className="result-layer-bar" open={expanded} onToggle={event=>setExpanded(event.currentTarget.open)}>
     <summary><MapPin size={15}/><strong>{t('结果图层','Result layers')} ({layers.length})</strong><span title={names}>{names}</span></summary>
     <div className="result-layer-content"><ul aria-label={t('结果图层','Result layers')}>{layers.map(layer=>{

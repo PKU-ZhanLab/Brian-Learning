@@ -5,3 +5,14 @@
 .result-source-identity{display:flex;flex-direction:column;gap:5px;margin:10px 0;overflow-wrap:anywhere;color:#294735}.result-source-identity strong{border-left:3px solid #294735;padding-left:8px}.result-source-identity span{font-size:13px}.result-coordinate-table tr[aria-selected=true]{outline:2px solid #294735;outline-offset:-2px}.result-coordinate-point{white-space:nowrap;min-height:30px}
 .result-coordinate-panel p,.result-coordinate-panel table,.result-coordinate-panel a{font-size:13px}.result-coordinate-panel .result-coordinate-note{color:#4a604b}.result-coordinate-panel td small{display:block;font-size:12px}
 @media(max-width:650px){.result-layer-bar{margin:0 10px 10px}.result-layer-content li{flex-wrap:wrap;gap:6px}.result-layer-source{flex-basis:calc(100% - 100px)}.result-layer-frame{margin-left:42px;max-width:calc(100% - 48px);text-align:left}.result-layer-remove{margin-left:auto}.scene-selection-names{left:8px;right:8px;top:46px;max-height:64px}}
+
+/* X7 research readability. */
+
+/* The selected identity belongs in the document flow, above the model. */
+.app-shell .scene-selection-names{position:static;inset:auto;z-index:auto;pointer-events:auto;max-height:84px;overflow:auto;flex-shrink:0;margin:0 0 8px;padding:1px;gap:5px}
+.app-shell .scene-selection-names span{font-size:13px;line-height:1.6;padding:3px 7px;border-width:1px;border-left-width:3px;background:var(--surface-paper);color:var(--text-primary)}
+.app-shell .result-layer-bar{margin-bottom:8px;background:var(--surface-paper);color:var(--text-primary)}
+.app-shell .result-layer-bar summary{min-height:40px;padding:6px 10px}.app-shell .result-layer-bar summary>span{font-size:13px;color:var(--text-secondary)}
+.app-shell .result-layer-content ul{max-height:140px;scroll-padding:8px}.app-shell .result-layer-content li{display:grid;grid-template-columns:40px minmax(0,1fr) minmax(90px,auto) 40px;gap:8px;padding:8px 0}
+.app-shell .result-layer-content button{min-height:40px}.app-shell .result-layer-visibility,.app-shell .result-layer-remove{width:40px;height:40px}.app-shell .result-layer-source{padding:0;overflow:hidden}.app-shell .result-layer-source strong{font-size:14px}.app-shell .result-layer-finding,.app-shell .result-layer-paper{font-size:13px;line-height:1.6;color:var(--text-secondary)}.app-shell .result-layer-frame{max-width:none;font-size:13px;line-height:1.6;color:var(--text-primary)}.app-shell .result-layer-frame small{font-size:13px;color:var(--text-secondary)}.app-shell .result-layer-clear{font-size:13px}
+@media(max-width:650px){.app-shell .result-layer-content li{grid-template-columns:40px minmax(0,1fr) 40px;gap:6px}.app-shell .result-layer-source{grid-column:2;grid-row:1;flex-basis:auto}.app-shell .result-layer-remove{grid-column:3;grid-row:1;margin:0}.app-shell .result-layer-frame{grid-column:2/-1;grid-row:2;text-align:left;margin:0}.app-shell .result-layer-content ul{max-height:250px}}

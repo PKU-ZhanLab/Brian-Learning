@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {atlasLabelSummary,buildAtlasSurfaces,nativeDisplayVolume} from './atlas-explorer.js';
+import {atlasLabelSummary,buildAtlasSurfaces,nativeDisplayVolume,createAtlasCanvasResizeGuard} from './atlas-explorer.js';
 const affine=[-2,0,0,10,0,2,0,-4,0,0,2,8,0,0,0,1];
 const volume={shape:[2,1,1],affine,data:new Uint16Array([1,2]),labels:[{id:1,name:'one'},{id:2,name:'two'},{id:3,name:'absent'}],space:'native-unknown',canOverlayOnTarget:false};
 test('actual native labels and affine centroids do not create absent labels',()=>{const labels=atlasLabelSummary(volume);assert.deepEqual(labels.map(v=>v.id),[1,2]);assert.deepEqual(labels[1].centroid,[8,-4,8]);assert.equal(labels[0].volumeMm3,8);});
@@ -11,3 +11,28 @@ test('slice navigation stays inside disconnected parcels even when the centroid 
 test('independent native geometry preserves both sides of label boundary and handedness',()=>{const result=buildAtlasSurfaces(volume,[1,2]);assert.equal(result.faces,12);assert.equal(result.meshes.length,2);assert.equal(result.space,'native-unknown');assert.deepEqual(result.bounds,[[7,-5,7],[11,-3,9]]);const m=result.meshes[0];for(let q=0;q<m.positions.length;q+=9){const a=Array.from(m.positions.slice(q,q+3)),b=Array.from(m.positions.slice(q+3,q+6)).map((v,i)=>v-a[i]),c=Array.from(m.positions.slice(q+6,q+9)).map((v,i)=>v-a[i]),n=[b[1]*c[2]-b[2]*c[1],b[2]*c[0]-b[0]*c[2],b[0]*c[1]-b[1]*c[0]];assert.ok(n.reduce((sum,v,i)=>sum+v*m.normals[q+i],0)>0);}});
 test('single label never borrows adjacent atlas labels',()=>{const r=buildAtlasSurfaces(volume,[2]);assert.equal(r.meshes.length,1);assert.equal(r.meshes[0].id,2);assert.equal(r.faces,6);assert.throws(()=>buildAtlasSurfaces(volume,[1,2],{maxFaces:2}),/too large/);});
 test('native statistical map thresholding does not claim target alignment',()=>{const native={...volume,data:new Float32Array([-3,2]),kind:'statistic'};const v=nativeDisplayVolume(native,{threshold:2.5,tail:'absolute'});assert.deepEqual([...v.data],[1,0]);assert.equal(v.canOverlayOnTarget,false);assert.equal(v.space,'native-unknown');assert.deepEqual(nativeDisplayVolume(native,{threshold:2,tail:'positive'}).data,new Uint8Array([0,1]));});
+
+test('atlas resize ignores queued callbacks after disposal, replacement or disconnect before measuring',()=>{
+  for(const state of ['disposed','replaced','disconnected']){
+    let measurements=0,resizes=0;
+    const container={isConnected:true,getBoundingClientRect:()=>{measurements++;return {width:400,height:300};}};
+    let current=container;
+    const guard=createAtlasCanvasResizeGuard(container,()=>current,()=>resizes++),queued=guard.resize;
+    guard.resize();assert.equal(resizes,1);assert.equal(measurements,1);
+    if(state==='disposed'){guard.dispose();current=null;}
+    else if(state==='replaced')current={isConnected:true};
+    else container.isConnected=false;
+    queued();queued();
+    assert.equal(resizes,1,state);assert.equal(measurements,1,state);
+  }
+});
+
+test('atlas resize defers hidden or invalid dimensions and resumes with the live container size',()=>{
+  let bounds={width:0,height:300};const resized=[];
+  const container={isConnected:true,getBoundingClientRect:()=>bounds};
+  const guard=createAtlasCanvasResizeGuard(container,()=>container,(...size)=>resized.push(size));
+  for(const next of [{width:0,height:300},{width:300,height:0},{width:-1,height:3},{width:NaN,height:3},{width:3,height:Infinity}]){bounds=next;guard.resize();}
+  assert.deepEqual(resized,[]);
+  bounds={width:390,height:240};guard.resize();assert.deepEqual(resized,[[390,240]]);
+  guard.dispose();guard.resize();assert.deepEqual(resized,[[390,240]]);
+});

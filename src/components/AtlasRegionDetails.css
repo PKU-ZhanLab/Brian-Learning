@@ -6,3 +6,7 @@
 .atlas-region-actions{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
 .atlas-region-actions button,.atlas-region-details li button{border:1px solid #b9cbbf;background:#f0f6f1;border-radius:6px;padding:8px;color:inherit}
 .atlas-region-actions button:disabled{opacity:.5;cursor:not-allowed}
+
+/* X7 research readability. */
+
+.atlas-region-details{font-size:15px;line-height:1.8;color:var(--text-primary);scroll-padding:16px}.atlas-region-details :is(dl,.atlas-region-source){font-size:14px;line-height:1.8;color:var(--text-secondary)}.atlas-region-details dt{color:var(--text-secondary)}.atlas-region-details button{min-height:40px;font-size:14px}

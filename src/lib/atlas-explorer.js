@@ -3,6 +3,20 @@ import {Matrix4} from 'three';
 const DIRECTIONS=[[-1,0,0],[1,0,0],[0,-1,0],[0,1,0],[0,0,-1],[0,0,1]];
 const CORNERS=[[[0,0,0],[0,0,1],[0,1,1],[0,1,0]],[[1,0,0],[1,1,0],[1,1,1],[1,0,1]],[[0,0,0],[1,0,0],[1,0,1],[0,0,1]],[[0,1,0],[0,1,1],[1,1,1],[1,1,0]],[[0,0,0],[0,1,0],[1,1,0],[1,0,0]],[[0,0,1],[1,0,1],[1,1,1],[0,1,1]]];
 
+/** A queued observer notification must never measure a stale atlas canvas. */
+export function createAtlasCanvasResizeGuard(container,readHost,onResize){
+  let active=true;
+  return {
+    resize(){
+      if(!active||readHost()!==container||!container.isConnected)return;
+      const {width,height}=container.getBoundingClientRect();
+      if(!Number.isFinite(width)||!Number.isFinite(height)||width<=0||height<=0)return;
+      onResize(width,height);
+    },
+    dispose(){active=false;},
+  };
+}
+
 export function nativeDisplayVolume(volume,{threshold=.5,tail='positive'}={}){
   if(!volume.kind||volume.kind==='label')return volume;
   if(!['mask','probability','statistic'].includes(volume.kind)||!Number.isFinite(threshold)||threshold<0)throw Error('Invalid map threshold');
