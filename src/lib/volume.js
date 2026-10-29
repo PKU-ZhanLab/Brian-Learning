@@ -173,10 +173,10 @@ export function sliceOverlayAllowed(anatomy,atlas){
   return atlas.canOverlayOnTarget===true;
 }
 
-export function sliceWorldPoint(axis, value, u, v, radiological = true) {
+export function sliceWorldPoint(axis, value, u, v, radiological = true, bounds = SLICE_BOUNDS) {
   const horizontal = axis === 'x' ? 'y' : 'x';
   const vertical = axis === 'z' ? 'y' : 'z';
-  const h = SLICE_BOUNDS[horizontal], w = SLICE_BOUNDS[vertical];
+  const h = bounds[horizontal], w = bounds[vertical];
   const hu = radiological && axis !== 'x' ? 1 - u : u;
   const point = { x: 0, y: 0, z: 0 };
   point[axis] = value;
@@ -190,14 +190,15 @@ export function makeSliceCanvas(volume, axis, value, options = {}) {
   const canvas = document.createElement('canvas');
   const horizontal = axis === 'x' ? 'y' : 'x';
   const vertical = axis === 'z' ? 'y' : 'z';
-  const h = SLICE_BOUNDS[horizontal], v = SLICE_BOUNDS[vertical];
+  const bounds=options.bounds||SLICE_BOUNDS;
+  const h = bounds[horizontal], v = bounds[vertical];
   canvas.width = size;
   canvas.height = Math.round(size * (v[1] - v[0]) / (h[1] - h[0]));
   const context = canvas.getContext('2d');
   const pixels = context.createImageData(canvas.width, canvas.height);
   const radiological = options.radiological !== false;
   for (let py = 0; py < canvas.height; py++) for (let px = 0; px < canvas.width; px++) {
-    const point = sliceWorldPoint(axis, value, px / (canvas.width - 1), py / (canvas.height - 1), radiological);
+    const point = sliceWorldPoint(axis, value, px / (canvas.width - 1), py / (canvas.height - 1), radiological, bounds);
     const intensity = volume.sampleRAS(...point);
     const q = (py * canvas.width + px) * 4;
     pixels.data[q] = pixels.data[q + 1] = pixels.data[q + 2] = intensity;

@@ -1,7 +1,6 @@
+import AtlasCanvas from './AtlasCanvas.jsx';
 import {makeAtlasRegionRef} from '../lib/atlas-identity.js';
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import * as THREE from 'three';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {loadAtlas,nativeAtlasId,unifiedAtlasId} from '../lib/volume.js';
 import AtlasSlicePanel from './AtlasSlicePanel.jsx';
 import SelectionTray from './SelectionTray.jsx';
@@ -10,34 +9,9 @@ import {selectionLabel} from '../lib/workspace-status.js';
 import {atlasIdentityFor} from '../lib/volume.js';
 import {atlasResourceKey,getResourceState,subscribe,retry} from '../lib/atlas-resource.js';
 import {serializableVolume} from '../lib/roi.js';
-import {nativeDisplayVolume,createAtlasCanvasResizeGuard} from '../lib/atlas-explorer.js';
+import {nativeDisplayVolume} from '../lib/atlas-explorer.js';
 import './AtlasExplorer.css';
 
-const palette=['#9ebdb2','#e4bcaa','#b6b7d3','#b8cbb0','#d9c797','#a6becf','#d5b0ba','#b8c5d5','#c9c1a7','#98bfbf','#d7c4b9','#c2b5ca'];
-function AtlasCanvas({geometry,opacity,onPick,onCamera,cameraState,language}){
-  const host=useRef(null),state=useRef(null),callbacks=useRef({onPick,onCamera});callbacks.current={onPick,onCamera};
-  useEffect(()=>{
-    const container=host.current;if(!container)return;
-    let active=true;
-    let renderer;try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});}catch{return;}
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));renderer.domElement.setAttribute('aria-label','Independent atlas label model');container.appendChild(renderer.domElement);
-    const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(40,1,.1,4000),controls=new OrbitControls(camera,renderer.domElement),group=new THREE.Group();camera.up.set(0,0,1);camera.position.set(-220,300,170);scene.add(group,new THREE.HemisphereLight(0xffffff,0x829383,2.5));const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(-200,200,300);scene.add(light);
-    const render=()=>{if(active&&container.isConnected)renderer.render(scene,camera);};
-    const cameraEnd=()=>{if(active)callbacks.current.onCamera?.({position:camera.position.toArray(),target:controls.target.toArray(),zoom:camera.zoom,up:camera.up.toArray()});};
-    controls.addEventListener('change',render);controls.addEventListener('end',cameraEnd);
-    const resizeGuard=createAtlasCanvasResizeGuard(container,()=>host.current,(width,height)=>{renderer.setSize(width,Math.max(200,height));camera.aspect=width/Math.max(200,height);camera.updateProjectionMatrix();render();});
-    const observer=new ResizeObserver(resizeGuard.resize);observer.observe(container);resizeGuard.resize();
-    const pointer=new THREE.Vector2(),ray=new THREE.Raycaster();let start=null;
-    const down=e=>{if(active)start=[e.clientX,e.clientY];},up=e=>{const origin=start;start=null;if(!active||!origin||Math.hypot(e.clientX-origin[0],e.clientY-origin[1])>5)return;const r=renderer.domElement.getBoundingClientRect();if(r.width<=0||r.height<=0)return;pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(group.children)[0];if(hit)callbacks.current.onPick?.(hit.object.userData.labelId);};renderer.domElement.addEventListener('pointerdown',down);renderer.domElement.addEventListener('pointerup',up);
-    const clear=()=>{for(const mesh of [...group.children]){group.remove(mesh);mesh.geometry.dispose();mesh.material.dispose();}};
-    state.current={renderer,scene,camera,controls,group,render,clear};render();
-    return()=>{active=false;resizeGuard.dispose();observer.disconnect();controls.removeEventListener('change',render);controls.removeEventListener('end',cameraEnd);controls.dispose();renderer.domElement.removeEventListener('pointerdown',down);renderer.domElement.removeEventListener('pointerup',up);start=null;clear();renderer.dispose();renderer.domElement.remove();state.current=null;};
-  },[]);
-  useEffect(()=>{const s=state.current;if(!s)return;s.clear();if(!geometry){s.render();return;}for(const part of geometry.meshes){const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(part.positions,3));g.setAttribute('normal',new THREE.BufferAttribute(part.normals,3));const material=new THREE.MeshStandardMaterial({color:palette[(part.id*7)%palette.length],roughness:.85,metalness:0,side:THREE.DoubleSide,transparent:opacity<1,opacity});const mesh=new THREE.Mesh(g,material);mesh.userData.labelId=part.id;s.group.add(mesh);}if(geometry.bounds){const box=new THREE.Box3(new THREE.Vector3(...geometry.bounds[0]),new THREE.Vector3(...geometry.bounds[1])),center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3()).length();s.controls.target.copy(center);s.camera.position.copy(center.clone().add(new THREE.Vector3(-.8,1,.6).normalize().multiplyScalar(Math.max(size*1.15,35))));s.camera.zoom=1;s.camera.updateProjectionMatrix();s.controls.update();}if(cameraState?.position?.length===3&&cameraState?.target?.length===3){if(cameraState.up)s.camera.up.fromArray(cameraState.up);s.camera.position.fromArray(cameraState.position);s.controls.target.fromArray(cameraState.target);s.camera.zoom=cameraState.zoom||1;s.camera.updateProjectionMatrix();s.controls.update();}s.render();},[geometry]);
-  useEffect(()=>{const s=state.current;if(s){s.group.children.forEach(mesh=>{mesh.material.opacity=opacity;mesh.material.transparent=opacity<1;mesh.material.depthWrite=opacity>.95;});s.render();}},[opacity]);
-  const save=()=>{const s=state.current;if(!s)return;s.render();const a=document.createElement('a');a.href=s.renderer.domElement.toDataURL('image/png');a.download='NeuroAtlas-atlas-labels.png';a.click();};
-  return <div className="atlas-model"><div className="atlas-model-canvas" ref={host}/><div className="atlas-model-toolbar"><span>RAS · mm</span><button onClick={save}>{language==='en'?'Save image':'保存图像'}</button></div></div>;
-}
 
 export default function AtlasExplorer({manifest,language='zh',initialState,onStateChange,onClose,onAssignSelection,onRegionSelect,onRestoreReady,onImport,onSave,onShare,onViewStandard}){
   const en=language==='en',t=(zh,eng)=>en?eng:zh;

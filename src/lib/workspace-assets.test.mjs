@@ -4,9 +4,26 @@ import {planAssetRemoval,planProjectExport,describeWorkspaceAssets} from './work
 import {stageWorkspaceChange,createWorkspaceSession,mergeWorkspace} from './workspace-session.js';
 import {serializeProject,parseProject} from './workspace-project.js';
 import {emptyEvidence} from './evidence-schema.js';
+import {prepareLocalVolumeProvenance} from './computation-manifest.js';
+import {exportNifti} from './nifti.js';
 
 const volume=id=>({id,name:id,kind:'label',space:'native-unverified',data:Uint8Array.of(1),shape:[1,1,1],affine:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],labels:[]});
 const workspace=()=>({projectId:'B',revision:0,volumes:[volume('custom-a'),volume('custom-b')],notes:[{id:'note',text:'Keep this research',structureName:'',position:null,coordinateSpace:'',coordinateFrame:'',createdAt:'2026-10-29T00:00:00Z',regionRef:{atlasId:'custom-a',atlasVersion:'v1',spaceId:'native-a',labelId:1,hemisphere:'L'}}],evidence:emptyEvidence(),drafts:[],view:{atlas:'dk',roi:{aAtlas:'custom-a',aLabels:[1],aThreshold:.7,aTail:'absolute',bAtlas:'custom-b',bLabels:[2],bThreshold:.2,bTail:'negative',computed:true},atlasExplorer:{atlas:'custom-a',selected:[1]},atlasExplorerOpen:true},roiSnapshot:{id:'historical',dice:.42,counts:{A:5,B:7},descriptors:{A:{atlasId:'custom-a'},B:{atlasId:'custom-b'}},manifest:{inputs:[{id:'custom-a'},{id:'custom-b'}]}},recomputedSnapshot:null});
+
+test('paired sources detach missing private assets and merge every source identity edge',async()=>{
+ const before=workspace();before.view.roi.paired={open:true,linkCamera:false,linkCrosshair:true,left:{assetId:'custom-a',identity:{id:'custom-a',version:'v1',sha256:'a'.repeat(64),spaceId:null},point:[100.125,2,3],camera:null},right:{assetId:'custom-b',identity:null,point:[1,2,3],camera:null}};
+ const detached=planAssetRemoval(before,'custom-a').next;
+ assert.equal(detached.view.roi.paired.left.assetId,'');assert.equal(detached.view.roi.paired.left.identity,null);assert.equal(detached.view.roi.paired.right.assetId,'custom-b');
+ const incoming=structuredClone(before);incoming.volumes[0].data=Uint8Array.of(2);
+ const merged=mergeWorkspace(before,incoming,()=> 'custom-remapped').snapshot;
+ assert.equal(merged.view.roi.paired.left.assetId,'custom-remapped');assert.equal(merged.view.roi.paired.left.identity.id,'custom-remapped');
+});
+test('paired canonical derived byte identities are not mistaken for catalog asset IDs',async()=>{
+ const before=workspace();before.notes=[];before.roiSnapshot=null;
+ before.volumes[0]=await prepareLocalVolumeProvenance({...before.volumes[0],order:'x-fastest'},exportNifti(before.volumes[0]),{id:'custom-a'});
+ before.view.roi.paired={left:{assetId:'custom-a',identity:before.volumes[0].identity,point:[1.25,2,3]},right:{assetId:'custom-b',identity:null,point:[0,0,0]}};
+ const staged=await stageWorkspaceChange(before,{current:workspace()});assert.equal(staged.next.view.roi.paired.left.identity.id,'custom-a:derived:uint8:little-endian');
+});
 
 test('only current project assets are exportable',()=>{
  const B=workspace();assert.throws(()=>planProjectExport(B,{assetIds:['custom-A-private'],dependentPolicy:'include'}),/foreign-asset/);

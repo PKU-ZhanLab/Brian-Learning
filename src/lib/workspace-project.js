@@ -1,4 +1,5 @@
 import {validateDrafts} from './draft-store.js';
+import {validateComparisonState} from './comparison-link.js';
 import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_PROJECT_UTF8_BYTES,utf8ByteLength,boundedJsonStringify} from './workspace-limits.js';
 import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
 import {atlasRegionKey} from './atlas-identity.js';
@@ -76,6 +77,7 @@ export function validateViewState(input,{savedProjectId,projectId}={}){
   // view has no layers; public URLs use their separate canonical-public gate.
   if(projectId!==undefined&&input.schema!=='neuroatlas-view-v1'&&input.resultLayers?.length&&savedProjectId!==projectId)throw Error('named-view-project-mismatch: Open the originating project before restoring these result layers.');
   if(projectId!==undefined&&['original','recomputed'].includes(input.roi?.snapshot)&&savedProjectId!==projectId)throw Error('named-view-project-mismatch: Open the originating project before restoring this saved computation.');
+  if(projectId!==undefined&&savedProjectId!==projectId&&['left','right'].some(side=>input.roi?.paired?.[side]?.assetId?.startsWith('custom-')))throw Error('named-view-project-mismatch: Open the originating project before restoring local comparison sources.');
   const output={schema:VIEW_SCHEMA,language:input.language==='en'?'en':'zh',atlas:boundedString(input.atlas,120)||'dk',selectedIds:stringArray(input.selectedIds),visibleCategories:stringArray(input.visibleCategories,20),hiddenIds:stringArray(input.hiddenIds),hemisphere:['L','R'].includes(input.hemisphere)?input.hemisphere:'both',opacity:number(input.opacity,0,1,1),exploded:input.exploded===true,labels:input.labels===true,showSchematic:input.showSchematic===true,preset:boundedString(input.preset,40)||'cortex',view:boundedString(input.view,40)||'oblique',mode:['roi','research'].includes(input.mode)?input.mode:'anatomy',network:boundedString(input.network,80)||null,coordinate:coordinatePoint(input.coordinate)||[-38,-20,54],showSlices:input.showSlices===true,camera:validateCamera(input.camera),researchScope:input.researchScope===true,atlasExplorerOpen:input.atlasExplorerOpen===true};
   // `brain` is the existing main-template sentinel. Only absent legacy fields
   // default to it; explicit unknown/native contexts must remain independent.
@@ -94,6 +96,7 @@ export function validateViewState(input,{savedProjectId,projectId}={}){
   if(input.roi?.snapshot!==undefined){if(!['original','recomputed','none'].includes(input.roi.snapshot))throw Error('Invalid ROI snapshot reference');output.roi.snapshot=input.roi.snapshot;}
   if(input.roi?.snapshotId!==undefined)output.roi.snapshotId=boundedString(input.roi.snapshotId,160)||null;
   if(input.roi?.point!==undefined)output.roi.point=coordinatePoint(input.roi.point)||[0,0,0];
+  if(input.roi?.paired!==undefined)output.roi.paired=validateComparisonState(input.roi.paired);
   if(input.navigationContext){const c=input.navigationContext;output.navigationContext={infoTab:c.infoTab==='references'?'references':'anatomy',treeTab:c.treeTab==='networks'?'networks':'anatomy',query:boundedString(c.query,500),openGroups:stringArray(c.openGroups,20)};}
   if(input.navigationHistory!==undefined)output.navigationHistory=validateNavigationHistory(input.navigationHistory,{projectId,validateView:view=>validateViewState(view,{savedProjectId,projectId})});
   return output;
@@ -132,6 +135,7 @@ export function encodeView(input,{publicReferenceIds=[],publicResults,publicEvid
   projectRegionRefs(state,['atlasSelection','unresolvedAtlasSelection']);
   if(state.atlasSelectionQuery){delete state.atlasSelectionQuery;omitted.push('atlasSelectionQuery');}
   if(state.atlas.startsWith('custom-')){state.atlas='dk';omitted.push('atlas');}
+  if(state.roi?.paired){delete state.roi.paired;omitted.push('comparisonViews');}
   if(state.roi&&[state.roi.aAtlas,state.roi.bAtlas].some(id=>id.startsWith('custom-'))){delete state.roi;if(state.mode==='roi')state.mode='anatomy';omitted.push('ROI');}
   projectRegionRefs(state.roi,['aRegionRefs','bRegionRefs','unresolvedRegionRefs'],'roi.');
   if(state.roi){delete state.roi.snapshot;delete state.roi.snapshotId;delete state.roi.point;state.roi.computed=false;}

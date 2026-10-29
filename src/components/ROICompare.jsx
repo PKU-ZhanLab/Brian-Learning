@@ -98,7 +98,8 @@ function download(bytes, filename, type) {
   setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onComputedResult, onClose, initialState, savedSnapshot, recomputedSnapshot, provenanceStatus, onStateChange, onRestoreReady, customVolumes, onViewNative, onRestoreAborted, onImportVolume, onManageAssets, workspaceProjectId, workspaceEpoch, imageTaskIntent, onImportInputReady }) {
+export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onComputedResult, onClose, initialState, savedSnapshot, recomputedSnapshot, provenanceStatus, onStateChange, onRestoreReady, customVolumes, onViewNative, onRestoreAborted, onImportVolume, onManageAssets, workspaceProjectId, workspaceEpoch, imageTaskIntent, onImportInputReady, onOpenComparisonViewer }) {
+  const [paired,setPaired]=useState(initialState?.paired);
   const t = TEXT[language === 'en' ? 'en' : 'zh'];
   const callbacks = useRef({}); callbacks.current = { onComparisonChange, onComputedResult, onStateChange, onRestoreAborted };
   const initialSaved=useRef(initialState?.snapshot==='none'?null:initialState?.snapshot==='original'?savedSnapshot:initialState?.snapshot==='recomputed'?recomputedSnapshot:recomputedSnapshot??savedSnapshot),preserveSelections=useRef(!!initialState||!!initialSaved.current);
@@ -182,6 +183,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     restoringRequest.current = false;
     setRestoreWarning('');
     restore.current = false;
+    setPaired(initialState.paired);
     setAAtlas(initialState.aAtlas ?? 'dk'); setBAtlas(initialState.bAtlas ?? 'ba-histology');
     setALabels(initialState.aLabels || []); setBLabels(initialState.bLabels || []);
     setExpectedRegionRefs({A:initialState.aRegionRefs ?? null,B:initialState.bRegionRefs ?? null});
@@ -234,8 +236,8 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   useEffect(() => () => { sequence.current++; worker.current?.terminate(); }, []);
   useEffect(() => {
     const snapshot=inspectedSnapshot?inspectWhich:comparison?.id!=null&&comparison.id===savedSnapshot?.id?'original':comparison?.id!=null&&comparison.id===recomputedSnapshot?.id?'recomputed':'none';
-    callbacks.current.onStateChange?.({ aAtlas, bAtlas, aLabels, bLabels, aRegionRefs:serializeAtlasSelection(expectedRegionRefs.A ?? currentRegionRefs.A), bRegionRefs:serializeAtlasSelection(expectedRegionRefs.B ?? currentRegionRefs.B), aThreshold, bThreshold, aTail, bTail, resolutionMm, display, snapshot,snapshotId:inspectedSnapshot?.id??comparison?.id??null,point, computed: !identityMismatch && (!!comparison || restore.current || restoringRequest.current) });
-  }, [selectionKey, display, comparison, inspectedSnapshot, inspectWhich, savedSnapshot?.id, recomputedSnapshot?.id, busy, restoreWarning, currentRegionRefs, expectedRegionRefs, identityMismatch,point]);
+    callbacks.current.onStateChange?.({ aAtlas, bAtlas, aLabels, bLabels, aRegionRefs:serializeAtlasSelection(expectedRegionRefs.A ?? currentRegionRefs.A), bRegionRefs:serializeAtlasSelection(expectedRegionRefs.B ?? currentRegionRefs.B), aThreshold, bThreshold, aTail, bTail, resolutionMm, display, paired,snapshot,snapshotId:inspectedSnapshot?.id??comparison?.id??null,point, computed: !identityMismatch && (!!comparison || restore.current || restoringRequest.current) });
+  }, [selectionKey, display, comparison, inspectedSnapshot, inspectWhich, savedSnapshot?.id, recomputedSnapshot?.id, busy, restoreWarning, currentRegionRefs, expectedRegionRefs, identityMismatch,point,paired]);
 
   const ready = !identityMismatch && sourceA.atlasId === aAtlas && sourceB.atlasId === bAtlas && sourceA.volume && sourceB.volume && !sourceA.loading && !sourceB.loading && ((sourceA.volume.kind || 'label') !== 'label' || (aLabels.length && aLabels.every(id => aLabelIds.has(+id)))) && ((sourceB.volume.kind || 'label') !== 'label' || (bLabels.length && bLabels.every(id => bLabelIds.has(+id))));
   const missingThreshold = (['statistic','probability'].includes(sourceA.volume?.kind) && aThreshold === '') || (['statistic','probability'].includes(sourceB.volume?.kind) && bThreshold === '');
@@ -400,6 +402,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   };
   const fact=value=>value===undefined?(language==='en'?'Not recorded':'未记录'):JSON.stringify(value);
   return <section className="roi-compare" aria-label="ROI overlap comparison"><header className="roi-header"><div><h2>{t.title}</h2><p>{t.subtitle}</p></div>{onClose && <button type="button" className="roi-close" onClick={onClose} aria-label="Close ROI comparison" title={t.close}>×</button>}</header>
+    <div className="roi-actions"><button type="button" aria-haspopup="dialog" aria-label="Open source comparison" onClick={()=>onOpenComparisonViewer?.({left:{assetId:aAtlas,labels:aLabels,threshold:aThreshold,tail:aTail},right:{assetId:bAtlas,labels:bLabels,threshold:bThreshold,tail:bTail},initialState:paired,onStateChange:setPaired})}>{language==='en'?'Compare source views':'并排查看来源'}</button></div>
     {(savedSnapshot||recomputedSnapshot||provenanceStatus==='missing-provenance'||initialState?.computed||requestedSnapshotMissing)&&<section aria-label="Saved computation" className="roi-provenance">
       {requestedSnapshotMissing&&<p role="alert" className="roi-warning">{language==='en'?'The result from this visit is no longer in the saved computation slots. Inputs are restored; choose an available saved result or explicitly recompute.':'此访问对应的结果已不在保存的计算位置中。已恢复输入；可选择现有保存结果，或明确重新计算。'}</p>}
       <p role="status" data-provenance-status={historical.status}>{selectedSaved?statusText[historical.status]:(language==='en'?'No historical numerical result was saved. Choose inputs and explicitly compute a new result.':'未保存历史数值结果。请选择输入并明确计算新结果。')}</p>

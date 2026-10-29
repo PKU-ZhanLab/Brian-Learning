@@ -25,6 +25,7 @@ export function describeProjectExport(stage){
 export function describePublicLinkOmissions(omitted=[],language='zh'){
   const en=language==='en',has=prefix=>omitted.some(code=>code===prefix||code.startsWith(prefix+'.')||code.startsWith(prefix+':'));
   const categories=[
+    [has('comparisonViews'),en?'paired source views, points and cameras':'并排来源视图、坐标与相机'],
     [has('coordinate')||has('slices')||has('atlasExplorer.location'),en?'local or unverified positions':'本地或来源未核实的位置'],
     [has('camera')||has('coordinate')||has('atlasExplorer.location'),en?'camera positions':'相机位置'],
     [has('resultLayers'),en?'local result layers':'本地结果图层'],

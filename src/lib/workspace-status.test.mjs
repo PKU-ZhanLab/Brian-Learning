@@ -70,6 +70,14 @@ test('public omission feedback consumes projection codes, covers all categories 
     assert.equal(feedback.describePublicLinkOmissions(['resultLayers:secret-layer'],language),feedback.describePublicLinkOmissions(['resultLayers:any-other-private-id'],language));
   }
 });
+test('paired public projection explains source views, points and cameras without exposing either identity',()=>{
+ const identity={id:'private-patient-original',version:'private-version',sha256:'a'.repeat(64),spaceId:null};
+ const projection=encodeView({roi:{paired:{left:{assetId:'custom-patient',identity,point:[1.25,2,3]},right:{assetId:'dk',identity:null,point:[4,5,6]}}}});
+ assert.equal(decodeView(projection.encoded).roi?.paired,undefined);
+ assert.match(feedback.describePublicLinkOmissions(projection.omitted,'en'),/paired source views, points and cameras/);
+ assert.match(feedback.describePublicLinkOmissions(projection.omitted,'zh'),/并排来源视图、坐标与相机/);
+ assert.doesNotMatch(feedback.describePublicLinkOmissions(projection.omitted,'en'),/patient|private-version/);
+});
 
 test('native quota and draft-size failures remain actionable while actual manager preserves complete pending edits and prior bytes',async()=>{
   const store=storage(),session=createWorkspaceSession({storage:store,initial:workspace()}),manager=createDraftManager(session);

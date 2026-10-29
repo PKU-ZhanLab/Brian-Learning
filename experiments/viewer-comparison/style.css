@@ -1,0 +1,3 @@
+body{font:15px system-ui;background:#f5f8f4;color:#263c31;margin:20px}main{max-width:1500px;margin:auto}label,button,select{margin:6px}section{min-width:0}section>canvas{width:100%;height:620px;background:#131e18}.atlas-model-canvas{height:300px}.atlas-model-canvas canvas{width:100%}pre{white-space:pre-wrap;overflow-wrap:anywhere}
+
+.niivue-host{height:620px;position:relative}.niivue-host canvas{width:100%;height:100%;display:block}

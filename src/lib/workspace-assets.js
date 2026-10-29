@@ -25,6 +25,8 @@ function detachView(view,ids){
  for(const key of ['atlasSelection','unresolvedAtlasSelection'])if(next[key]?.some(ref=>ids.has(ref.atlasId))){next[key]=next[key].filter(ref=>!ids.has(ref.atlasId));fields.push(key);}
  if(hit(next.atlasSelectionQuery)){delete next.atlasSelectionQuery;fields.push('atlasSelectionQuery');}
  if(next.roi){
+  if(next.roi.paired)for(const side of ['left','right'])if(hit(next.roi.paired[side])){next.roi.paired[side]={assetId:'',identity:null,point:[0,0,0],camera:null,labels:[],threshold:.5,tail:'positive'};fields.push(`roi.paired.${side}`);}
+
   for(const side of ['a','b'])if(ids.has(next.roi[`${side}Atlas`])){
    next.roi[`${side}Atlas`]='';next.roi[`${side}Labels`]=[];next.roi[`${side}RegionRefs`]=[];next.roi.computed=false;fields.push(`roi.${side}Atlas`);
   }

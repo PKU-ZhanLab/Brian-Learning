@@ -108,7 +108,7 @@ function rewriteIncoming(value,maps,counts,key='',parent=''){
   if(typeof value!=='string')return value;
   let kind=fields[key];
   if(key==='sourceRefs')kind='sourceArtifacts';
-  if(key==='id'&&['derivedAsset','inputs'].includes(parent))kind='volumes';
+  if(key==='id'&&['derivedAsset','inputs','identity'].includes(parent))kind='volumes';
   if(key==='subjectId'){
     const targets=[...maps.entries()].filter(([k,m])=>EVIDENCE_COLLECTIONS.includes(k)&&m.has(value)).map(([,m])=>m.get(value));
     if(new Set(targets).size>1)throw Error(`ambiguous-subject-reference: ${value}`);
