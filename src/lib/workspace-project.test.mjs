@@ -25,6 +25,15 @@ test('layer serialization retains the existing two MiB view payload budget',()=>
  const coordinateIds=Array.from({length:9000},(_,i)=>`coordinate-${i}-${'x'.repeat(140)}`),layer={layerId:'layer',resultId:'result',coordinateIds,sourceReferenceId:'paper',spaceId:null,visible:false,style:{}};
  assert.throws(()=>validateViewState({resultLayers:[layer,{...layer,layerId:'layer-2'}]}),/View state is too large/);
 });
+
+test('named view origin is checked even for IDs that now match public records; legacy empty views and public URLs stay portable',()=>{
+ const evidence=syntheticEvidence(),layer={layerId:'saved-layer',resultId:'public-result',sourceReferenceId:'public-paper',coordinateIds:['public-point-0'],spaceId:'MNI152NLin6Asym',visible:false,style:{}};
+ for(const savedProjectId of [undefined,null,'project-A'])assert.throws(()=>validateViewState({resultLayers:[layer]},{savedProjectId,projectId:'project-B'}),/named-view-project-mismatch/);
+ assert.deepEqual(validateViewState({resultLayers:[layer]},{savedProjectId:'project-B',projectId:'project-B'}).resultLayers,[layer]);
+ assert.deepEqual(validateViewState({schema:'neuroatlas-view-v1',resultLayers:[layer]},{projectId:'project-B'}).resultLayers,[]);
+ assert.deepEqual(validateViewState({schema:'neuroatlas-view-v2',resultLayers:[]},{projectId:'project-B'}).resultLayers,[]);
+ const portable=decodeView(encodeView({resultLayers:[layer]},{publicReferenceIds:['public-paper'],publicEvidence:evidence}).encoded);assert.deepEqual(resolveResultLayers(portable.resultLayers,{publicEvidence:evidence}).layers[0].coordinateIds,layer.coordinateIds);
+});
 test('paper and recorded-result method filters survive separately with a legacy paper fallback',async()=>{
   const literature={paperModality:'fMRI',resultModality:'MEG',modality:'EEG',query:'local search'};
   for(const restored of [validateViewState({literature}),decodeView(encodeView({literature}).encoded),(await parseProject(await serializeProject({view:{literature},volumes:[]}))).view]){

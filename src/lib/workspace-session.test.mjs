@@ -5,7 +5,7 @@ import {serializeProject as serializeWorkspaceProject} from './workspace-project
 import {listCustomVolumes,subscribeCustomVolumes} from './custom-volumes.js';
 import {emptyEvidence,migrateEvidence} from './evidence-schema.js';
 import {resolveResultLayers} from './result-layers.js';
-import {readSavedViews,writeSavedViews} from './workspace-project.js';
+import {readSavedViews,writeSavedViews,validateViewState} from './workspace-project.js';
 
 const volume=(id='custom-a',value=1)=>({id,name:id,data:Uint8Array.of(value),shape:[1,1,1],affine:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],kind:'label',space:'native-unverified',labels:[]});
 const makeWorkspace=(projectId='A',extra={})=>({projectId,revision:0,view:{atlas:'dk',camera:{position:[1,2,3],target:[0,0,0],zoom:1},resultLayers:[]},notes:[],evidence:emptyEvidence(),drafts:[],volumes:[],roiSnapshot:null,recomputedSnapshot:null,...extra});
@@ -20,6 +20,20 @@ test('project and named views preserve local marker identity and visibility; mis
  const before=storage.entries(),snapshot=session.getSnapshot(),bad={...initial,view:{resultLayers:[{...layer,coordinateIds:['missing']}]}};
  await assert.rejects(stageProjectImport(await serializeWorkspaceProject(bad),{current:snapshot}),/invalid-coordinate-reference/);assert.deepEqual(storage.entries(),before);assert.strictEqual(session.getSnapshot(),snapshot);
  const wrongSource={...layer,sourceReferenceId:'other'};await assert.rejects(stageWorkspaceChange({...initial,view:{resultLayers:[wrongSource]}},{current:snapshot}),/invalid-result-layer-source/);
+});
+
+test('a named view rejects foreign or unknown project origin before reused local coordinates can bind',async()=>{
+ const localA=evidence('A'),localB=evidence('B');localB.locations[0].xyz=[99,2,3];
+ const layer={layerId:'saved-layer',resultId:'result',sourceReferenceId:'paper',coordinateIds:['point'],spaceId:'MNI-unspecified',visible:true,style:{}};
+ const storage=memoryStorage(),current=makeWorkspace('B',{evidence:localB}),session=createWorkspaceSession({storage,initial:current});
+ writeSavedViews([{id:'named-A',name:'Saved under A',projectId:'A',view:{resultLayers:[layer]}}],storage);
+ const saved=readSavedViews(storage)[0],before=storage.entries(),snapshot=session.getSnapshot();
+ // This is the named restore admission used by App before reference resolution/staging.
+ const restore=async entry=>{const view=validateViewState(entry.view,{savedProjectId:entry.projectId,projectId:snapshot.projectId});const stage=await stageWorkspaceChange({...snapshot,view},{current:snapshot});return session.commit(stage);};
+ await assert.rejects(restore(saved),/named-view-project-mismatch/);
+ await assert.rejects(restore({...saved,projectId:undefined}),/named-view-project-mismatch/);
+ assert.deepEqual(storage.entries(),before);assert.strictEqual(session.getSnapshot(),snapshot);assert.deepEqual(localA.locations[0].xyz,[1,2,3]);assert.deepEqual(snapshot.evidence.locations[0].xyz,[99,2,3]);
+ const same=await restore({...saved,projectId:'B'});assert.deepEqual(same.view.resultLayers,[layer]);assert.equal(same.projectId,'B');
 });
 
 test('all failed stages preserve every storage key, view identity and project assets',async()=>{
