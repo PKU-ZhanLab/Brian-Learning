@@ -1,3 +1,4 @@
+import {migrateEvidence,getResultViewModel,reported,missing} from '../lib/evidence-schema.js';
 // Selected primary-source records. Source checking was performed with AI assistance,
 // not human certification. Generic MNI is deliberately NOT relabelled as NLin6Asym.
 const bi = (zh, en) => ({zh,en});
@@ -12,7 +13,7 @@ export const additionalResultsReferences = [
 const sources = {schaum:'https://elifesciences.org/articles/61679',axelrod:'https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126',bosco:'https://www.jneurosci.org/content/28/46/12071'};
 const point = (id,label,xyz,sourceRow,sourceUrl,kind='peak') => ({id,label,x:xyz[0],y:xyz[1],z:xyz[2],space:'MNI-unspecified',kind,sourceTable:'Table 1',sourceRow,sourceUrl,status:'source-checked',frameNote:bi('原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。','The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame.')});
 const common = {curationStatus:'source-checked',annotator,checkedAt:checked,curationNote:bi('已对照开放原文表格及方法核对选定记录；属于 AI 辅助整理，不代表人工认证或研究质量评级。','Selected records checked against the open primary table and methods with AI assistance; not human certification or a study-quality rating.')};
-export const curatedResults = [
+const legacyCuratedResults = [
   {...common,id:'schaum2021-meg-stop',referenceId:'schaum2021',topics:['attention'],modalities:['MEG'],
     finding:bi('成功停止相对注意捕获后继续反应，在右额下回等区域出现更高的 beta 源功率。选取表 1 的四个皮层峰值。','Successful stopping versus continuing after attentional capture increased beta source power in right inferior frontal and related cortical areas. Four cortical peaks from Table 1 are included.'),
     condition:bi('sSTOP > cAC-GO；刺激选择性停止任务，beta 源功率','sSTOP > cAC-GO; stimulus-selective stopping, beta source power'),sample:bi('59 名健康成人（62 名入组，3 名排除）','59 healthy adults (62 enrolled, 3 excluded)'),
@@ -32,5 +33,26 @@ export const curatedResults = [
   {...common,id:'bosco2008-tms-protocol1',referenceId:'bosco2008',topics:['motor'],modalities:['TMS','behavior'],finding:bi('协议 1 采用右侧 TPJ 或 hMT/V5+ 的 rTMS 检验下落目标拦截的时间控制。坐标为实际刺激点的组均值。','Protocol 1 used right TPJ or hMT/V5+ rTMS to examine interception timing for descending targets. Coordinates summarize the actual stimulation sites.'),condition:bi('协议 1：rTMS 前后比较；自然重力或反重力下落目标；反应时控制任务','Protocol 1: before/after rTMS; gravity-consistent or reversed-gravity descent; reaction-time control'),sample:bi('协议 1 共 12 名，TPJ 与 hMT/V5+ 各 6 名；其中 6 名也接受另一靶点刺激','Protocol 1: 12 participants, 6 per initial target; 6 also received stimulation of the other target'),roiDefinition:bi('根据既往 fMRI 设置靶点并以个体 MRI 导航；表 1 报告实际刺激位置的 MNI 均值','Targets based on prior fMRI and navigated using individual MRI; Table 1 reports mean actual MNI stimulation positions'),direction:bi('拦截反应提前；TPJ 效应依赖重力一致性，hMT/V5+ 的效应更广','Earlier interception responses; TPJ effects depended on gravity consistency, hMT/V5+ effects were broader'),regionIds:['supramarginal-r','lateral-occipital-r'],sourceUrl:sources.bosco,limitations:bi('刺激范围与网络效应不能由单一坐标表示；这些是刺激位置而非 BOLD 激活峰值。区域关联是宏观阅读线索。','Stimulation spread and network effects cannot be represented by a single point. These are stimulation positions, not BOLD peaks; anatomical links are broad reading associations.'),coordinates:[point('bosco-tpj','Right TPJ stimulation mean',[65,-36.6,30.1],'Protocol 1 — TPJ',`${sources.bosco}#T1`,'stimulation-target'),point('bosco-mt','Right hMT/V5+ stimulation mean',[55,-67.8,1.8],'Protocol 1 — hMT/V5+',`${sources.bosco}#T1`,'stimulation-target')],figures:[{id:'bosco-fig1',label:'Figure 1',url:`${sources.bosco}#F1`,sourceUrl:sources.bosco,license:'Source publisher rights; external link only',caption:bi('图 1：TPJ 与 hMT/V5+ 刺激位置。仅提供原文图链接。','Figure 1: TPJ and hMT/V5+ stimulation positions. Source link only.'),regionIds:['supramarginal-r','lateral-occipital-r']}],
   },
 ];
+
+// Source-anchored factual transcription; these additions do not create a new
+// source check, space check, human review, or an inferred experiment boundary.
+export const curatedEvidence=migrateEvidence({schema:'brain-evidence-v1',references:additionalResultsReferences,results:legacyCuratedResults,relations:[]}).value;
+curatedEvidence.dataVersion='2026-10-29.1';
+const table1='https://doi.org/10.1371/journal.pone.0117126.t001';
+const table2='https://doi.org/10.1371/journal.pone.0117126.t002';
+const mvpa=sources.axelrod;
+for(const [id,n,t,df,p,passed] of [['axelrod2015-lffa',13,2.57,12,.012,false],['axelrod2015-rffa',16,4.29,15,.001,true]]){
+  const result=curatedEvidence.results.find(r=>r.id===id);
+  result.sample={enrolled:missing('Enrollment count not separately extracted'),included:reported(17,[sources.axelrod]),perAnalysis:reported(n,[table1])};
+  result.statistics=reported([{type:'t',value:t,df,unit:'dimensionless',p:{operator:id.endsWith('lffa')?'=':'<',value:p},sourceRefs:[mvpa],sourceLocator:'Results / Neuroimaging Results / MVPA'},
+    {type:'t',value:id.endsWith('lffa')?2.57:4.3,df,unit:'dimensionless',p:{operator:id.endsWith('lffa')?'=':'<',value:id.endsWith('lffa')?.01:.001},sourceRefs:[table2],sourceLocator:'Table 2 / FFA / 20 voxels'}],[mvpa,table2]);
+  result.correction=reported({method:'Bonferroni',comparisonFamily:'12 ROIs, primary 20-voxel analysis',passed,threshold:{operator:'<',value:.05,appliesTo:'Bonferroni-adjusted p'}},[mvpa,table2]);
+}
+for(const [id,sd] of [['bosco-tpj',[1.2,3.3,3.6]],['bosco-mt',[1.4,2.2,3.0]]]){
+  const location=curatedEvidence.locations.find(l=>l.id===id);
+  location.dispersion=reported({kind:'sd',value:sd,unit:'mm',scope:'Between-subject distribution of stimulation-site coordinates'},[`${sources.bosco}#T1`]);
+  location.uncertainty={kind:'unknown',reason:'Localization error is not established by between-subject coordinate SD',unit:'mm',sourceRefs:[`${sources.bosco}#T1`]};
+}
+export const curatedResults=curatedEvidence.results.map(result=>getResultViewModel(result.id,curatedEvidence));
 
 

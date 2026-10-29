@@ -8,7 +8,7 @@ import {references} from '../src/data/references.js';
 import {additionalReferences} from '../src/data/references-expanded.js';
 import {evidenceByStructureId,atlasEvidence} from '../src/data/evidence.js';
 import {additionalLiteratureReferences,literaturePapers,literatureTopics,literatureModalities,literatureDebates,literatureByReferenceId} from '../src/data/literature.js';
-import {additionalResultsReferences,curatedResults} from '../src/data/results.js';
+import {additionalResultsReferences,curatedResults,curatedEvidence} from '../src/data/results.js';
 import {emptyEvidence,validateEvidence} from '../src/lib/evidence-workspace.js';
 import {structures as allStructures} from '../src/data/catalog.js';
 import {classifyMapping,buildLocateRequest} from '../src/lib/evidence-mapping.js';
@@ -111,7 +111,7 @@ for(const f of figureAudit.figures){
 assert.equal(mappedIds.size,Object.keys(evidenceByStructureId).length,'Some structures have no reading links');
 // Structured extraction is a separate layer from the legacy reading annotations.
 // These checks lock provenance and numeric transcription; they do not re-review the paper.
-const structured={...emptyEvidence(),references:additionalResultsReferences,results:curatedResults};
+const structured=curatedEvidence;
 const structuredReport=validateEvidence(structured,{knownReferences:refs,knownRegions:Object.keys(evidenceByStructureId)});
 assert(structuredReport.valid,structuredReport.errors.join('\n'));
 assert.equal(additionalResultsReferences.length,3,'Expected three primary papers with structured results');

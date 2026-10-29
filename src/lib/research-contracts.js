@@ -83,6 +83,33 @@
  * must show unsaved state. W2 alone persists drafts in the project envelope;
  * project v1 migration starts with []; public links exclude all drafts. A draft
  * does not grant result completeness, source verification or review status.
+ *
+ * @template T
+ * @typedef {{state:'reported',value:T,sourceRefs:string[]}|{state:'not-reported'|'not-extracted'|'uncertain'|'not-applicable',reason:string,sourceRefs:string[]}} Reported
+ *
+ * @typedef {{zh:string,en:string}} BiText
+ * @typedef {{enrolled:Reported<number>,included:Reported<number>,perAnalysis:Reported<number>}} EvidenceSample
+ * @typedef {{id:string,referenceId:string,task:BiText|string,species:string,sample:EvidenceSample,modalities:string[],sourceRefs:string[]}} Experiment
+ * @typedef {{type:string,value:number,df:number|number[]|null,unit:string,p:{operator:'='|'<'|'>',value:number}|null,sourceRefs:string[]}} ReportedStatistic
+ * @typedef {{type:string,value:number,unit:string,variance:Reported<number>,interval:Reported<{level:number,lower:number,upper:number,unit:string}>}} EffectEstimate
+ * @typedef {{method:string,comparisonFamily:string,passed:boolean|null,threshold:{operator:string,value:number}}} Correction
+ * @typedef {{id:string,referenceId?:string,experimentId:string|null,contrast:BiText|string,finding:BiText|string,modalities:string[],sample?:EvidenceSample,statistics:Reported<ReportedStatistic[]>,effectEstimate:Reported<EffectEstimate>,correction:Reported<Correction>,timeWindow:Reported<{start:number,end:number,unit:'ms'}>,frequencyBand:Reported<{min:number,max:number,unit:'Hz'}>,locationIds:string[],claimIds:string[],limitations:BiText[],recordVersion?:string,legacyV1?:Object}} EvidenceResult
+ * @typedef {{kind:'sd'|'se'|'ci'|'localization-error'|'not-reported'|'unknown',unit:'mm',value?:number|number[],reason?:string,sourceRefs:string[]}} LocationUncertainty
+ * @typedef {{id:string,resultId:string,kind:string,sourceLabel:string|BiText,sourceSpaceId:string,xyz:[number,number,number],unit:'mm',uncertainty:LocationUncertainty,sourceRefs:string[],derivedAsset:AssetIdentity|null,transformRef:string|null,dispersion?:Reported<{kind:string,value:number[],unit:'mm',scope:string}>,recordVersion?:string,legacyV1?:Object}} EvidenceLocation
+ * @typedef {{id:string,referenceId:string,experimentId:string|null,resultId:string|null,text:BiText|string,sourceRefs:string[],limitations:BiText[]}} Claim
+ * @typedef {{id:string,referenceId:string,resultSummaries:BiText,methodProvenance:Object,limitations:BiText,claimIds:string[],legacyV1?:Object}} Reading
+ * @typedef {{id:string,subjectId:string,stage:'extracted'|'source-checked'|'space-checked'|'human-reviewed',actorType:'ai'|'human'|'unknown',actorName:string,date:string|null,scope:string,sourceRefs:string[],limitations:BiText[],recordVersion:string}} ReviewEvent
+ * @typedef {{extracted:boolean,sourceChecked:boolean,spaceChecked:boolean,humanReviewed:boolean,events:ReviewEvent[],limitations:BiText[]}} ReviewState
+ * @typedef {{schema:'brain-evidence-v2',dataVersion:string,references:Object[],readings:Reading[],experiments:Experiment[],results:EvidenceResult[],locations:EvidenceLocation[],claims:Claim[],mappings:Object[],sourceArtifacts:Object[],reviewEvents:ReviewEvent[],relations:Object[],legacyV1?:Object}} EvidenceBundleV2
+ * @typedef {{valid:boolean,errors:string[],warnings:string[],value:EvidenceBundleV2|null}} ValidationReport
+ * @typedef {{valid:boolean,errors:string[]}} IntegrityReport
+ * @typedef {{id:string,referenceId:string|null,finding:BiText|string,condition:BiText|string,sample:BiText|string,roiDefinition:BiText|string,direction:BiText|string,modalities:string[],topics:string[],coordinates:Object[],regionIds:string[],figures:Object[],sourceUrl:string,limitations:BiText|string,reviewState:ReviewState}} ResultViewModel
+ *
+ * Evidence runtime validation and all v1 migration belong to evidence-schema.js.
+ * legacyV1 stores the source without normalization; it does not grant spatial
+ * identity or review. Sample SD and coordinate dispersion are not localization
+ * error. Review stages are independent and apply only to the named subject and
+ * record version. Metadata-only bibliography verification is not a review stage.
  */
 
 export {};
