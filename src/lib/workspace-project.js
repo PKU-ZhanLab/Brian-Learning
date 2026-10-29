@@ -52,11 +52,13 @@ function base64ToBytes(text,maxBytes=MAX_FILE_BYTES){encodedByteLength(text,maxB
 
 export function encodeView(input,{publicReferenceIds=[]}={}){
   const state=validateViewState(input);const omitted=[];
+  const projectRegionRefs=(container,keys,prefix='')=>{for(const key of keys)if(container?.[key]){const original=container[key];container[key]=original.filter(ref=>!ref.atlasId.startsWith('custom-'));if(original.length!==container[key].length)omitted.push(`${prefix}${key}`);}};
   if(state.resultLayers?.length)omitted.push('resultLayers');delete state.resultLayers;
-  for(const key of ['atlasSelection','unresolvedAtlasSelection'])if(state[key]){const original=state[key];state[key]=original.filter(ref=>!ref.atlasId.startsWith('custom-'));if(original.length!==state[key].length)omitted.push(key);}
+  projectRegionRefs(state,['atlasSelection','unresolvedAtlasSelection']);
   if(state.atlasSelectionQuery){delete state.atlasSelectionQuery;omitted.push('atlasSelectionQuery');}
   if(state.atlas.startsWith('custom-')){state.atlas='dk';omitted.push('atlas');}
   if(state.roi&&[state.roi.aAtlas,state.roi.bAtlas].some(id=>id.startsWith('custom-'))){delete state.roi;if(state.mode==='roi')state.mode='anatomy';omitted.push('ROI');}
+  projectRegionRefs(state.roi,['aRegionRefs','bRegionRefs','unresolvedRegionRefs'],'roi.');
   if(state.atlasExplorer?.atlas.startsWith('custom-')){delete state.atlasExplorer;state.atlasExplorerOpen=false;omitted.push('atlasExplorer');}
   // IDs are not inherently public. Only the caller's bundled reference allowlist can authorize link inclusion.
   const publicIds=new Set(publicReferenceIds instanceof Set||Array.isArray(publicReferenceIds)?publicReferenceIds:[]);

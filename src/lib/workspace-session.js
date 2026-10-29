@@ -108,7 +108,8 @@ function rewriteIncoming(value,maps,counts,key='',parent=''){
   }
   const replacement=maps.get(kind)?.get(value);if(replacement){counts[key]=(counts[key]||0)+1;return replacement;}return value;
 }
-function mergeWorkspace(current,incoming,makeId){
+/** Pure merge plan. Its snapshot still needs full staging before publication. */
+export function mergeWorkspace(current,incoming,makeId){
   const collections={volumes:[current.volumes,incoming.volumes],notes:[current.notes,incoming.notes],drafts:[current.drafts??[],incoming.drafts??[]],resultLayers:[current.view.resultLayers??[],incoming.view.resultLayers??[]],...Object.fromEntries(EVIDENCE_COLLECTIONS.map(k=>[k,[current.evidence[k],incoming.evidence[k]]]))};
   const maps=new Map(Object.keys(collections).map(k=>[k,new Map()])),collisions=[],used=new Map(Object.entries(collections).map(([k,lists])=>[k,new Set(lists.flat().map(r=>k==='resultLayers'?r.layerId:r.id))]));
   const identity=(row,kind)=>kind==='resultLayers'?row.layerId:row.id;
@@ -134,7 +135,8 @@ function mergeWorkspace(current,incoming,makeId){
     for(const row of rows){const original=identity(row,kind),id=maps.get(kind).get(original)||original;if(ids.has(id))continue;const rewritten=rewriteRow(row,kind,counts);rewritten[kind==='resultLayers'?'layerId':'id']=id;next.push(rewritten);ids.add(id);}
     merged[kind]=next;
   }
-  const snapshot={...incoming,projectId:current.projectId,view:{...rewriteIncoming(incoming.view,maps,counts),resultLayers:merged.resultLayers},notes:merged.notes,drafts:merged.drafts,volumes:merged.volumes,evidence:{...current.evidence,...Object.fromEntries(EVIDENCE_COLLECTIONS.map(k=>[k,merged[k]]))},roiSnapshot:rewriteIncoming(incoming.roiSnapshot??current.roiSnapshot,maps,counts),recomputedSnapshot:rewriteIncoming(incoming.recomputedSnapshot??current.recomputedSnapshot,maps,counts)};
+  const snapshotFor=key=>incoming[key]==null?current[key]:rewriteIncoming(incoming[key],maps,counts);
+  const snapshot={...incoming,projectId:current.projectId,view:{...rewriteIncoming(incoming.view,maps,counts),resultLayers:merged.resultLayers},notes:merged.notes,drafts:merged.drafts,volumes:merged.volumes,evidence:{...current.evidence,...Object.fromEntries(EVIDENCE_COLLECTIONS.map(k=>[k,merged[k]]))},roiSnapshot:snapshotFor('roiSnapshot'),recomputedSnapshot:snapshotFor('recomputedSnapshot')};
   const legacy=[...(current.evidence.legacyImports||[]),...(incoming.evidence.legacyImports||[]),...(incoming.evidence.legacyV1?[incoming.evidence.legacyV1]:[])];if(legacy.length)snapshot.evidence.legacyImports=legacy;
   return {snapshot,preview:{mode:'merge',includedAssetIds:merged.volumes.map(v=>v.id),removedAssetIds:[],collisions,remap:Object.fromEntries([...maps].map(([k,v])=>[k,Object.fromEntries(v)])),changedReferenceCounts:counts}};
 }

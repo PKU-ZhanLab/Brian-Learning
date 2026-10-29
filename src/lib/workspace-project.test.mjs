@@ -23,6 +23,14 @@ test('new private result layers and custom atlas identities never enter view lin
  const restored=JSON.stringify(decodeView(link.encoded));assert.ok(!restored.includes('private-'));assert.ok(!restored.includes('custom-private'));
 });
 
+test('built-in ROI source IDs do not authorize private identities in any nested region collection',()=>{
+ const builtin={atlasId:'dk',atlasVersion:'public-version',labelId:1,hemisphere:'L',spaceId:'MNI152NLin6Asym'},privateRef={atlasId:'custom-private',atlasVersion:'private-version',labelId:2,hemisphere:'R',spaceId:'private-space'};
+ const input={atlasSelection:[builtin,privateRef],unresolvedAtlasSelection:[privateRef,builtin],roi:{aAtlas:'dk',bAtlas:'jhu',aRegionRefs:[privateRef,builtin],bRegionRefs:[builtin,privateRef],unresolvedRegionRefs:[privateRef,builtin]}};
+ const before=structuredClone(input),link=encodeView(input),restored=decodeView(link.encoded);
+ for(const key of ['aRegionRefs','bRegionRefs','unresolvedRegionRefs']){assert.deepEqual(restored.roi[key],[builtin]);assert.ok(link.omitted.includes(`roi.${key}`));}
+ assert.deepEqual(restored.atlasSelection,[builtin]);assert.deepEqual(restored.unresolvedAtlasSelection,[builtin]);assert.equal(restored.roi.aAtlas,'dk');assert.equal(restored.roi.bAtlas,'jhu');assert.ok(!JSON.stringify(restored).includes('private'));assert.deepEqual(input,before);
+});
+
 test('draft admission uses exact UTF-8 payload/collection bounds and project ownership',()=>{
  const draft={id:'d',projectId:'A',kind:'result',recordId:null,payload:{text:'x'.repeat(49989)},updatedAt:'2026-10-29T00:00:00Z'};
  assert.equal(new TextEncoder().encode(JSON.stringify(draft.payload)).length,50000);assert.equal(validateProjectDrafts([draft],'A').length,1);
