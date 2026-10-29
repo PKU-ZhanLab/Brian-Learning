@@ -1,4 +1,5 @@
 // NIfTI-1 single-file reader/writer. Header geometry never establishes template identity.
+import {validateVolumeMetadata,validateLabelRows,MAX_LABEL_FILE_BYTES,MAX_LABEL_TEXT_CHARS,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,utf8ByteLength} from './workspace-limits.js';
 export const MAX_NIFTI_VOXELS = 64_000_000;
 export const MAX_NIFTI_FILE_BYTES = 128 * 1024 * 1024;
 const MAX_DECODED_BYTES = MAX_NIFTI_VOXELS * 8 + 1024 * 1024;
@@ -32,21 +33,43 @@ function geometry(shape, affine) {
   return count;
 }
 
-async function unpack(bytes) {
+function decodeLimit(value,fallback,hardMaximum,code){
+  if(value===undefined)return fallback;
+  if(!Number.isSafeInteger(value)||value<0)fail(code);
+  return Math.min(value,hardMaximum);
+}
+
+async function unpack(bytes, options) {
   if (bytes.byteLength > MAX_NIFTI_FILE_BYTES) fail('nifti-file-too-large');
-  if (bytes[0] !== 31 || bytes[1] !== 139) return bytes;
+  const maxInflatedBytes=decodeLimit(options.maxInflatedBytes,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_DECODED_BYTES,'inflated-budget');
+  if (bytes[0] !== 31 || bytes[1] !== 139) {
+    // Admit a complete header before considering the missing data of a virtual large file.
+    if(bytes.length>=352)readHeader(bytes.subarray(0,352),options);
+    if(bytes.byteLength>maxInflatedBytes)fail('inflated-budget');
+    return bytes;
+  }
   if (typeof DecompressionStream === 'undefined') fail('nifti-gzip-unavailable');
   const reader = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip')).getReader();
-  const chunks = []; let length = 0;
+  const chunks = []; let length = 0,headerLength=0,admitted=false;
+  const header=new Uint8Array(352);
   try {
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
       length += value.length;
-      if (length > MAX_DECODED_BYTES) { await reader.cancel(); fail('nifti-decoded-too-large'); }
+      if(!admitted){
+        const take=Math.min(352-headerLength,value.byteLength);
+        header.set(value.subarray(0,take),headerLength);headerLength+=take;
+        if(headerLength===352){readHeader(header,options);admitted=true;}
+      }
+      if (length > maxInflatedBytes) fail('inflated-budget');
       chunks.push(value);
     }
-  } catch (error) { if (error.message.startsWith('nifti-')) throw error; fail('nifti-invalid-gzip'); }
+  } catch (error) {
+    try{await reader.cancel();}catch{/* Preserve the admission or decoding failure. */}
+    if (error.message.startsWith('nifti-')||['decoded-budget','inflated-budget'].includes(error.message)) throw error;
+    fail('nifti-invalid-gzip');
+  }
   const result = new Uint8Array(length); let offset = 0;
   for (const chunk of chunks) { result.set(chunk, offset); offset += chunk.length; }
   return result;
@@ -69,9 +92,7 @@ function qform(view, little, factor) {
   ];
 }
 
-export async function parseNifti(input, options = {}) {
-  if (!(input instanceof ArrayBuffer) && !(input instanceof Uint8Array)) fail('nifti-invalid-input');
-  const bytes = await unpack(input instanceof Uint8Array ? input : new Uint8Array(input));
+function readHeader(bytes,options){
   if (bytes.length < 352) fail('nifti-truncated-header');
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const little = view.getInt32(0, true) === 348;
@@ -93,6 +114,24 @@ export async function parseNifti(input, options = {}) {
   const affine=sa||qa, count=geometry(shape,affine);
   const offset=f32(108);
   if (!Number.isInteger(offset) || offset<352 || offset>1024*1024 || offset%16!==0) fail('nifti-invalid-offset');
+  const slope=f32(112), intercept=f32(116);
+  if (!Number.isFinite(slope) || (slope!==0 && !Number.isFinite(intercept))) fail('nifti-invalid-scaling');
+  const scaled=slope!==0 && (slope!==1 || intercept!==0);
+  const maxDecodedVoxelBytes=decodeLimit(options.maxDecodedVoxelBytes,MAX_WORKSPACE_RAW_PAYLOAD_BYTES-352,MAX_WORKSPACE_RAW_PAYLOAD_BYTES-352,'decoded-budget');
+  if(count*(scaled?8:type[3])>maxDecodedVoxelBytes)fail('decoded-budget');
+  const maxInflatedBytes=decodeLimit(options.maxInflatedBytes,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_DECODED_BYTES,'inflated-budget');
+  if(offset+count*type[3]>maxInflatedBytes)fail('inflated-budget');
+  return {little,shape,type,units,qcode,scode,sa,qa,affine,count,offset,slope,intercept,scaled};
+}
+
+export async function parseNifti(input, options = {}) {
+  if (!(input instanceof ArrayBuffer) && !(input instanceof Uint8Array)) fail('nifti-invalid-input');
+  const kind=({stat:'statistic',prob:'probability',labels:'label'})[options.kind]||options.kind||'label';
+  if (!['label','mask','statistic','probability'].includes(kind)) fail('nifti-invalid-kind');
+  const metadata=validateVolumeMetadata({...options,kind});
+  const bytes = await unpack(input instanceof Uint8Array ? input : new Uint8Array(input),options);
+  const {little,shape,type,units,qcode,scode,sa,qa,affine,count,offset,slope,intercept,scaled}=readHeader(bytes,options);
+  const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength);
   if (offset+count*type[3]>bytes.length) fail('nifti-truncated-data');
   if (bytes[348]) {
     for (let at=352; at<offset;) {
@@ -102,12 +141,7 @@ export async function parseNifti(input, options = {}) {
       at+=size;
     }
   }
-  const slope=f32(112), intercept=f32(116);
-  if (!Number.isFinite(slope) || (slope!==0 && !Number.isFinite(intercept))) fail('nifti-invalid-scaling');
-  const scaled=slope!==0 && (slope!==1 || intercept!==0);
   const data = new (scaled ? Float64Array : type[0])(count);
-  const kind=({stat:'statistic',prob:'probability',labels:'label'})[options.kind]||options.kind||'label';
-  if (!['label','mask','statistic','probability'].includes(kind)) fail('nifti-invalid-kind');
   let min=Infinity,max=-Infinity,nonzero=0;
   for (let i=0;i<count;i++) {
     const raw=view[type[1]](offset+i*type[3],little), value=scaled?raw*slope+intercept:raw;
@@ -118,7 +152,7 @@ export async function parseNifti(input, options = {}) {
     data[i]=value; min=Math.min(min,value); max=Math.max(max,value); if(value!==0)nonzero++;
   }
   const conflict=!!(sa&&qa&&sa.some((v,i)=>Math.abs(v-qa[i])>1e-3));
-  return { data, dataTypedArray:data, shape, affine, order:'x-fastest', dtype:scaled?'float64':type[4], space:options.space||'native-unverified', kind, name:options.name||'Imported NIfTI', canOverlayOnTarget:false, alignmentStatus:'unverified', metadata:{ format:'NIfTI-1', littleEndian:little, datatype:i16(70), qformCode:qcode, sformCode:scode, affineSource:sa?'sform':'qform', qformAffine:qa, sformAffine:sa, affineConflict:conflict, originalSpatialUnits:units, spatialUnits:'mm', scaling:{slope,intercept}, min,max,nonzero, description:new TextDecoder().decode(bytes.slice(148,228)).replace(/\0.*$/s,''), geometryDoesNotVerifySpace:true } };
+  return { data, dataTypedArray:data, shape, affine, order:'x-fastest', dtype:scaled?'float64':type[4], space:metadata.space||'native-unverified', kind, name:metadata.name||'Imported NIfTI', canOverlayOnTarget:false, alignmentStatus:'unverified', metadata:{ format:'NIfTI-1', littleEndian:little, datatype:view.getInt16(70,little), qformCode:qcode, sformCode:scode, affineSource:sa?'sform':'qform', qformAffine:qa, sformAffine:sa, affineConflict:conflict, originalSpatialUnits:units, spatialUnits:'mm', scaling:{slope,intercept}, min,max,nonzero, description:new TextDecoder().decode(bytes.slice(148,228)).replace(/\0.*$/s,''), geometryDoesNotVerifySpace:true } };
 }
 
 /** Writes a 3D, little-endian .nii with mm units and the supplied affine as sform. */
@@ -149,6 +183,8 @@ export function exportNifti(volume) {
 }
 
 export function parseLabelTable(text, format='csv') {
+  if(typeof text!=='string')fail('labels-invalid-table');
+  if(utf8ByteLength(text)>MAX_LABEL_FILE_BYTES)fail('label-file-budget');
   let rows;
   if(format==='json') {
     const value=JSON.parse(text);
@@ -167,8 +203,10 @@ export function parseLabelTable(text, format='csv') {
     if(!header.includes('id')||!header.includes('name'))fail('labels-invalid-table');
     rows=records.map(values=>Object.fromEntries(header.map((key,i)=>[key,values[i]||''])));
   }
-  const ids=new Set();
-  return rows.map(row=>{const id=Number(row.id),name=String(row.name||'').trim();if(!Number.isSafeInteger(id)||id<=0||!name||ids.has(id))fail('labels-invalid-table');ids.add(id);return{id,name,...(row.zh?{zh:String(row.zh)}:{})};});
+  return validateLabelRows(rows.map(row=>{
+    if(typeof row?.name==='string'&&row.name.length>MAX_LABEL_TEXT_CHARS)fail('label-name-too-long');
+    return {id:Number(row?.id),name:typeof row?.name==='string'?row.name.trim():row?.name,...(row?.zh!=null?{zh:row.zh}:{})};
+  }));
 }
 
 // Preserved pinned-source PAM50 reader and cropping API.

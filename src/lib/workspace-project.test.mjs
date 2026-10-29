@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {encodeView,decodeView,validateViewState,validateCamera,serializeProject,parseProject,assertProjectVolumePayloadSize} from './workspace-project.js';
+import {encodeView,decodeView,validateViewState,validateCamera,serializeProject,prepareProjectPayload,parseProject,assertProjectVolumePayloadSize} from './workspace-project.js';
 import {MAX_NIFTI_FILE_BYTES} from './nifti.js';
 test('public link preserves camera opacity ROI and filters without custom data',()=>{const state={atlas:'jhu',language:'en',opacity:.12,camera:{position:[1,2,3],target:[0,0,0],zoom:2},roi:{aAtlas:'dk',bAtlas:'jhu',aLabels:[1,2],bLabels:[5],display:{opacityA:0},computed:true},literature:{modality:'meg',query:'private note'},atlasExplorer:{atlas:'dk',selected:[2,3]}};const restored=decodeView(encodeView(state).encoded);assert.deepEqual(restored.camera,state.camera);assert.equal(restored.opacity,.12);assert.equal(restored.roi.display.opacityA,0);assert.deepEqual(restored.roi.aLabels,[1,2]);assert.equal(restored.literature.modality,'meg');assert.equal(restored.literature.query,'');});
 test('custom volumes are omitted from links and malformed input rejected',()=>{const v=encodeView({atlas:'custom-a',roi:{aAtlas:'custom-a'},mode:'roi'});assert.deepEqual(v.omitted,['atlas','ROI']);assert.equal(decodeView(v.encoded).atlas,'dk');assert.throws(()=>decodeView('!!'));assert.equal(validateViewState({camera:{position:[NaN,0,0]}}).camera,null);});
@@ -81,4 +81,20 @@ test('project eligibility never grants overlay to missing evidence or another te
 test('export payload bound matches the NIfTI import limit',()=>{
   assert.doesNotThrow(()=>assertProjectVolumePayloadSize(MAX_NIFTI_FILE_BYTES));
   for(const size of [MAX_NIFTI_FILE_BYTES+1,-1,NaN,Infinity])assert.throws(()=>assertProjectVolumePayloadSize(size),/128 MiB/);
+});
+
+test('aggregate capacity is export symmetric',async()=>{
+  const volume={...fixture(),labels:[{id:1,name:'x'.repeat(2000),zh:'中'.repeat(2000)}]};
+  const accepted=await prepareProjectPayload({view:{},volumes:[volume]});
+  assert.equal(accepted.usage.rawPayloadBytes,356);assert.equal(accepted.usage.assetCount,1);
+  assert.equal(accepted.usage.projectUtf8Bytes,new TextEncoder().encode(accepted.text).length);
+  assert.deepEqual(accepted.usage.compressedAssetBytes,[accepted.encodedAssets[0].compressedBytes]);
+  const restored=await parseProject(accepted.text);
+  assert.deepEqual(restored.volumes[0].labels,volume.labels);
+  assert.deepEqual((await parseProject(await serializeProject(restored))).volumes[0].labels,volume.labels);
+  await assert.rejects(prepareProjectPayload({view:{},volumes:[{...volume,labels:[{id:1,name:'x'.repeat(2001)}]}]}),/label-name-too-long/);
+  // Virtual byte descriptors must be rejected before exportNifti reads data or creates a large array.
+  const virtual={...fixture(),data:{byteLength:256*1024*1024-351,length:1}};
+  await assert.rejects(prepareProjectPayload({view:{},volumes:[virtual]}),/decoded-budget/);
+  await assert.rejects(prepareProjectPayload({view:{},volumes:Array.from({length:51},(_,i)=>({...fixture(),id:`custom-${i}`}))}),/asset-count/);
 });

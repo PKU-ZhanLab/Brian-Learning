@@ -1,8 +1,9 @@
+import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_PROJECT_UTF8_BYTES,utf8ByteLength} from './workspace-limits.js';
 import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
 
 export const PROJECT_SCHEMA='neuroatlas-project-v1';
 export const VIEW_SCHEMA='neuroatlas-view-v1';
-const MAX_FILE_BYTES=180*1024*1024;
+const MAX_FILE_BYTES=MAX_PROJECT_UTF8_BYTES;
 const boundedString=(v,max=500)=>typeof v==='string'?v.slice(0,max):'';
 const number=(v,min,max,fallback)=>Number.isFinite(v)?Math.min(max,Math.max(min,v)):fallback;
 const stringArray=(v,max=500)=>Array.isArray(v)?v.filter(s=>typeof s==='string'&&s.length<=120).slice(0,max):[];
@@ -15,7 +16,7 @@ export function validateCamera(v){
   if(v.up!==undefined){const up=point(v.up),length=up&&Math.hypot(...up);if(!length)return null;camera.up=up.map(n=>n/length);}
   return camera;
 }
-const safeObject=(value,maxBytes=50000)=>{const text=JSON.stringify(value??null);if(text.length>maxBytes)throw Error('View state is too large');return JSON.parse(text);};
+const safeObject=(value,maxBytes=50000)=>{const text=JSON.stringify(value??null);if(utf8ByteLength(text)>maxBytes)throw Error('View state is too large');return JSON.parse(text);};
 
 export function validateViewState(input){
   if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Invalid view state');
@@ -27,7 +28,8 @@ export function validateViewState(input){
   return output;
 }
 function bytesToBase64(bytes){let s='';for(let i=0;i<bytes.length;i+=32768)s+=String.fromCharCode(...bytes.subarray(i,i+32768));return btoa(s);}
-function base64ToBytes(text,maxBytes=MAX_FILE_BYTES){if(typeof text!=='string'||text.length>Math.ceil(maxBytes/3)*4||!/^[A-Za-z0-9+/]*={0,2}$/.test(text))throw Error('Invalid encoded data');const padding=text.endsWith('==')?2:text.endsWith('=')?1:0;if(Math.floor(text.length*3/4)-padding>maxBytes)throw Error('Encoded data exceed the size limit');return Uint8Array.from(atob(text),c=>c.charCodeAt(0));}
+function encodedByteLength(text,maxBytes=MAX_FILE_BYTES){if(typeof text!=='string'||text.length>Math.ceil(maxBytes/3)*4||!/^[A-Za-z0-9+/]*={0,2}$/.test(text))throw Error('Invalid encoded data');const padding=text.endsWith('==')?2:text.endsWith('=')?1:0;const bytes=Math.floor(text.length*3/4)-padding;if(bytes>maxBytes)throw Error('Encoded data exceed the size limit');return bytes;}
+function base64ToBytes(text,maxBytes=MAX_FILE_BYTES){encodedByteLength(text,maxBytes);return Uint8Array.from(atob(text),c=>c.charCodeAt(0));}
 
 export function encodeView(input,{publicReferenceIds=[]}={}){
   const state=validateViewState(input);const omitted=[];
@@ -48,81 +50,81 @@ export function encodeView(input,{publicReferenceIds=[]}={}){
 export function decodeView(encoded){if(!encoded||encoded.length>45000)throw Error('Invalid view link');const base=encoded.replaceAll('-','+').replaceAll('_','/');return validateViewState(JSON.parse(new TextDecoder().decode(base64ToBytes(base+'='.repeat((4-base.length%4)%4)))));}
 
 const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
-function metadataText(value,field,max=2000,fallback=''){
-  if(value==null)return fallback;
-  if(typeof value!=='string'||value.length>max)throw Error(`Invalid volume metadata: ${field}`);
-  return value;
-}
-function headerMetadata(input,includeSource=true){
-  if(input==null)return {};
-  if(!record(input))throw Error('Invalid NIfTI source metadata');
-  const output={};
-  for(const key of ['format','affineSource','spatialUnits','description','referenceSpace'])if(input[key]!=null)output[key]=metadataText(input[key],key,2000);
-  for(const key of ['littleEndian','affineConflict','geometryDoesNotVerifySpace','userDeclaredAligned','restoredFromProject'])if(input[key]!=null){if(typeof input[key]!=='boolean')throw Error(`Invalid volume metadata: ${key}`);output[key]=input[key];}
-  for(const key of ['datatype','qformCode','sformCode','originalSpatialUnits','min','max','nonzero'])if(input[key]!=null){if(!Number.isFinite(input[key]))throw Error(`Invalid volume metadata: ${key}`);output[key]=input[key];}
-  for(const key of ['qformAffine','sformAffine'])if(input[key]!=null){if(!Array.isArray(input[key])||input[key].length!==16||!input[key].every(Number.isFinite))throw Error(`Invalid volume metadata: ${key}`);output[key]=[...input[key]];}
-  if(input.scaling!=null){
-    if(!record(input.scaling))throw Error('Invalid volume scaling metadata');
-    output.scaling={};for(const key of ['slope','intercept']){const value=input.scaling[key];if(key==='intercept'&&input.scaling.slope===0&&!Number.isFinite(value)){output.scaling[key]=null;continue;}if(value!=null&&!Number.isFinite(value))throw Error('Invalid volume scaling metadata');output.scaling[key]=value??null;}
-  }
-  if(includeSource&&input.sourceImport!=null){
-    let source=input.sourceImport,depth=0;
-    while(record(source)&&source.sourceImport!=null){if(++depth>16)throw Error('NIfTI source metadata are too deeply nested');source=source.sourceImport;}
-    output.sourceImport=headerMetadata(source,false);
-  }
-  return output;
-}
-function volumeMetadata(input){
-  if(!record(input))throw Error('Invalid volume metadata');
-  const kind=({labels:'label',stat:'statistic',prob:'probability'})[input.kind]||input.kind||'label';
-  if(!['label','mask','statistic','probability'].includes(kind))throw Error('Invalid volume kind');
-  if(input.canOverlayOnTarget!=null&&typeof input.canOverlayOnTarget!=='boolean')throw Error('Invalid volume alignment flag');
-  const alignment=metadataText(input.alignmentStatus,'alignmentStatus',100,'unverified');
-  const result={kind,name:metadataText(input.name,'name',500),space:metadataText(input.space,'space',160,'native-unverified'),source:metadataText(input.source,'source',4096),provenance:metadataText(input.provenance,'provenance',20000),note:metadataText(input.note,'note',20000),license:metadataText(input.license,'license',10000),alignmentStatus:alignment==='user-declared'?'user-declared':'unverified',canOverlayOnTarget:input.canOverlayOnTarget===true,metadata:headerMetadata(input.metadata),labels:[],limitations:[]};
-  if(input.limitations!=null){if(!Array.isArray(input.limitations)||input.limitations.length>100)throw Error('Invalid volume limitations');result.limitations=input.limitations.map(value=>metadataText(value,'limitations',4000));}
-  if(input.labels!=null){
-    if(!Array.isArray(input.labels)||input.labels.length>50000)throw Error('Invalid volume labels');
-    const ids=new Set();
-    result.labels=input.labels.map(label=>{
-      if(!record(label)||!Number.isSafeInteger(label.id)||label.id<=0||ids.has(label.id))throw Error('Invalid or duplicate volume label ID');
-      const name=metadataText(label.name,'label name',2000);if(!name.trim())throw Error('Invalid volume label name');ids.add(label.id);
-      return {id:label.id,name,...(label.zh!=null?{zh:metadataText(label.zh,'label zh',2000)}:{})};
-    });
-    if(new TextEncoder().encode(JSON.stringify(result.labels)).length>4*1024*1024)throw Error('Volume labels exceed the size limit');
-  }
-  return result;
-}
 function checkedVolumeId(id,ids){if(typeof id!=='string'||!/^custom-[a-zA-Z0-9_-]{1,112}$/.test(id)||ids.has(id))throw Error('Invalid or duplicate custom volume ID');ids.add(id);return id;}
-export function assertProjectVolumePayloadSize(byteLength){if(!Number.isSafeInteger(byteLength)||byteLength<0||byteLength>MAX_NIFTI_FILE_BYTES)throw Error('A compressed project volume exceeds the 128 MiB import limit');}
+export function assertProjectVolumePayloadSize(byteLength){
+  try{assertWorkspaceBudget({assetCount:0,rawPayloadBytes:0,compressedAssetBytes:[byteLength]});}
+  catch{throw Error('A compressed project volume exceeds the 128 MiB import limit: compressed-asset-budget');}
+}
 
-export async function serializeProject({view,notes=[],evidence=null,volumes=[]}){
-  if(!Array.isArray(volumes)||volumes.length>50)throw Error('Invalid project volumes');
-  let total=0;const entries=[],ids=new Set();
-  for(const v of volumes){
+async function compressVolume(raw){
+  const reader=new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip')).getReader();
+  const chunks=[];let length=0;
+  try{
+    while(true){const {value,done}=await reader.read();if(done)break;length+=value.byteLength;assertProjectVolumePayloadSize(length);chunks.push(value);}
+  }catch(error){try{await reader.cancel();}catch{/* Preserve the original error. */}throw error;}
+  const bytes=new Uint8Array(length);let at=0;for(const chunk of chunks){bytes.set(chunk,at);at+=chunk.length;}return bytes;
+}
+
+export async function prepareProjectPayload({view,notes=[],evidence=null,volumes=[]}){
+  if(!Array.isArray(volumes))throw Error('Invalid project volumes');
+  const usage={assetCount:volumes.length,rawPayloadBytes:0,compressedAssetBytes:[],projectUtf8Bytes:0};
+  assertWorkspaceBudget(usage);
+  const entries=[],encodedAssets=[],ids=new Set();
+  // Preflight every asset before the first binary export or compression allocation.
+  const candidates=volumes.map(v=>{
     if(!record(v))throw Error('Invalid project volume');
-    const id=checkedVolumeId(v.id,ids),metadata=volumeMetadata(v);
-    total+=(v.data||v.dataTypedArray)?.byteLength+352;if(!Number.isFinite(total)||total>256*1024*1024)throw Error('Imported data exceed the project size limit');
-    const raw=exportNifti(v),compressed=new Uint8Array(await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer());
-    assertProjectVolumePayloadSize(compressed.byteLength);
-    entries.push({id,metadata,niftiGzip:bytesToBase64(compressed)});
+    const id=checkedVolumeId(v.id,ids),metadata=validateVolumeMetadata(v);
+    const rawPayloadBytes=(v.data||v.dataTypedArray)?.byteLength+352;
+    assertWorkspaceBudget({...usage,rawPayloadBytes});usage.rawPayloadBytes+=rawPayloadBytes;assertWorkspaceBudget(usage);
+    return {v,id,metadata,rawPayloadBytes};
+  });
+  const project={schema:PROJECT_SCHEMA,createdAt:new Date().toISOString(),view:validateViewState(view),notes:projectNotes(notes),evidence:safeObject(evidence,20*1024*1024),volumes:entries};
+  // Empty volumes already include the brackets. Entries contribute their exact UTF-8 size.
+  let projectedBytes=utf8ByteLength(JSON.stringify(project));
+  assertWorkspaceBudget({...usage,projectUtf8Bytes:projectedBytes});
+  for(const {v,id,metadata,rawPayloadBytes} of candidates){
+    const compressed=await compressVolume(exportNifti(v));
+    usage.compressedAssetBytes.push(compressed.byteLength);
+    projectedBytes+=utf8ByteLength(JSON.stringify({id,metadata,niftiGzip:''}))+4*Math.ceil(compressed.byteLength/3)+(entries.length?1:0);
+    // Reject before allocating the base64 string or concatenating the final JSON document.
+    assertWorkspaceBudget({...usage,projectUtf8Bytes:projectedBytes});
+    const entry={id,metadata,niftiGzip:bytesToBase64(compressed)};
+    entries.push(entry);encodedAssets.push({...entry,rawPayloadBytes,compressedBytes:compressed.byteLength});
   }
-  const project={schema:PROJECT_SCHEMA,createdAt:new Date().toISOString(),view:validateViewState(view),notes:safeObject(notes,8*1024*1024),evidence:safeObject(evidence,20*1024*1024),volumes:entries};
-  const text=JSON.stringify(project);if(new TextEncoder().encode(text).length>MAX_FILE_BYTES)throw Error('Project file is too large');return text;
+  const text=JSON.stringify(project);usage.projectUtf8Bytes=utf8ByteLength(text);assertWorkspaceBudget(usage);
+  return {text,usage,encodedAssets};
+}
+export async function serializeProject(workspace){return (await prepareProjectPayload(workspace)).text;}
+
+function projectNotes(notes){
+  if(!Array.isArray(notes)||notes.length>20000)throw Error('Invalid project content');
+  return safeObject(notes.map(n=>{if(typeof n?.text!=='string'||n.text.length>100000)throw Error('Invalid project note');return {id:boundedString(n.id,160)||crypto.randomUUID(),text:n.text,structureId:boundedString(n.structureId,160),structureName:boundedString(n.structureName,500),createdAt:typeof n.createdAt==='string'&&Number.isFinite(Date.parse(n.createdAt))?n.createdAt:new Date().toISOString(),position:point(n.position),coordinateSpace:boundedString(n.coordinateSpace,50),coordinateFrame:boundedString(n.coordinateFrame,160)};}),8*1024*1024);
 }
 export async function parseProject(text){
-  if(typeof text!=='string'||new TextEncoder().encode(text).length>MAX_FILE_BYTES)throw Error('Project exceeds 180 MB');const p=JSON.parse(text);if(!record(p)||p.schema!==PROJECT_SCHEMA)throw Error('Unsupported project format');
-  const view=validateViewState(p.view);if(!Array.isArray(p.notes)||p.notes.length>20000||!Array.isArray(p.volumes)||p.volumes.length>50)throw Error('Invalid project content');
-  const notes=p.notes.map(n=>{if(typeof n?.text!=='string'||n.text.length>100000)throw Error('Invalid project note');return {id:boundedString(n.id,160)||crypto.randomUUID(),text:n.text,structureId:boundedString(n.structureId,160),structureName:boundedString(n.structureName,500),createdAt:typeof n.createdAt==='string'&&Number.isFinite(Date.parse(n.createdAt))?n.createdAt:new Date().toISOString(),position:point(n.position),coordinateSpace:boundedString(n.coordinateSpace,50),coordinateFrame:boundedString(n.coordinateFrame,160)};});
-  const ids=new Set(),volumes=[];let total=0;
-  for(const e of p.volumes){
+  if(typeof text!=='string')throw Error('Project exceeds 180 MB');
+  const projectUtf8Bytes=utf8ByteLength(text);assertWorkspaceBudget({assetCount:0,rawPayloadBytes:0,projectUtf8Bytes});
+  const p=JSON.parse(text);if(!record(p)||p.schema!==PROJECT_SCHEMA)throw Error('Unsupported project format');
+  const view=validateViewState(p.view);if(!Array.isArray(p.volumes))throw Error('Invalid project content');
+  const notes=projectNotes(p.notes),evidence=safeObject(p.evidence,20*1024*1024);
+  const ids=new Set(),volumes=[],usage={assetCount:p.volumes.length,rawPayloadBytes:0,compressedAssetBytes:[],projectUtf8Bytes};
+  assertWorkspaceBudget(usage);
+  const candidates=p.volumes.map(e=>{
     if(!record(e))throw Error('Invalid project volume');
-    const id=checkedVolumeId(e.id,ids),meta=volumeMetadata(e.metadata);
-    const volume=await parseNifti(base64ToBytes(e.niftiGzip,MAX_NIFTI_FILE_BYTES),{name:meta.name,space:meta.space,kind:meta.kind});
-    total+=volume.data.byteLength;if(total>256*1024*1024)throw Error('Project volumes are too large');
+    const id=checkedVolumeId(e.id,ids),meta=validateVolumeMetadata(e.metadata);
+    usage.compressedAssetBytes.push(encodedByteLength(e.niftiGzip,MAX_NIFTI_FILE_BYTES));assertWorkspaceBudget(usage);
+    return {id,meta,niftiGzip:e.niftiGzip};
+  });
+  for(const {id,meta,niftiGzip} of candidates){
+    const remaining=MAX_WORKSPACE_RAW_PAYLOAD_BYTES-usage.rawPayloadBytes;
+    const volume=await parseNifti(base64ToBytes(niftiGzip,MAX_NIFTI_FILE_BYTES),{name:meta.name,space:meta.space,kind:meta.kind,maxDecodedVoxelBytes:Math.max(0,remaining-352),maxInflatedBytes:remaining});
+    usage.rawPayloadBytes+=352+volume.data.byteLength;assertWorkspaceBudget(usage);
     const declared=meta.space==='MNI152NLin6Asym'&&meta.alignmentStatus==='user-declared'&&meta.canOverlayOnTarget&&meta.provenance.trim().length>0;
     volumes.push({...meta,...volume,id,metadata:{...volume.metadata,affineConflict:!!(volume.metadata.affineConflict||meta.metadata.affineConflict||meta.metadata.sourceImport?.affineConflict),sourceImport:meta.metadata.sourceImport||meta.metadata,userDeclaredAligned:declared,referenceSpace:meta.space,restoredFromProject:true},labels:meta.labels,custom:true,available:true,canOverlayOnTarget:declared,alignmentStatus:declared?'user-declared':'unverified'});
   }
-  return {schema:PROJECT_SCHEMA,view,notes,evidence:safeObject(p.evidence,20*1024*1024),volumes};
+  const restored={schema:PROJECT_SCHEMA,view,notes,evidence,volumes};
+  // Restoration adds truthful header provenance; admit its actual next export too.
+  await prepareProjectPayload(restored);
+  return restored;
 }
 export function readSavedViews(storage=localStorage){try{const values=JSON.parse(storage.getItem('neuroatlas-saved-views')||'[]');return Array.isArray(values)?values.filter(v=>typeof v.id==='string'&&typeof v.name==='string').slice(0,30).map(v=>({...v,view:validateViewState(v.view)})):[];}catch{return [];}}
 export function writeSavedViews(values,storage=localStorage){storage.setItem('neuroatlas-saved-views',JSON.stringify(values.slice(0,30)));}

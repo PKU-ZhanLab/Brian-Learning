@@ -90,3 +90,44 @@ test('custom registry notifies local subscribers, stores typed data and removes 
   assert.equal(getCustomVolume(id).name,'Test');assert.equal(getCustomVolume(id).data,volume.data);assert.ok(listCustomVolumes().some(v=>v.id===id));
   assert.equal(removeCustomVolume(id),true);assert.equal(getCustomVolume(id),null);assert.equal(notices,2);unsubscribe();
 });
+
+test('scaled decode admission precedes allocation',async()=>{
+  for(const scaled of [false,true]){
+    const header=edit(exportNifti(source).slice(0,352),v=>{
+      for(const [offset,n] of [[42,400],[44,400],[46,400]])v.setInt16(offset,n,true);
+      v.setInt16(70,scaled?2:64,true);v.setInt16(72,scaled?8:64,true);v.setFloat32(112,scaled?2:1,true);
+    });
+    let allocations=0;const Original=globalThis.Float64Array;
+    globalThis.Float64Array=class extends Original {constructor(...args){allocations++;super(...args);}};
+    try {await assert.rejects(parseNifti(header,{maxDecodedVoxelBytes:256*1024*1024-352}),/decoded-budget/);assert.equal(allocations,0);}
+    finally {globalThis.Float64Array=Original;}
+    await assert.rejects(parseNifti(gzipSync(header)),/decoded-budget/);
+  }
+});
+
+test('gzip header admission cancels before the rest of an injected stream is read',async()=>{
+  const header=edit(exportNifti(source).slice(0,352),v=>{v.setInt16(42,400,true);v.setInt16(44,400,true);v.setInt16(46,400,true);v.setFloat32(112,2,true);});
+  const Original=globalThis.DecompressionStream;let reads=0,cancelled=false;
+  globalThis.DecompressionStream=class {constructor(){return {readable:new ReadableStream({pull(controller){reads++;controller.enqueue(header);},cancel(){cancelled=true;}}),writable:new WritableStream()};}};
+  try {await assert.rejects(parseNifti(Uint8Array.of(31,139)),/decoded-budget/);assert.equal(cancelled,true);assert.ok(reads<=2);}
+  finally {globalThis.DecompressionStream=Original;}
+});
+
+test('inflated stream budget and metadata reject before decoding or registration',async()=>{
+  await assert.rejects(parseNifti(gzipSync(exportNifti(source)),{maxInflatedBytes:352}),/inflated-budget/);
+  await assert.rejects(parseNifti(exportNifti(source),{name:'x'.repeat(501)}),/name-too-long/);
+  assert.throws(()=>parseLabelTable(`id,name\n1,${'x'.repeat(2001)}`),/label-name-too-long/);
+  assert.throws(()=>parseLabelTable(`id,name\n1,${'x'.repeat(2000)} `),/label-name-too-long/);
+  assert.throws(()=>parseLabelTable(' '.repeat(2*1024*1024+1)),/label-file-budget/);
+  const json='[{"id":1,"name":"x"}]';
+  assert.deepEqual(parseLabelTable(json+' '.repeat(2*1024*1024-json.length),'json'),[{id:1,name:'x'}]);
+  assert.throws(()=>parseLabelTable(json+' '.repeat(2*1024*1024-json.length+1),'json'),/label-file-budget/);
+});
+
+test('inflated header admission stops a split stream before its data payload',async()=>{
+  const Original=globalThis.DecompressionStream;let cancelled=false,payloadReads=0;
+  const header=exportNifti(source).slice(0,352);
+  globalThis.DecompressionStream=class {constructor(){let sent=false;return {readable:new ReadableStream({pull(controller){if(!sent){sent=true;controller.enqueue(header);}else{payloadReads++;controller.enqueue(Uint8Array.of(0));}},cancel(){cancelled=true;}},{highWaterMark:0}),writable:new WritableStream()};}};
+  try{await assert.rejects(parseNifti(Uint8Array.of(31,139),{maxInflatedBytes:352}),/inflated-budget/);assert.equal(payloadReads,0);assert.equal(cancelled,true);}
+  finally{globalThis.DecompressionStream=Original;}
+});
