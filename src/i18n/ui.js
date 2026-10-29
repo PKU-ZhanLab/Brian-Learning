@@ -1,5 +1,14 @@
 import React from 'react';
 
+export const coordinateUI={
+  zh:{main:'主视图坐标导航',native:'原生切片坐标导航',roi:'ROI 坐标导航',space:'参考空间',convention:'输入方向约定',coordinates:'坐标（mm）',go:'跳转坐标',copy:'复制坐标',copied:'坐标已复制。',copyFailed:'无法复制，请选择当前坐标文本。',step:'步长（mm）',center:'返回中心',batch:'批量点',outside:'超出当前模板显示范围；坐标保持原值。',independent:'独立参考空间；不查询主脑图谱。',unknown:'未指定参考空间',placeholder:'-38.25, -20.5, 54.1\n每行一点，最多 1,000 点',increase:axis=>`增加 ${axis}`,decrease:axis=>`减少 ${axis}`,errors:{'space-required':'请指定参考空间。','invalid-convention':'请选择 RAS 或 LPS。','coordinates-required':'请输入坐标。','invalid-coordinate':'每点须有三个有限十进制数值。','too-many-points':'每次最多输入 1,000 点。','invalid-step':'步长须为有限正数。'},line:n=>`第 ${n} 行：`},
+  en:{main:'Main coordinate navigation',native:'Native coordinate navigation',roi:'ROI coordinate navigation',space:'Reference space',convention:'Input convention',coordinates:'Coordinates (mm)',go:'Go to coordinate',copy:'Copy coordinate',copied:'Coordinate copied.',copyFailed:'Could not copy. Select the current coordinate text.',step:'Step (mm)',center:'Return to center',batch:'Batch point',outside:'Outside the displayed template bounds; coordinates are unchanged.',independent:'Independent reference space; main brain lookup is disabled.',unknown:'Unspecified reference space',placeholder:'-38.25, -20.5, 54.1\nOne point per line, up to 1,000 points',increase:axis=>`Increase ${axis}`,decrease:axis=>`Decrease ${axis}`,errors:{'space-required':'Specify a reference space.','invalid-convention':'Choose RAS or LPS.','coordinates-required':'Enter coordinates.','invalid-coordinate':'Each point needs three finite decimal numbers.','too-many-points':'Enter up to 1,000 points at a time.','invalid-step':'The step must be a finite positive number.'},line:n=>`Line ${n}: `},
+};
+export const taskEntryUI={
+  zh:{tasks:'研究任务',coordinates:'输入坐标',search:'搜索脑区',import:'导入影像',papers:'查论文',example:'试用坐标示例',skip:'跳过示例'},
+  en:{tasks:'Research tasks',coordinates:'Enter coordinates',search:'Search regions',import:'Import image',papers:'Find papers',example:'Try coordinate example',skip:'Skip example'},
+};
+
 // Explicit UI phrase catalogue. Scientific prose is localized separately by field.
 const pairs = [
 ['神经解剖教学工作台','Neuroscience learning studio'],['全脑概览','Whole brain'],['皮层表面','Cortical surface'],['深部核团','Deep nuclei'],['脑干与小脑','Brainstem & cerebellum'],['脑室系统','Ventricles'],['白质纤维束','White matter tracts'],['三维解剖视图','3D anatomy'],['三维解剖工作区','3D anatomy workspace'],['三维神经解剖','3D neuroanatomy'],['三维','3D'],['矢状','Sagittal'],['冠状','Coronal'],['轴位','Axial'],

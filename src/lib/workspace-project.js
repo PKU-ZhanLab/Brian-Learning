@@ -2,7 +2,7 @@ import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_B
 import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
 import {atlasRegionKey} from './atlas-identity.js';
 import {savedComputationUsage,encodeSavedComputation,inspectEncodedSavedComputation,decodeSavedComputation} from './saved-computation.js';
-import {validateResultLayers,projectPublicResultLayers} from './result-layers.js';
+import {validateResultLayers,projectPublicResultLayers,resolveResultLayers} from './result-layers.js';
 import {migrateEvidence,emptyEvidence} from './evidence-schema.js';
 import {validateAssetIdentity,validateGridSpec,validateTransformIdentity,encodeDerivedVolume,makeAssetIdentity,compareComputationManifest,prepareLocalVolumeProvenance} from './computation-manifest.js';
 
@@ -22,6 +22,28 @@ const boundedString=(v,max=500)=>typeof v==='string'?v.slice(0,max):'';
 const number=(v,min,max,fallback)=>Number.isFinite(v)?Math.min(max,Math.max(min,v)):fallback;
 const stringArray=(v,max=500)=>Array.isArray(v)?v.filter(s=>typeof s==='string'&&s.length<=120).slice(0,max):[];
 const point=v=>Array.isArray(v)&&v.length===3&&v.every(x=>Number.isFinite(x)&&Math.abs(x)<10000)?[...v]:null;
+const coordinatePoint=v=>Array.isArray(v)&&v.length===3&&v.every(Number.isFinite)?[...v]:null;
+const finiteCoordinate=(v,fallback)=>Number.isFinite(v)?v:fallback;
+function coordinateOrigin(value){
+  const origin={kind:['manual','result','private'].includes(value?.kind)?value.kind:'unknown',cameraSensitive:value?.cameraSensitive!==false,imported:value?.imported===true};
+  if(origin.kind==='result'){
+    for(const key of ['resultId','sourceReferenceId','coordinateId','spaceId'])if(typeof value[key]!=='string'||!value[key]||value[key].length>160)return {...origin,kind:'unknown'};
+    for(const key of ['resultId','sourceReferenceId','coordinateId','spaceId'])origin[key]=value[key];
+  }
+  return origin;
+}
+function shareableCoordinate(state,options){
+  const origin=state.coordinateOrigin;
+  if(origin.kind==='manual')return !origin.imported;
+  if(origin.kind!=='result'||origin.spaceId!=='MNI152NLin6Asym')return false;
+  try{
+    const candidate={layerId:'coordinate-origin',resultId:origin.resultId,sourceReferenceId:origin.sourceReferenceId,coordinateIds:[origin.coordinateId],spaceId:origin.spaceId,visible:true,style:{}};
+    const publicLayer=projectPublicResultLayers([candidate],options).layers;
+    if(publicLayer.length!==1)return false;
+    const marker=resolveResultLayers(publicLayer,options).markers[0];
+    return marker?.space===origin.spaceId&&marker.position.every((value,i)=>value===state.coordinate[i]);
+  }catch{return false;}
+}
 export function validateCamera(v){
   const position=point(v?.position),target=point(v?.target);
   if(!position||!target||position.every((n,i)=>n===target[i]))return null;
@@ -55,11 +77,16 @@ export function validateViewState(input,{savedProjectId,projectId}={}){
   // view has no layers; public URLs use their separate canonical-public gate.
   if(projectId!==undefined&&input.schema!=='neuroatlas-view-v1'&&input.resultLayers?.length&&savedProjectId!==projectId)throw Error('named-view-project-mismatch: Open the originating project before restoring these result layers.');
   if(projectId!==undefined&&['original','recomputed'].includes(input.roi?.snapshot)&&savedProjectId!==projectId)throw Error('named-view-project-mismatch: Open the originating project before restoring this saved computation.');
-  const output={schema:VIEW_SCHEMA,language:input.language==='en'?'en':'zh',atlas:boundedString(input.atlas,120)||'dk',selectedIds:stringArray(input.selectedIds),visibleCategories:stringArray(input.visibleCategories,20),hiddenIds:stringArray(input.hiddenIds),hemisphere:['L','R'].includes(input.hemisphere)?input.hemisphere:'both',opacity:number(input.opacity,0,1,1),exploded:input.exploded===true,labels:input.labels===true,showSchematic:input.showSchematic===true,preset:boundedString(input.preset,40)||'cortex',view:boundedString(input.view,40)||'oblique',mode:['roi','research'].includes(input.mode)?input.mode:'anatomy',network:boundedString(input.network,80)||null,coordinate:point(input.coordinate)||[-38,-20,54],showSlices:input.showSlices===true,camera:validateCamera(input.camera),researchScope:input.researchScope===true,atlasExplorerOpen:input.atlasExplorerOpen===true};
-  const s=input.slices||{};output.slices={enabled:s.enabled===true,x:number(s.x,-100,100,-38),y:number(s.y,-140,100,-20),z:number(s.z,-80,120,54),axis:['x','y','z'].includes(s.axis)?s.axis:'z'};
+  const output={schema:VIEW_SCHEMA,language:input.language==='en'?'en':'zh',atlas:boundedString(input.atlas,120)||'dk',selectedIds:stringArray(input.selectedIds),visibleCategories:stringArray(input.visibleCategories,20),hiddenIds:stringArray(input.hiddenIds),hemisphere:['L','R'].includes(input.hemisphere)?input.hemisphere:'both',opacity:number(input.opacity,0,1,1),exploded:input.exploded===true,labels:input.labels===true,showSchematic:input.showSchematic===true,preset:boundedString(input.preset,40)||'cortex',view:boundedString(input.view,40)||'oblique',mode:['roi','research'].includes(input.mode)?input.mode:'anatomy',network:boundedString(input.network,80)||null,coordinate:coordinatePoint(input.coordinate)||[-38,-20,54],showSlices:input.showSlices===true,camera:validateCamera(input.camera),researchScope:input.researchScope===true,atlasExplorerOpen:input.atlasExplorerOpen===true};
+  // `brain` is the existing main-template sentinel. Only absent legacy fields
+  // default to it; explicit unknown/native contexts must remain independent.
+  output.coordinateSpace=Object.hasOwn(input,'coordinateSpace')?(typeof input.coordinateSpace==='string'&&input.coordinateSpace.length<=500?input.coordinateSpace:null):'brain';
+  output.coordinateOrigin=coordinateOrigin(input.coordinateOrigin);
+  if(projectId!==undefined&&savedProjectId!==projectId)output.coordinateOrigin.imported=true;
+  const s=input.slices||{};output.slices={enabled:s.enabled===true,x:finiteCoordinate(s.x,-38),y:finiteCoordinate(s.y,-20),z:finiteCoordinate(s.z,54),axis:['x','y','z'].includes(s.axis)?s.axis:'z'};
   if(input.roi){const r=input.roi;output.roi={aAtlas:r.aAtlas===''?'':boundedString(r.aAtlas,120)||'dk',bAtlas:r.bAtlas===''?'':boundedString(r.bAtlas,120)||'ba-histology',aLabels:Array.isArray(r.aLabels)?r.aLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],bLabels:Array.isArray(r.bLabels)?r.bLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],aThreshold:number(r.aThreshold,-1e12,1e12,0),bThreshold:number(r.bThreshold,-1e12,1e12,0),aTail:['negative','absolute'].includes(r.aTail)?r.aTail:'positive',bTail:['negative','absolute'].includes(r.bTail)?r.bTail:'positive',computed:r.computed===true,display:{mode:['parts','overlap','A','B'].includes(r.display?.mode)?r.display.mode:'parts',opacityA:number(r.display?.opacityA,0,1,.65),opacityB:number(r.display?.opacityB,0,1,.65),opacityOverlap:number(r.display?.opacityOverlap,0,1,.9),xray:r.display?.xray===true}};}
   if(input.literature){const l=input.literature,paperModality=boundedString(l.paperModality??l.modality,100);output.literature={query:boundedString(l.query,500),topic:boundedString(l.topic,100),modality:paperModality,paperModality,resultModality:boundedString(l.resultModality,100),scope:l.scope===true,paperId:boundedString(l.paperId,160)||null,compared:stringArray(l.compared,3),showCompare:l.showCompare===true,scopeRegionId:boundedString(l.scopeRegionId,120)||null,onlyResults:l.onlyResults===true};}
-  if(input.atlasExplorer){const a=input.atlasExplorer;output.atlasExplorer={atlas:boundedString(a.atlas,120)||'dk',query:boundedString(a.query,200),selected:Array.isArray(a.selected)?a.selected.filter(x=>Number.isInteger(x)&&x>0).slice(0,5000):[],opacity:number(a.opacity,0,1,1),camera:validateCamera(a.camera),threshold:number(a.threshold,0,1e12,.5),tail:['negative','absolute'].includes(a.tail)?a.tail:'positive',display:a.display==='slices'?'slices':'boundaries',slicePoint:point(a.slicePoint)?.map((n,i)=>Math.min([100,100,120][i],Math.max([-100,-140,-80][i],n)))||[0,0,0],sliceOpacity:number(a.sliceOpacity,0,1,.55)};}
+  if(input.atlasExplorer){const a=input.atlasExplorer;output.atlasExplorer={atlas:boundedString(a.atlas,120)||'dk',query:boundedString(a.query,200),selected:Array.isArray(a.selected)?a.selected.filter(x=>Number.isInteger(x)&&x>0).slice(0,5000):[],opacity:number(a.opacity,0,1,1),camera:validateCamera(a.camera),threshold:number(a.threshold,0,1e12,.5),tail:['negative','absolute'].includes(a.tail)?a.tail:'positive',display:a.display==='slices'?'slices':'boundaries',slicePoint:coordinatePoint(a.slicePoint)||[0,0,0],sliceOpacity:number(a.sliceOpacity,0,1,.55)};}
   for(const key of ['atlasSelection','unresolvedAtlasSelection'])if(input[key]!==undefined)output[key]=regionRefs(input[key]);
   if(input.atlasSelectionQuery!==undefined)output.atlasSelectionQuery=safeObject(input.atlasSelectionQuery);
   output.resultLayers=input.schema==='neuroatlas-view-v1'?[]:validateResultLayers(safeObject(input.resultLayers??[],2*1024*1024));
@@ -73,6 +100,21 @@ function base64ToBytes(text,maxBytes=MAX_FILE_BYTES){encodedByteLength(text,maxB
 
 export function encodeView(input,{publicReferenceIds=[],publicResults,publicEvidence,evidence}={}){
   const state=validateViewState(input);const omitted=[];
+  if(state.coordinateSpace!=='brain'||!shareableCoordinate(state,{publicReferenceIds,publicResults,publicEvidence,evidence})){
+    state.coordinateSpace='brain';state.coordinate=[-38,-20,54];state.slices={enabled:false,x:-38,y:-20,z:54,axis:'z'};state.camera=null;state.showSlices=false;
+    state.coordinateOrigin={kind:'manual',cameraSensitive:false,imported:false};
+    if(state.atlasExplorer){state.atlasExplorer.slicePoint=[0,0,0];state.atlasExplorer.camera=null;}
+    omitted.push('coordinate');
+  }else if(state.coordinateOrigin.cameraSensitive){
+    state.camera=null;state.coordinateOrigin.cameraSensitive=false;omitted.push('camera');
+    if(state.atlasExplorer){state.atlasExplorer.slicePoint=[0,0,0];state.atlasExplorer.camera=null;}
+  }
+  // Main crosshairs are coupled. A copied public point ID cannot authorize
+  // unrelated slice values from an imported view.
+  if(['x','y','z'].some((axis,i)=>state.slices[axis]!==state.coordinate[i])){
+    for(const [i,axis]of ['x','y','z'].entries())state.slices[axis]=state.coordinate[i];
+    omitted.push('slices');
+  }
   const projectRegionRefs=(container,keys,prefix='')=>{for(const key of keys)if(container?.[key]){const original=container[key];container[key]=original.filter(ref=>!ref.atlasId.startsWith('custom-'));if(original.length!==container[key].length)omitted.push(`${prefix}${key}`);}};
   const projection=projectPublicResultLayers(state.resultLayers,{publicReferenceIds,publicResults,publicEvidence,evidence});state.resultLayers=projection.layers;omitted.push(...projection.omitted);
   projectRegionRefs(state,['atlasSelection','unresolvedAtlasSelection']);
@@ -243,6 +285,9 @@ export async function parseProject(text){
   let p=JSON.parse(text);if(!record(p)||![PROJECT_SCHEMA,LEGACY_PROJECT_SCHEMA].includes(p.schema))throw Error('Unsupported project format');
   if(p.schema===LEGACY_PROJECT_SCHEMA)p=migrateProjectV1(p);
   const view=validateViewState(p.view);if(!Array.isArray(p.volumes))throw Error('Invalid project content');
+  // File claims cannot attest how a point or camera was obtained. Exact public
+  // result references can still be independently authorized at link projection.
+  view.coordinateOrigin={...view.coordinateOrigin,cameraSensitive:true,imported:true};
   const projectId=p.schema===PROJECT_SCHEMA?p.projectId:`project-${crypto.randomUUID()}`;
   if(typeof projectId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(projectId))throw Error('Invalid project ID');
   const drafts=validateProjectDrafts(p.schema===LEGACY_PROJECT_SCHEMA?[]:p.drafts??[],projectId);

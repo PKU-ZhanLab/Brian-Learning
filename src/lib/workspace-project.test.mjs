@@ -4,13 +4,74 @@ import {encodeView,decodeView,validateViewState,validateCamera,serializeProject,
 import {MAX_NIFTI_FILE_BYTES} from './nifti.js';
 import {migrateEvidence} from './evidence-schema.js';
 import {resolveResultLayers} from './result-layers.js';
+import {coordinateNavigationSpace,coordinateReferenceSpace,formatCoordinate} from './coordinate-input.js';
 
 const syntheticEvidence=()=>migrateEvidence({schema:'brain-evidence-v1',references:[{id:'public-paper',title:'Synthetic public paper',url:'https://example.org/paper'}],results:[{id:'public-result',referenceId:'public-paper',finding:'Synthetic coordinates',condition:'task',sample:'n=2',roiDefinition:'table',direction:'positive',annotator:'unknown',modalities:['fmri'],regionIds:[],sourceUrl:'https://example.org/paper',curationStatus:'draft',limitations:'synthetic',coordinates:[[1,2,3],[-1,2,3]].map((xyz,i)=>({id:`public-point-${i}`,x:xyz[0],y:xyz[1],z:xyz[2],space:'MNI152NLin6Asym',status:'source-checked',label:'peak',sourceTable:'1',sourceRow:String(i+1),frameNote:'synthetic frame',sourceUrl:'https://example.org/paper'})),figures:[]}],relations:[]}).value;
+
+test('coordinate context survives named and project views, including explicit unknown and native spaces',async()=>{
+  assert.equal(validateViewState({}).coordinateSpace,'brain');
+  for(const coordinateSpace of [null,'unknown','Colin27 / MNI single-subject','private patient reference']) {
+    const input={coordinateSpace,coordinate:[12345.25,-200.5,54.1],slices:{x:12345.25,y:-200.5,z:54.1},atlasExplorer:{slicePoint:[12345.25,-200.5,54.1]}};
+    for(const restored of [validateViewState(input),(await parseProject(await serializeProject({view:input,volumes:[]}))).view]){
+      assert.equal(restored.coordinateSpace,coordinateSpace);assert.deepEqual(restored.coordinate,input.coordinate);
+      assert.equal(restored.slices.x,12345.25);assert.equal(restored.slices.y,-200.5);assert.deepEqual(restored.atlasExplorer.slicePoint,input.coordinate);
+    }
+  }
+});
+test('reserved-looking raw source labels remain distinct in named/project display and copy',async()=>{
+  for(const rawSpace of ['brain','independent:brain','independent:independent:brain']){
+    const input={coordinateSpace:coordinateNavigationSpace(rawSpace),coordinate:[10.25,20.5,30.75]};
+    for(const restored of [validateViewState(input),(await parseProject(await serializeProject({view:input,volumes:[]}))).view]){
+      assert.notEqual(restored.coordinateSpace,'brain');assert.equal(coordinateReferenceSpace(restored.coordinateSpace),rawSpace);
+      assert.equal(formatCoordinate(restored.coordinate,coordinateReferenceSpace(restored.coordinateSpace)),`${rawSpace} · RAS · 10.25, 20.5, 30.75 mm`);
+    }
+  }
+});
+test('public projection resets coupled independent coordinates and reports omission without leaking private context',()=>{
+  const input={coordinateSpace:'private patient reference',coordinate:[12345.25,-200.5,54.1],slices:{enabled:true,x:12345.25,y:-200.5,z:54.1},camera:{position:[901,902,903],target:[801,802,803]},atlasExplorer:{atlas:'aal3',slicePoint:[12345.25,-200.5,54.1],camera:{position:[901,902,903],target:[801,802,803]}},atlasSelectionQuery:{coordinate:[12345.25,-200.5,54.1]}};
+  const shared=encodeView(input),restored=decodeView(shared.encoded);
+  assert.ok(shared.omitted.includes('coordinate'));assert.equal(restored.coordinateSpace,'brain');assert.deepEqual(restored.coordinate,[-38,-20,54]);
+  assert.deepEqual(restored.slices,{enabled:false,x:-38,y:-20,z:54,axis:'z'});assert.equal(restored.camera,null);assert.equal(restored.atlasSelectionQuery,undefined);
+  assert.deepEqual(restored.atlasExplorer.slicePoint,[0,0,0]);assert.equal(restored.atlasExplorer.camera,null);
+  const text=JSON.stringify(restored);for(const privateText of ['private patient reference','12345.25','-200.5','901','801'])assert.equal(text.includes(privateText),false,privateText);
+  for(const coordinateSpace of [null,'unknown'])assert.ok(encodeView({...input,coordinateSpace}).omitted.includes('coordinate'));
+});
+test('same-template private and unknown coordinate origins cannot leak after layer removal or restore',async()=>{
+  for(const coordinateOrigin of [undefined,{kind:'unknown'},{kind:'private',cameraSensitive:true},{kind:'public',public:true},{kind:'result',resultId:'private-result',sourceReferenceId:'private-paper',coordinateId:'private-point',spaceId:'MNI152NLin6Asym',cameraSensitive:true}]){
+    const input={coordinateSpace:'brain',coordinate:[1.25,2.5,3.75],slices:{enabled:true,x:1.25,y:2.5,z:3.75},camera:{position:[901,902,903],target:[1.25,2.5,3.75]},resultLayers:[],...(coordinateOrigin?{coordinateOrigin}:{})};
+    const named=validateViewState(input),project=(await parseProject(await serializeProject({view:input,volumes:[]}))).view;
+    for(const state of [input,named,project]){
+      const shared=encodeView(state),view=decodeView(shared.encoded);assert.ok(shared.omitted.includes('coordinate'));assert.deepEqual(view.coordinate,[-38,-20,54]);assert.equal(view.slices.x,-38);assert.equal(view.camera,null);
+      const text=JSON.stringify(view);for(const secret of ['private-result','private-paper','private-point','1.25','2.5','3.75','901'])assert.equal(text.includes(secret),false,secret);
+    }
+  }
+});
+test('canonical public result identity authorizes only its exact coordinates; local edits and publication flags cannot',()=>{
+  const publicEvidence=syntheticEvidence(),coordinateOrigin={kind:'result',resultId:'public-result',sourceReferenceId:'public-paper',coordinateId:'public-point-0',spaceId:'MNI152NLin6Asym',cameraSensitive:true};
+  const input={coordinateSpace:'brain',coordinate:[1,2,3],slices:{x:1,y:2,z:3},coordinateOrigin,resultLayers:[]},options={publicReferenceIds:['public-paper'],publicEvidence};
+  const shared=encodeView(input,options);assert.deepEqual(decodeView(shared.encoded).coordinate,[1,2,3]);assert.ok(!shared.omitted.includes('coordinate'));
+  const local=structuredClone(publicEvidence);local.results[0].finding='Private reanalysis';local.results[0].public=true;
+  assert.ok(encodeView(input,{...options,evidence:local}).omitted.includes('coordinate'));
+  assert.ok(encodeView({...input,coordinate:[1.01,2,3]},options).omitted.includes('coordinate'));
+  const mismatchedSlices=decodeView(encodeView({...input,slices:{x:901,y:902,z:903}},options).encoded);assert.deepEqual([mismatchedSlices.slices.x,mismatchedSlices.slices.y,mismatchedSlices.slices.z],[1,2,3]);
+  assert.ok(encodeView(input,{publicReferenceIds:['public-paper']}).omitted.includes('coordinate'));
+});
+test('explicit manual input can share its coordinates while an earlier sensitive camera remains omitted',()=>{
+  const input={coordinate:[10.25,20.5,30.75],slices:{x:10.25,y:20.5,z:30.75},coordinateOrigin:{kind:'manual',cameraSensitive:true},camera:{position:[901,902,903],target:[1.25,2.5,3.75]}};
+  const shared=encodeView(input),view=decodeView(shared.encoded);assert.deepEqual(view.coordinate,input.coordinate);assert.equal(view.camera,null);assert.ok(shared.omitted.includes('camera'));assert.equal(JSON.stringify(view).includes('901'),false);
+});
+test('project-file origin and false camera flags cannot attest manual or public provenance',async()=>{
+  const input={coordinate:[1.25,2.5,3.75],coordinateOrigin:{kind:'manual',imported:false,cameraSensitive:false},camera:{position:[901,902,903],target:[1.25,2.5,3.75]}};
+  const reopened=(await parseProject(await serializeProject({view:input,volumes:[]}))).view;
+  assert.equal(reopened.coordinateOrigin.imported,true);assert.equal(reopened.coordinateOrigin.cameraSensitive,true);assert.ok(encodeView(reopened).omitted.includes('coordinate'));
+  const foreign=validateViewState(input,{savedProjectId:'A',projectId:'B'});assert.equal(foreign.coordinateOrigin.imported,true);
+  const owned=validateViewState(input,{savedProjectId:'A',projectId:'A'});assert.equal(owned.coordinateOrigin.imported,false);
+});
 
 test('project preserves local marker identity and visibility; public layer and hidden layer round trip',async()=>{
  const evidence=syntheticEvidence(),layer={layerId:'private-layer-name',resultId:'public-result',sourceReferenceId:'public-paper',coordinateIds:['public-point-0','public-point-1'],spaceId:'MNI152NLin6Asym',visible:true,style:{color:'#123456',opacity:.25,size:20}},hidden={...layer,layerId:'hidden-layer',visible:false};
  const project=await parseProject(await serializeProject({view:{resultLayers:[layer,hidden]},evidence,volumes:[]}));assert.deepEqual(project.view.resultLayers,[layer,hidden]);assert.equal(project.view.resultLayers[1].visible,false);assert.deepEqual(resolveResultLayers(project.view.resultLayers,{evidence:project.evidence}).markers.map(m=>m.position),[[1,2,3],[-1,2,3]]);
- const shared=encodeView(project.view,{publicReferenceIds:['public-paper'],publicResults:evidence});const restored=decodeView(shared.encoded);assert.deepEqual(restored.resultLayers.map(l=>l.layerId),['public-layer-1','public-layer-2']);assert.deepEqual(restored.resultLayers[0].coordinateIds,layer.coordinateIds);assert.equal(restored.resultLayers[1].visible,false);assert.equal(JSON.stringify(restored).includes('private-layer-name'),false);assert.deepEqual(shared.omitted,[]);
+ const shared=encodeView(project.view,{publicReferenceIds:['public-paper'],publicResults:evidence});const restored=decodeView(shared.encoded);assert.deepEqual(restored.resultLayers.map(l=>l.layerId),['public-layer-1','public-layer-2']);assert.deepEqual(restored.resultLayers[0].coordinateIds,layer.coordinateIds);assert.equal(restored.resultLayers[1].visible,false);assert.equal(JSON.stringify(restored).includes('private-layer-name'),false);assert.deepEqual(shared.omitted,['coordinate']);
  const local=structuredClone(evidence);local.results[0].finding='Private reanalysis under a public paper';const omitted=encodeView(project.view,{publicReferenceIds:['public-paper'],publicResults:evidence,evidence:local});assert.deepEqual(decodeView(omitted.encoded).resultLayers,[]);assert.ok(omitted.omitted.includes('resultLayers'));
 });
 
@@ -48,8 +109,8 @@ test('paper and recorded-result method filters survive separately with a legacy 
   const bounded=validateViewState({literature:{paperModality:'x'.repeat(101),resultModality:'y'.repeat(101)}}).literature;
   assert.equal(bounded.paperModality.length,100);assert.equal(bounded.resultModality.length,100);
 });
-test('public link preserves camera opacity ROI and filters without custom data',()=>{const state={atlas:'jhu',language:'en',opacity:.12,camera:{position:[1,2,3],target:[0,0,0],zoom:2},roi:{aAtlas:'dk',bAtlas:'jhu',aLabels:[1,2],bLabels:[5],display:{opacityA:0},computed:true},literature:{modality:'meg',query:'private note'},atlasExplorer:{atlas:'dk',selected:[2,3]}};const restored=decodeView(encodeView(state).encoded);assert.deepEqual(restored.camera,state.camera);assert.equal(restored.opacity,.12);assert.equal(restored.roi.display.opacityA,0);assert.deepEqual(restored.roi.aLabels,[1,2]);assert.equal(restored.literature.modality,'meg');assert.equal(restored.literature.query,'');});
-test('custom volumes are omitted from links and malformed input rejected',()=>{const v=encodeView({atlas:'custom-a',roi:{aAtlas:'custom-a'},mode:'roi'});assert.deepEqual(v.omitted,['atlas','ROI']);assert.equal(decodeView(v.encoded).atlas,'dk');assert.throws(()=>decodeView('!!'));assert.equal(validateViewState({camera:{position:[NaN,0,0]}}).camera,null);});
+test('public link preserves camera opacity ROI and filters without custom data',()=>{const state={coordinateOrigin:{kind:'manual',cameraSensitive:false},atlas:'jhu',language:'en',opacity:.12,camera:{position:[1,2,3],target:[0,0,0],zoom:2},roi:{aAtlas:'dk',bAtlas:'jhu',aLabels:[1,2],bLabels:[5],display:{opacityA:0},computed:true},literature:{modality:'meg',query:'private note'},atlasExplorer:{atlas:'dk',selected:[2,3]}};const restored=decodeView(encodeView(state).encoded);assert.deepEqual(restored.camera,state.camera);assert.equal(restored.opacity,.12);assert.equal(restored.roi.display.opacityA,0);assert.deepEqual(restored.roi.aLabels,[1,2]);assert.equal(restored.literature.modality,'meg');assert.equal(restored.literature.query,'');});
+test('custom volumes are omitted from links and malformed input rejected',()=>{const v=encodeView({atlas:'custom-a',roi:{aAtlas:'custom-a'},mode:'roi'});assert.deepEqual(v.omitted,['coordinate','atlas','ROI']);assert.equal(decodeView(v.encoded).atlas,'dk');assert.throws(()=>decodeView('!!'));assert.equal(validateViewState({camera:{position:[NaN,0,0]}}).camera,null);});
 test('project round trip preserves binary data, notes, and user-declared frame',async()=>{const volume={id:'custom-example',data:new Uint16Array([0,1,3,4]),shape:[2,2,1],affine:[-2,0,0,12,0,2,0,-8,0,0,2,2,0,0,0,1],space:'MNI152NLin6Asym',kind:'label',name:'my labels',provenance:'My registered FSL image',metadata:{affineConflict:true},alignmentStatus:'user-declared',canOverlayOnTarget:true,labels:[{id:3,name:'three'}]};const value=await parseProject(await serializeProject({view:{atlas:'dk'},notes:[{text:'keep my note'}],volumes:[volume]}));assert.deepEqual([...value.volumes[0].data],[0,1,3,4]);assert.deepEqual(value.volumes[0].affine,volume.affine);assert.equal(value.volumes[0].canOverlayOnTarget,true);assert.equal(value.notes[0].text,'keep my note');assert.equal(value.volumes[0].labels[0].name,'three');assert.equal(value.volumes[0].metadata.sourceImport.affineConflict,true);});
 
 const fixture=()=>({id:'custom-fixture',data:Uint8Array.of(0,1,1,0),shape:[2,2,1],affine:[2,0,0,0,0,2,0,0,0,0,2,0,0,0,0,1],kind:'mask',space:'MNI152NLin6Asym',name:'Fixture',source:'original.nii.gz',provenance:'Source DOI/example; aligned by pipeline',alignmentStatus:'user-declared',canOverlayOnTarget:true,labels:[{id:1,name:'Mask',zh:'掩膜'}],metadata:{affineConflict:true,qformCode:1,sformCode:4,originalSpatialUnits:1,description:'original header',geometryDoesNotVerifySpace:true}});
@@ -90,7 +151,7 @@ test('optional camera extent and up restore while legacy snapshots remain unchan
   const legacy={position:[1,2,3],target:[0,0,0],zoom:2};
   assert.deepEqual(validateCamera(legacy),legacy);
   const current={...legacy,frameExtent:157.25,up:[0,1,0]};
-  assert.deepEqual(decodeView(encodeView({camera:current}).encoded).camera,current);
+  assert.deepEqual(decodeView(encodeView({camera:current,coordinateOrigin:{kind:'manual',cameraSensitive:false}}).encoded).camera,current);
   assert.equal(validateCamera({...current,frameExtent:-1}),null);
   assert.equal(validateCamera({...current,up:[0,0,0]}),null);
   assert.equal(validateCamera({...current,up:[0,Infinity,0]}),null);

@@ -17,8 +17,8 @@ test('three views use RAS with radiological left/right and consistent crosshair 
  assert.deepEqual(sliceWorldPoint('x',-38,0,0),[-38,-140,120]);
 });
 test('view links retain native source, slice coordinates and overlay opacity',()=>{
- const input={atlas:'aal3-registered',atlasExplorerOpen:true,atlasExplorer:{atlas:'aal3',display:'slices',slicePoint:[-32,-10,23],sliceOpacity:.25,selected:[1,134]}};
+ const input={coordinateOrigin:{kind:'manual',cameraSensitive:false},atlas:'aal3-registered',atlasExplorerOpen:true,atlasExplorer:{atlas:'aal3',display:'slices',slicePoint:[-32,-10,23],sliceOpacity:.25,selected:[1,134]}};
  const view=decodeView(encodeView(input).encoded);assert.equal(view.atlas,'aal3-registered');assert.equal(view.atlasExplorer.atlas,'aal3');assert.equal(view.atlasExplorer.display,'slices');assert.deepEqual(view.atlasExplorer.slicePoint,[-32,-10,23]);assert.equal(view.atlasExplorer.sliceOpacity,.25);
- assert.deepEqual(validateViewState({atlasExplorer:{slicePoint:[999,-999,999]}}).atlasExplorer.slicePoint,[100,-140,120]);
+ assert.deepEqual(validateViewState({atlasExplorer:{slicePoint:[999.25,-999.5,999.75]}}).atlasExplorer.slicePoint,[999.25,-999.5,999.75]);
  assert.equal(nativeAtlasId('aal-registered'),'aal');assert.equal(unifiedAtlasId('aal3'),'aal3-registered');assert.equal(nativeAtlasId('dk'),null);
 });
