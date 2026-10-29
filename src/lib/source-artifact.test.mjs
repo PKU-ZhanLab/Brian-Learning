@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {curatedEvidence} from '../data/results.js';
+import historicalEvidence from '../../data-sources/results/published/2026-10-29.2.json' with {type:'json'};
 import {auditTranscription,verifySourceArtifact,sourceExcerptBytes,sourceArtifactRecordHash} from './source-artifact.js';
 import {auditFromDisk} from '../../scripts/evidence-audit.mjs';
 import {removeEvidenceRecords,validateEvidenceV2} from './evidence-schema.js';
@@ -162,7 +163,7 @@ test('native v2 provenance uses verified source locators without fabricated lega
 });
 
 test('a declared Boolean binding with no current source selection stays unresolved instead of disappearing',()=>{
-  const bundle=copy(),history=structuredClone(bundle.reviewEvents),retainedArtifacts=structuredClone(bundle.sourceArtifacts);
+  const bundle=structuredClone(historicalEvidence),history=structuredClone(bundle.reviewEvents),retainedArtifacts=structuredClone(bundle.sourceArtifacts);
   const result=bundle.results.find(row=>row.id==='axelrod2015-lffa');result.recordVersion='focused-probe-new-current';
   const onlyURLs=node=>{
     if(!node||typeof node!=='object')return;
@@ -190,8 +191,8 @@ test('a declared Boolean binding with no current source selection stays unresolv
 test('real hashed artifact survives DOI alias merge and independent export with canonical active references',async()=>{
   const {mergeEvidence,validateEvidenceImport}=await import('./evidence-workspace.js');
   const {buildEvidencePackage,validateEvidencePackageClosure}=await import('./evidence-package.js');
-  const incoming=copy(),oldId='axelrod2015',canonicalId='canonical-axelrod';
-  const reference=incoming.references.find(r=>r.id===oldId),base={...copy(),references:copy().references.map(r=>r.id===oldId?{...r,id:canonicalId}:r)};
+  const incoming=structuredClone(historicalEvidence),oldId='axelrod2015',canonicalId='canonical-axelrod';
+  const reference=incoming.references.find(r=>r.id===oldId),base={...structuredClone(historicalEvidence),references:historicalEvidence.references.map(r=>r.id===oldId?{...r,id:canonicalId}:structuredClone(r))};
   // Base must itself be an empty graph with the pre-existing canonical paper.
   for(const key of ['readings','experiments','results','locations','claims','mappings','sourceArtifacts','reviewEvents','relations'])base[key]=[];
   const sample=incoming.results.find(r=>r.referenceId===oldId).sample;

@@ -1,6 +1,6 @@
 {
   "schema": "brain-evidence-v2",
-  "dataVersion": "2026-10-29.2",
+  "dataVersion": "2026-10-30.1",
   "references": [
     {
       "id": "schaum2021",
@@ -431,7 +431,7 @@
       "id": "axelrod2015-rffa",
       "referenceId": "axelrod2015",
       "experimentId": null,
-      "recordVersion": "2026-10-29.2",
+      "recordVersion": "2026-10-30.1",
       "contrast": {
         "zh": "两名著名人物，每人 8 张图；独立首轮定位，其余轮次身份解码",
         "en": "Two famous identities, 8 images each; first run used for localization, remaining runs for decoding"
@@ -445,15 +445,17 @@
       ],
       "sample": {
         "enrolled": {
-          "state": "not-extracted",
-          "reason": "Enrollment count not separately extracted",
-          "sourceRefs": []
+          "state": "reported",
+          "value": 18,
+          "sourceRefs": [
+            "axelrod2015-v2"
+          ]
         },
         "included": {
           "state": "reported",
           "value": 17,
           "sourceRefs": [
-            "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126"
+            "axelrod2015-v2"
           ]
         },
         "perAnalysis": {
@@ -551,6 +553,10 @@
         {
           "en": "Independent experiment boundary was not specified in v1; experimentId remains null. Source evidence material still needs to be attached; historical checking is not a fresh source audit.",
           "zh": "Independent experiment boundary was not specified in v1; experimentId remains null. Source evidence material still needs to be attached; historical checking is not a fresh source audit."
+        },
+        {
+          "zh": "18 名招募、排除 1 名，纳入 17 名为算术推导；9 名与早先论文样本重叠。",
+          "en": "18 recruited minus one excluded gives17 included by arithmetic;9 participants overlap an earlier publication."
         }
       ],
       "legacyV1": {
@@ -639,7 +645,7 @@
       "id": "axelrod2015-lffa",
       "referenceId": "axelrod2015",
       "experimentId": null,
-      "recordVersion": "2026-10-29.2",
+      "recordVersion": "2026-10-30.1",
       "contrast": {
         "zh": "两名著名人物身份解码，与右 FFA 使用相同任务",
         "en": "Famous-face identity decoding, same task as right FFA"
@@ -653,15 +659,17 @@
       ],
       "sample": {
         "enrolled": {
-          "state": "not-extracted",
-          "reason": "Enrollment count not separately extracted",
-          "sourceRefs": []
+          "state": "reported",
+          "value": 18,
+          "sourceRefs": [
+            "axelrod2015-v2"
+          ]
         },
         "included": {
           "state": "reported",
           "value": 17,
           "sourceRefs": [
-            "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126"
+            "axelrod2015-v2"
           ]
         },
         "perAnalysis": {
@@ -759,6 +767,10 @@
         {
           "en": "Independent experiment boundary was not specified in v1; experimentId remains null. Source evidence material still needs to be attached; historical checking is not a fresh source audit.",
           "zh": "Independent experiment boundary was not specified in v1; experimentId remains null. Source evidence material still needs to be attached; historical checking is not a fresh source audit."
+        },
+        {
+          "zh": "18 名招募、排除 1 名，纳入 17 名为算术推导；9 名与早先论文样本重叠。",
+          "en": "18 recruited minus one excluded gives17 included by arithmetic;9 participants overlap an earlier publication."
         }
       ],
       "legacyV1": {
@@ -3692,6 +3704,807 @@
       ],
       "sha256": "8143a4f6712099c5ad4e850f0900d9eb4dafe560209584b6b0d664b02efbc41e",
       "recordSha256": "95617355ac01e36f51090e71a843f5bc3cd579345c5c11c67a30ad16b18d4f22"
+    },
+    {
+      "schema": "source-artifact-v1",
+      "id": "axelrod2015-v2",
+      "referenceId": "axelrod2015",
+      "doi": "10.1371/journal.pone.0117126",
+      "sourceUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+      "sourceVersion": "Additive minimal extraction v2; participant arithmetic and overlap added; v1 captures retained",
+      "retrievedAt": "2026-10-29T16:31:14.263Z",
+      "locator": "Selected cells and named sections; exact per-field locators below",
+      "rights": "Creative Commons Attribution; Axelrod and Yovel (2015), PLOS ONE, doi:10.1371/journal.pone.0117126. Minimal factual cells only.",
+      "sourceFileSha256": null,
+      "captures": [
+        {
+          "id": "xml",
+          "sourceUrl": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4340964/fullTextXML",
+          "sourceVersion": "Europe PMC fullTextXML / PMC4340964 / response 2026-10-29",
+          "retrievedAt": "2026-10-29T14:38:31.491Z",
+          "sourceFileSha256": "17443b3861014404ba0f117b76b93d298329074dbf7f2dda692a4b97f8023e86",
+          "sourceFilePersisted": false,
+          "retrievalMethod": "source-response-bytes"
+        },
+        {
+          "id": "text",
+          "sourceUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "sourceVersion": "Publisher Version of Record / 2015-02-25 / rendered 2026-10-29",
+          "retrievedAt": "2026-10-29",
+          "sourceFileSha256": null,
+          "sourceFilePersisted": false,
+          "retrievalMethod": "rendered-source"
+        },
+        {
+          "id": "participants-v2",
+          "sourceUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "sourceVersion": "Version of record, 2015-02-25",
+          "retrievedAt": "2026-10-29T16:31:14.263Z",
+          "sourceFileSha256": null,
+          "sourceFilePersisted": false,
+          "retrievalMethod": "rendered-source"
+        }
+      ],
+      "excerpt": {
+        "format": "minimal-factual-cells-v1",
+        "cells": [
+          {
+            "id": "doi",
+            "rawText": "10.1371/journal.pone.0117126",
+            "locator": "Article front matter / DOI",
+            "captureId": "text"
+          },
+          {
+            "id": "source-url",
+            "rawText": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+            "locator": "Article identity / inspected primary source URL",
+            "captureId": "text"
+          },
+          {
+            "id": "author-0",
+            "rawText": "Vadim Axelrod",
+            "locator": "Article front matter / ordered author 1",
+            "captureId": "text"
+          },
+          {
+            "id": "author-1",
+            "rawText": "Galit Yovel",
+            "locator": "Article front matter / ordered author 2",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-label",
+            "rawText": "left FFA",
+            "locator": "Table 1 / row 2 / left FFA / row label",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-x",
+            "rawText": "-41",
+            "locator": "Table 1 / row 2 / left FFA / x coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-y",
+            "rawText": "-53",
+            "locator": "Table 1 / row 2 / left FFA / y coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-z",
+            "rawText": "-18",
+            "locator": "Table 1 / row 2 / left FFA / z coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-table",
+            "rawText": "Table 1",
+            "locator": "Table 1 / row 2 / left FFA / table identifier",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-mni",
+            "rawText": "MNI",
+            "locator": "Table 1 / row 2 / left FFA / coordinate-system header or associated Methods",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-n",
+            "rawText": "13",
+            "locator": "Table 1 / left FFA / number of participants",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-localizer-z",
+            "rawText": "7.03",
+            "locator": "Table 1 / left FFA / average localization z-score (not MVPA t)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-t-0",
+            "rawText": "2.57",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / t",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-df-0",
+            "rawText": "12",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / df",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-p-0",
+            "rawText": "0.012",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / p",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-operator-0",
+            "rawText": "=",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / p operator",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-t-1",
+            "rawText": "2.57",
+            "locator": "Table 2 / left FFA / 20 voxels / t",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-df-1",
+            "rawText": "12",
+            "locator": "Table 2 / left FFA / 20 voxels / df",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-p-1",
+            "rawText": "0.01",
+            "locator": "Table 2 / left FFA / 20 voxels / p",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-operator-1",
+            "rawText": "=",
+            "locator": "Table 2 / left FFA / 20 voxels / p operator",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-corrected-threshold",
+            "rawText": ".004",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-correction",
+            "rawText": "Bonferroni",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / multiple-comparison method",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-label",
+            "rawText": "right FFA",
+            "locator": "Table 1 / row 3 / right FFA / row label",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-x",
+            "rawText": "39",
+            "locator": "Table 1 / row 3 / right FFA / x coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-y",
+            "rawText": "-52",
+            "locator": "Table 1 / row 3 / right FFA / y coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-z",
+            "rawText": "-16",
+            "locator": "Table 1 / row 3 / right FFA / z coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-table",
+            "rawText": "Table 1",
+            "locator": "Table 1 / row 3 / right FFA / table identifier",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-mni",
+            "rawText": "MNI",
+            "locator": "Table 1 / row 3 / right FFA / coordinate-system header or associated Methods",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-n",
+            "rawText": "16",
+            "locator": "Table 1 / right FFA / number of participants",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-localizer-z",
+            "rawText": "8.50",
+            "locator": "Table 1 / right FFA / average localization z-score (not MVPA t)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-t-0",
+            "rawText": "4.29",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / t",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-df-0",
+            "rawText": "15",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / df",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-p-0",
+            "rawText": "0.001",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / p",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-operator-0",
+            "rawText": "<",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / p operator",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-t-1",
+            "rawText": "4.3",
+            "locator": "Table 2 / right FFA / 20 voxels / t",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-df-1",
+            "rawText": "15",
+            "locator": "Table 2 / right FFA / 20 voxels / df",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-p-1",
+            "rawText": "0.001",
+            "locator": "Table 2 / right FFA / 20 voxels / p",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-operator-1",
+            "rawText": "<",
+            "locator": "Table 2 / right FFA / 20 voxels / p operator",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-corrected-threshold",
+            "rawText": ".004",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-correction",
+            "rawText": "Bonferroni",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / multiple-comparison method",
+            "captureId": "text"
+          },
+          {
+            "id": "participants-recruited",
+            "rawText": "18",
+            "locator": "Materials and Methods / Participants / first sentence",
+            "captureId": "participants-v2"
+          },
+          {
+            "id": "participants-excluded",
+            "rawText": "One",
+            "locator": "Materials and Methods / Participants / second sentence",
+            "captureId": "participants-v2"
+          },
+          {
+            "id": "participants-overlapping-prior-sample",
+            "rawText": "9",
+            "locator": "Materials and Methods / Participants / final sentence",
+            "captureId": "participants-v2"
+          },
+          {
+            "id": "participants-five-session-count",
+            "rawText": "Fourteen",
+            "locator": "Materials and Methods / Experimental Design / final sentence",
+            "captureId": "participants-v2"
+          },
+          {
+            "id": "participants-six-session-count",
+            "rawText": "three",
+            "locator": "Materials and Methods / Experimental Design / final sentence",
+            "captureId": "participants-v2"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "path": "references/axelrod2015/doi",
+          "cellId": "doi",
+          "rawText": "10.1371/journal.pone.0117126",
+          "locator": "Article front matter / DOI",
+          "encoding": "text"
+        },
+        {
+          "path": "references/axelrod2015/url",
+          "cellId": "source-url",
+          "rawText": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "locator": "Article identity / inspected primary source URL",
+          "encoding": "normalization",
+          "normalizedValue": "https://doi.org/10.1371/journal.pone.0117126",
+          "rationale": "Canonical DOI resolver URL for the same inspected article DOI."
+        },
+        {
+          "path": "references/axelrod2015/fullAuthorList/0",
+          "cellId": "author-0",
+          "rawText": "Vadim Axelrod",
+          "locator": "Article front matter / ordered author 1",
+          "encoding": "text"
+        },
+        {
+          "path": "references/axelrod2015/fullAuthorList/1",
+          "cellId": "author-1",
+          "rawText": "Galit Yovel",
+          "locator": "Article front matter / ordered author 2",
+          "encoding": "text"
+        },
+        {
+          "path": "references/axelrod2015/fullAuthorList/length",
+          "cellId": "source-url",
+          "rawText": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "locator": "Article identity / inspected primary source URL",
+          "encoding": "normalization",
+          "normalizedValue": 2,
+          "rationale": "Number of names in the ordered primary article author list transcribed above."
+        },
+        {
+          "path": "locations/axelrod-lffa/xyz/0",
+          "cellId": "axelrod-lffa-x",
+          "rawText": "-41",
+          "locator": "Table 1 / row 2 / left FFA / x coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-lffa/xyz/1",
+          "cellId": "axelrod-lffa-y",
+          "rawText": "-53",
+          "locator": "Table 1 / row 2 / left FFA / y coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-lffa/xyz/2",
+          "cellId": "axelrod-lffa-z",
+          "rawText": "-18",
+          "locator": "Table 1 / row 2 / left FFA / z coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-lffa/legacyV1/sourceTable",
+          "cellId": "axelrod-lffa-table",
+          "rawText": "Table 1",
+          "locator": "Table 1 / row 2 / left FFA / table identifier",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/axelrod-lffa/legacyV1/sourceRow",
+          "cellId": "axelrod-lffa-label",
+          "rawText": "left FFA",
+          "locator": "Table 1 / row 2 / left FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "left FFA; n=13",
+          "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+        },
+        {
+          "path": "locations/axelrod-lffa/sourceRefs/0",
+          "cellId": "axelrod-lffa-label",
+          "rawText": "left FFA",
+          "locator": "Table 1 / row 2 / left FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+          "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+        },
+        {
+          "path": "locations/axelrod-lffa/legacyV1/sourceUrl",
+          "cellId": "axelrod-lffa-label",
+          "rawText": "left FFA",
+          "locator": "Table 1 / row 2 / left FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+          "rationale": "Retained original publisher source link to this row."
+        },
+        {
+          "path": "locations/axelrod-lffa/sourceSpaceId",
+          "cellId": "axelrod-lffa-mni",
+          "rawText": "MNI",
+          "locator": "Table 1 / row 2 / left FFA / coordinate-system header or associated Methods",
+          "encoding": "normalization",
+          "normalizedValue": "MNI-unspecified",
+          "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+        },
+        {
+          "path": "locations/axelrod-lffa/kind",
+          "cellId": "axelrod-lffa-label",
+          "rawText": "left FFA",
+          "locator": "Table 1 / row 2 / left FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "roi-mean",
+          "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+        },
+        {
+          "path": "results/axelrod2015-lffa/sample/perAnalysis/value",
+          "cellId": "axelrod-lffa-n",
+          "rawText": "13",
+          "locator": "Table 1 / left FFA / number of participants",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/value",
+          "cellId": "axelrod-lffa-t-0",
+          "rawText": "2.57",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / t",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/df",
+          "cellId": "axelrod-lffa-df-0",
+          "rawText": "12",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / df",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/p/value",
+          "cellId": "axelrod-lffa-p-0",
+          "rawText": "0.012",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / p",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/p/operator",
+          "cellId": "axelrod-lffa-operator-0",
+          "rawText": "=",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / p operator",
+          "encoding": "text"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/type",
+          "cellId": "axelrod-lffa-t-0",
+          "rawText": "2.57",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / t",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "Both the primary text and Table 2 report t statistics for identity decoding."
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/sourceRefs/0",
+          "cellId": "axelrod-lffa-t-0",
+          "rawText": "2.57",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / t",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "rationale": "Public article or table DOI locator for the same primary source observation."
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/value",
+          "cellId": "axelrod-lffa-t-1",
+          "rawText": "2.57",
+          "locator": "Table 2 / left FFA / 20 voxels / t",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/df",
+          "cellId": "axelrod-lffa-df-1",
+          "rawText": "12",
+          "locator": "Table 2 / left FFA / 20 voxels / df",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/p/value",
+          "cellId": "axelrod-lffa-p-1",
+          "rawText": "0.01",
+          "locator": "Table 2 / left FFA / 20 voxels / p",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/p/operator",
+          "cellId": "axelrod-lffa-operator-1",
+          "rawText": "=",
+          "locator": "Table 2 / left FFA / 20 voxels / p operator",
+          "encoding": "text"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/type",
+          "cellId": "axelrod-lffa-t-1",
+          "rawText": "2.57",
+          "locator": "Table 2 / left FFA / 20 voxels / t",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "Both the primary text and Table 2 report t statistics for identity decoding."
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/sourceRefs/0",
+          "cellId": "axelrod-lffa-t-1",
+          "rawText": "2.57",
+          "locator": "Table 2 / left FFA / 20 voxels / t",
+          "encoding": "normalization",
+          "normalizedValue": "https://doi.org/10.1371/journal.pone.0117126.t002",
+          "rationale": "Public article or table DOI locator for the same primary source observation."
+        },
+        {
+          "path": "results/axelrod2015-lffa/correction/value/threshold/value",
+          "cellId": "axelrod-lffa-corrected-threshold",
+          "rawText": ".004",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/correction/value/passed",
+          "cellId": "axelrod-lffa-corrected-threshold",
+          "rawText": ".004",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+          "encoding": "normalization",
+          "normalizedValue": false,
+          "rationale": "The reported threshold applies across 12 regions; right FFA passes and left FFA does not."
+        },
+        {
+          "path": "results/axelrod2015-lffa/correction/value/method",
+          "cellId": "axelrod-lffa-correction",
+          "rawText": "Bonferroni",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / multiple-comparison method",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/axelrod-rffa/xyz/0",
+          "cellId": "axelrod-rffa-x",
+          "rawText": "39",
+          "locator": "Table 1 / row 3 / right FFA / x coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-rffa/xyz/1",
+          "cellId": "axelrod-rffa-y",
+          "rawText": "-52",
+          "locator": "Table 1 / row 3 / right FFA / y coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-rffa/xyz/2",
+          "cellId": "axelrod-rffa-z",
+          "rawText": "-16",
+          "locator": "Table 1 / row 3 / right FFA / z coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-rffa/legacyV1/sourceTable",
+          "cellId": "axelrod-rffa-table",
+          "rawText": "Table 1",
+          "locator": "Table 1 / row 3 / right FFA / table identifier",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/axelrod-rffa/legacyV1/sourceRow",
+          "cellId": "axelrod-rffa-label",
+          "rawText": "right FFA",
+          "locator": "Table 1 / row 3 / right FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "right FFA; n=16",
+          "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+        },
+        {
+          "path": "locations/axelrod-rffa/sourceRefs/0",
+          "cellId": "axelrod-rffa-label",
+          "rawText": "right FFA",
+          "locator": "Table 1 / row 3 / right FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+          "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+        },
+        {
+          "path": "locations/axelrod-rffa/legacyV1/sourceUrl",
+          "cellId": "axelrod-rffa-label",
+          "rawText": "right FFA",
+          "locator": "Table 1 / row 3 / right FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+          "rationale": "Retained original publisher source link to this row."
+        },
+        {
+          "path": "locations/axelrod-rffa/sourceSpaceId",
+          "cellId": "axelrod-rffa-mni",
+          "rawText": "MNI",
+          "locator": "Table 1 / row 3 / right FFA / coordinate-system header or associated Methods",
+          "encoding": "normalization",
+          "normalizedValue": "MNI-unspecified",
+          "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+        },
+        {
+          "path": "locations/axelrod-rffa/kind",
+          "cellId": "axelrod-rffa-label",
+          "rawText": "right FFA",
+          "locator": "Table 1 / row 3 / right FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "roi-mean",
+          "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+        },
+        {
+          "path": "results/axelrod2015-rffa/sample/perAnalysis/value",
+          "cellId": "axelrod-rffa-n",
+          "rawText": "16",
+          "locator": "Table 1 / right FFA / number of participants",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/value",
+          "cellId": "axelrod-rffa-t-0",
+          "rawText": "4.29",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / t",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/df",
+          "cellId": "axelrod-rffa-df-0",
+          "rawText": "15",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / df",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/p/value",
+          "cellId": "axelrod-rffa-p-0",
+          "rawText": "0.001",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / p",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/p/operator",
+          "cellId": "axelrod-rffa-operator-0",
+          "rawText": "<",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / p operator",
+          "encoding": "text"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/type",
+          "cellId": "axelrod-rffa-t-0",
+          "rawText": "4.29",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / t",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "Both the primary text and Table 2 report t statistics for identity decoding."
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/sourceRefs/0",
+          "cellId": "axelrod-rffa-t-0",
+          "rawText": "4.29",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / t",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "rationale": "Public article or table DOI locator for the same primary source observation."
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/value",
+          "cellId": "axelrod-rffa-t-1",
+          "rawText": "4.3",
+          "locator": "Table 2 / right FFA / 20 voxels / t",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/df",
+          "cellId": "axelrod-rffa-df-1",
+          "rawText": "15",
+          "locator": "Table 2 / right FFA / 20 voxels / df",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/p/value",
+          "cellId": "axelrod-rffa-p-1",
+          "rawText": "0.001",
+          "locator": "Table 2 / right FFA / 20 voxels / p",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/p/operator",
+          "cellId": "axelrod-rffa-operator-1",
+          "rawText": "<",
+          "locator": "Table 2 / right FFA / 20 voxels / p operator",
+          "encoding": "text"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/type",
+          "cellId": "axelrod-rffa-t-1",
+          "rawText": "4.3",
+          "locator": "Table 2 / right FFA / 20 voxels / t",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "Both the primary text and Table 2 report t statistics for identity decoding."
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/sourceRefs/0",
+          "cellId": "axelrod-rffa-t-1",
+          "rawText": "4.3",
+          "locator": "Table 2 / right FFA / 20 voxels / t",
+          "encoding": "normalization",
+          "normalizedValue": "https://doi.org/10.1371/journal.pone.0117126.t002",
+          "rationale": "Public article or table DOI locator for the same primary source observation."
+        },
+        {
+          "path": "results/axelrod2015-rffa/correction/value/threshold/value",
+          "cellId": "axelrod-rffa-corrected-threshold",
+          "rawText": ".004",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/correction/value/passed",
+          "cellId": "axelrod-rffa-corrected-threshold",
+          "rawText": ".004",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+          "encoding": "normalization",
+          "normalizedValue": true,
+          "rationale": "The reported threshold applies across 12 regions; right FFA passes and left FFA does not."
+        },
+        {
+          "path": "results/axelrod2015-rffa/correction/value/method",
+          "cellId": "axelrod-rffa-correction",
+          "rawText": "Bonferroni",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / multiple-comparison method",
+          "encoding": "text"
+        },
+        {
+          "path": "results/axelrod2015-lffa/sample/enrolled/value",
+          "cellId": "participants-recruited",
+          "rawText": "18",
+          "locator": "Materials and Methods / Participants / first sentence",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/sample/included/value",
+          "cellId": "participants-recruited",
+          "rawText": "18",
+          "locator": "Materials and Methods / Participants / first sentence",
+          "encoding": "normalization",
+          "normalizedValue": 17,
+          "rationale": "Arithmetic18 recruited minus one excluded; exclusion is separately retained as participants-excluded.14 completed five sessions plus3 six sessions is independent consistency only."
+        },
+        {
+          "path": "results/axelrod2015-rffa/sample/enrolled/value",
+          "cellId": "participants-recruited",
+          "rawText": "18",
+          "locator": "Materials and Methods / Participants / first sentence",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/sample/included/value",
+          "cellId": "participants-recruited",
+          "rawText": "18",
+          "locator": "Materials and Methods / Participants / first sentence",
+          "encoding": "normalization",
+          "normalizedValue": 17,
+          "rationale": "Arithmetic18 recruited minus one excluded; exclusion is separately retained as participants-excluded.14 completed five sessions plus3 six sessions is independent consistency only."
+        }
+      ],
+      "paraphrases": [
+        {
+          "locator": "Results / Neuroimaging Results / MVPA; Table 2",
+          "text": "Preserve separate reported precision: left FFA text p=.012 and table p=.01; right FFA text t=4.29 and table t=4.3. Bonferroni covers 12 regions; the reported raw-p threshold is .004. Table 1 z values belong to the localizer, not identity decoding."
+        },
+        {
+          "locator": "Materials and Methods / Participants; Experimental Design",
+          "text": "18 participants minus one excluded for movement; independently consistent with 14 participants completing five sessions plus three completing six sessions. Nine participants overlap an earlier publication; do not treat dependent reports as independent samples."
+        }
+      ],
+      "limitations": [
+        "AI-assisted source inspection by Codex/root; human or expert review remains pending.",
+        "Only the listed minimal cells are available offline; complete articles and images are not retained.",
+        "A source-file digest records actual observed bytes of the named response only; it cannot re-verify absent full-source bytes.",
+        "Generic MNI does not establish an exact template variant or direct overlay eligibility.",
+        "AI-assisted primary-page reading, not human review.",
+        "Included17 is an explicit arithmetic derivation from the reported enrolment/exclusion, not a literal copied17 count.",
+        "Participant overlap9 concerns the cited earlier publication; do not invent independent sample status.",
+        "No full-page bytes or hash were obtained; future artifact must keep whole-source digest null."
+      ],
+      "sha256": "a6901170cdbe3941031bf1c201ae2c809915e6abc6be0d702fe5ec34543275f2",
+      "recordSha256": "7ed99b4c8855b90fc56eb9abc8c3f5ab4d478f9323bc12650a46a3378399288a"
     }
   ],
   "reviewEvents": [
@@ -4222,6 +5035,44 @@
           "en": "MNI template variant remains unspecified; human review remains pending."
         }
       ]
+    },
+    {
+      "id": "axelrod2015-rffa:e6-source-check-v2",
+      "subjectId": "axelrod2015-rffa",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-30",
+      "scope": "AI-assisted minimal source transcription; participant count17 is explicitly derived as18 minus1. No human or spatial review.",
+      "sourceRefs": [
+        "axelrod2015-v2"
+      ],
+      "recordVersion": "2026-10-30.1",
+      "limitations": [
+        {
+          "zh": "仅最小原文单元核对，人工审阅待完成。",
+          "en": "Only minimal source cells checked; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "axelrod2015-lffa:e6-source-check-v2",
+      "subjectId": "axelrod2015-lffa",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-30",
+      "scope": "AI-assisted minimal source transcription; participant count17 is explicitly derived as18 minus1. No human or spatial review.",
+      "sourceRefs": [
+        "axelrod2015-v2"
+      ],
+      "recordVersion": "2026-10-30.1",
+      "limitations": [
+        {
+          "zh": "仅最小原文单元核对，人工审阅待完成。",
+          "en": "Only minimal source cells checked; human review remains pending."
+        }
+      ]
     }
   ],
   "relations": [],
@@ -4694,5 +5545,43 @@
       }
     ],
     "relations": []
-  }
+  },
+  "corrections": [
+    {
+      "id": "axelrod2015-lffa:participants-v2",
+      "subjectId": "axelrod2015-lffa",
+      "fromVersion": "2026-10-29.2",
+      "toVersion": "2026-10-30.1",
+      "date": "2026-10-30",
+      "reason": "Add reported enrollment18 and explicitly derived included17 (18 minus1); retain ROI-specific n and report9 overlapping prior participants.",
+      "changedFields": [
+        "sample.enrolled",
+        "sample.included.sourceRefs",
+        "limitations",
+        "recordVersion"
+      ],
+      "sourceRefs": [
+        "axelrod2015-v2",
+        "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126"
+      ]
+    },
+    {
+      "id": "axelrod2015-rffa:participants-v2",
+      "subjectId": "axelrod2015-rffa",
+      "fromVersion": "2026-10-29.2",
+      "toVersion": "2026-10-30.1",
+      "date": "2026-10-30",
+      "reason": "Add reported enrollment18 and explicitly derived included17 (18 minus1); retain ROI-specific n and report9 overlapping prior participants.",
+      "changedFields": [
+        "sample.enrolled",
+        "sample.included.sourceRefs",
+        "limitations",
+        "recordVersion"
+      ],
+      "sourceRefs": [
+        "axelrod2015-v2",
+        "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126"
+      ]
+    }
+  ]
 }

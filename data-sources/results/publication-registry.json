@@ -1,0 +1,59 @@
+{
+  "schema": "public-result-registry-v1",
+  "latest": {
+    "schaum2021-meg-stop": "2026-10-30.1",
+    "axelrod2015-rffa": "2026-10-30.1",
+    "axelrod2015-lffa": "2026-10-30.1",
+    "bosco2008-tms-protocol1": "2026-10-30.1"
+  },
+  "versions": [
+    {
+      "dataVersion": "2026-10-29.2",
+      "file": "published/2026-10-29.2.json",
+      "sha256": "7a87e8cb8af331d0f1830793217e0db1ee0e9e5b68422ac4eeea7c1d31c08bce",
+      "records": [
+        {
+          "resultId": "schaum2021-meg-stop",
+          "contentHash": "0d04b0c43c3065ca2794141f79e21e2743ce40438eea3d27b8bcc3c5cad1463e"
+        },
+        {
+          "resultId": "axelrod2015-rffa",
+          "contentHash": "6976682895a722589187622049e496d4d16134c20accaad750ee626d18523dbe"
+        },
+        {
+          "resultId": "axelrod2015-lffa",
+          "contentHash": "535c835d5e19ac967b096b4da6410a71f8c16d284b076038fda1ebf481b1a2db"
+        },
+        {
+          "resultId": "bosco2008-tms-protocol1",
+          "contentHash": "331fe13120044d2ee28870ae8fcc65fe3d22b2cb07b1c9704030c5a0b707e45a"
+        }
+      ]
+    },
+    {
+      "dataVersion": "2026-10-30.1",
+      "file": "published/2026-10-30.1.json",
+      "sha256": "234a04a803e9dfcb2dfd38f33bc7fc247ba3cd14e9c0245f14d6c165c051e208",
+      "records": [
+        {
+          "resultId": "schaum2021-meg-stop",
+          "contentHash": "b52f6f2dce85ec9e6664e5cfe3d8d2d2fa378f95de7466996c7e71298f189771"
+        },
+        {
+          "resultId": "axelrod2015-rffa",
+          "contentHash": "98e4fecd6ba1c40bb8f0b598fe61c0d9111a756ee4199ee4e24532b78a571334"
+        },
+        {
+          "resultId": "axelrod2015-lffa",
+          "contentHash": "fabd54544a97428f3e00a7b6487bb54f23a089266525e5419e000e9a68b48dd7"
+        },
+        {
+          "resultId": "bosco2008-tms-protocol1",
+          "contentHash": "f8aa48c46cffc1d5b196f9194f8a0cceb20eb5db6f49aa870d941f6cfdd8c4fc"
+        }
+      ]
+    }
+  ],
+  "releaseStatus": "prepared-local-not-deployed",
+  "policy": "Canonical immutable built-in snapshots prepared locally. Dates in dataVersion identify preparation versions, never historical public deployment."
+}

@@ -1,0 +1,11 @@
+.result-record-page{font-size:14px;line-height:1.6;overflow-wrap:anywhere;color:var(--text,#19372b)}
+.result-record-page header{display:flex;gap:12px;align-items:start;justify-content:space-between}
+.result-record-page h3{font-size:16px;line-height:1.5;margin:0 0 12px}
+.result-record-page dl{display:grid;grid-template-columns:minmax(100px,1fr) minmax(0,3fr);gap:6px 12px}
+.result-record-page dt{font-weight:600}.result-record-page dd{margin:0}
+.result-record-page details{margin:12px 0}.result-record-page summary{cursor:pointer;font-weight:600}
+.result-record-page pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
+.result-record-table{overflow-x:auto}.result-record-table table{width:100%;border-collapse:collapse}
+.result-record-table th,.result-record-table td{padding:8px;text-align:left;border-bottom:1px solid #cbd9d0;vertical-align:top}
+.result-record-links{display:grid;gap:8px}.result-record-hash{display:block;font-size:13px}
+@media(max-width:650px){.result-record-page dl{grid-template-columns:1fr}.result-record-page dd{margin-bottom:8px}}

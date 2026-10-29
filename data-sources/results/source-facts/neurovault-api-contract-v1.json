@@ -1,0 +1,14 @@
+{
+  "sourceURL": "https://neurovault.org/api-docs/",
+  "retrievedAt": "2026-10-30",
+  "verification": "AI-assisted current official documentation reading",
+  "facts": {
+    "collections": "GET /api/collections/; documented case-sensitive DOI parameter",
+    "images": "GET /api/collections/{pk}/images; GET /api/images/{pk}/",
+    "pagination": "Current service uses count/results/next envelopes, as independently captured in the DOI lookup receipt"
+  },
+  "limitations": [
+    "Documentation does not prove that the running service applies its DOI filter correctly.",
+    "A candidate does not establish paper contrast, exact space, redistribution rights or human review."
+  ]
+}

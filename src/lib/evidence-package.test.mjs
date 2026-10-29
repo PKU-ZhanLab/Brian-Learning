@@ -103,7 +103,8 @@ test('E5-R2 artifact-subject review dependencies close transitively without sele
   const before=structuredClone(bundle),out=buildEvidencePackage({paperIds:['axelrod2015'],bundle,includePrivate:true});
   assert.equal(validateEvidencePackageClosure(out).valid,true);
   assert.deepEqual(out.reviewEvents.filter(e=>e.id.startsWith('history-review-')),historical);
-  assert.deepEqual(out.sourceArtifacts.map(a=>a.id).sort(),[first.id,second.id,third.id].sort());
+  const currentPaperSources=getBuiltinEvidenceBundle().sourceArtifacts.filter(a=>a.referenceId==='axelrod2015').map(a=>a.id);
+  assert.deepEqual(out.sourceArtifacts.map(a=>a.id).sort(),[...currentPaperSources,second.id,third.id].sort());
   assert.deepEqual(out.sourceArtifacts.find(a=>a.id===first.id),first);
   assert.ok(!JSON.stringify(out).includes(unselected.id));assert.deepEqual(bundle,before);
 });

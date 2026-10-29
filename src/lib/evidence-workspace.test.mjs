@@ -53,12 +53,12 @@ test('production editor payload saves only its referenced source artifacts with 
     record.finding='Edited narrative; source observations retained';
     const options={knownReferences:additionalResultsReferences};
     const payload=resultViewModelToEvidence(record,original,options);
-    assert.deepEqual(payload.sourceArtifacts.map(row=>row.id),original.sourceArtifacts.filter(row=>row.referenceId===referenceId).map(row=>row.id));
+    assert.deepEqual(payload.sourceArtifacts.map(row=>row.id).sort(),original.sourceArtifacts.filter(row=>row.referenceId===referenceId).map(row=>row.id).sort());
     assert.equal(validateEvidence(payload,options).valid,true);
     assert.deepEqual(payload.results[0].statistics,original.results.find(row=>row.id===id).statistics);
     for(const event of payload.reviewEvents)for(const source of event.sourceRefs.filter(ref=>!/^https?:/.test(ref)))assert(payload.sourceArtifacts.some(artifact=>artifact.id===source));
     const storage=store();saveEvidence(payload,storage,options);const reopened=loadEvidence(storage,options);
-    assert.deepEqual(reopened,payload);assert.deepEqual(reopened.sourceArtifacts,original.sourceArtifacts.filter(row=>row.referenceId===referenceId));
+    assert.deepEqual(reopened,payload);assert.deepEqual([...reopened.sourceArtifacts].sort((a,b)=>a.id.localeCompare(b.id)),original.sourceArtifacts.filter(row=>row.referenceId===referenceId).sort((a,b)=>a.id.localeCompare(b.id)));
     const merged=mergeEvidence(original,reopened,options);assert.equal(getResultViewModel(id,merged).reviewState.sourceChecked,false);
   }
 });

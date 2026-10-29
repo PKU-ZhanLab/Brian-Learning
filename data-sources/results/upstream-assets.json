@@ -1,0 +1,197 @@
+{
+  "schema": "upstream-assets-v1",
+  "version": "2026-10-30.1",
+  "assets": [
+    {
+      "recordRole": "source-backed-native-image-case-with-unresolved-gaps",
+      "upstream": {
+        "provider": "NeuroVault",
+        "collectionId": 13064,
+        "imageId": 787769,
+        "paperDOI": "10.1016/j.brs.2023.09.009",
+        "paperLinkage": "article-outbound-link",
+        "upstreamCollectionDOI": null,
+        "sourceURL": "https://neurovault.org/images/787769/",
+        "downloadURL": "https://neurovault.org/media/images/13064/FPM_WPM_active_sham.nii.gz",
+        "retrievedAt": "2026-10-29T11:16:09.825Z",
+        "upstreamVersion": "2022-10-18T17:53:44.957924+02:00",
+        "upstreamVersionKind": "modify_date-not-immutable-release",
+        "status": "candidate",
+        "acquisitionStatus": "downloaded-hash-verified",
+        "sourceSpaceId": null,
+        "mapKind": "statistic_map",
+        "statisticType": "T",
+        "thresholdState": "conflicting",
+        "rights": {
+          "license": "CC0-1.0",
+          "basis": [
+            "NeuroVault FAQ13",
+            "collection13064 private:false"
+          ],
+          "sourceRefs": [
+            "source-facts/martin-rights-v1.json",
+            "source-facts/martin-collection-api-v1.json",
+            "source-facts/martin-retrievals-v1.json"
+          ]
+        },
+        "asset": {
+          "id": "neurovault:787769:original",
+          "version": "sha256:c311087c48b191237734ddff0d2949d2051530b30364ecc3fb86d83b1919d8b0",
+          "sha256": "c311087c48b191237734ddff0d2949d2051530b30364ecc3fb86d83b1919d8b0",
+          "hashScope": "original-compressed-file-bytes",
+          "bytes": 251697,
+          "spaceId": null
+        }
+      },
+      "sourceAsset": {
+        "id": "neurovault:787769:original",
+        "version": "sha256:c311087c48b191237734ddff0d2949d2051530b30364ecc3fb86d83b1919d8b0",
+        "sha256": "c311087c48b191237734ddff0d2949d2051530b30364ecc3fb86d83b1919d8b0",
+        "hashScope": "original-compressed-file-bytes",
+        "bytes": 251697,
+        "spaceId": null
+      },
+      "sourceSpaceId": null,
+      "sourceGrid": {
+        "shape": [
+          74,
+          88,
+          67
+        ],
+        "voxelSize": [
+          2.48799991607666,
+          2.48799991607666,
+          2.75
+        ],
+        "affine": [
+          [
+            2.48799991607666,
+            0,
+            0,
+            -90
+          ],
+          [
+            0,
+            2.48799991607666,
+            0,
+            -126
+          ],
+          [
+            0,
+            0,
+            2.75,
+            -72
+          ],
+          [
+            0,
+            0,
+            0,
+            1
+          ]
+        ],
+        "affineSource": "NIfTI sform",
+        "axisConvention": "NIfTI RAS+ world coordinates from sform; no exact-template proof",
+        "sformCode": 2,
+        "qformCode": 2
+      },
+      "upstreamRawTemplate": "GenericMNI",
+      "sourceSpaceAssertions": [
+        {
+          "spaceId": "MNI152NLin6Asym",
+          "basis": "author-code-derived",
+          "codeCommit": "15897968c2f068a5898a5e701ad284340b295b49",
+          "scope": "intended control/session2-3 standard analysis pipeline; not proof of uploaded bytes",
+          "sourceRefs": [
+            "https://gitlab.gwdg.de/mdn-in-aging-and-aphasia/mdn_aph/-/blob/15897968c2f068a5898a5e701ad284340b295b49/fmriprep-preproc/fmriprep_command.sh#L39",
+            "https://gitlab.gwdg.de/mdn-in-aging-and-aphasia/mdn_aph/-/blob/15897968c2f068a5898a5e701ad284340b295b49/fmriprep-stats/matlab/f1a_second_level_batch_Active_vs_Sham_masked_subtractedConImg.m#L199",
+            "source-facts/martin-code-evidence-v1.json"
+          ],
+          "uploadBindingVerified": false,
+          "anatomicalAlignmentVerified": false
+        }
+      ],
+      "contrast": {
+        "interpretation": "(feature-picture matching - word-picture matching)active - (feature-picture matching - word-picture matching)sham > 0",
+        "evidenceLevel": "author-code-and-upload-description-consistent",
+        "runtimeVerified": false,
+        "publicationModelMatch": "unresolved-covariate-difference",
+        "uploadDescription": "SPM{T_[29.0]} - contrast 1: active>sham",
+        "numberOfSubjectsReportedByAPI": 30,
+        "degreesOfFreedomReportedByHeaderAndAPI": 29,
+        "covariateStatus": "compatible-with-no-covariate-f1a; actual-upload-runtime-unverified",
+        "specificPublishedFigureLink": null,
+        "sourceRefs": [
+          "source-facts/martin-image-api-v1.json",
+          "source-facts/martin-local-verification-v1.json",
+          "source-facts/martin-article-v1.json",
+          "https://gitlab.gwdg.de/mdn-in-aging-and-aphasia/mdn_aph/-/blob/15897968c2f068a5898a5e701ad284340b295b49/fmriprep-preproc/fmriprep_command.sh#L39",
+          "https://gitlab.gwdg.de/mdn-in-aging-and-aphasia/mdn_aph/-/blob/15897968c2f068a5898a5e701ad284340b295b49/fmriprep-stats/matlab/f1a_second_level_batch_Active_vs_Sham_masked_subtractedConImg.m#L199",
+          "source-facts/martin-code-evidence-v1.json"
+        ]
+      },
+      "thresholdEvidence": {
+        "imageAPIIsThresholded": true,
+        "collectionClaim": "unthresholded group maps",
+        "articleClaim": "unthresholded group maps",
+        "analysisMaskInCode": "implicit mask and external GM_spm_0.3.nii; source/version unbound",
+        "appliedStatisticalThreshold": null,
+        "sourceRefs": [
+          "source-facts/martin-image-api-v1.json",
+          "source-facts/martin-collection-api-v1.json",
+          "source-facts/martin-article-v1.json"
+        ]
+      },
+      "derivedAsset": null,
+      "transformRef": null,
+      "reviewState": {
+        "sourceAIReview": "completed-with-recorded-gaps",
+        "humanAnatomicalReview": "pending",
+        "importROIWorkflow": "pending",
+        "saveRestoreIndependentExport": "pending",
+        "caseAcceptance": "pending"
+      },
+      "limitations": [
+        {
+          "zh": "No code-to-upload byte binding; pinned code commit postdates upload.",
+          "en": "No code-to-upload byte binding; pinned code commit postdates upload."
+        },
+        {
+          "zh": "Exact uploaded template remains unverified despite explicit NLin6Asym pipeline selection.",
+          "en": "Exact uploaded template remains unverified despite explicit NLin6Asym pipeline selection."
+        },
+        {
+          "zh": "Uploaded T[29]/N30 is compatible with unadjusted f1a; final methods describe age, age-squared, GMV, TIV covariates.",
+          "en": "Uploaded T[29]/N30 is compatible with unadjusted f1a; final methods describe age, age-squared, GMV, TIV covariates."
+        },
+        {
+          "zh": "Threshold metadata conflict unresolved; no significance mask, p-value conversion or unthresholded-map aggregation justified.",
+          "en": "Threshold metadata conflict unresolved; no significance mask, p-value conversion or unthresholded-map aggregation justified."
+        },
+        {
+          "zh": "No runtime SPM outputs, exact mask asset, spatial transform, atlas/ROI mapping or anatomical review verified.",
+          "en": "No runtime SPM outputs, exact mask asset, spatial transform, atlas/ROI mapping or anatomical review verified."
+        },
+        {
+          "zh": "Original eight paper coordinates remain MNI-unspecified with zero direct overlays.",
+          "en": "Original eight paper coordinates remain MNI-unspecified with zero direct overlays."
+        }
+      ]
+    }
+  ],
+  "lookups": {
+    "status": "inconclusive-doi-filter-integrity",
+    "verifiedEmpty": false,
+    "sourceURL": "https://neurovault.org/api/collections/?DOI=10.7554%2Felife.61679",
+    "retrievedAt": "2026-10-29T21:09:25.054Z",
+    "count": 18055,
+    "returned": 100,
+    "exactMatches": 0,
+    "nextPagePresent": true,
+    "limitation": "Unrelated first page is not verified absence. No Schaum GitHub bytes are redistributed; exact template and data-specific rights remain unresolved.",
+    "sourceRefs": [
+      "source-facts/schaum-doi-lookup-v1.json",
+      "source-facts/neurovault-api-contract-v1.json"
+    ]
+  },
+  "sourceFactIndex": "source-facts/index.json"
+}

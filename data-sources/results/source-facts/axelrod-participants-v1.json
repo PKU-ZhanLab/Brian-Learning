@@ -1,0 +1,58 @@
+{
+  "id": "axelrod-participants-primary-20261030",
+  "referenceId": "axelrod2015",
+  "sourceURL": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+  "sourceVersion": "Version of record, 2015-02-25",
+  "retrievedAt": "2026-10-29T16:31:14.263Z",
+  "captureKind": "rendered-primary-page",
+  "sourceFileSha256": null,
+  "locator": "Materials and Methods / Participants; Experimental Design",
+  "cells": [
+    {
+      "id": "recruited",
+      "rawText": "18",
+      "locator": "Materials and Methods / Participants / first sentence",
+      "parsedValue": 18
+    },
+    {
+      "id": "excluded",
+      "rawText": "One",
+      "locator": "Materials and Methods / Participants / second sentence",
+      "parsedValue": 1
+    },
+    {
+      "id": "overlapping-prior-sample",
+      "rawText": "9",
+      "locator": "Materials and Methods / Participants / final sentence",
+      "parsedValue": 9
+    },
+    {
+      "id": "five-session-count",
+      "rawText": "Fourteen",
+      "locator": "Materials and Methods / Experimental Design / final sentence",
+      "parsedValue": 14
+    },
+    {
+      "id": "six-session-count",
+      "rawText": "three",
+      "locator": "Materials and Methods / Experimental Design / final sentence",
+      "parsedValue": 3
+    }
+  ],
+  "derivedInterpretation": {
+    "included": 17,
+    "derivation": "18 participants minus one excluded for movement; independently consistent with 14 participants completing five sessions plus three completing six sessions.",
+    "scope": "Original experiment only. ROI-specific localization counts remain left13/right16; five-person later replication is a separate experiment."
+  },
+  "limitations": [
+    "AI-assisted primary-page reading, not human review.",
+    "Included17 is an explicit arithmetic derivation from the reported enrolment/exclusion, not a literal copied17 count.",
+    "Participant overlap9 concerns the cited earlier publication; do not invent independent sample status.",
+    "No full-page bytes or hash were obtained; future artifact must keep whole-source digest null."
+  ],
+  "rights": {
+    "kind": "factual minimal numeric extraction",
+    "sourceAttribution": "Axelrod and Yovel, PLOS ONE 2015, DOI10.1371/journal.pone.0117126",
+    "licenseURL": "https://creativecommons.org/licenses/by/4.0/"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "e6-source-facts-index-v1",
+  "version": "2026-10-30.1",
+  "scope": "Hashes pin these minimal reusable metadata/fact bytes. They do not imply that source article/code/image bytes are included or revalidated offline.",
+  "files": [
+    {
+      "file": "axelrod-participants-v1.json",
+      "sha256": "805a0036b44ad58ab46682977c74ad264fb021018dfb5ed779b81041f7cf7bb2",
+      "bytes": 2309
+    },
+    {
+      "file": "martin-article-v1.json",
+      "sha256": "2a36359722536c40f0e8da851fa8762099b7e9b5edd559a77eca9fdb80101e50",
+      "bytes": 1266
+    },
+    {
+      "file": "martin-code-LICENSE.txt",
+      "sha256": "8a7923315ed09350c08e90a3fabe013e67a2c7f0b68bbf5e33e8be92d37cb6fc",
+      "bytes": 1070
+    },
+    {
+      "file": "martin-code-evidence-v1.json",
+      "sha256": "4d9a805f5c2a402b3b1fd81771299cfea8a87bda7526841d39c65959139d0cb3",
+      "bytes": 15377
+    },
+    {
+      "file": "martin-collection-api-v1.json",
+      "sha256": "c9ef3d4a11e4e1412d0ed0a121a68454eb5d58d779315ca68116fc92bc9e9614",
+      "bytes": 3619
+    },
+    {
+      "file": "martin-image-api-v1.json",
+      "sha256": "50d427d58b2e3ff1d1c71e34efe2fa9e9f29acabc02cf1f4d4b0548ed215aa65",
+      "bytes": 1825
+    },
+    {
+      "file": "martin-local-verification-v1.json",
+      "sha256": "d7a3ea4d73d36112657ba76d005d80537c8b06c9850c191d00aa9fd7be610fd6",
+      "bytes": 4114
+    },
+    {
+      "file": "martin-retrievals-v1.json",
+      "sha256": "6018c87d8f54f0767a629ef99ade2ef6d4810def3d90ac9dea1a25ca272773a1",
+      "bytes": 1958
+    },
+    {
+      "file": "martin-rights-v1.json",
+      "sha256": "e94e59d947d02117a94c4706a2d08c4c489d6da97f7ac333d2c20dd173f58036",
+      "bytes": 297
+    },
+    {
+      "file": "neurovault-api-contract-v1.json",
+      "sha256": "f30f847bd3978846afb1afa67dfc4d1d0d65b4acbb1f2cd51ec383f0ae81b226",
+      "bytes": 680
+    },
+    {
+      "file": "schaum-doi-lookup-v1.json",
+      "sha256": "4f5a030eeb0e56937c4f1e95e3baa117401dc5ad61f6d3491a9d82506b2cfcdf",
+      "bytes": 405
+    }
+  ]
+}

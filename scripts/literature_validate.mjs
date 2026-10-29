@@ -14,6 +14,9 @@ import {structures as allStructures} from '../src/data/catalog.js';
 import {classifyMapping,buildLocateRequest} from '../src/lib/evidence-mapping.js';
 import {buildEvidenceSearchIndex,searchEvidence} from '../src/lib/evidence-search.js';
 import {auditFromDisk} from './evidence-audit.mjs';
+import scope from '../data-sources/results/curation-scope.json' with {type:'json'};
+import publicationRegistry from '../data-sources/results/publication-registry.json' with {type:'json'};
+import {getPublishedResultRecord,canonicalPublicationJSON} from '../src/lib/result-publication.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dir=path.join(root,'data-sources/literature-upgrade');
 const sha=s=>createHash('sha256').update(s).digest('hex');
@@ -26,7 +29,7 @@ const bilingual=(x,name)=>assert(x&&typeof x.zh==='string'&&x.zh.trim()&&typeof 
 const url=(s,name)=>assert(/^https?:\/\//.test(s),`Missing source URL: ${name}`);
 assert.equal(refIds.size,refs.length,'Duplicate reference IDs');
 assert.equal(literaturePapers.length,legacyRefs.length,'Every legacy reference must have one reading record');
-assert.equal(refs.length,118,'Expected 118 references in the current release');
+assert(refs.length>=118,'Retain the original118-reference baseline');
 assert.equal(new Set(literaturePapers.map(p=>p.id)).size,literaturePapers.length,'Duplicate paper IDs');
 const doiSet=new Set();
 for(const r of refs)if(r.doi){const d=r.doi.toLowerCase();assert(!doiSet.has(d),`Duplicate DOI: ${d}`);doiSet.add(d);}
@@ -116,11 +119,16 @@ assert.equal(mappedIds.size,Object.keys(evidenceByStructureId).length,'Some stru
 const structured=curatedEvidence;
 const structuredReport=validateEvidence(structured,{knownReferences:refs,knownRegions:Object.keys(evidenceByStructureId)});
 assert(structuredReport.valid,structuredReport.errors.join('\n'));
-assert.equal(additionalResultsReferences.length,3,'Expected three primary papers with structured results');
-assert.equal(curatedResults.length,4,'Expected four structured findings');
+assert.equal(scope.status,'proposed','The suggested topic is not a user selection');
+assert.equal(scope.baseline.referenceIds.length,3);
+assert.equal(scope.baseline.resultIds.length,4);
+assert.equal(scope.baseline.locationIds.length,8);
+for(const id of scope.baseline.referenceIds)assert(additionalResultsReferences.some(row=>row.id===id),`Missing baseline reference ${id}`);
+const baselineResults=curatedResults.filter(row=>scope.baseline.resultIds.includes(row.id));
+assert.equal(baselineResults.length,4,'Retain the named original four-result subset');
 const sourceCheckedCoordinates=curatedResults.flatMap(r=>r.coordinates);
-assert.equal(sourceCheckedCoordinates.length,8,'Expected eight source-checked coordinates');
-for(const r of curatedResults){
+assert.equal(sourceCheckedCoordinates.filter(row=>scope.baseline.locationIds.includes(row.id)).length,8,'Retain the named eight-coordinate subset');
+for(const r of baselineResults){
   assert(refIds.has(r.referenceId),`Unknown structured-result paper: ${r.id}`);
   assert.equal(r.curationStatus,'source-checked');
   for(const key of ['finding','condition','sample','roiDefinition','direction','limitations','curationNote'])bilingual(r[key],`${r.id}.${key}`);
@@ -146,10 +154,21 @@ const portable=JSON.parse(await readFile(path.join(resultsDir,'curated-results.j
 assert.deepEqual(portable,structured,'Portable example must match the built-in structured findings');
 const offlineSources=await auditFromDisk();
 assert(offlineSources.valid,JSON.stringify(offlineSources,null,2));
-assert.equal(offlineSources.coverage.coordinates.length,8,'Every coordinate requires verified per-axis primary-source anchors');
+assert.equal(offlineSources.coverage.coordinates.length,structured.locations.length,'Every coordinate requires verified per-axis primary-source anchors');
 assert.equal(audit.sourceArtifactIndex,'source-artifacts/index.json');
 const sourceIndex=JSON.parse(await readFile(path.join(resultsDir,audit.sourceArtifactIndex),'utf8'));
 assert.deepEqual(audit.sourceArtifacts,sourceIndex.artifacts,'Source audit must retain exact versioned artifact file identities');
+// Local prepared immutable publication versions. No network lookup or assumed
+// deployment history is needed to validate bytes and fixed content identities.
+assert.equal(publicationRegistry.schema,'public-result-registry-v1');
+for(const entry of publicationRegistry.versions){
+  assert(/^published\/\d{4}-\d{2}-\d{2}\.\d+\.json$/.test(entry.file));
+  const bytes=await readFile(path.join(resultsDir,entry.file));assert.equal(sha(bytes),entry.sha256,`Changed immutable snapshot ${entry.dataVersion}`);
+  for(const published of entry.records){const record=getPublishedResultRecord({resultId:published.resultId,dataVersion:entry.dataVersion}),{contentHash,...content}=record;assert.equal(contentHash,sha(canonicalPublicationJSON(content)));}
+}
+const activePublication=publicationRegistry.versions.find(row=>row.dataVersion===structured.dataVersion);
+assert(activePublication,'Every added active record needs a version manifest');
+assert.deepEqual(activePublication.records.map(row=>row.resultId).sort(),structured.results.map(row=>row.id).sort());
 const frames=Object.fromEntries([...new Set(sourceCheckedCoordinates.map(c=>c.space))].map(space=>[space,sourceCheckedCoordinates.filter(c=>c.space===space).length]));
 const activeBrainStructuresWithReadingLinks=allStructures.filter(s=>s.category!=='spinal'&&mappedIds.has(s.id)).length;
 assert.equal(activeBrainStructuresWithReadingLinks,150,'Expected 150 active brain catalog structures');

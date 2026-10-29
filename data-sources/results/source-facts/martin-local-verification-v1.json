@@ -1,0 +1,124 @@
+{
+  "checkedAt": "2026-10-29T17:18:22.938Z",
+  "codeChecks": [
+    {
+      "path": "output/source-research/martin-code/README.md",
+      "expected": "fd872f16cc014d0f346e48b15bded03628cfbf37c59a827fc385fd38f8bb947f",
+      "actual": "fd872f16cc014d0f346e48b15bded03628cfbf37c59a827fc385fd38f8bb947f",
+      "bytes": 264,
+      "passed": true
+    },
+    {
+      "path": "output/source-research/martin-code/LICENSE",
+      "expected": "8a7923315ed09350c08e90a3fabe013e67a2c7f0b68bbf5e33e8be92d37cb6fc",
+      "actual": "8a7923315ed09350c08e90a3fabe013e67a2c7f0b68bbf5e33e8be92d37cb6fc",
+      "bytes": 1070,
+      "passed": true
+    },
+    {
+      "path": "output/source-research/martin-code/d1_firstLevel_semantic_matching_derivatives.m",
+      "expected": "f5f01010100a092d9d28482a3550bb692fb8080950b38097bab3eafdbb5360c7",
+      "actual": "f5f01010100a092d9d28482a3550bb692fb8080950b38097bab3eafdbb5360c7",
+      "bytes": 49338,
+      "passed": true
+    },
+    {
+      "path": "output/source-research/martin-code/e3_subtract_con_images.m",
+      "expected": "ee4da53e303c72846e4cc6d4fdcd5795047baf195969f7b2b5df979a1638dd9a",
+      "actual": "ee4da53e303c72846e4cc6d4fdcd5795047baf195969f7b2b5df979a1638dd9a",
+      "bytes": 2514,
+      "passed": true
+    },
+    {
+      "path": "output/source-research/martin-code/a_smooth.m",
+      "expected": "5711ef84920f262b603c384d2b547445a2a84a10b1525b18bb6e0d7a4f9c3042",
+      "actual": "5711ef84920f262b603c384d2b547445a2a84a10b1525b18bb6e0d7a4f9c3042",
+      "bytes": 12372,
+      "passed": true
+    },
+    {
+      "path": "output/source-research/martin-code/f1a_second_level_batch_Active_vs_Sham_masked_subtractedConImg.m",
+      "expected": "d9d6df51a54f3f5ef90d3aea3972a7e6cea0c9dbfba7a2510faad300162049e9",
+      "actual": "d9d6df51a54f3f5ef90d3aea3972a7e6cea0c9dbfba7a2510faad300162049e9",
+      "bytes": 27500,
+      "passed": true
+    },
+    {
+      "path": "output/source-research/martin-code/e1_copy_rename_con_img.sh",
+      "expected": "de4f042b7ffb8dab0cb4d7ea2fd05dbd46976ae17f4ecc7d671bf36d792d5e67",
+      "actual": "de4f042b7ffb8dab0cb4d7ea2fd05dbd46976ae17f4ecc7d671bf36d792d5e67",
+      "bytes": 4157,
+      "passed": true
+    },
+    {
+      "path": "output/source-research/martin-code/e2_rename_move_conImages.m",
+      "expected": "00a31b2ce75450de24da8c752dc97f6465f5662da7caa8590fa4902a0740f53a",
+      "actual": "00a31b2ce75450de24da8c752dc97f6465f5662da7caa8590fa4902a0740f53a",
+      "bytes": 18835,
+      "passed": true
+    },
+    {
+      "path": "output/source-research/martin-code/fmriprep_command.sh",
+      "expected": "a2e4aa9348d0e74ffbcc57c4c5bf781e1bca923ab5ad4991bca4e675fbe747ac",
+      "actual": "a2e4aa9348d0e74ffbcc57c4c5bf781e1bca923ab5ad4991bca4e675fbe747ac",
+      "bytes": 2194,
+      "passed": true
+    },
+    {
+      "path": "output/source-research/martin-code/fmriprep_config.sh",
+      "expected": "8e04d092e7d77ce8c6f327012ec31e7e221cbd762921f5300a9c7bd1d25838fc",
+      "actual": "8e04d092e7d77ce8c6f327012ec31e7e221cbd762921f5300a9c7bd1d25838fc",
+      "bytes": 203,
+      "passed": true
+    }
+  ],
+  "image": {
+    "local": "output/source-research/martin2023-image-787769.nii.gz",
+    "bytes": 251697,
+    "sha256": "c311087c48b191237734ddff0d2949d2051530b30364ecc3fb86d83b1919d8b0",
+    "headerSize": 348,
+    "shape": [
+      74,
+      88,
+      67
+    ],
+    "datatype": 16,
+    "voxelSize": [
+      2.48799991607666,
+      2.48799991607666,
+      2.75
+    ],
+    "qformCode": 2,
+    "sformCode": 2,
+    "sform": [
+      [
+        2.48799991607666,
+        0,
+        0,
+        -90
+      ],
+      [
+        0,
+        2.48799991607666,
+        0,
+        -126
+      ],
+      [
+        0,
+        0,
+        2.75,
+        -72
+      ]
+    ],
+    "descrip": "SPM{T_[29.0]} - contrast 1: active>sham",
+    "values": {
+      "positive": 25772,
+      "negative": 31863,
+      "zero": 378669,
+      "nonfinite": 0,
+      "min": -3.9004204273223877,
+      "max": 4.233501434326172
+    }
+  },
+  "limits": "Header/voxel inspection is not exact-template or anatomical alignment verification; source scripts not executed."
+}

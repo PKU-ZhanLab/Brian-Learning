@@ -1,0 +1,27 @@
+{
+  "sourceURL": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10615837/fullTextXML",
+  "sourceBytesSha256": "d8b43af4be15b5a959d25031123b459fabc74551e5029ba68ff6b7093477cb42",
+  "note": "Paraphrased facts and source hash; full article not retained.",
+  "facts": [
+    {
+      "locator": "2.6 Data analyses, opening paragraph p0105",
+      "fact": "Final article links OSF 4nu6c for code/data and NeuroVault collection13064 for unthresholded group fMRI and gPPI maps.",
+      "match": true
+    },
+    {
+      "locator": "2.6.2 Whole-brain analyses, group random-effects paragraph",
+      "fact": "Effective-minus-sham contrast images enter group one-sample t models; final methods include age, age-squared, GMV and TIV regressors.",
+      "match": true
+    },
+    {
+      "locator": "3.2.2 iTBS increases task-specific activity for high semantic control demand in the attention network, final sentence of first paragraph",
+      "fact": "The direct effective-versus-sham comparison of FPM and WPM was reported without significant differences.",
+      "match": true
+    },
+    {
+      "locator": "Introduction and 2.3 Experimental paradigm",
+      "fact": "FPM means feature-picture matching; WPM means word-picture matching.",
+      "match": true
+    }
+  ]
+}

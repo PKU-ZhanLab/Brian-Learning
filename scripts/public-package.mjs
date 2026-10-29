@@ -80,10 +80,12 @@ const sourceInputs={
   space:['sources.json','TemplateFlow-commit.txt','MNI152NLin2009aAsym-template_description.json','LICENSE-MNI.txt'],
   literature:['verification.json','candidates.json','README.md'],
   'literature-upgrade':['curation.mjs','discovery.mjs','candidates.json','figure-audit.json','metadata.json'],
-  results:['source-audit.json','curated-results.json','search-aliases.json','schaum2021-metadata.json','axelrod2015-metadata.json','bosco2008-metadata.json','verify-sources.mjs','source-artifacts/index.json','source-artifacts/schaum2021-v1.json','source-artifacts/axelrod2015-v1.json','source-artifacts/bosco2008-v1.json'],
+  results:['source-audit.json','curated-results.json','search-aliases.json','schaum2021-metadata.json','axelrod2015-metadata.json','bosco2008-metadata.json','verify-sources.mjs','source-artifacts/index.json','source-artifacts/schaum2021-v1.json','source-artifacts/axelrod2015-v1.json','source-artifacts/bosco2008-v1.json','source-artifacts/axelrod2015-v2.json','curation-scope.json','upstream-assets.json','corrections.json','publication-registry.json','published/2026-10-29.2.json','published/2026-10-30.1.json','source-facts/axelrod-participants-v1.json','source-facts/martin-article-v1.json','source-facts/martin-rights-v1.json','source-facts/martin-image-api-v1.json','source-facts/martin-collection-api-v1.json','source-facts/martin-retrievals-v1.json','source-facts/martin-local-verification-v1.json'],
 };
 
-export const sourceInputPaths=()=>new Set(Object.entries(sourceInputs).flatMap(([folder,names])=>names.map(name=>`data-sources/${folder}/${name}`)));
+sourceInputs.results.push('source-facts/index.json','source-facts/schaum-doi-lookup-v1.json','source-facts/martin-code-evidence-v1.json','source-facts/martin-code-LICENSE.txt','source-facts/neurovault-api-contract-v1.json');
+
+export const sourceInputPaths=()=>new Set([...Object.entries(sourceInputs).flatMap(([folder,names])=>names.map(name=>`data-sources/${folder}/${name}`)),'tests/fixtures/evidence-v1-baseline.json']);
 
 export async function prepareSourceRelease(target){
   target=path.resolve(target);inside(projectRoot,target);await fs.mkdir(target,{recursive:true});

@@ -3,6 +3,8 @@ import {paperSearchAnnotations} from '../../data-sources/literature-upgrade/cura
 import schaumSource from '../../data-sources/results/source-artifacts/schaum2021-v1.json' with {type:'json'};
 import axelrodSource from '../../data-sources/results/source-artifacts/axelrod2015-v1.json' with {type:'json'};
 import boscoSource from '../../data-sources/results/source-artifacts/bosco2008-v1.json' with {type:'json'};
+import axelrodSourceV2 from '../../data-sources/results/source-artifacts/axelrod2015-v2.json' with {type:'json'};
+import correctionLog from '../../data-sources/results/corrections.json' with {type:'json'};
 // Selected primary-source records. Source checking was performed with AI assistance,
 // not human certification. Generic MNI is deliberately NOT relabelled as NLin6Asym.
 const bi = (zh, en) => ({zh,en});
@@ -85,6 +87,18 @@ for(const result of curatedEvidence.results){
     location.recordVersion=result.recordVersion;location.sourceRefs.push(artifact.id);
     curatedEvidence.reviewEvents.push({id:`${location.id}:e4-source-check-v1`,subjectId:location.id,stage:'source-checked',actorType:'ai',actorName:annotator,date:'2026-10-29',scope:`${scope} All three axes independently anchored.`,sourceRefs:[artifact.id],recordVersion:location.recordVersion,limitations:[bi('MNI 模板变体未知；人工审阅仍待完成。','MNI template variant remains unspecified; human review remains pending.')]});
   }
+}
+// Additive source revision. v1 source artifacts and the published 2026-10-29.2
+// snapshot stay immutable. Included17 is arithmetic, not a verbatim source cell.
+curatedEvidence.dataVersion='2026-10-30.1';
+curatedEvidence.sourceArtifacts.push(structuredClone(axelrodSourceV2));
+curatedEvidence.corrections=structuredClone(correctionLog.corrections);
+for(const result of curatedEvidence.results.filter(row=>row.referenceId==='axelrod2015')){
+  result.recordVersion=curatedEvidence.dataVersion;
+  result.sample.enrolled=reported(18,[axelrodSourceV2.id]);
+  result.sample.included=reported(17,[axelrodSourceV2.id]);
+  result.limitations.push(bi('18 名招募、排除 1 名，纳入 17 名为算术推导；9 名与早先论文样本重叠。','18 recruited minus one excluded gives17 included by arithmetic;9 participants overlap an earlier publication.'));
+  curatedEvidence.reviewEvents.push({id:`${result.id}:e6-source-check-v2`,subjectId:result.id,stage:'source-checked',actorType:'ai',actorName:annotator,date:'2026-10-30',scope:'AI-assisted minimal source transcription; participant count17 is explicitly derived as18 minus1. No human or spatial review.',sourceRefs:[axelrodSourceV2.id],recordVersion:result.recordVersion,limitations:[bi('仅最小原文单元核对，人工审阅待完成。','Only minimal source cells checked; human review remains pending.')]});
 }
 export const curatedResults=curatedEvidence.results.map(result=>getResultViewModel(result.id,curatedEvidence));
 
