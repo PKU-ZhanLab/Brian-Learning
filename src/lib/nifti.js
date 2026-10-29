@@ -15,6 +15,12 @@ const TYPES = {
 };
 
 function fail(code) { throw new Error(code); }
+export function assertNiftiVoxelValue(value,kind){
+  if(!Number.isFinite(value)||Math.abs(value)>1e30)fail('nifti-nonfinite-data');
+  if(kind==='label'&&(!Number.isSafeInteger(value)||value<0))fail('nifti-invalid-labels');
+  if(kind==='mask'&&value!==0&&value!==1)fail('nifti-not-binary');
+  if(kind==='probability'&&(value<0||value>1))fail('nifti-probability-range');
+}
 function geometry(shape, affine) {
   if (shape?.length !== 3 || !shape.every(n => Number.isInteger(n) && n > 0 && n <= 32767)) fail('nifti-invalid-dimensions');
   const count = shape.reduce((a, b) => a * b, 1);
@@ -145,10 +151,7 @@ export async function parseNifti(input, options = {}) {
   let min=Infinity,max=-Infinity,nonzero=0;
   for (let i=0;i<count;i++) {
     const raw=view[type[1]](offset+i*type[3],little), value=scaled?raw*slope+intercept:raw;
-    if (!Number.isFinite(value) || Math.abs(value)>1e30) fail('nifti-nonfinite-data');
-    if (kind==='label' && (!Number.isSafeInteger(value)||value<0)) fail('nifti-invalid-labels');
-    if (kind==='mask' && value!==0 && value!==1) fail('nifti-not-binary');
-    if (kind==='probability' && (value<0||value>1)) fail('nifti-probability-range');
+    assertNiftiVoxelValue(value,kind);
     data[i]=value; min=Math.min(min,value); max=Math.max(max,value); if(value!==0)nonzero++;
   }
   const conflict=!!(sa&&qa&&sa.some((v,i)=>Math.abs(v-qa[i])>1e-3));
@@ -156,7 +159,7 @@ export async function parseNifti(input, options = {}) {
 }
 
 /** Writes a 3D, little-endian .nii with mm units and the supplied affine as sform. */
-export function exportNifti(volume) {
+export function exportNifti(volume,{kind=volume.kind}={}) {
   const affine=Array.isArray(volume.affine?.[0])?volume.affine.flat():volume.affine;
   const count=geometry(volume.shape,affine), data=volume.data||volume.dataTypedArray;
   if (data?.length!==count) fail('nifti-invalid-data-length');
@@ -176,7 +179,7 @@ export function exportNifti(volume) {
   const [nx,ny,nz]=volume.shape;
   for(let i=0;i<count;i++) {
     const index=volume.order==='z-fastest'?(i%nx*ny+Math.floor(i/nx)%ny)*nz+Math.floor(i/(nx*ny)):i;
-    if(!Number.isFinite(data[index]))fail('nifti-nonfinite-data');
+    assertNiftiVoxelValue(data[index],kind);
     view[type[2]](352+i*type[3],data[index],true);
   }
   return bytes;

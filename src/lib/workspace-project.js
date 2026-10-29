@@ -1,4 +1,4 @@
-import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_PROJECT_UTF8_BYTES,utf8ByteLength} from './workspace-limits.js';
+import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_PROJECT_UTF8_BYTES,utf8ByteLength,boundedJsonStringify} from './workspace-limits.js';
 import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
 
 export const PROJECT_SCHEMA='neuroatlas-project-v1';
@@ -16,7 +16,7 @@ export function validateCamera(v){
   if(v.up!==undefined){const up=point(v.up),length=up&&Math.hypot(...up);if(!length)return null;camera.up=up.map(n=>n/length);}
   return camera;
 }
-const safeObject=(value,maxBytes=50000)=>{const text=JSON.stringify(value??null);if(utf8ByteLength(text)>maxBytes)throw Error('View state is too large');return JSON.parse(text);};
+const safeObject=(value,maxBytes=50000)=>JSON.parse(boundedJsonStringify(value??null,maxBytes,'View state is too large'));
 
 export function validateViewState(input){
   if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Invalid view state');
@@ -83,7 +83,7 @@ export async function prepareProjectPayload({view,notes=[],evidence=null,volumes
   let projectedBytes=utf8ByteLength(JSON.stringify(project));
   assertWorkspaceBudget({...usage,projectUtf8Bytes:projectedBytes});
   for(const {v,id,metadata,rawPayloadBytes} of candidates){
-    const compressed=await compressVolume(exportNifti(v));
+    const compressed=await compressVolume(exportNifti(v,{kind:metadata.kind}));
     usage.compressedAssetBytes.push(compressed.byteLength);
     projectedBytes+=utf8ByteLength(JSON.stringify({id,metadata,niftiGzip:''}))+4*Math.ceil(compressed.byteLength/3)+(entries.length?1:0);
     // Reject before allocating the base64 string or concatenating the final JSON document.
@@ -98,7 +98,15 @@ export async function serializeProject(workspace){return (await prepareProjectPa
 
 function projectNotes(notes){
   if(!Array.isArray(notes)||notes.length>20000)throw Error('Invalid project content');
-  return safeObject(notes.map(n=>{if(typeof n?.text!=='string'||n.text.length>100000)throw Error('Invalid project note');return {id:boundedString(n.id,160)||crypto.randomUUID(),text:n.text,structureId:boundedString(n.structureId,160),structureName:boundedString(n.structureName,500),createdAt:typeof n.createdAt==='string'&&Number.isFinite(Date.parse(n.createdAt))?n.createdAt:new Date().toISOString(),position:point(n.position),coordinateSpace:boundedString(n.coordinateSpace,50),coordinateFrame:boundedString(n.coordinateFrame,160)};}),8*1024*1024);
+  const normalized=[];let bytes=2;
+  for(const n of notes){
+    if(typeof n?.text!=='string'||n.text.length>100000)throw Error('Invalid project note');
+    const entry={id:boundedString(n.id,160)||crypto.randomUUID(),text:n.text,structureId:boundedString(n.structureId,160),structureName:boundedString(n.structureName,500),createdAt:typeof n.createdAt==='string'&&Number.isFinite(Date.parse(n.createdAt))?n.createdAt:new Date().toISOString(),position:point(n.position),coordinateSpace:boundedString(n.coordinateSpace,50),coordinateFrame:boundedString(n.coordinateFrame,160)};
+    const comma=normalized.length?1:0;
+    const text=boundedJsonStringify(entry,8*1024*1024-bytes-comma,'View state is too large');
+    bytes+=comma+utf8ByteLength(text);normalized.push(entry);
+  }
+  return normalized;
 }
 export async function parseProject(text){
   if(typeof text!=='string')throw Error('Project exceeds 180 MB');

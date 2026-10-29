@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { gzipSync } from 'node:zlib';
-import { parseNifti, exportNifti, parseLabelTable } from './nifti.js';
+import { parseNifti, exportNifti, parseLabelTable, assertNiftiVoxelValue } from './nifti.js';
 import { registerCustomVolume, getCustomVolume, listCustomVolumes, removeCustomVolume, subscribeCustomVolumes } from './custom-volumes.js';
 
 const affine=[-2,0,0,90,0,2,0,-126,0,0,2,-72,0,0,0,1];
@@ -130,4 +130,9 @@ test('inflated header admission stops a split stream before its data payload',as
   globalThis.DecompressionStream=class {constructor(){let sent=false;return {readable:new ReadableStream({pull(controller){if(!sent){sent=true;controller.enqueue(header);}else{payloadReads++;controller.enqueue(Uint8Array.of(0));}},cancel(){cancelled=true;}},{highWaterMark:0}),writable:new WritableStream()};}};
   try{await assert.rejects(parseNifti(Uint8Array.of(31,139),{maxInflatedBytes:352}),/inflated-budget/);assert.equal(payloadReads,0);assert.equal(cancelled,true);}
   finally{globalThis.DecompressionStream=Original;}
+});
+
+test('shared voxel validator preserves exact domains and magnitude boundaries',()=>{
+  for(const [kind,value] of [['label',0],['label',2],['mask',0],['mask',1],['probability',0],['probability',1],['statistic',-1e30],['statistic',1e30]])assert.doesNotThrow(()=>assertNiftiVoxelValue(value,kind));
+  for(const [kind,value,error] of [['label',.5,/invalid-labels/],['label',-1,/invalid-labels/],['mask',2,/not-binary/],['probability',-.01,/probability-range/],['probability',1.01,/probability-range/],['statistic',1e31,/nonfinite-data/],['statistic',NaN,/nonfinite-data/]])assert.throws(()=>assertNiftiVoxelValue(value,kind),error);
 });

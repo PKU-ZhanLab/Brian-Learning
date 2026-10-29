@@ -9,6 +9,58 @@ export const MAX_LABEL_JSON_BYTES=4*1024*1024;
 export const MAX_LABEL_TEXT_CHARS=2000;
 export const utf8ByteLength=value=>new TextEncoder().encode(value).byteLength;
 
+/** Normalize JSON once while counting its exact escaped UTF-8, before aggregate serialization. */
+export function boundedJsonStringify(input,maxBytes,message='json-budget'){
+  if(!Number.isSafeInteger(maxBytes)||maxBytes<0)throw Error(message);
+  let bytes=0;const ancestors=new Set();
+  const add=count=>{bytes+=count;if(bytes>maxBytes)throw Error(message);};
+  const string=value=>{
+    add(2);
+    for(let i=0;i<value.length;i++){
+      const code=value.charCodeAt(i);
+      if(code===34||code===92||[8,9,10,12,13].includes(code))add(2);
+      else if(code<32)add(6);
+      else if(code>=0xd800&&code<=0xdbff){
+        const next=value.charCodeAt(i+1);
+        if(next>=0xdc00&&next<=0xdfff){add(4);i++;}else add(6);
+      }else if(code>=0xdc00&&code<=0xdfff)add(6);
+      else add(code<128?1:code<2048?2:3);
+    }
+  };
+  const prepare=(value,key)=>{
+    if(value!==null&&['object','function','bigint'].includes(typeof value)&&typeof value.toJSON==='function')value=value.toJSON(key);
+    if(value instanceof Number||value instanceof String||value instanceof Boolean)value=value.valueOf();
+    if(typeof value==='bigint')throw new TypeError('Cannot serialize BigInt');
+    return value;
+  };
+  const omitted=value=>['undefined','function','symbol'].includes(typeof value);
+  function visit(value){
+    if(value===null){add(4);return null;}
+    if(typeof value==='string'){string(value);return value;}
+    if(typeof value==='boolean'){add(value?4:5);return value;}
+    if(typeof value==='number'){if(!Number.isFinite(value)){add(4);return null;}add(JSON.stringify(value).length);return value;}
+    if(ancestors.has(value))throw new TypeError('Cannot serialize circular JSON');
+    ancestors.add(value);
+    let normalized;
+    if(Array.isArray(value)){
+      normalized=[];add(2);
+      for(let i=0;i<value.length;i++){
+        if(i)add(1);
+        const child=prepare(value[i],String(i));normalized.push(visit(omitted(child)?null:child));
+      }
+    }else{
+      normalized=Object.create(null);add(2);let entries=0;
+      for(const key of Object.keys(value)){
+        const child=prepare(value[key],key);if(omitted(child))continue;
+        if(entries++)add(1);string(key);add(1);normalized[key]=visit(child);
+      }
+    }
+    ancestors.delete(value);return normalized;
+  }
+  const value=prepare(input,'');
+  return omitted(value)?undefined:JSON.stringify(visit(value));
+}
+
 const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 function metadataText(value,field,max=2000,fallback=''){
   if(value==null)return fallback;

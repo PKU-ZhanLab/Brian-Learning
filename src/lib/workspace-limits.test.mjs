@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateVolumeMetadata, validateLabelRows, assertWorkspaceBudget } from './workspace-limits.js';
+import { validateVolumeMetadata, validateLabelRows, assertWorkspaceBudget, boundedJsonStringify } from './workspace-limits.js';
 
 const MiB=1024*1024;
 const smallUsage={assetCount:1,rawPayloadBytes:353,compressedAssetBytes:[40],projectUtf8Bytes:100};
@@ -35,4 +35,15 @@ test('normalized label JSON admits exactly four MiB and rejects the next byte',(
   assert.equal(new TextEncoder().encode(JSON.stringify(rows)).byteLength,4*MiB);
   assert.doesNotThrow(()=>validateLabelRows(rows));
   rows.at(-1).name+='x';assert.throws(()=>validateLabelRows(rows),/label-json-budget/);
+});
+
+test('bounded JSON counts exact escaped UTF-8 and preserves JSON normalization',()=>{
+  const input={text:'中😀\n"\\\u0001\ud800',values:[undefined,NaN,Infinity,false,null],omit:undefined,date:new Date('2026-10-29T00:00:00Z')};
+  const expected=JSON.stringify(input),bytes=new TextEncoder().encode(expected).byteLength;
+  assert.equal(boundedJsonStringify(input,bytes),expected);
+  assert.throws(()=>boundedJsonStringify(input,bytes-1),/json-budget/);
+  const nested={items:Array(30).fill('中😀\n')};const copy=structuredClone(nested);
+  assert.throws(()=>boundedJsonStringify(nested,40),/json-budget/);assert.deepEqual(nested,copy);
+  let toJsonCalls=0;assert.equal(boundedJsonStringify({item:{toJSON(){toJsonCalls++;return '中';}}},30),'{"item":"中"}');assert.equal(toJsonCalls,1);
+  const cycle={};cycle.self=cycle;assert.throws(()=>boundedJsonStringify(cycle,1000),/circular/i);
 });

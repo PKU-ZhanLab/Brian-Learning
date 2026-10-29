@@ -98,3 +98,48 @@ test('aggregate capacity is export symmetric',async()=>{
   await assert.rejects(prepareProjectPayload({view:{},volumes:[virtual]}),/decoded-budget/);
   await assert.rejects(prepareProjectPayload({view:{},volumes:Array.from({length:51},(_,i)=>({...fixture(),id:`custom-${i}`}))}),/asset-count/);
 });
+
+test('project preparation and restoration share every voxel value domain',async()=>{
+  const cases=[
+    ['mask',Uint8Array.of(2),/nifti-not-binary/],
+    ['label',Float64Array.of(.5),/nifti-invalid-labels/],
+    ['labels',Float64Array.of(-1),/nifti-invalid-labels/],
+    ['probability',Float64Array.of(-.1),/nifti-probability-range/],
+    ['prob',Float64Array.of(1.1),/nifti-probability-range/],
+    ['statistic',Float64Array.of(1e31),/nifti-nonfinite-data/],
+  ];
+  for(const [kind,data,error] of cases){
+    const volume={...fixture(),shape:[1,1,1],kind,data},before=structuredClone(volume);
+    await assert.rejects(prepareProjectPayload({view:{},volumes:[volume]}),error);assert.deepEqual(volume,before);
+  }
+  for(const [kind,values] of [['mask',[0,1]],['labels',[0,2]],['prob',[0,1]],['stat',[-1e30,1e30]]]){
+    const volume={...fixture(),shape:[2,1,1],kind,data:Float64Array.from(values)};
+    const restored=await parseProject((await prepareProjectPayload({view:{},volumes:[volume]})).text);
+    assert.deepEqual([...restored.volumes[0].data],values);
+  }
+});
+
+test('oversized notes and evidence reject before complete aggregate serialization',async t=>{
+  const original=JSON.stringify,text='x'.repeat(100000);
+  for(const [limit,input] of [[8*1024*1024,{notes:Array.from({length:84},(_,i)=>({id:`note-${i}`,text}))}],[20*1024*1024,{evidence:{items:Array(210).fill(text)}}]]){
+    await t.test(input.notes?'notes':'evidence',async()=>{
+    let oversizedAllocations=0;
+    JSON.stringify=function(...args){const result=original.apply(this,args);if(result?.length>limit)oversizedAllocations++;return result;};
+    try{await assert.rejects(prepareProjectPayload({view:{},...input}),/too large/);assert.equal(oversizedAllocations,0);}
+    finally{JSON.stringify=original;}
+    });
+  }
+});
+
+test('normalized note JSON includes exact punctuation at its inclusive budget',async()=>{
+  const limit=8*1024*1024,notes=[];let bytes=2;
+  while(bytes<limit){
+    const note={id:`n${notes.length}`,text:'',structureId:'',structureName:'',createdAt:'2026-10-29T00:00:00.000Z',position:null,coordinateSpace:'',coordinateFrame:''};
+    const comma=notes.length?1:0,overhead=JSON.stringify(note).length+comma;
+    const textLength=Math.min(100000,limit-bytes-overhead);assert.ok(textLength>0);
+    note.text='x'.repeat(textLength);bytes+=overhead+textLength;notes.push(note);
+  }
+  const prepared=await prepareProjectPayload({view:{},notes});
+  assert.equal(new TextEncoder().encode(JSON.stringify(JSON.parse(prepared.text).notes)).length,limit);
+  notes.at(-1).text+='x';await assert.rejects(prepareProjectPayload({view:{},notes}),/too large/);
+});
