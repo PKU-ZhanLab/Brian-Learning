@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {buildEvidenceSearchIndex,searchEvidence} from './evidence-search.js';
+import {buildEvidenceSearchIndex,searchEvidence,describeStudyModalities} from './evidence-search.js';
 import {curatedEvidence} from '../data/results.js';
 import {literaturePapers} from '../data/literature.js';
 import {structures} from '../data/catalog.js';
@@ -87,4 +87,20 @@ test('malformed or unsourced paper methods stay unavailable while sourced readin
 test('new paper-method extraction never backfills the retained historical v1 snapshot',()=>{
   assert.equal(curatedEvidence.legacyV1.references.find(reference=>reference.id==='schaum2021').studyModalities,undefined);
   assert.deepEqual(curatedEvidence.references.find(reference=>reference.id==='schaum2021').studyModalities.value,['MEG','fMRI']);
+});
+
+test('paper method summary distinguishes every missingness state and retains its recorded reason',()=>{
+  const labels={zh:['已报告','未报告','尚未摘录','不确定','不适用'],en:['Reported','Not reported','Not extracted','Uncertain','Not applicable']};
+  const states=['reported','not-reported','not-extracted','uncertain','not-applicable'];
+  for(const language of ['zh','en'])for(const [i,state] of states.entries()){
+    const record=state==='reported'?reported(['MEG','fMRI'],['https://example.org/methods']):missing('Recorded source-specific reason',state);
+    const summary=describeStudyModalities(record,{language});
+    assert.equal(summary.label,labels[language][i]);
+    assert.equal(summary.reason,state==='reported'?'':'Recorded source-specific reason');
+    assert.deepEqual(summary.modalities,state==='reported'?['MEG','fMRI']:[]);
+  }
+  const index=buildEvidenceSearchIndex({...emptyEvidence(),references:[{id:'incomplete',title:'Missing provenance',studyModalities:reported(['fMRI'],[])}]});
+  const incomplete=describeStudyModalities(index.entries[0].studyModalities,{language:'en'});
+  assert.equal(incomplete.label,'Uncertain');assert.match(incomplete.reason,/provenance/);
+  assert.deepEqual(searchEvidence(index,{paperModality:'fMRI'}),[]);
 });

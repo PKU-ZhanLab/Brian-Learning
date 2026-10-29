@@ -9,6 +9,7 @@ data-cache/
 __pycache__/
 *.pyc
 *.log
+!/data-sources/dk/scripts/recon-all.log
 !/tests/fixtures/audit-20261029/preserved/build.log
 !/tests/fixtures/audit-20261029/preserved/check.log
 data-sources/literature/raw/

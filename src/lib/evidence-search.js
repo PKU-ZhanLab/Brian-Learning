@@ -35,6 +35,15 @@ const normalizedFields=(fields,aliases)=>{
 };
 const allText=fields=>Object.values(fields).join(' ');
 
+/** Describe only the supplied paper-method state; a missing extraction is not
+ * evidence that the source did not report a method. Reasons remain verbatim.
+ */
+export function describeStudyModalities(record,{language='zh'}={}){
+  const states={reported:{zh:'已报告',en:'Reported'},'not-reported':{zh:'未报告',en:'Not reported'},'not-extracted':{zh:'尚未摘录',en:'Not extracted'},uncertain:{zh:'不确定',en:'Uncertain'},'not-applicable':{zh:'不适用',en:'Not applicable'}};
+  const state=record?.state||'not-extracted';
+  return {label:(states[state]||states.uncertain)[language==='en'?'en':'zh'],reason:state==='reported'?'':record?.reason||'',modalities:state==='reported'?record.value:[]};
+}
+
 /** Pure bilingual index. Aliases expand text only; mappings are copied unchanged.
  * @returns {SearchIndex}
  */

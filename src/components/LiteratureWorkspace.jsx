@@ -5,7 +5,7 @@ import {additionalResultsReferences, curatedResults,curatedEvidence} from '../da
 import {emptyEvidence, loadEvidence, validateEvidence, mergeEvidence, lookupPaperMetadata, safeSourceURL} from '../lib/evidence-workspace.js';
 import {classifyMapping,buildLocateRequest} from '../lib/evidence-mapping.js';
 import {getResultViewModel,resultViewModelToEvidence,removeEvidenceRecords} from '../lib/evidence-schema.js';
-import {buildEvidenceSearchIndex,searchEvidence} from '../lib/evidence-search.js';
+import {buildEvidenceSearchIndex,searchEvidence,describeStudyModalities} from '../lib/evidence-search.js';
 import searchAliases from '../../data-sources/results/search-aliases.json';
 import EvidenceEditor from './EvidenceEditor.jsx';
 import './LiteratureWorkspace.css';
@@ -58,7 +58,7 @@ export default function LiteratureWorkspace({language='zh',structures=[],referen
   const openPaper=p=>{setPaperId(p.id);setShowCompare(false);setEditor(null);const request=buildLocateRequest(p.id,{mappings:p.mappedRegions});onLocateRegions?.([...new Set(request.directMappings.map(m=>m.targetConceptId))],p);};
   const compare=id=>setCompared(v=>v.includes(id)?v.filter(x=>x!==id):v.length<3?[...v,id]:[...v.slice(1),id]);
   const modalityLabels=p=>(p.modalities||[]).map(id=>text(literatureModalities.find(x=>x.id===id)?.label,language)||id);
-  const paperMethodSummary=p=><dl className="paper-methods"><dt>{t('论文方法','Paper methods')}</dt><dd>{p.studyModalities.state==='reported'?modalityLabels(p).join(' / '):t('尚未摘录','Not extracted')}</dd><dt>{t('已录入结果方法','Recorded result methods')}</dt><dd>{modalityLabels({modalities:p.resultModalities}).join(' / ')||t('尚无已录入结果','No recorded results')}</dd></dl>;
+  const paperMethodSummary=p=>{const summary=describeStudyModalities(p.studyModalities,{language});return <dl className="paper-methods"><dt>{t('论文方法','Paper methods')}</dt><dd>{summary.modalities.length?modalityLabels({modalities:summary.modalities}).join(' / '):summary.label}{summary.reason&&` · ${summary.reason}`}</dd><dt>{t('已录入结果方法','Recorded result methods')}</dt><dd>{modalityLabels({modalities:p.resultModalities}).join(' / ')||t('尚无已录入结果','No recorded results')}</dd></dl>;};
   const supportLabel=s=>({direct:t('原文支持','Source support'),context:t('背景比较','Context'), 'cross-species':t('跨物种','Cross-species'),unknown:t('未确定','Uncertain')})[s];
   const hemisphereLabel=s=>({L:t('左侧','Left'),R:t('右侧','Right'),M:t('中线','Midline'),B:t('双侧','Bilateral'),U:t('来源侧化未摘录','Source laterality not extracted')})[s]||t('来源侧化未摘录','Source laterality not extracted');
   const regionButtons=p=>{
