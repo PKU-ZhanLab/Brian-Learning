@@ -1,5 +1,6 @@
 // Authored for isolated CI only. X8 does not execute a browser or claim desktop acceptance.
 import {test,expect} from '@playwright/test';
+import {readFile} from 'node:fs/promises';
 import {serializeProject} from '../../src/lib/workspace-project.js';
 import {buildEvidencePackage,getBuiltinEvidenceBundle} from '../../src/lib/evidence-package.js';
 import {mergeEvidence} from '../../src/lib/evidence-workspace.js';
@@ -79,8 +80,10 @@ test('structured baseline, matching denominator and clearing filters stay distin
 
 test('first manifest failure and single atlas failure recover using Retry while full local project remains intact',async({page})=>{
   let manifests=0,atlases=0;
+  const fixtureManifest=JSON.parse(await readFile(new URL('../../public/data/manifest.json',import.meta.url),'utf8'));
+  const atlasPath=fixtureManifest.atlases['ba-histology'].data;
   await page.route('**/data/manifest.json',route=>++manifests===1?route.fulfill({status:503,body:'synthetic failure'}):route.continue());
-  await page.route('**/data/ba-v2/talairach-ba.bin',route=>++atlases===1?route.fulfill({status:503,body:'synthetic atlas failure'}):route.continue());
+  await page.route(`**/data/${atlasPath}`,route=>++atlases===1?route.fulfill({status:503,body:'synthetic atlas failure'}):route.continue());
   await page.goto('/?lang=en');
   await page.locator('.slice-error').getByRole('button',{name:'Retry data loading',exact:true}).first().click();
   await expect(page.getByLabel('Choose an atlas',{exact:true})).toBeEnabled();
