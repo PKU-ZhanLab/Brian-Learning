@@ -49,6 +49,7 @@ test('local original and explicitly little endian derived volume identities surv
 });
 test('actual loaded bytes receive verified identity; corruption cannot borrow the expected hash',async()=>{
   const original=globalThis.fetch;
+  const {atlasResourceKey,retry}=await import('./atlas-resource.js');const keys=[];
   let corrupt=false,corruptTransform=false;
   globalThis.fetch=async url=>{
     const path=String(url).replace(/^.*?data\//,'');const bytes=fs.readFileSync(new URL(`../../public/data/${path}`,import.meta.url));
@@ -58,9 +59,13 @@ test('actual loaded bytes receive verified identity; corruption cannot borrow th
     return {ok:true,arrayBuffer:async()=>copied.buffer};
   };
   try{
-    const {loadAtlas}=await import('./volume.js?exact-bytes-green');const loaded=await loadAtlas('dk');
+    const {loadAtlas}=await import('./volume.js');const loaded=await loadAtlas('dk');
     assert.equal(loaded.identity.sha256,loaded.sha256);assert.equal(loaded.identityVerification,'received-bytes');assert.ok(loaded.sourceIdentities.length);assert.deepEqual(loaded.transforms,[]);
-    corrupt=true;const other=await import('./volume.js?exact-bytes-corrupted');await assert.rejects(other.loadAtlas('dk'),/hash|digest|byte/i);
-    corruptTransform=true;const registered=await import('./volume.js?exact-transform-corrupted');await assert.rejects(registered.loadAtlas('aal3-registered'),/digest/);
-  }finally{globalThis.fetch=original;}
+    keys.push(atlasResourceKey(loaded.identity));corrupt=true;
+    const failedBytes=await retry(keys[0]);assert.equal(failedBytes.status,'error');assert.equal(failedBytes.value,null);assert.match(failedBytes.error,/hash|digest|byte/i);
+    await assert.rejects(loadAtlas('dk'),/hash|digest|byte/i);
+    const registered=await loadAtlas('aal3-registered');keys.push(atlasResourceKey(registered.identity));corruptTransform=true;
+    const failedTransform=await retry(keys[1]);assert.equal(failedTransform.status,'error');assert.equal(failedTransform.value,null);assert.match(failedTransform.error,/digest/);
+    await assert.rejects(loadAtlas('aal3-registered'),/digest/);
+  }finally{corrupt=false;corruptTransform=false;for(const key of keys)assert.equal((await retry(key)).status,'ready');globalThis.fetch=original;}
 });

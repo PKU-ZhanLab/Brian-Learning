@@ -8,6 +8,8 @@ test('native T1 pair permits only its own labels without upgrading alignment',()
  assert(!sliceOverlayAllowed({},native));assert(!sliceOverlayAllowed({sliceReference:'different'},native));
  assert(!sliceOverlayAllowed({sliceReference:'aal-colin27'},{canOverlayOnTarget:true}));
  assert.equal(native.canOverlayOnTarget,false);
+ assert(!sliceOverlayAllowed({spaceId:'MNI152NLin6Asym'},{canOverlayOnTarget:true,spaceId:'MNI-unspecified'}));
+ assert(!sliceOverlayAllowed({spaceId:'MNI152NLin6Asym'},{canOverlayOnTarget:true,spaceId:null}));
 });
 test('three views use RAS with radiological left/right and consistent crosshair coordinates',()=>{
  assert.deepEqual(sliceWorldPoint('z',12,0,0),[100,100,12]);

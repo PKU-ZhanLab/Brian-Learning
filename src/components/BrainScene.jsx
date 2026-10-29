@@ -9,6 +9,8 @@ import { overviewFrame } from '../lib/scene-frame.js';
 import { surfaceLabelAt } from '../lib/surface-projection.js';
 import { atlasRegionKey, makeAtlasRegionRef, relationsForRegion } from '../lib/atlas-identity.js';
 import { pickDisplayedSurfaceRegion } from '../lib/atlas-surface-selection.js';
+import { queryableAtlasVolume } from '../lib/query-state.js';
+import { ANATOMY_MANIFEST_RESOURCE, resourceValue } from '../lib/atlas-resource.js';
 
 const PASTELS = ['#9ebdb2', '#e4bcaa', '#b6b7d3', '#b8cbb0', '#d9c797', '#a6becf', '#d5b0ba', '#b8c5d5', '#c9c1a7', '#98bfbf', '#d7c4b9', '#c2b5ca'];
 const axisColors = { x: '#c999a0', y: '#a3b6cb', z: '#87afa0' };
@@ -503,7 +505,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         const world = new THREE.Vector3();
         const atlasCache = new Map();
         const compatible = p.structures.filter(s => s.category === 'cortex' && s.hemisphere === mesh.userData.hemisphere);
-        const activeVolume = status.atlasVolume?.atlasId === p.atlas ? status.atlasVolume : null;
+        const activeVolume = queryableAtlasVolume(status.atlasVolume,p.atlas,p.atlasIdentity);
         const directDK = p.atlas === 'dk' && activeVolume && mesh.userData.vertexLabels;
         const projected=activeVolume?.surfaceLabels?.[mesh.userData.hemisphere];
         if(projected&&(projected.length!==position.count||status.atlasVolume.surfaceProjectionInfo.hemispheres[mesh.userData.hemisphere].pialSha256!==mesh.userData.sourceMetadata.sha256))throw Error('Projected atlas labels do not match the displayed cortical geometry');
@@ -582,7 +584,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         const geometry = new THREE.PlaneGeometry(h[1] - h[0], v[1] - v[0]);
         let map;
         if (status.anatomyVolume) {
-          const canvas = makeSliceCanvas(status.anatomyVolume, axis, slices[axis], { size: 192, atlasVolume: status.atlasVolume, radiological: false, transparent: true, roiComparison: propsRef.current.exploded ? null : propsRef.current.roiComparison, roiDisplay: propsRef.current.roiDisplay });
+          const canvas = makeSliceCanvas(status.anatomyVolume, axis, slices[axis], { size: 192, atlasVolume: queryableAtlasVolume(status.atlasVolume,propsRef.current.atlas,propsRef.current.atlasIdentity), radiological: false, transparent: true, roiComparison: propsRef.current.exploded ? null : propsRef.current.roiComparison, roiDisplay: propsRef.current.roiDisplay });
           map = new THREE.CanvasTexture(canvas); map.colorSpace = THREE.SRGBColorSpace;
         }
         const mat = new THREE.MeshBasicMaterial({ map, color: map ? '#ffffff' : axisColors[axis], side: THREE.DoubleSide, transparent: true, opacity: map ? 0.82 : 0.12, depthWrite: false });
@@ -741,36 +743,35 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
           if (hit.object.userData.category === 'roi') {
             const comparison = p.roiComparison, part = hit.object.userData.roiPart;
             p.onCoordinate?.(point.toArray(), { coordinateSpace: 'brain' });
-            p.onReady?.({ loaded: true, method: 'roi', mapping: 'none', roiPart: part, position: point.toArray(), message: `${sceneText('ROI 二值标签', 'ROI binary labels')} · ${part === 'intersection' ? sceneText('交集', 'Intersection') : part === 'aOnly' ? sceneText('仅 A', 'A only') : part === 'bOnly' ? sceneText('仅 B', 'B only') : part} · ${comparison?.grid.space || ''}` });
+            p.onQueryStatus?.({ loaded: true, method: 'roi', mapping: 'none', roiPart: part, position: point.toArray(), message: `${sceneText('ROI 二值标签', 'ROI binary labels')} · ${part === 'intersection' ? sceneText('交集', 'Intersection') : part === 'aOnly' ? sceneText('仅 A', 'A only') : part === 'bOnly' ? sceneText('仅 B', 'B only') : part} · ${comparison?.grid.space || ''}` });
             start = null; setSelectionBox(null); return;
           } else if (hit.object.userData.category === 'study-marker') {
             const marker = hit.object.userData.marker;
             p.onCoordinate?.(marker.position, { coordinateSpace: 'brain' }); p.onStudyMarkerSelect?.(marker);
-            p.onReady?.({ loaded: true, method: 'study-marker', mapping: 'none', position: marker.position, message: marker.label || marker.studyId || sceneText('研究坐标', 'Study coordinate') });
+            p.onQueryStatus?.({ loaded: true, method: 'study-marker', mapping: 'none', position: marker.position, message: marker.label || marker.studyId || sceneText('研究坐标', 'Study coordinate') });
             start = null; setSelectionBox(null); return;
           } else if (hit.object.userData.category === 'cortex') {
             point.sub(hit.object.position);
-            const activeVolume = status.atlasVolume?.atlasId === p.atlas ? status.atlasVolume : null;
+            const activeVolume = queryableAtlasVolume(status.atlasVolume,p.atlas,p.atlasIdentity);
+            if(!activeVolume){start=null;setSelectionBox(null);return;}
             const displayed=hit.object.userData.displayedAtlas;
             const sameSource=activeVolume && displayed?.atlasId===p.atlas && displayed.atlasVersion===activeVolume.atlasVersion && displayed.spaceId===activeVolume.spaceId;
             const picked=sameSource && hit.face ? pickDisplayedSurfaceRegion({positions:hit.object.geometry.attributes.position.array,face:[hit.face.a,hit.face.b,hit.face.c],point:point.toArray(),labelIds:hit.object.userData.atlasLabelIds,regionRefs:hit.object.userData.atlasRegions}) : null;
             const entry=picked && activeVolume.labels?.find(item=>item.id===picked.labelId);
             const label=entry ? {...entry,value:picked.labelId} : null;
             const region=picked?.ref ?? null;
-            const directDK=displayed?.method==='original-vertex-annotation',projected=displayed?.method==='cortical-ribbon';
+            const projected=displayed?.method==='cortical-ribbon';
             const relation = region && relationsForRegion(region,p.regionRelations).find(row => row.type === 'exact-source');
             structure = relation ? p.structures.find(s => s.id === relation.conceptId) : null;
-            const matched = Boolean(structure);
             const method = displayed?.method || 'unlabelled-surface';
-            p.onReady?.({ loaded: true, method: label ? 'atlas' : 'unlabelled', mapping: projected ? 'cortical-ribbon' : region ? method : 'none', atlasLabel: label?.name, position: point.toArray(), message: label ? `${label.name} · ${directDK ? sceneText('同源 DK 顶点注释', 'Matched DK vertex annotation') : projected ? sceneText('皮层厚度投影标签', 'Cortical ribbon label') : sceneText('体素标签', 'Voxel label')}${matched ? '' : sceneText(' · 无对应结构卡片', ' · No matching structure card')}` : status.atlasOverlayBlocked ? sceneText('该图谱未配准，已停止标签查询', 'Atlas alignment is unverified; label queries are disabled') : sceneText('此处没有图谱标签，未按邻近脑回补标', 'No atlas label here; no nearest-gyrus inference was applied') });
-            p.onRegionSelect?.(region ? [region] : [],point.toArray(),{atlasId:p.atlas,atlasVersion:activeVolume?.atlasVersion,coordinate:point.toArray(),method,requestId:status.atlasGeneration,selectionMode:start.shift?'add':'replace',surfaceHemisphere:hit.object.userData.hemisphere});
+            p.onRegionSelect?.(region ? [region] : [],point.toArray(),{atlasId:p.atlas,atlasVersion:activeVolume.atlasVersion,coordinate:point.toArray(),method,requestId:status.atlasGeneration,selectionMode:start.shift?'add':'replace',surfaceHemisphere:hit.object.userData.hemisphere,sourceAsset:activeVolume.identity,label,mapping:projected?'cortical-ribbon':region?method:'none'});
             start = null; setSelectionBox(null); return;
           } else {
             structure = hit.object.userData.structure;
             const object = structure && status.objects.get(structure.id);
             if (object) point.sub(object.position);
             const source = object?.userData.sourceMetadata;
-            if (source) p.onReady?.({ loaded: true, method: source.representation || 'atlas-segmentation', sourceStructureId: structure.id, nativeSpace: source.nativeSpace || source.space, displaySpace: source.displaySpace || source.space || source.nativeSpace, targetAlignment: source.targetAlignment, sourceMetadata: source, message: `${source.dataset || source.atlas || sceneText('解剖图谱', 'Anatomical atlas')} · ${source.targetAlignment?.verified === false ? sceneText('原生参考空间（未联合配准）', 'Native reference space; no joint registration') : source.representation === 'tractography' ? sceneText('群体扩散流线', 'Population tractography') : sceneText('图谱分割表面', 'Atlas segmentation surface')}` });
+            if (source) p.onQueryStatus?.({ loaded: true, method: source.representation || 'atlas-segmentation', sourceStructureId: structure.id, nativeSpace: source.nativeSpace || source.space, displaySpace: source.displaySpace || source.space || source.nativeSpace, targetAlignment: source.targetAlignment, sourceMetadata: source, message: `${source.dataset || source.atlas || sceneText('解剖图谱', 'Anatomical atlas')} · ${source.targetAlignment?.verified === false ? sceneText('原生参考空间（未联合配准）', 'Native reference space; no joint registration') : source.representation === 'tractography' ? sceneText('群体扩散流线', 'Population tractography') : sceneText('图谱分割表面', 'Atlas segmentation surface')}` });
             if (source?.regionRef) {
               const region=source.regionRef;
               p.onRegionSelect?.([region],point.toArray(),{atlasId:region.atlasId,atlasVersion:region.atlasVersion,coordinate:point.toArray(),method:'source-label-surface',requestId:status.atlasGeneration,selectionMode:start.shift?'add':'replace'});
@@ -884,10 +885,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         if (status.anatomyFailures.size) { setError(sceneText(`${status.anatomyFailures.size} 个真实结构文件加载失败，相关结构已隐藏。请刷新重试。`, `${status.anatomyFailures.size} anatomical files failed to load. Those structures are hidden; refresh to retry.`)); propsRef.current.onReady?.({ loaded: status.loaded, anatomyFailures: [...status.anatomyFailures] }); }
       }
     }).catch(error => { if (!destroyed) setError(sceneText(`解剖表面清单加载失败：${error.message}`, 'The anatomical surface manifest could not be loaded.')); });
-    fetch(dataURL('anatomy/manifest.json')).then(response => {
-      if (!response.ok) throw new Error(sceneText('真实纤维图谱清单加载失败', 'The tractography manifest could not be loaded'));
-      return response.json();
-    }).then(async manifest => {
+    resourceValue(ANATOMY_MANIFEST_RESOURCE).then(async manifest => {
       if (destroyed) return;
       status.anatomyEntries = Object.fromEntries(Object.entries(manifest.structures || {}).filter(([id])=>propsRef.current.structures.some(s=>s.id===id)));
       updateRemoteAnatomy();
@@ -932,17 +930,19 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
   useEffect(() => {
     const state = stateRef.current; if (!state) return;
     const generation = ++state.atlasGeneration;
+    state.atlasVolume=null;state.atlasOverlayBlocked=true;state.colorCortex();state.updateSlices();
     loadAtlas(props.atlas).then(volume => {
       if (stateRef.current !== state || generation !== state.atlasGeneration) return;
-      state.atlasOverlayBlocked = volume?.canOverlayOnTarget === false;
+      state.atlasOverlayBlocked = !queryableAtlasVolume(volume,props.atlas,props.atlasIdentity);
       state.atlasVolume = state.atlasOverlayBlocked ? null : volume; state.colorCortex(); state.updateSlices();
-      propsRef.current.onReady?.({ loaded: state.loaded, method: state.atlasOverlayBlocked ? 'independent' : volume ? 'atlas' : 'teaching', overlayBlocked: state.atlasOverlayBlocked, message: state.atlasOverlayBlocked ? sceneText(`${volume.space || '原生图谱'} 未配准到当前模板 · 已停止表面叠加和坐标查询`, `${volume.space || 'Native atlas'} alignment is unverified · Surface overlay and coordinate queries are disabled`) : volume ? sceneText(`${volume.space || 'MNI'} · 图谱体素采样`, `${volume.space || 'MNI'} · Atlas voxel sampling`) : sceneText('图谱体素数据未接入 · 结构定位', 'Atlas voxel data unavailable · Structure locations only') });
+      propsRef.current.onReady?.({ loaded: state.loaded, method: state.atlasOverlayBlocked ? 'independent' : volume ? 'atlas' : 'teaching', overlayBlocked: state.atlasOverlayBlocked, message: state.atlasOverlayBlocked ? sceneText(`${volume?.space || '原生图谱'} 未配准到当前模板 · 已停止表面叠加和坐标查询`, `${volume?.space || 'Native atlas'} alignment is unverified · Surface overlay and coordinate queries are disabled`) : volume ? sceneText(`${volume.space || 'MNI'} · 图谱体素采样`, `${volume.space || 'MNI'} · Atlas voxel sampling`) : sceneText('图谱体素数据未接入 · 结构定位', 'Atlas voxel data unavailable · Structure locations only') });
     }).catch(() => {
       if (stateRef.current !== state || generation !== state.atlasGeneration) return;
       state.atlasVolume = null; state.colorCortex(); state.updateSlices();
       propsRef.current.onReady?.({ loaded: state.loaded, method: 'unavailable', message: sceneText('图谱体素数据加载失败 · 体素标签查询不可用', 'Atlas data failed to load · Voxel-label queries are unavailable') });
     });
-  }, [props.atlas, props.volumeRevision]);
+    return()=>{if(state.atlasGeneration===generation){state.atlasGeneration++;state.atlasVolume=null;}};
+  }, [props.atlas, props.atlasIdentity?.id, props.atlasIdentity?.version, props.atlasIdentity?.sha256, props.atlasIdentity?.spaceId, props.resourceEpoch, props.volumeRevision]);
 
   return <div className="brain-scene" style={{ position: 'relative', width: '100%', height: '100%', minHeight: 0, overflow: 'hidden' }}>
     <p id="brain-keyboard-help" className="visually-hidden">{sceneText('画布聚焦时：1 三维，2 矢状，3 冠状，4 轴位；加号或减号缩放，Home 重置。也可 Tab 到标准视角按钮。', 'With the canvas focused: 1 oblique, 2 lateral, 3 anterior, 4 superior; plus or minus to zoom, Home to reset. Tab also reaches the standard view buttons.')}</p>
