@@ -1,0 +1,71 @@
+{
+  "checkedAt": "2026-10-29T09:06:04.639Z",
+  "localVersion": "4.1.0",
+  "scannedRootFiles": 85,
+  "comparedSourceFiles": 81,
+  "rootOnly": [
+    "src/i18n/ui-strings.json",
+    "scripts/integrate-workspace.mjs",
+    "scripts/__pycache__/register_volume.cpython-311.pyc",
+    "scripts/__pycache__/space_register.cpython-311.pyc"
+  ],
+  "sourceDifferences": [],
+  "bundles": [
+    {
+      "name": "atlas-explorer.worker-B-4hzXPK.js",
+      "bytes": 24918,
+      "gzipBytes": 8552
+    },
+    {
+      "name": "index-CsPjJinD.css",
+      "bytes": 63845,
+      "gzipBytes": 13866
+    },
+    {
+      "name": "index-I85c1KuL.js",
+      "bytes": 1544612,
+      "gzipBytes": 349684
+    },
+    {
+      "name": "pam50.worker-CHOnOclq.js",
+      "bytes": 29051,
+      "gzipBytes": 10223
+    },
+    {
+      "name": "react-PY5S7aRQ.js",
+      "bytes": 11989,
+      "gzipBytes": 4232
+    },
+    {
+      "name": "roi.worker-EOhEPV1C.js",
+      "bytes": 29841,
+      "gzipBytes": 10521
+    },
+    {
+      "name": "three-CMR-PTWW.js",
+      "bytes": 515052,
+      "gzipBytes": 132139
+    }
+  ],
+  "live": {
+    "index.html": {
+      "status": 200,
+      "bytes": 1121,
+      "sha256": "78cb7abba98c63c22d14b1afdd6f45c03dc28bd5e8988846f937991623b4e320",
+      "matchesSite": true
+    },
+    "data/manifest.json": {
+      "status": 200,
+      "bytes": 319399,
+      "sha256": "25b9a2584a8db5849ca95b118321ed233731cf88673756018365a27d2bbd44d5",
+      "matchesSite": true
+    },
+    "data/surface-v1/manifest.json": {
+      "status": 200,
+      "bytes": 14863,
+      "sha256": "c9529c36628593442dcb5c416da6351748d3a9379e5a295a9bf0f1b6606391c6",
+      "matchesSite": true
+    }
+  },
+  "liveVersion": "4.1.0"
+}

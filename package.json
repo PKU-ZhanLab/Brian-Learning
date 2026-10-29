@@ -9,7 +9,8 @@
     "preview": "vite preview --host 127.0.0.1",
     "check": "node scripts/check-data.mjs && node scripts/literature_validate.mjs && node --test src/lib/*.test.mjs",
     "build:public": "node scripts/build-public.mjs",
-    "package:source": "node scripts/public-package.mjs"
+    "package:source": "node scripts/public-package.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "react": "^19.2.0",
@@ -18,6 +19,7 @@
     "lucide-react": "^0.468.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
     "vite": "^7.1.12"
   }
 }
