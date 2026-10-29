@@ -1,7 +1,7 @@
 import React, {lazy,Suspense,useEffect} from 'react';
 import { createRoot } from 'react-dom/client';
 import ResultRecordPage from './components/ResultRecordPage.jsx';
-import {resolvePublicResultRoute,publicResultHref} from './lib/public-result-route.js';
+import {resolvePublicResultRoute,publicResultHref,publicResultDirectoryHref} from './lib/public-result-route.js';
 import './styles.css';
 
 const base=import.meta.env.BASE_URL;
@@ -32,7 +32,7 @@ function PublicResultEntry({route}){
     }
   },[en,route]);
   return <main className="public-result-entry" data-public-result-state={route.kind}>
-    <nav aria-label={t('结果导航','Result navigation')}><a href={base}>{t('返回工作区','Return to workspace')}</a><a href={`${base}results/`}>{t('全部公开结果','All public results')}</a>{route.kind==='result'&&<a href={publicResultHref(route.resultId,route.dataVersion,{base,language:en?'zh':'en'})}>{en?'中文':'English'}</a>}</nav>
+    <nav aria-label={t('结果导航','Result navigation')}><a href={base}>{t('返回工作区','Return to workspace')}</a><a href={publicResultDirectoryHref({base,language:route.language})}>{t('全部公开结果','All public results')}</a>{route.kind==='result'&&<a href={publicResultHref(route.resultId,route.dataVersion,{base,language:en?'zh':'en'})}>{en?'中文':'English'}</a>}</nav>
     {route.kind==='result'?<ResultRecordPage resultId={route.resultId} dataVersion={route.dataVersion} language={route.language} standalone/>:<><h1>{route.kind==='redirect'?t('正在打开固定版本…','Opening fixed version…'):t('结果不可获取','Result unavailable')}</h1><p>{route.kind==='redirect'?t('将转到带明确版本的公开地址。','Redirecting to an explicitly versioned public address.'):t('未找到该公开结果或固定版本。','This public result or fixed version is unavailable.')}</p>{route.kind==='redirect'&&<a href={base+route.href}>{t('打开固定版本','Open fixed version')}</a>}</>}
   </main>;
 }

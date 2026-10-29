@@ -152,27 +152,27 @@
       },
       "limitations": [
         {
-          "zh": "No code-to-upload byte binding; pinned code commit postdates upload.",
+          "zh": "尚无代码与上传文件的字节级对应依据；固定代码提交晚于上传时间。",
           "en": "No code-to-upload byte binding; pinned code commit postdates upload."
         },
         {
-          "zh": "Exact uploaded template remains unverified despite explicit NLin6Asym pipeline selection.",
+          "zh": "虽然流程明确选择 NLin6Asym，上传文件的确切模板仍未核实。",
           "en": "Exact uploaded template remains unverified despite explicit NLin6Asym pipeline selection."
         },
         {
-          "zh": "Uploaded T[29]/N30 is compatible with unadjusted f1a; final methods describe age, age-squared, GMV, TIV covariates.",
+          "zh": "上传文件的 T[29]/N30 与未调整的 f1a 相容；最终方法描述了年龄、年龄平方、GMV 和 TIV 协变量。",
           "en": "Uploaded T[29]/N30 is compatible with unadjusted f1a; final methods describe age, age-squared, GMV, TIV covariates."
         },
         {
-          "zh": "Threshold metadata conflict unresolved; no significance mask, p-value conversion or unthresholded-map aggregation justified.",
+          "zh": "阈值元数据冲突尚未解决；不能据此建立显著性掩膜、换算 p 值或汇总未阈值化图。",
           "en": "Threshold metadata conflict unresolved; no significance mask, p-value conversion or unthresholded-map aggregation justified."
         },
         {
-          "zh": "No runtime SPM outputs, exact mask asset, spatial transform, atlas/ROI mapping or anatomical review verified.",
+          "zh": "尚未核实运行时 SPM 输出、确切掩膜资产、空间变换、图谱/ROI 映射或解剖审阅。",
           "en": "No runtime SPM outputs, exact mask asset, spatial transform, atlas/ROI mapping or anatomical review verified."
         },
         {
-          "zh": "Original eight paper coordinates remain MNI-unspecified with zero direct overlays.",
+          "zh": "原始八个论文坐标仍为 MNI-unspecified，没有可直接叠加的坐标。",
           "en": "Original eight paper coordinates remain MNI-unspecified with zero direct overlays."
         }
       ]

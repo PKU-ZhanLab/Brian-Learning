@@ -1,3 +1,4 @@
+import {APP_VERSION} from './app-version.js';
 /** @typedef {import('./research-contracts.js').ComputationManifest} ComputationManifest */
 /** @typedef {import('./research-contracts.js').AssetIdentity} AssetIdentity */
 const nonempty=value=>typeof value==='string'&&value.trim().length>0;
@@ -5,7 +6,7 @@ const digest=value=>typeof value==='string'&&/^[a-f\d]{64}$/i.test(value);
 const clone=value=>structuredClone(value);
 const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
 export const ROI_ALGORITHM_VERSION='roi-shared-grid-v2';
-export const ROI_APP_VERSION='4.1.0';
+export const ROI_APP_VERSION=APP_VERSION;
 
 export function validateAssetIdentity(value) {
   if(!nonempty(value?.id)||!nonempty(value.version)||!digest(value.sha256)||(value.spaceId!==null&&!nonempty(value.spaceId)))throw Error('asset-identity-required');

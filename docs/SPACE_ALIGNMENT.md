@@ -1,3 +1,15 @@
+# 当前空间边界 / Current space boundaries · 4.2.0
+
+主模板为明确的 MNI152NLin6Asym；原生 Colin27 T1/标签独立。AAL/AAL3 估计配准资产保留原始/派生身份、变换链、离散标签及限制。共用脑形的表面投影用于显示，不能当作体积原始标签或配准精度。未知 MNI 变体保留 MNI-unspecified，重采样不冒充配准。
+
+The main reference is MNI152NLin6Asym. Native Colin27 remains separate. Registered estimates retain original/derived identities and transforms; discrete labels are never averaged or filled to create coverage. Surface projection is a display operation. Resampling does not establish registration.
+
+采样输出可为 1/2 mm，必须报告源/目标网格和逐标签损失。原生 AAL3-134 历史记录为 8 个 1 mm³ 体素；共享模板配准标签例为 7 个，2 mm 可全部丢失。这是不同来源/阶段，不是原始八个被覆盖。S6 当前空间验证 partial、humanValidated=false、14 项覆盖缺口、零合格替换分割源；示意几何未据此升级。见[科研流程](acceptance/RESEARCH_WORKFLOWS.md)与[验收](acceptance/STATUS.md)。
+
+---
+
+以下为保留的历史记录 / Retained historical record. Earlier pass/deployment claims apply only to their dated versions.
+
 # 空间与配准
 
 脑内主参考为 **FSL MNI152NLin6Asym、RAS 毫米坐标、2 mm 网格**。逐数据集证据与显示限制见 `public/data/space/alignment.json`。原始数据保存在 `data-sources/`；将图像转成 RAS 或重采样到相同网格，本身不能证明解剖对齐。

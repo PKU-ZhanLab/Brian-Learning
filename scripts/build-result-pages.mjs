@@ -4,7 +4,7 @@ import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import registry from '../data-sources/results/publication-registry.json' with {type:'json'};
 import {getPublishedResultRecord,getPublishedSourceDetails,getResultCorrections,buildPublicResultExport} from '../src/lib/result-publication.js';
-import {publicResultHref} from '../src/lib/public-result-route.js';
+import {publicResultHref,publicResultDirectoryHref} from '../src/lib/public-result-route.js';
 import {safeSourceURL} from '../src/lib/evidence-schema.js';
 
 export const escapeHTML=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -26,7 +26,7 @@ export function renderResultPage({resultId,dataVersion,language='zh',base='/Bria
   const versions=registry.versions.filter(row=>row.records.some(item=>item.resultId===resultId));
   const corrections=getResultCorrections(resultId);
   const field=value=>value?.state==='reported'?JSON.stringify(value.value):value?.reason||'—';
-  const body=`<nav aria-label="${t('结果导航','Result navigation')}">${link(base,t('返回工作区','Return to workspace'))}${link(`${base}results/`,t('全部公开结果','All public results'))}${link(base+fileFor(resultId,dataVersion,language==='en'?'zh':'en'),language==='en'?'中文':'English')}${link(publicResultHref(resultId,dataVersion,{base,language}),t('打开交互记录','Open interactive record'))}</nav>
+  const body=`<nav aria-label="${t('结果导航','Result navigation')}">${link(base,t('返回工作区','Return to workspace'))}${link(publicResultDirectoryHref({base,language}),t('全部公开结果','All public results'))}${link(base+fileFor(resultId,dataVersion,language==='en'?'zh':'en'),language==='en'?'中文':'English')}${link(publicResultHref(resultId,dataVersion,{base,language}),t('打开交互记录','Open interactive record'))}</nav>
 <h1>${e(title)}</h1>
 <p><cite>${e(reference.title)}</cite> · ${e(reference.authors)} · ${e(reference.journal)} (${e(reference.year)}) ${safeSourceURL(reference.url)?link(reference.url,'DOI / '+(reference.doi||reference.id)):''}</p>
 <dl><dt>${t('固定结果 / 数据版本','Fixed result / data version')}</dt><dd><code>${e(resultId)}</code> · ${e(dataVersion)}</dd><dt>SHA-256</dt><dd><code>${e(record.contentHash)}</code></dd><dt>${t('来源快照 SHA-256','Source snapshot SHA-256')}</dt><dd><code>${e(publication.sha256)}</code></dd><dt>${t('任务 / 对比','Task / contrast')}</dt><dd>${e(text(record.result.contrast,language))}</dd><dt>${t('样本：招募 / 纳入 / 本分析','Sample: enrolled / included / analysis')}</dt><dd>${e(['enrolled','included','perAnalysis'].map(key=>field(record.result.sample?.[key])).join(' / '))}</dd></dl>

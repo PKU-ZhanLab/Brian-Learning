@@ -1,0 +1,602 @@
+{
+  "reviewedSnapshot": "b73910b22f7b44d49a7ec0bd692682349372ccef",
+  "warning": "Historical task receipts are version-scoped. They do not establish final G1 browser or scientific acceptance.",
+  "files": [
+    {
+      "task": "G0",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/G0-report.md",
+      "snapshot": "task-records/G0-report.md",
+      "sha256": "9b5296983481c8805016897f030a18b5614ca1fa9ece501abce458eda0f9a06a",
+      "reviewedSource": "b73910b22f7b44d49a7ec0bd692682349372ccef"
+    },
+    {
+      "task": "S1",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/S1-report.md",
+      "snapshot": "task-records/S1-report.md",
+      "sha256": "45c242b204c70a0413146d76506461d5665c9003e34009f2a63f7baa2d71e4d0",
+      "reviewedSource": "28c9610"
+    },
+    {
+      "task": "S2",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/S2-report.md",
+      "snapshot": "task-records/S2-report.md",
+      "sha256": "0a101cf4f7860964ed1102d306b7a12edb60861e2654f62d7cf435a143a2f5bc",
+      "reviewedSource": "51ff82f"
+    },
+    {
+      "task": "S2",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/S2-cua.md",
+      "snapshot": "task-records/S2-cua.md",
+      "sha256": "748deb11788a06900dba491783bb3a08c881c912246aa9aaec71edd911e91829",
+      "reviewedSource": "51ff82f"
+    },
+    {
+      "task": "S3",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/S3-report.md",
+      "snapshot": "task-records/S3-report.md",
+      "sha256": "538759d0c85b82f4eaf613cf9c8de4835b4689859267df698f3ab91e1dbc70ab",
+      "reviewedSource": "2644ab30be16b90b03073033829de0f92996fad5"
+    },
+    {
+      "task": "S3",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/S3-review.md",
+      "snapshot": "task-records/S3-review.md",
+      "sha256": "17bc956ec726e0e858a81f72a175b3ae0f236163ca1b082c23cadf15aa8c14ea",
+      "reviewedSource": "2644ab30be16b90b03073033829de0f92996fad5"
+    },
+    {
+      "task": "S3",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/S3-cua.md",
+      "snapshot": "task-records/S3-cua.md",
+      "sha256": "5831baa225401a3ff4a15fec8e5cbe7a1aca437ed6fa46a8bccebf5a5d7d8ecd",
+      "reviewedSource": "2644ab30be16b90b03073033829de0f92996fad5"
+    },
+    {
+      "task": "S4",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/S4-report.md",
+      "snapshot": "task-records/S4-report.md",
+      "sha256": "71e99e9b8ad3835746eadb0d0e346948cd51d7845441f889ae3e639dd9c7e04e",
+      "reviewedSource": "a9267cf"
+    },
+    {
+      "task": "S4",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/S4-cua.md",
+      "snapshot": "task-records/S4-cua.md",
+      "sha256": "b8601fc69016d1feb64b80bee67fa2a0c9784f4b1163de7044cf3266c9b86cdd",
+      "reviewedSource": "a9267cf"
+    },
+    {
+      "task": "S5",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/S5-report.md",
+      "snapshot": "task-records/S5-report.md",
+      "sha256": "4013879b7f0963828652f017a40bc14ebf57d603aa1fb011294a22b4f73b22fa",
+      "reviewedSource": "604abd6"
+    },
+    {
+      "task": "S5",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/S5-cua.md",
+      "snapshot": "task-records/S5-cua.md",
+      "sha256": "73ae225d36cf1be1eeb489ea8f2f71cddcae4eb4fa8b0e5270a784c2400bfdf0",
+      "reviewedSource": "604abd6"
+    },
+    {
+      "task": "S6",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/S6-report.md",
+      "snapshot": "task-records/S6-report.md",
+      "sha256": "4bb80ef4f78939bdec38b57d47c7221a19c0da8916d90e7a0a7cfaf907e57794",
+      "reviewedSource": "fe498c3"
+    },
+    {
+      "task": "S6",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/S6-fix1-review.md",
+      "snapshot": "task-records/S6-fix1-review.md",
+      "sha256": "0faf9cf83f7f17cb7e5ee3f64637accdcb9f05e76abee714fb727f6a854c3d15",
+      "reviewedSource": "fe498c3"
+    },
+    {
+      "task": "W1",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/W1-report.md",
+      "snapshot": "task-records/W1-report.md",
+      "sha256": "42f422399e4eb8ba0fc8c8324242bc524e687bba327f44415498877c404b916e",
+      "reviewedSource": "61ca448"
+    },
+    {
+      "task": "W2",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/W2-report.md",
+      "snapshot": "task-records/W2-report.md",
+      "sha256": "8345548b6ccfd9671737d7ffc1aa7e4391028d4d8e6ae72faffccae86d96889c",
+      "reviewedSource": "f4c17aa"
+    },
+    {
+      "task": "W2",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/W2-cua.md",
+      "snapshot": "task-records/W2-cua.md",
+      "sha256": "a8eca95e0658562a31239e6872e46b6b66ebca0e2ae44a7e2ff70a0ffaed4846",
+      "reviewedSource": "f4c17aa"
+    },
+    {
+      "task": "W3",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/W3-report.md",
+      "snapshot": "task-records/W3-report.md",
+      "sha256": "5d80e4a74c53a4006e51c1aa7237c6c9695e1c8b6047ceb696774972b4754c4b",
+      "reviewedSource": "ee4af54018b2506eb4a57aa1143cddb3e409b788"
+    },
+    {
+      "task": "W3",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/W3-cua.md",
+      "snapshot": "task-records/W3-cua.md",
+      "sha256": "a53a553824432581dfccc3ff4a8eec9a657e27c7f09ad561d51dbbaa37a2ac0e",
+      "reviewedSource": "ee4af54018b2506eb4a57aa1143cddb3e409b788"
+    },
+    {
+      "task": "W4",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/W4-report.md",
+      "snapshot": "task-records/W4-report.md",
+      "sha256": "a4c494dc91e31f2cf2e7f0ba1b8a0384581a88945ccd6b9d671b76a17da859e3",
+      "reviewedSource": "e379fdeb442cc3387570ea59a16485a3015b1f5d"
+    },
+    {
+      "task": "W4",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/W4-review.md",
+      "snapshot": "task-records/W4-review.md",
+      "sha256": "047efa358a020a7c1cafdfc70d3eace6c9fa7d7b5cb2a73109dbb13227d86525",
+      "reviewedSource": "e379fdeb442cc3387570ea59a16485a3015b1f5d"
+    },
+    {
+      "task": "W4",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/W4-cua.md",
+      "snapshot": "task-records/W4-cua.md",
+      "sha256": "fce9f592d41f85b5386c36ea8c76b74832cc4cf1af730aa8a4e563a5be98c6fb",
+      "reviewedSource": "e379fdeb442cc3387570ea59a16485a3015b1f5d"
+    },
+    {
+      "task": "W5",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/W5-report.md",
+      "snapshot": "task-records/W5-report.md",
+      "sha256": "dc8c67e875b1cc9a55e61258c9de7a32fa51ecb2277b02088ac0d3189753bb9b",
+      "reviewedSource": "bf1d5f19a445b7974f3530fcb26178a037bb9429"
+    },
+    {
+      "task": "W5",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/W5-fix1-review.md",
+      "snapshot": "task-records/W5-fix1-review.md",
+      "sha256": "1ddc89451358e07aa3295bcacc25080c32f82cfcb309afbf07409621a20ace64",
+      "reviewedSource": "bf1d5f19a445b7974f3530fcb26178a037bb9429"
+    },
+    {
+      "task": "W5",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/W5-cua.md",
+      "snapshot": "task-records/W5-cua.md",
+      "sha256": "7ff9832d28a82697188107ccdf857d4747a0d97afe5740bbc361a722218dee2b",
+      "reviewedSource": "bf1d5f19a445b7974f3530fcb26178a037bb9429"
+    },
+    {
+      "task": "W6",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/W6-report.md",
+      "snapshot": "task-records/W6-report.md",
+      "sha256": "201978fbc3caee8914f615cae62ed7a77e97e1b1a5b04ed1427124c588bb04b6",
+      "reviewedSource": "a30cc08c33d449db65d85c031a1c5b63693411ff"
+    },
+    {
+      "task": "W6",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/W6-review.md",
+      "snapshot": "task-records/W6-review.md",
+      "sha256": "474f25b8fe74b01d2d06671f5897c52129f8b7072a80b87a642910e71e372ff7",
+      "reviewedSource": "a30cc08c33d449db65d85c031a1c5b63693411ff"
+    },
+    {
+      "task": "W6",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/W6-cua.md",
+      "snapshot": "task-records/W6-cua.md",
+      "sha256": "ada11dab4e35a9eb48fc17f66ed84c97e3f11628538a191b3082edfaa13f608a",
+      "reviewedSource": "a30cc08c33d449db65d85c031a1c5b63693411ff"
+    },
+    {
+      "task": "E1",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/E1-report.md",
+      "snapshot": "task-records/E1-report.md",
+      "sha256": "74b3408573627dfc890672f72bfa2c35a85f7a9cf95caf9778118f7ae71f8ba7",
+      "reviewedSource": "f6ae1d1"
+    },
+    {
+      "task": "E2",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/E2-report.md",
+      "snapshot": "task-records/E2-report.md",
+      "sha256": "9e3613e5ded9036b33675cb1d83cf896d311f087d01b77901ceb8c4cadf0e665",
+      "reviewedSource": "453d390"
+    },
+    {
+      "task": "E2",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/E2-cua.md",
+      "snapshot": "task-records/E2-cua.md",
+      "sha256": "6f9259b0b3f2dd7b79147d47079bea81fceb7721bc1bd77ad2b49dc7a95282eb",
+      "reviewedSource": "453d390"
+    },
+    {
+      "task": "E3",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/E3-report.md",
+      "snapshot": "task-records/E3-report.md",
+      "sha256": "459f6ec026b4c0dc6885f6f014d8ed70fff827395a0245ee8658ae82a48b772a",
+      "reviewedSource": "0842373414ab585e96caeda92305866ff922a720"
+    },
+    {
+      "task": "E3",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/E3-fix2-review.md",
+      "snapshot": "task-records/E3-fix2-review.md",
+      "sha256": "662efd0451d2a39cb77d3e4ecd908f9ec1fd9f0c22aaa9d76249fad0633ac329",
+      "reviewedSource": "0842373414ab585e96caeda92305866ff922a720"
+    },
+    {
+      "task": "E3",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/E3-cua.md",
+      "snapshot": "task-records/E3-cua.md",
+      "sha256": "3883d9677938e7f26ad58542ac37f3b1d7034f237efb47a670a77431b37b9215",
+      "reviewedSource": "0842373414ab585e96caeda92305866ff922a720"
+    },
+    {
+      "task": "E4",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/E4-report.md",
+      "snapshot": "task-records/E4-report.md",
+      "sha256": "eb3478a68df467b6afa9b74f0bfd3158ab78c0c407f042c8688d91749159f744",
+      "reviewedSource": "281ec2372b46b1e5cf5288ea035cbf944a833f14"
+    },
+    {
+      "task": "E4",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/E4-fix2-review.md",
+      "snapshot": "task-records/E4-fix2-review.md",
+      "sha256": "a0ce009b2ee302247d7f8fcbc1228ff94802c01da0b6f6573dccf60e5d6f8edd",
+      "reviewedSource": "281ec2372b46b1e5cf5288ea035cbf944a833f14"
+    },
+    {
+      "task": "E4",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/E4-cua.md",
+      "snapshot": "task-records/E4-cua.md",
+      "sha256": "1d8616e7efe5c95848cdec9374b98fd60d0c8179b711593ca567ceecdbe66021",
+      "reviewedSource": "281ec2372b46b1e5cf5288ea035cbf944a833f14"
+    },
+    {
+      "task": "E5",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/E5-report.md",
+      "snapshot": "task-records/E5-report.md",
+      "sha256": "001ecccfa98a3ac40094ed231a839639cc52b5b7bd7dad8b88dfdbc5b01a6455",
+      "reviewedSource": "8f7b6f19948e847ba923aaa43fc329eab3a0eae6"
+    },
+    {
+      "task": "E5",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/E5-fix1-review.md",
+      "snapshot": "task-records/E5-fix1-review.md",
+      "sha256": "b9399ca927ad0bd70867017b26fe6e4282444f424926901a5f2451021e05fbcc",
+      "reviewedSource": "8f7b6f19948e847ba923aaa43fc329eab3a0eae6"
+    },
+    {
+      "task": "E5",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/E5-cua.md",
+      "snapshot": "task-records/E5-cua.md",
+      "sha256": "5858bf18518a6e97ded87425360e87079799572b80535fbcd05098a8fa6807c9",
+      "reviewedSource": "8f7b6f19948e847ba923aaa43fc329eab3a0eae6"
+    },
+    {
+      "task": "E6",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/E6-report.md",
+      "snapshot": "task-records/E6-report.md",
+      "sha256": "55a46835295e0c20df207442ab6120348887d9e317384302c7b724853250aa5d",
+      "reviewedSource": "1a773a16f559240ab4bd6b08be56e0d595656385"
+    },
+    {
+      "task": "E6",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/E6-fix1-review.md",
+      "snapshot": "task-records/E6-fix1-review.md",
+      "sha256": "9c6fb1985f99edc4b7f5e0d739b2daf11e11e354bd6ac2eb18bb1fd5d632301d",
+      "reviewedSource": "1a773a16f559240ab4bd6b08be56e0d595656385"
+    },
+    {
+      "task": "X1",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X1-report.md",
+      "snapshot": "task-records/X1-report.md",
+      "sha256": "9c4bc02b87df6123ffd25cd298eb3b343a368e0dc8ba4711e4b6c1512af1c062",
+      "reviewedSource": "b73910b22f7b44d49a7ec0bd692682349372ccef"
+    },
+    {
+      "task": "X2",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X2-report.md",
+      "snapshot": "task-records/X2-report.md",
+      "sha256": "c3dd50cd86948371b2cd122220520a55e589131356fed8405e2b3180df1e6b59",
+      "reviewedSource": "b73910b22f7b44d49a7ec0bd692682349372ccef"
+    },
+    {
+      "task": "X3",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X3-report.md",
+      "snapshot": "task-records/X3-report.md",
+      "sha256": "79dd4e6161f9f9d7cb94ee43a8f7b0c6f60231c9c1c9076e7ff7aa6e6485749b",
+      "reviewedSource": "b73910b22f7b44d49a7ec0bd692682349372ccef"
+    },
+    {
+      "task": "X4",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X4-report.md",
+      "snapshot": "task-records/X4-report.md",
+      "sha256": "d18cbdd973182adbc354f922f14482378bfc41531eb91612ce7d7d02dae7587c",
+      "reviewedSource": "c0bd8e27054aeba490526135330a935a779984b2"
+    },
+    {
+      "task": "X4",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/X4-fix1-review.md",
+      "snapshot": "task-records/X4-fix1-review.md",
+      "sha256": "afdd0895bdd885d736845297e3fde74fcd806701ec089028fb122d8480d0ea62",
+      "reviewedSource": "c0bd8e27054aeba490526135330a935a779984b2"
+    },
+    {
+      "task": "X4",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/X4-cua.md",
+      "snapshot": "task-records/X4-cua.md",
+      "sha256": "2a054d13496734344faa16eca201f88adcf0e8a0cf3bf09719693f18dc447410",
+      "reviewedSource": "c0bd8e27054aeba490526135330a935a779984b2"
+    },
+    {
+      "task": "X5",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X5-report.md",
+      "snapshot": "task-records/X5-report.md",
+      "sha256": "84df38f99b48e2add664b142dbaef29e3cabe291fd4bbfe7ec944748eaf224cc",
+      "reviewedSource": "eaed1996da77e7575afce9cd6dadd793f3a1e053"
+    },
+    {
+      "task": "X5",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/X5-fix1-review.md",
+      "snapshot": "task-records/X5-fix1-review.md",
+      "sha256": "0469c4b30747a95bc40914204643d23a212f3dae9ef31cae27ebf43ebdf81a76",
+      "reviewedSource": "eaed1996da77e7575afce9cd6dadd793f3a1e053"
+    },
+    {
+      "task": "X5",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/X5-cua.md",
+      "snapshot": "task-records/X5-cua.md",
+      "sha256": "9c432ffcf1b0cc030204458c829d5e293f3aa6f47326cace724ab38beb7a96f6",
+      "reviewedSource": "eaed1996da77e7575afce9cd6dadd793f3a1e053"
+    },
+    {
+      "task": "X6",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X6-report.md",
+      "snapshot": "task-records/X6-report.md",
+      "sha256": "9793a96f412de3ce2ea0396e3916777ae38bf763e52b75c9cc6015ef7005c748",
+      "reviewedSource": "1480254"
+    },
+    {
+      "task": "X7",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X7-report.md",
+      "snapshot": "task-records/X7-report.md",
+      "sha256": "c0f37bbc28b2034586339fbf79a85f23998e3b8dec505247e4d7ba35bcfe99c9",
+      "reviewedSource": "e531eb1"
+    },
+    {
+      "task": "X7",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/X7-fix3-review.md",
+      "snapshot": "task-records/X7-fix3-review.md",
+      "sha256": "e65bccc7feba21072b8260ce468d7953986cee7802274586e08c3146302004dd",
+      "reviewedSource": "e531eb1"
+    },
+    {
+      "task": "X7",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/X7-cua.md",
+      "snapshot": "task-records/X7-cua.md",
+      "sha256": "9de1b1d40e58bbaff7653405bd9222e67ca40d0af10f6ecdcd9801fdb02d002b",
+      "reviewedSource": "e531eb1"
+    },
+    {
+      "task": "X8",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X8-report.md",
+      "snapshot": "task-records/X8-report.md",
+      "sha256": "508fabc5f12ada4acaf325bfa5e95d43823c8668a78891d60aa5ae200b492f28",
+      "reviewedSource": "c95d1fd"
+    },
+    {
+      "task": "X8",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/X8-fix1-review.md",
+      "snapshot": "task-records/X8-fix1-review.md",
+      "sha256": "8949ce0d70f9ae80cb86b7e85f7a497d7390513791e79853fe649e7d8cb5ad3f",
+      "reviewedSource": "c95d1fd"
+    },
+    {
+      "task": "X8",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/X8-cua.md",
+      "snapshot": "task-records/X8-cua.md",
+      "sha256": "bee4e1215a1b90a4912ed2c8cbb7d5e661d4a94a6ae6da29573f65ebf2b92266",
+      "reviewedSource": "c95d1fd"
+    },
+    {
+      "task": "X9",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X9-report.md",
+      "snapshot": "task-records/X9-report.md",
+      "sha256": "c98a10f62dd0e58a4f4527a3842fcbc1230fea54240b31911b320ec2982104d5",
+      "reviewedSource": "6248f7c"
+    },
+    {
+      "task": "X9",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/X9-fix1-review.md",
+      "snapshot": "task-records/X9-fix1-review.md",
+      "sha256": "1aa5de722eb224744a78a333daff8cbe68d9ea49fa083616514cb8ee2ac810e4",
+      "reviewedSource": "6248f7c"
+    },
+    {
+      "task": "X9",
+      "kind": "actual-CUA-record",
+      "source": ".superpowers/sdd/README/X9-cua.md",
+      "snapshot": "task-records/X9-cua.md",
+      "sha256": "1c06f3fbf6072e780087c4b7d59591ff0f5281d65f634a8dd71c62d7867eee39",
+      "reviewedSource": "6248f7c"
+    },
+    {
+      "task": "X10",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X10-report.md",
+      "snapshot": "task-records/X10-report.md",
+      "sha256": "59ee213d5661762e112ac9d2dee9a301967d595e51862479ac3969dfebf11445",
+      "reviewedSource": "3f2325643b60698727008e46d81294d6d8bc106f"
+    },
+    {
+      "task": "X10",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/X10-fix1-review.md",
+      "snapshot": "task-records/X10-fix1-review.md",
+      "sha256": "91f5de6a14f866d281043940c70d2ecd22a87539b93a9f7a864455d244f80a00",
+      "reviewedSource": "3f2325643b60698727008e46d81294d6d8bc106f"
+    },
+    {
+      "task": "X11",
+      "kind": "implementation-report",
+      "source": ".superpowers/sdd/README/X11-report.md",
+      "snapshot": "task-records/X11-report.md",
+      "sha256": "d63c69fa2e7b77f548bb9504b16893b3076787b3701d5bdb29d2dfe7e20014f6",
+      "reviewedSource": "b73910b22f7b44d49a7ec0bd692682349372ccef"
+    },
+    {
+      "task": "X11",
+      "kind": "code-review",
+      "source": ".superpowers/sdd/README/X11-review.md",
+      "snapshot": "task-records/X11-review.md",
+      "sha256": "c1347f4faf68209bf2029a9d4c1b2962dc6c9ebd7fe33223d514eb1cbb41a1c0",
+      "reviewedSource": "b73910b22f7b44d49a7ec0bd692682349372ccef"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/s4-cua/download-verification.json",
+      "snapshot": "receipts/s4-cua--download-verification.json",
+      "sha256": "636578fe0932718bf9b4e4f89ebdd6cbb70b639eefad28c630cd9043158dd76e"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/w6-cua/receipt.json",
+      "snapshot": "receipts/w6-cua--receipt.json",
+      "sha256": "db414d84846f465727d5d4960ae85d3f921aeae0c1e89bf2e4fe2741c0409edc"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/w6-cua/local-legacy-receipt.json",
+      "snapshot": "receipts/w6-cua--local-legacy-receipt.json",
+      "sha256": "e35187774a3f66d4f866f57341b083161dab396c4ea78b5bebcb0787667a0c6e"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/x8-cua/single-atlas-retry-receipt.json",
+      "snapshot": "receipts/x8-cua--single-atlas-retry-receipt.json",
+      "sha256": "9257aa23ea4bccccdfd0d94eeb721ee9b8ba36a579e7894224143cea590e3c46"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/x8-cua/real-quota-receipt.json",
+      "snapshot": "receipts/x8-cua--real-quota-receipt.json",
+      "sha256": "be8ade429f3a309c48d6b6b4293c075e1e91c28f28843fb33c26f520f956ca91"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/x8-cua/export-privacy-receipt.json",
+      "snapshot": "receipts/x8-cua--export-privacy-receipt.json",
+      "sha256": "1762a0d81af435d8125eb9a92ba401e4b0604f71ef4a77d0843e204fae158015"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/x9-cua/near-limit-cancel-receipt.json",
+      "snapshot": "receipts/x9-cua--near-limit-cancel-receipt.json",
+      "sha256": "9b5a79463451e5ef4bc1cff48a1b67b0e36d125e531a26ccaf1af2360729fc1e"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/x9-cua/near-limit-retry-receipt.json",
+      "snapshot": "receipts/x9-cua--near-limit-retry-receipt.json",
+      "sha256": "9d9ddf865cee55f94239cc4859d1a8de443ec1190fcec64707c4cd9d6dba61ac"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/e5-cua/alias-fixed-receipt.json",
+      "snapshot": "receipts/e5-cua--alias-fixed-receipt.json",
+      "sha256": "ccf2a4df2d87cd45f4607c375f5eab4b388b1af6aa89193251ea80e57fca648d"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/evidence-acceptance/topic-audit.json",
+      "snapshot": "receipts/evidence-acceptance--topic-audit.json",
+      "sha256": "0f10291087ee188cadf7aac6aeab240d2892033327082f40db99b0054c1b2e9f"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/g1-source-preservation/legacy-source-receipt.json",
+      "snapshot": "receipts/g1-source-preservation--legacy-source-receipt.json",
+      "sha256": "8dcf6c168e5b278e34fc499dc51e971d9a2ab3fc891175f062f964d1e2b9165b"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/g1-source-preservation/audit-plan-preservation.json",
+      "snapshot": "receipts/g1-source-preservation--audit-plan-preservation.json",
+      "sha256": "f30e4253adef28d554d227d6bbfd1d47e0a1016ec0d3d99f65653684fcdcd077"
+    },
+    {
+      "kind": "actual-receipt",
+      "source": "output/g1-source-preservation/remote-refs.json",
+      "snapshot": "receipts/g1-source-preservation--remote-refs.json",
+      "sha256": "b10a940232e3e899c66e7568404257f7349fe44b01ec7a04d54ce20a5702415c"
+    },
+    {
+      "kind": "metadata-only-live-receipt",
+      "source": "output/g1-source-preservation/live-public-edition-receipt.json",
+      "snapshot": "receipts/g1-source-preservation--live-public-edition-receipt.json",
+      "sha256": "a5e2a38a0f6a80931031e95380e6750510bc1e88ac62eefde3724c29f8ef44f1"
+    }
+  ]
+}

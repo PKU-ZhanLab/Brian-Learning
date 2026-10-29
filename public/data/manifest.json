@@ -22944,7 +22944,7 @@
   "anatomy": "anatomy/manifest.json",
   "baCoverage": "ba-v2/manifest.json",
   "alignment": "space/alignment.json",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "edition": "brain-evidence",
   "aalSourceManifest": "aal-v3/manifest.json",
   "aalRegistrationReview": "aal-v3/root-review.json",

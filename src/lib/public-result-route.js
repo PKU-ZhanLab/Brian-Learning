@@ -49,3 +49,8 @@ export function resolvePublicResultRoute(search){
     return {kind:'unavailable',language:params?.getAll('lang').length===1&&params.get('lang')==='en'?'en':'zh'};
   }
 }
+
+export function publicResultDirectoryHref({base='/',language='zh'}={}){
+ if(!base.startsWith('/')||!base.endsWith('/')||base.includes('..')||base.includes('?')||base.includes('#')||base.startsWith('//'))throw Error('Invalid public result base');
+ return `${base}results/${language==='en'?'index.en.html':''}`;
+}

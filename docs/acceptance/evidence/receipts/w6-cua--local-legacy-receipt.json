@@ -1,0 +1,37 @@
+{
+  "sourceCommit": "a30cc08c33d449db65d85c031a1c5b63693411ff",
+  "syntheticOnly": true,
+  "method": "Actual file chooser NIfTI import, compute, project download/open, explicit recompute, input removal and reopening; actual legacy project open/download",
+  "local": {
+    "exactDecodedMmScale": 1.0000000474974513,
+    "allVolumeFieldsExactAfterReopen": true,
+    "originalSnapshotExact": true,
+    "matchingManifestAndMetricsOnRecompute": true,
+    "distinctComputationIds": true,
+    "originalId": "computation-e2944ea5-fe57-44e0-8eca-09d14f673324",
+    "recomputedId": "computation-1328e07e-d6bb-42eb-aba1-66914c90dfc4"
+  },
+  "missingInput": {
+    "zeroVolumes": true,
+    "bothFullSnapshotsAndClassesRetained": true,
+    "reopenedInspectionConfirmed": true,
+    "recomputeDisabled": true
+  },
+  "legacy": {
+    "schema": "neuroatlas-project-v2",
+    "noOriginal": true,
+    "noRecomputed": true,
+    "provenanceStatus": "missing-provenance",
+    "computed": false,
+    "noNumericExportsVisible": true
+  },
+  "browserWarningsErrors": [],
+  "files": {
+    "synthetic-metres.nii": "de92a4fcaccc21cd23b552225f4edf753e9ee4c0fbaedc11e4a722125ac6e1c8",
+    "local-before-reopen.neuroatlas": "db92e2975c551c78b198a8f6e2bf782d2fdf0ae86b8c23583bc5b27ce83dcbb9",
+    "local-after-recompute.neuroatlas": "847c2c8051689a451488e622eebf50febf56dc4a13ba79c4ea45bdbbfd8253ba",
+    "local-missing-input.neuroatlas": "2984e1e824df47985e5258cad825575532db33185e4a5275b0d86d1888301f4d",
+    "legacy-computed.neuroatlas": "78ba1c903e2c79410536df0b7c5968c4ed9c0d4af0e8d4b0e1b72ab712f3dd43",
+    "legacy-exported.neuroatlas": "7d317b5ac9624104f5a322348b2d614aeca109e4f12cb9066429af8c87ee9636"
+  }
+}

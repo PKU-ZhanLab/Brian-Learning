@@ -1,3 +1,15 @@
+# 当前共用脑形 / Shared brain geometry · 4.2.0
+
+DK/AAL/AAL3 共用既有脑形和相机；图谱切换改变标签显示，原生 T1 不被替换。真实分区以 AtlasRegionRef 身份选择，概念脑区关联不充当标签等价。并排显示是独立来源视图；只有明确共同参考与来源依据时才允许相机/十字线联动。公开链接省略整组并排状态以保护私有位置。
+
+DK/AAL/AAL3 retain the shared brain shape and camera. Native T1 remains available separately. Atlas identities and conceptual relationships are distinct. Linked side-by-side views require documented common reference; public links omit their state. The isolated viewer prototype does not change the production renderer or introduce NiiVue into production dependencies.
+
+[查看器评估](VIEWER_EVALUATION.md)记录暂时保留 Three.js 的原因、隔离原型及尚未运行的 GPU/浏览器比较；不能据静态构建判定更快、更准确。
+
+---
+
+以下为保留的历史记录 / Retained historical record. Earlier pass/deployment claims apply only to their dated versions.
+
 # 统一脑形与原始 T1 / Shared geometry and original T1
 
 AAL 原始数据是带空间信息的三维整数标签体积。矢状、冠状、轴位是该体积在配对 T1 上的三种显示方向。三维标签边界、标准脑的皮层着色和原始 T1 切片是不同的展示，不能把其中一种当作另一种的原始数据。

@@ -1,0 +1,11 @@
+{
+  "operation": "read-only git ls-remote",
+  "repository": "https://github.com/PKU-ZhanLab/Brian-Learning",
+  "refs": {
+    "main": "ca00c0928b0c7b62c662636cddf3a8d1da374a15",
+    "gh-pages": "88ebe3a3ac56976c0fe3a70df34da8efeec70841"
+  },
+  "featureBranchPresent": false,
+  "pushAttempted": false,
+  "recordedAt": "2026-10-29T21:41:35.634Z"
+}

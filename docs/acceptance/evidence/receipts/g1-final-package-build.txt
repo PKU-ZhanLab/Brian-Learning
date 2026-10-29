@@ -1,0 +1,44 @@
+
+> neuroatlas-brain-evidence@4.2.0 build:public
+> node scripts/build-public.mjs
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 1683 modules transformed.
+rendering chunks...
+[plugin vite:reporter] 
+(!) F:/project/brain-model/.worktrees/research-20261029/output/release-candidate/g1-20261030-final-worker-probe/source/src/lib/volume.js is dynamically imported by F:/project/brain-model/.worktrees/research-20261029/output/release-candidate/g1-20261030-final-worker-probe/source/src/lib/atlas-resource.js but also statically imported by F:/project/brain-model/.worktrees/research-20261029/output/release-candidate/g1-20261030-final-worker-probe/source/src/App.jsx, F:/project/brain-model/.worktrees/research-20261029/output/release-candidate/g1-20261030-final-worker-probe/source/src/components/AtlasExplorer.jsx, F:/project/brain-model/.worktrees/research-20261029/output/release-candidate/g1-20261030-final-worker-probe/source/src/components/AtlasSlicePanel.jsx, F:/project/brain-model/.worktrees/research-20261029/output/release-candidate/g1-20261030-final-worker-probe/source/src/components/BrainScene.jsx, F:/project/brain-model/.worktrees/research-20261029/output/release-candidate/g1-20261030-final-worker-probe/source/src/components/ComparisonViewport.jsx, F:/project/brain-model/.worktrees/research-20261029/output/release-candidate/g1-20261030-final-worker-probe/source/src/components/ROICompare.jsx, F:/project/brain-model/.worktrees/research-20261029/output/release-candidate/g1-20261030-final-worker-probe/source/src/components/SliceViews.jsx, F:/project/brain-model/.worktrees/research-20261029/output/release-candidate/g1-20261030-final-worker-probe/source/src/lib/comparison-display.js, dynamic import will not move module into another chunk.
+
+computing gzip size...
+dist-public/index.html                                    1.29 kB │ gzip:   0.86 kB
+dist-public/assets/nifti.worker-CD5Orj1s.js              11.15 kB
+dist-public/assets/atlas-explorer.worker-CKQsl1o9.js     24.89 kB
+dist-public/assets/pam50.worker-x8w0fUv5.js              29.02 kB
+dist-public/assets/roi.worker-D3tsQP3k.js                35.82 kB
+dist-public/assets/ComparisonViewport-DIeG_oRE.css        2.13 kB │ gzip:   0.77 kB
+dist-public/assets/WorkspaceFiles-DfWfFyIM.css            4.17 kB │ gzip:   1.24 kB
+dist-public/assets/ROICompare-D9wxLFzg.css                8.93 kB │ gzip:   2.31 kB
+dist-public/assets/AtlasExplorer-BY_WT54G.css             9.96 kB │ gzip:   2.32 kB
+dist-public/assets/App-CVBw4Hz3.css                      17.20 kB │ gzip:   3.50 kB
+dist-public/assets/LiteratureWorkspace-CG8t2eRU.css      24.92 kB │ gzip:   4.93 kB
+dist-public/assets/index-2YKeUkYm.css                    64.40 kB │ gzip:  13.82 kB
+dist-public/assets/AtlasCanvas-OSs755sY.js                6.11 kB │ gzip:   2.78 kB
+dist-public/assets/SliceViews-p2BgJg4z.js                 6.37 kB │ gzip:   2.72 kB
+dist-public/assets/ComparisonViewport-BndBE_mR.js         7.00 kB │ gzip:   3.17 kB
+dist-public/assets/react-PY5S7aRQ.js                     11.99 kB │ gzip:   4.23 kB
+dist-public/assets/WorkspaceFiles-GL8VaoJp.js            12.31 kB │ gzip:   4.65 kB
+dist-public/assets/AtlasExplorer-B5Pqgya-.js             17.95 kB │ gzip:   7.20 kB
+dist-public/assets/BrainScene-BItBOh1N.js                49.94 kB │ gzip:  19.11 kB
+dist-public/assets/ROICompare-DZ7EPH7F.js                58.29 kB │ gzip:  20.35 kB
+dist-public/assets/LiteratureWorkspace-B9BHPGvj.js       63.05 kB │ gzip:  20.87 kB
+dist-public/assets/App-D8evrBZq.js                      489.32 kB │ gzip: 174.52 kB
+dist-public/assets/three-DViA7gU4.js                    516.02 kB │ gzip: 132.47 kB
+dist-public/assets/index-DXiM7HRX.js                  1,842.67 kB │ gzip: 253.21 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.22s
+Public build: 174 hashed data assets; 36 official-source descriptors; no bundled PAM50 meshes.
+Result pages: 16 fixed language/version pages; results/manifest.json.

@@ -1,8 +1,10 @@
+import {recordBuildSource,writeBuildOutput} from './verify-release.mjs';
 import {build} from 'vite';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import {projectRoot,preparePublicData} from './public-package.mjs';
 import {buildResultPages} from './build-result-pages.mjs';
+const buildSource=await recordBuildSource({sourceRoot:projectRoot});
 process.env.VITE_BASE_PATH=process.env.VITE_BASE_PATH||'/Brian-Learning/';
 await build({root:projectRoot,base:process.env.VITE_BASE_PATH,build:{outDir:'dist-public',emptyOutDir:true}});
 const report=await preparePublicData(path.join(projectRoot,'public/data'),path.join(projectRoot,'dist-public/data'));
@@ -10,5 +12,9 @@ const resultPages=await buildResultPages({outDir:path.join(projectRoot,'dist-pub
 await fs.writeFile(path.join(projectRoot,'dist-public','.nojekyll'),'');
 // Keep original license/data bytes intact when this build is committed on Windows.
 await fs.writeFile(path.join(projectRoot,'dist-public','.gitattributes'),'* -text\n');
+const sourceAfterBuild=await recordBuildSource({sourceRoot:projectRoot});
+if(JSON.stringify(sourceAfterBuild)!==JSON.stringify(buildSource))throw Error('Source changed during public build; do not publish this artifact');
+await fs.writeFile(path.join(projectRoot,'dist-public','build-source.json'),JSON.stringify(buildSource,null,2)+'\n');
+await writeBuildOutput({buildDir:path.join(projectRoot,'dist-public'),source:buildSource});
 console.log(`Public build: ${report.files} hashed data assets; ${report.onDemandPAM50Structures} official-source descriptors; no bundled PAM50 meshes.`);
 console.log(`Result pages: ${resultPages.records.length} fixed language/version pages; results/manifest.json.`);

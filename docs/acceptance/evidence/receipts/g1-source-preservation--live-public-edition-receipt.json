@@ -1,0 +1,10 @@
+{
+  "observedAt": "2026-10-29T22:34:08.1011130Z",
+  "url": "https://pku-zhanlab.github.io/Brian-Learning/data/public-edition.json",
+  "status": 200,
+  "version": "4.1.0",
+  "edition": "brain-evidence",
+  "sha256": "1c0f0984d4217270f6f46ab6243b2aafb6e2f5aeab617bddcf2e17e6f21e6770",
+  "bytes": 783,
+  "scope": "Read-only public metadata observation; not a browser or full live-site acceptance"
+}

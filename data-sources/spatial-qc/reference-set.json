@@ -79,8 +79,8 @@
       "id": "main-manifest",
       "path": "public/data/manifest.json",
       "kind": "metadata",
-      "sha256": "95a66695048760b9df8c8411973f5975bb3488574eb95180bde1713f2b6f2da9",
-      "version": "sha256:95a66695048760b9df8c8411973f5975bb3488574eb95180bde1713f2b6f2da9"
+      "sha256": "7a6cef6f826be936b8405987cebdb355d1e89025c0fd52826db874c8ea759668",
+      "version": "sha256:7a6cef6f826be936b8405987cebdb355d1e89025c0fd52826db874c8ea759668"
     },
     {
       "id": "registration-field",

@@ -84,3 +84,12 @@ test('static build is deterministic, escaped, script-free, versioned and indepen
     assert.equal(await fs.readFile(path.join(dir,'results/manifest.json'),'utf8'),bytes);
   }finally{await fs.rm(dir,{recursive:true,force:true});}
 });
+
+test('English result pages retain the English directory on both entry routes',async()=>{
+ const {renderResultPage}=await import('../../scripts/build-result-pages.mjs');
+ const html=renderResultPage({resultId:'axelrod2015-rffa',dataVersion:'2026-10-30.1',language:'en'});
+ assert.match(html,/href="\/Brian-Learning\/results\/index.en.html">All public results/);
+ const {publicResultDirectoryHref}=await import('./public-result-route.js');
+ assert.equal(publicResultDirectoryHref({base:'/Brian-Learning/',language:'en'}),'/Brian-Learning/results/index.en.html');
+ assert.equal(publicResultDirectoryHref({base:'/Brian-Learning/',language:'zh'}),'/Brian-Learning/results/');
+});

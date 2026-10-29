@@ -241,7 +241,7 @@
     {
       "id": "reference-set",
       "path": "data-sources/spatial-qc/reference-set.json",
-      "sha256": "b894226311b7f4925ec25c99ac3f820c33073d3af251eb77f3d6d290ece9b439",
+      "sha256": "a6864ca5d8c41b7a03ae00056154c6358227d4897059b15a736edf71f7dcee4a",
       "version": "spatial-qc-protocol-v2",
       "kind": "protocol"
     },
@@ -289,9 +289,9 @@
       "id": "main-manifest",
       "path": "public/data/manifest.json",
       "kind": "metadata",
-      "sha256": "95a66695048760b9df8c8411973f5975bb3488574eb95180bde1713f2b6f2da9",
-      "version": "sha256:95a66695048760b9df8c8411973f5975bb3488574eb95180bde1713f2b6f2da9",
-      "expectedSha256": "95a66695048760b9df8c8411973f5975bb3488574eb95180bde1713f2b6f2da9",
+      "sha256": "7a6cef6f826be936b8405987cebdb355d1e89025c0fd52826db874c8ea759668",
+      "version": "sha256:7a6cef6f826be936b8405987cebdb355d1e89025c0fd52826db874c8ea759668",
+      "expectedSha256": "7a6cef6f826be936b8405987cebdb355d1e89025c0fd52826db874c8ea759668",
       "bytes": 964739
     },
     {

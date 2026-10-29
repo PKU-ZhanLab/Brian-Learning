@@ -1,0 +1,32 @@
+{
+  "sourceCommit": "a30cc08c33d449db65d85c031a1c5b63693411ff",
+  "method": "Actual CUA file open, inspect, explicit2mm recompute with loss confirmation, original inspection, project download/reopen/re-export; passiveHTTP observation",
+  "originalSnapshotExactAgainstEarlierExport": true,
+  "originalVoxels": 7,
+  "recomputedVoxels": 0,
+  "originalDice": 1,
+  "recomputedDice": null,
+  "distinctIds": true,
+  "viewedSlot": "original",
+  "currentSettingsMm": 2,
+  "allDecodedProjectFieldsExceptCameraPositionExact": true,
+  "cameraPositionBefore": [
+    -351.52766014169157,
+    419.47931238338265,
+    212.82570875043749
+  ],
+  "cameraPositionAfter": [
+    -351.52766014169146,
+    419.47931238338236,
+    212.82570875043734
+  ],
+  "cameraMaxAbsDelta": 2.8421709430404007e-13,
+  "cameraTolerance": 1e-9,
+  "roiWorkerRequestsDuringInitialRestore": 0,
+  "roiWorkerRequestsAfterExplicitRecompute": 1,
+  "additionalWorkerRequestsDuringReopen": 0,
+  "files": {
+    "both-history-original-selected.neuroatlas": "2732bdb9332ed4e4bb29c6bb122dfcecde41dfcd15a26e7e8e5acfcbde459cfe",
+    "after-reopen.neuroatlas": "45d61b11d4557b8e4807aaf76466fc88ebf1b89b3e1822c1f16599239b560eef"
+  }
+}

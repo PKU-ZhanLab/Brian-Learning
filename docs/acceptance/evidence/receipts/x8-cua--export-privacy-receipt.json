@@ -1,0 +1,31 @@
+{
+  "source": "c95d1fd",
+  "previewBytes": 4880,
+  "downloadBytes": 4880,
+  "exactNotesEvidenceDraftsVoxelsSnapshot": true,
+  "privateIdentifiersOmitted": true,
+  "omissionFeedback": "View link copied. Omitted: local or unverified positions; camera positions; local reading selections; navigation context. Use the full local project file to retain these contents.",
+  "publicCoordinate": [
+    -38,
+    -20,
+    54
+  ],
+  "publicCamera": null,
+  "publicExplorer": {
+    "atlas": "dk",
+    "query": "",
+    "selected": [],
+    "picked": null,
+    "opacity": 1,
+    "camera": null,
+    "threshold": 0.5,
+    "tail": "positive",
+    "display": "boundaries",
+    "slicePoint": [
+      0,
+      0,
+      0
+    ],
+    "sliceOpacity": 0.55
+  }
+}

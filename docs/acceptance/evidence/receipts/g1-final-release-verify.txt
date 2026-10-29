@@ -1,0 +1,20 @@
+{
+  "pass": true,
+  "status": "pass",
+  "version": "4.2.0",
+  "sourceCommit": "b73910b22f7b44d49a7ec0bd692682349372ccef",
+  "source": {
+    "schema": "neuroatlas-build-source-v1",
+    "originCommit": "b73910b22f7b44d49a7ec0bd692682349372ccef",
+    "sourceKind": "git-worktree",
+    "sourceTreeSha256": "78ea60bc94005bc486e462ff78739f86942f51b1d9ee462e6b6e8b783c46d476",
+    "version": "4.2.0",
+    "clean": false,
+    "exactCommit": false
+  },
+  "missing": [],
+  "extra": [],
+  "changed": [],
+  "failures": [],
+  "scope": "artifact integrity and recorded source provenance; runtime/scientific acceptance is separate"
+}

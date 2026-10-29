@@ -1,0 +1,54 @@
+{
+  "startedAt": "2026-10-29T21:41:28.501Z",
+  "finishedAt": "2026-10-29T21:41:29.681Z",
+  "scope": "Strict original full-source geometry/integrity check; not the public on-demand edition or independent anatomical/human validation",
+  "validatorSource": "F:\\project\\brain-model\\.worktrees\\research-20261029\\scripts\\anatomy_validate.mjs",
+  "validatorSha256": "2c89cb527716cf2d75fb666f97be0b452a2956c87ead164ec2e1c43e92943240",
+  "probeSha256": "198eb098fd399852003d843acc2e15687fc21fbee174d2dfd2314ff7688b161e",
+  "adaptations": [
+    {
+      "field": "root",
+      "value": "F:/project/brain-model"
+    },
+    {
+      "field": "spatialQC assessment",
+      "value": "F:\\project\\brain-model\\.worktrees\\research-20261029\\public\\data\\spatial-qc\\assessment.json"
+    }
+  ],
+  "command": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "F:\\project\\brain-model\\.worktrees\\research-20261029\\output\\g1-source-preservation\\anatomy_validate_full_source_readonly.mjs",
+    "--check"
+  ],
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "protectedFiles": [
+    {
+      "file": "F:\\project\\brain-model\\public\\data\\anatomy\\manifest.json",
+      "sha256": "db649479c9d40ce9dd5bcc64ee9efd97b4c649f23c6ea41927fe8ba0db9e998a",
+      "afterSha256": "db649479c9d40ce9dd5bcc64ee9efd97b4c649f23c6ea41927fe8ba0db9e998a"
+    },
+    {
+      "file": "F:\\project\\brain-model\\public\\data\\anatomy\\validation.json",
+      "sha256": "5a5688e34f72ff1ddc7b00c8e12a69e945aa9d9e2817a4aedf4f3f61355dc0b5",
+      "afterSha256": "5a5688e34f72ff1ddc7b00c8e12a69e945aa9d9e2817a4aedf4f3f61355dc0b5"
+    },
+    {
+      "file": "F:\\project\\brain-model\\public\\data\\anatomy\\registered-point-validation.json",
+      "sha256": "6b017350ba6dcf734bc9c0928b517742d90e89a51f7645c4d32181e48e028489",
+      "afterSha256": "6b017350ba6dcf734bc9c0928b517742d90e89a51f7645c4d32181e48e028489"
+    },
+    {
+      "file": "F:\\project\\brain-model\\.worktrees\\research-20261029\\public\\data\\anatomy\\validation.json",
+      "sha256": "5a5688e34f72ff1ddc7b00c8e12a69e945aa9d9e2817a4aedf4f3f61355dc0b5",
+      "afterSha256": "5a5688e34f72ff1ddc7b00c8e12a69e945aa9d9e2817a4aedf4f3f61355dc0b5"
+    },
+    {
+      "file": "F:\\project\\brain-model\\.worktrees\\research-20261029\\public\\data\\spatial-qc\\assessment.json",
+      "sha256": "bbaf45eb3824111b3b3c5a0c584efa0fe388e42dbd0459e02ae59dc442dbde0f",
+      "afterSha256": "bbaf45eb3824111b3b3c5a0c584efa0fe388e42dbd0459e02ae59dc442dbde0f"
+    }
+  ],
+  "allProtectedFilesPreserved": true
+}
