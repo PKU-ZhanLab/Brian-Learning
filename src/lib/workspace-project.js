@@ -1,6 +1,7 @@
 import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_PROJECT_UTF8_BYTES,utf8ByteLength,boundedJsonStringify} from './workspace-limits.js';
 import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
 import {atlasRegionKey} from './atlas-identity.js';
+import {normalizeLayout} from './workspace-layout.js';
 import {validateNavigationHistory} from './navigation-history.js';
 import {savedComputationUsage,encodeSavedComputation,inspectEncodedSavedComputation,decodeSavedComputation} from './saved-computation.js';
 import {validateResultLayers,projectPublicResultLayers,resolveResultLayers} from './result-layers.js';
@@ -82,6 +83,7 @@ export function validateViewState(input,{savedProjectId,projectId}={}){
   const output={schema:VIEW_SCHEMA,language:input.language==='en'?'en':'zh',atlas:boundedString(input.atlas,120)||'dk',selectedIds:stringArray(input.selectedIds),visibleCategories:stringArray(input.visibleCategories,20),hiddenIds:stringArray(input.hiddenIds),hemisphere:['L','R'].includes(input.hemisphere)?input.hemisphere:'both',opacity:number(input.opacity,0,1,1),exploded:input.exploded===true,labels:input.labels===true,showSchematic:input.showSchematic===true,preset:boundedString(input.preset,40)||'cortex',view:boundedString(input.view,40)||'oblique',mode:['roi','research'].includes(input.mode)?input.mode:'anatomy',network:boundedString(input.network,80)||null,coordinate:coordinatePoint(input.coordinate)||[-38,-20,54],showSlices:input.showSlices===true,camera:validateCamera(input.camera),researchScope:input.researchScope===true,atlasExplorerOpen:input.atlasExplorerOpen===true};
   // `brain` is the existing main-template sentinel. Only absent legacy fields
   // default to it; explicit unknown/native contexts must remain independent.
+  output.layout=normalizeLayout({...input.layout,mode:output.mode});
   output.coordinateSpace=Object.hasOwn(input,'coordinateSpace')?(typeof input.coordinateSpace==='string'&&input.coordinateSpace.length<=500?input.coordinateSpace:null):'brain';
   output.coordinateOrigin=coordinateOrigin(input.coordinateOrigin);
   if(projectId!==undefined&&savedProjectId!==projectId)output.coordinateOrigin={...output.coordinateOrigin,imported:true,cameraSensitive:true,explorerSensitive:true};

@@ -1,0 +1,45 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {normalizeLayout,requestComparison,replaceComparedPaper} from './workspace-layout.js';
+import {validateViewState,encodeView,decodeView,serializeProject,parseProject,migrateProjectV1} from './workspace-project.js';
+
+test('saved desktop widths fit a 390 px viewport without minimum columns',()=>{
+  const value=normalizeLayout({mode:'research',preset:'evidence',panels:{modelWidth:1400,catalog:true}}, {width:390,height:844});
+  assert.ok(value.panels.modelWidth<=390);
+  assert.equal(value.panels.active,'evidence');
+  assert.equal(value.panels.catalog,false);
+  assert.deepEqual(normalizeLayout(value,{width:390}),value);
+});
+test('invalid and legacy layouts receive bounded task defaults',()=>{
+  assert.equal(normalizeLayout({mode:'research'}).preset,'evidence');
+  assert.equal(normalizeLayout({mode:'anatomy',preset:'compare'}).preset,'model');
+  const value=normalizeLayout({mode:'research',preset:'wat',panels:{modelWidth:Infinity,active:'wat'}});
+  assert.equal(value.preset,'evidence');assert.ok(Number.isFinite(value.panels.modelWidth));
+});
+test('fourth paper keeps all three until an explicit replacement',()=>{
+  const before=['first','second','third'];
+  assert.deepEqual(requestComparison(before,'fourth'),{paperIds:before,pendingPaperId:'fourth'});
+  assert.deepEqual(before,['first','second','third']);
+  assert.deepEqual(replaceComparedPaper(before,'second','fourth'),['first','fourth','third']);
+  assert.deepEqual(replaceComparedPaper(before,'missing','fourth'),before);
+  assert.deepEqual(requestComparison(before,'second').paperIds,['first','third']);
+});
+test('single view codec preserves layout and history layouts through round trips',()=>{
+  const layout={preset:'evidence',panels:{modelWidth:480,catalog:true,active:'model'}};
+  const view=validateViewState({mode:'research',layout,navigationHistory:{projectId:'p1',index:0,entries:[{view:{mode:'research',layout:{preset:'compare'}},scroll:{literature:222,matrixX:100}}]}});
+  assert.equal(view.layout.panels.modelWidth,480);
+  assert.equal(view.navigationHistory.entries[0].view.layout.preset,'compare');
+  assert.equal(validateViewState(JSON.parse(JSON.stringify(view))).layout.panels.catalog,true);
+  assert.equal(decodeView(encodeView(view).encoded).layout.panels.modelWidth,480);
+});
+test('full project files retain adjustable layout and legacy views migrate to task defaults',async()=>{
+  const view={mode:'research',layout:{preset:'model',panels:{modelWidth:775,catalog:true,active:'model'}},literature:{compared:['one','two','three'],showCompare:false,paperId:'two'}};
+  const restored=await parseProject(await serializeProject({projectId:'layout-project',view}));
+  assert.equal(restored.view.layout.panels.modelWidth,775);
+  assert.equal(restored.view.layout.preset,'model');
+  assert.deepEqual(restored.view.literature.compared,['one','two','three']);
+  assert.equal(restored.view.literature.paperId,'two');
+  const migrated=migrateProjectV1({schema:'neuroatlas-project-v1',view:{mode:'research'},volumes:[],notes:[]});
+  assert.equal(migrated.view.layout.preset,'evidence');
+  assert.equal(migrated.roiSnapshot,null);
+});

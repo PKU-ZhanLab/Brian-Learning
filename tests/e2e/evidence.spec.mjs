@@ -37,6 +37,7 @@ test('search: bilingual aliases keep paper methods separate from recorded result
   await expect(result.locator('.modality-tags')).not.toContainText('fMRI');
   expect(await workspace.locator('.evidence-result').evaluateAll(results=>results.map(result=>result.dataset.resultId))).toEqual(expected.find(hit=>hit.referenceId==='schaum2021').resultIds);
   await expect(workspace.locator('[data-support="direct"][data-target-region*="sma"]')).toHaveCount(0);
+  await workspace.locator('.literature-filters > summary').click();
   await workspace.getByRole('combobox',{name:'Recorded result methods',exact:true}).selectOption('fMRI');
   await expect(workspace.locator('[data-reference-id="schaum2021"]')).toHaveCount(0);
   await workspace.getByRole('combobox',{name:'Recorded result methods',exact:true}).selectOption('MEG');
@@ -97,6 +98,7 @@ test('export: reading-only JSON reconstructs a genuinely non-builtin reading car
   await page.reload();
   await workspace.locator('input[type=file]').setInputFiles({name:'synthetic-e5.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(synthetic))});
   await expect(workspace.getByRole('status')).toContainText('Imported 1 papers');
+  if(await workspace.locator('.literature-filters').getAttribute('open')===null)await workspace.locator('.literature-filters > summary').click();
   await workspace.getByRole('textbox',{name:'Search papers, authors or regions'}).fill('Synthetic E5 reading fixture');
   await workspace.locator(`[data-reference-id="${id}"] .paper-open`).click();
   await expect(workspace.locator('.paper-detail')).toContainText(expected.readings[0].resultSummaries.en);
