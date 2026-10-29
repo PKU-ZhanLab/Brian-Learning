@@ -69,7 +69,7 @@ test('worker error cannot replace an admitted image; retry uses the same stage p
  const before=await page.evaluate(()=>localStorage.getItem('neuroatlas-workspace-current-v1'));
  await page.route('**/src/workers/nifti.worker.js*',route=>route.abort());
  await panel.getByLabel('Import NIfTI file',{exact:true}).setInputFiles({...small,name:'retry.nii'});await panel.getByRole('button',{name:'Import local NIfTI',exact:true}).click();
- await expect(panel.getByRole('alert')).toBeVisible();expect(await page.evaluate(()=>localStorage.getItem('neuroatlas-workspace-current-v1'))).toBe(before);
+ await expect(panel.getByRole('alert')).toHaveText('The image processing module could not complete the task. Your inputs are retained; please retry.');expect(await page.evaluate(()=>localStorage.getItem('neuroatlas-workspace-current-v1'))).toBe(before);
  await expect(page.locator('.roi-imported-volumes')).not.toContainText('retry');
  await page.unroute('**/src/workers/nifti.worker.js*');await panel.getByRole('button',{name:'Import local NIfTI',exact:true}).click();await expect(page.locator('.roi-imported-volumes')).toContainText('retry');
 });
