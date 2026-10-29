@@ -36,7 +36,21 @@ export function mergeEvidence(base,incoming,options={}) {
   for(const row of report.value.references)if(remap.get(row.id)!==row.id)aliasRows.push({aliasId:row.id,canonicalId:remap.get(row.id),originalReference:structuredClone(row)});
   if(aliasRows.length){
     const aliases=new Map();
-    for(const alias of aliasRows){const prior=aliases.get(alias.aliasId);if(prior&&prior.canonicalId!==alias.canonicalId)throw Error('Conflicting reference alias target');aliases.set(alias.aliasId,alias);}
+    for(const alias of aliasRows){
+      // A portable package can return to the bibliography that originally
+      // owned this ID. Its old alias then becomes an ordinary identity edge.
+      if(alias.aliasId===alias.canonicalId){
+        // Dropping an identity binding must not erase its only historical
+        // title baseline. Resolve that metadata conflict before import.
+        if(alias.originalReference.title!==references.get(alias.canonicalId)?.title)throw Error('Conflicting historical reference title for identity alias');
+        continue;
+      }
+      const prior=aliases.get(alias.aliasId);
+      if(prior&&prior.canonicalId!==alias.canonicalId)throw Error('Conflicting reference alias target');
+      // The first established snapshot is history, not incoming metadata.
+      // Repeated imports may update the current paper but cannot reset it.
+      if(!prior)aliases.set(alias.aliasId,alias);
+    }
     next.referenceAliases=[...aliases.values()];
   }
   const snapshots=[...(previous.legacyImports||[]),...(report.value.legacyImports||[]),...(report.value.legacyV1?[report.value.legacyV1]:[])];

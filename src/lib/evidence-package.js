@@ -86,19 +86,23 @@ export function buildEvidencePackage({paperIds,bundle,includePrivate=false}){
     return false;
   });
   const subjects=new Set(EVIDENCE_COLLECTIONS.filter(k=>!['sourceArtifacts','reviewEvents'].includes(k)).flatMap(k=>out[k].map(r=>r.id)));
-  out.reviewEvents=source.reviewEvents.filter(e=>subjects.has(e.subjectId));
   const needed=new Set();
-  walkSources(out,ref=>{if(ref&&!safeSourceURL(ref))needed.add(ref);});
-  // Only explicit source edges select material; paper ownership alone does not
-  // select private source files. Historical review edges select their versions.
-  out.sourceArtifacts=source.sourceArtifacts.filter(a=>needed.has(a.id));
+  // Review events can be about artifacts and select still older versions.
+  // Close both edge kinds before projecting source rights/content. Ownership
+  // alone never selects a private file; cycles terminate once the sets settle.
+  let previousSize=-1;
+  while(previousSize!==subjects.size+needed.size){
+    previousSize=subjects.size+needed.size;
+    out.reviewEvents=source.reviewEvents.filter(e=>subjects.has(e.subjectId));
+    walkSources(out,ref=>{if(ref&&!safeSourceURL(ref))needed.add(ref);});
+    out.sourceArtifacts=source.sourceArtifacts.filter(a=>needed.has(a.id));
+    for(const artifact of out.sourceArtifacts)subjects.add(artifact.id);
+  }
   const approved=new Map(canonical.sourceArtifacts.map(a=>[a.id,JSON.stringify(a)]));
   out.sourceArtifacts=out.sourceArtifacts.map(a=>approved.get(a.id)===JSON.stringify(a)?clone(a):sourceReference(a));
   const requiredAliases=new Set(out.sourceArtifacts.flatMap(a=>[a.referenceId,...(a.referenceIds||[]),a.sourceReferenceId,...(a.fields||[]).filter(f=>f.path.startsWith('references/')).map(f=>f.path.split('/')[1])]).filter(Boolean));
   const aliases=(source.referenceAliases||[]).filter(a=>chosen.has(a.canonicalId)&&requiredAliases.has(a.aliasId));
   if(aliases.length)out.referenceAliases=aliases.map(a=>({aliasId:a.aliasId,canonicalId:a.canonicalId,originalReference:pick(a.originalReference,fields.references)}));
-  const artifactSubjects=new Set(out.sourceArtifacts.map(a=>a.id));
-  out.reviewEvents=unique([...out.reviewEvents,...source.reviewEvents.filter(e=>artifactSubjects.has(e.subjectId))]);
   for(const key of EVIDENCE_COLLECTIONS)if(key!=='sourceArtifacts')out[key]=out[key].map(row=>pick(row,fields[key]));
   const report=validateEvidencePackageClosure(out);if(!report.valid)throw Error(report.errors.join('\n'));
   return report.value;

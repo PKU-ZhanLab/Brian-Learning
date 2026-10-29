@@ -152,3 +152,31 @@ test('file import validates package closure before any storage write',async()=>{
   const report=api.validateEvidenceImport(bad);assert.equal(report.valid,false);assert.equal(storage.getItem(EVIDENCE_STORAGE_KEY),before);
   assert.equal(api.validateEvidenceImport(fixture).valid,true);
 });
+
+test('E5-R1 aliased source package imports back into original builtins and known-reference local storage',async()=>{
+  const {getBuiltinEvidenceBundle,buildEvidencePackage,validateEvidencePackageClosure}=await import('./evidence-package.js');
+  const builtin=getBuiltinEvidenceBundle(),paper='axelrod2015',canonical='canonical-axelrod';
+  const original=buildEvidencePackage({paperIds:[paper],bundle:builtin});
+  const base={...emptyEvidence(),references:original.references.map(r=>({...structuredClone(r),id:canonical}))};
+  const outward=buildEvidencePackage({paperIds:[canonical],bundle:mergeEvidence(base,original),includePrivate:true});
+  assert.equal(validateEvidencePackageClosure(outward).valid,true);
+  for(const [target,options] of [[builtin,{}],[emptyEvidence(),{knownReferences:builtin.references,knownResults:builtin.results}]]){
+    const before=structuredClone(outward),merged=mergeEvidence(target,outward,options);
+    assert.ok(!merged.referenceAliases?.some(a=>a.aliasId===a.canonicalId));
+    assert.ok(merged.results.filter(r=>r.id.startsWith(paper)).every(r=>r.referenceId===paper));
+    assert.deepEqual(merged.sourceArtifacts.find(a=>a.id==='axelrod2015-v1'),original.sourceArtifacts[0]);
+    assert.equal(validateEvidencePackageClosure(buildEvidencePackage({paperIds:[paper],bundle:merged,includePrivate:true})).valid,true);
+    assert.deepEqual(outward,before);
+  }
+});
+
+test('E5-R1/R3 reverse alias import rejects loss of an established original title baseline',async()=>{
+  const {getBuiltinEvidenceBundle,buildEvidencePackage}=await import('./evidence-package.js');
+  const builtin=getBuiltinEvidenceBundle(),original=buildEvidencePackage({paperIds:['axelrod2015'],bundle:builtin});
+  const base={...emptyEvidence(),references:original.references.map(r=>({...structuredClone(r),id:'canonical-axelrod'}))};
+  const outward=buildEvidencePackage({paperIds:['canonical-axelrod'],bundle:mergeEvidence(base,original),includePrivate:true});
+  outward.references[0].title+=' changed before returning to original library';
+  const before=structuredClone(builtin);
+  assert.throws(()=>mergeEvidence(builtin,outward),/historical reference title/);
+  assert.deepEqual(builtin,before);
+});

@@ -90,3 +90,20 @@ test('synthetic non-builtin reading is reconstructed from JSON and exports faith
   const again=buildEvidencePackage({paperIds:[id],bundle:imported,includePrivate:true});
   assert.deepEqual(getReadingViewModel(id,again),vm);
 });
+
+test('E5-R2 artifact-subject review dependencies close transitively without selecting unrelated sources',()=>{
+  const bundle=getBuiltinEvidenceBundle(),first=bundle.sourceArtifacts.find(a=>a.referenceId==='axelrod2015');
+  const sourceStub=id=>({id,schema:'source-reference-v1',referenceId:'axelrod2015',sourceUrl:first.sourceUrl,sourceVersion:id,rights:'Source identity only',contentOmitted:true,offlineEvidenceAvailable:false});
+  const second=sourceStub('axelrod2015-history-v2'),third=sourceStub('axelrod2015-history-v3'),unselected=sourceStub('unselected-private-v4');
+  bundle.sourceArtifacts.push(second,third,unselected);
+  const event=(id,subjectId,source)=>({id,subjectId,stage:'source-checked',actorType:'ai',actorName:'Codex',date:'2026-10-30',scope:'Historical artifact source identity only',sourceRefs:[source],limitations:[],recordVersion:'1'});
+  const historical=[event('history-review-1',first.id,second.id),event('history-review-2',second.id,third.id),event('history-review-3',third.id,first.id)];
+  bundle.reviewEvents.push(...historical);
+  assert.equal(validateEvidencePackageClosure(bundle).valid,true);
+  const before=structuredClone(bundle),out=buildEvidencePackage({paperIds:['axelrod2015'],bundle,includePrivate:true});
+  assert.equal(validateEvidencePackageClosure(out).valid,true);
+  assert.deepEqual(out.reviewEvents.filter(e=>e.id.startsWith('history-review-')),historical);
+  assert.deepEqual(out.sourceArtifacts.map(a=>a.id).sort(),[first.id,second.id,third.id].sort());
+  assert.deepEqual(out.sourceArtifacts.find(a=>a.id===first.id),first);
+  assert.ok(!JSON.stringify(out).includes(unselected.id));assert.deepEqual(bundle,before);
+});

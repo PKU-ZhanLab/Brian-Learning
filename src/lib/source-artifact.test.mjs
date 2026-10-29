@@ -212,3 +212,20 @@ test('real hashed artifact survives DOI alias merge and independent export with 
     const wrong=structuredClone(out);mutate(wrong);const report=auditTranscription(wrong,[originalArtifact]);assert.ok(report.semanticReviewRequired.length||report.integrityErrors.length);
   }
 });
+
+test('E5-R3 repeated alias import preserves original title baseline and exposes merged metadata drift',async()=>{
+  const {emptyEvidence}=await import('./evidence-schema.js');
+  const {mergeEvidence}=await import('./evidence-workspace.js');
+  const {buildEvidencePackage,getBuiltinEvidenceBundle}=await import('./evidence-package.js');
+  const original=buildEvidencePackage({paperIds:['axelrod2015'],bundle:getBuiltinEvidenceBundle()});
+  const base={...emptyEvidence(),references:original.references.map(r=>({...structuredClone(r),id:'canonical-axelrod'}))};
+  const initial=mergeEvidence(base,original),snapshot=structuredClone(initial.referenceAliases[0].originalReference);
+  const changed=structuredClone(original);changed.references[0].title+=' changed on repeated import';
+  const before=structuredClone(changed),merged=mergeEvidence(initial,changed);
+  assert.deepEqual(merged.referenceAliases[0].originalReference,snapshot);
+  assert.equal(merged.references[0].title,changed.references[0].title);
+  assert.deepEqual(merged.sourceArtifacts[0],original.sourceArtifacts[0]);
+  assert.deepEqual(changed,before);
+  const audit=auditTranscription(merged,original.sourceArtifacts);
+  assert.deepEqual(audit.integrityErrors,[]);assert.ok(audit.semanticReviewRequired.some(f=>f.path==='references/canonical-axelrod/title'));
+});
