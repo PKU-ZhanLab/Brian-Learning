@@ -17,6 +17,8 @@ import AtlasExplorer from './components/AtlasExplorer.jsx';
 import {assignSelectionToOperand} from './lib/selection-handoff.js';
 import {pushNavigation,replaceNavigationEntry,goBack,goForward} from './lib/navigation-history.js';
 import WorkspaceFiles from './components/WorkspaceFiles.jsx';
+import WorkspaceStatus from './components/WorkspaceStatus.jsx';
+import {resourceFeedback,normalizeWorkspaceError,describePublicLinkOmissions} from './lib/workspace-status.js';
 import ResultCoordinates from './components/ResultCoordinates.jsx';
 import ResultLayerBar from './components/ResultLayerBar.jsx';
 import DialogHost from './components/DialogHost.jsx';
@@ -282,7 +284,12 @@ export default function App(){
   const sharedViewRestored=useRef(null),[viewHash,setViewHash]=useState(()=>window.location.hash);
   useEffect(()=>{const changed=()=>setViewHash(window.location.hash);window.addEventListener('hashchange',changed);return()=>window.removeEventListener('hashchange',changed);},[]);
   useEffect(()=>{if(sharedViewRestored.current===viewHash||!manifest||!sceneStatus?.loaded)return;sharedViewRestored.current=viewHash;const encoded=new URLSearchParams(viewHash.slice(1)).get('view');if(encoded){const restore=async()=>{try{const v=decodeView(encoded),projection=projectPublicResultLayers(v.resultLayers,{publicReferenceIds:allReferences.map(r=>r.id),publicEvidence:knownWorkspaceEvidence,evidence:workspaceSession.getSnapshot().evidence});if(projection.omitted.length)throw Error(language==='en'?'A public result conflicts with local evidence. Open the full project file.':'公开结果与本地证据冲突，请打开完整项目文件。');await restoreWorkspaceView(v);restoredSharedView.current=true;}catch(e){setToast(`${language==='en'?'Cannot restore view':'无法恢复视图'}: ${e.message}`);}};restore();}},[manifest,sceneStatus?.loaded,viewHash]);
-  const shareView=async()=>{try{const {encoded,omitted}=encodeView(getWorkspaceView(),{publicReferenceIds:allReferences.map(r=>r.id),publicEvidence:knownWorkspaceEvidence,evidence:workspaceSession.getSnapshot().evidence}),url=new URL(window.location.href);url.search='';url.hash=new URLSearchParams({view:encoded}).toString();const message=omitted.includes('coordinate')?(language==='en'?'Link copied. Local or unverified positions were omitted; use a project file to share the complete context.':'已复制链接；已省略本地或来源未核实的位置，请用项目文件共享完整现场。'):omitted.includes('camera')?(language==='en'?'Link copied. The prior camera position was omitted; reset the view before sharing a new camera position.':'已复制链接；已省略先前的相机位置，重置视角后可分享新的相机位置。'):omitted.includes('resultLayers')?(language==='en'?'Link copied. Local result layers were omitted; share them in a project file.':'已复制链接；已省略本地结果图层，请用项目文件共享。'):omitted.length?(language==='en'?'Link copied. Imported data require a project file.':'已复制链接；导入影像需要通过项目文件共享。'):(language==='en'?'Public view link copied.':'已复制公开视图链接');try{await navigator.clipboard.writeText(url.href);setToast(message);}catch{download(url.href,'NeuroAtlas-view-link.txt');setToast(message);}}catch(e){setToast(e.message);}};
+  const shareView=async({inline=false}={})=>{try{
+    const {encoded,omitted}=encodeView(getWorkspaceView(),{publicReferenceIds:allReferences.map(r=>r.id),publicEvidence:knownWorkspaceEvidence,evidence:workspaceSession.getSnapshot().evidence}),url=new URL(window.location.href);url.search='';url.hash=new URLSearchParams({view:encoded}).toString();
+    const message=describePublicLinkOmissions(omitted,language);
+    try{await navigator.clipboard.writeText(url.href);}catch{download(url.href,'NeuroAtlas-view-link.txt');const fallback=language==='en'?'View link saved as a text file.':'视图链接已保存为文本文件。';const result=fallback+' '+message.replace(/^[^.。；]*[.。；]\s*/,'');if(!inline)setToast(result);return result;}
+    if(!inline)setToast(message);return message;
+  }catch(error){if(inline)throw error;setToast(normalizeWorkspaceError(error,language));}};
   // Scene inspection/display updates never replace the original numerical history.
   const captureWorkspace=()=>({...workspaceSession.getSnapshot(),...computationHistory.current,view:getWorkspaceView()});
   const retainComputedResult=async(result,guard)=>{
@@ -297,7 +304,7 @@ export default function App(){
     const stage=await stageWorkspaceChange({...captureWorkspace(),...patch},{current:base,knownEvidence:knownWorkspaceEvidence});
     return workspaceSession.commit(stage);
   };
-  latestLayoutSave.current={readView:getWorkspaceView,save:view=>changeWorkspace({view}),isCurrent:(owner,epoch)=>layoutDirty.current&&!restoringView.current&&owner===workspaceSession.getSnapshot().projectId&&epoch===projectEpoch.current,onSaved:()=>{layoutDirty.current=false;},onError:error=>setToast(error.message)};
+  latestLayoutSave.current={readView:getWorkspaceView,save:view=>changeWorkspace({view}),isCurrent:(owner,epoch)=>layoutDirty.current&&!restoringView.current&&owner===workspaceSession.getSnapshot().projectId&&epoch===projectEpoch.current,onSaved:()=>{layoutDirty.current=false;},onError:error=>{if(!draftManager.getSnapshot().error)setToast(normalizeWorkspaceError(error,language));}};
   useEffect(()=>{
     if(!layoutDirty.current||mode!=='research')return;
     return scheduleLayoutSave(latestLayoutSave,{projectId:workspaceSession.getSnapshot().projectId,epoch:projectEpoch.current});
@@ -317,6 +324,7 @@ export default function App(){
     publishUndoHistory(undone.undoState);await restoreWorkspaceView(next.view);setToast((language==='en'?'Undone: ':'已撤销：')+undone.label);
   };
   const saveWorkspaceEvidence=async(evidence,{projectId,epoch,draftId,label}={})=>{
+    setToast('');
     if(epoch!==projectEpoch.current)throw Error('stale-workspace');
     // Draft removal and formal evidence publication share the same W2 commit.
     let applied;
@@ -410,7 +418,7 @@ export default function App(){
       
     </header>
 
-    {[[MAIN_MANIFEST_RESOURCE,mainResource],[ANATOMY_MANIFEST_RESOURCE,anatomyResource],[BA_COVERAGE_RESOURCE,baResource],[ANATOMY_VOLUME_RESOURCE,t1Resource],[atlasKey,atlasResource]].filter(([,state])=>state?.error).map(([key,state])=><div key={key} role="alert" className="slice-error">{state.error}<button disabled={state.status==='loading'} onClick={()=>{pendingView.current={camera:scene.current?.getCameraState()};retry(key);}}>{language==='en'?'Retry data loading':'重试加载数据'}</button></div>)}
+    {[[MAIN_MANIFEST_RESOURCE,mainResource],[ANATOMY_MANIFEST_RESOURCE,anatomyResource],[BA_COVERAGE_RESOURCE,baResource],[ANATOMY_VOLUME_RESOURCE,t1Resource],[atlasKey,atlasResource]].filter(([,state])=>state?.error).map(([key,state])=><div key={key} className="slice-error"><WorkspaceStatus status={resourceFeedback(state,language,key===ANATOMY_VOLUME_RESOURCE?'T1 MRI':undefined)} onRetry={()=>{pendingView.current={camera:scene.current?.getCameraState()};retry(key);}}/></div>)}
     <div className="workspace-heading"><div className="breadcrumb">研究工作区 <ChevronRight size={12}/> <span>三维神经解剖</span><span className="heading-separator"/><span className="health-badge"><span/>健康成人模型</span></div><div className="header-actions">
       <button className="text-button" onClick={()=>setShowWorkspaceFiles(true)}><Download size={14}/>{language==='en'?'Projects & views':'项目与视图'}</button>
       <button ref={displaySettingsTrigger} className="text-button" aria-haspopup="dialog" aria-expanded={showDisplaySettings} onClick={()=>setShowDisplaySettings(true)}><SlidersHorizontal size={15}/>{language==='en'?'Display settings':'显示设置'}</button>
@@ -418,7 +426,7 @@ export default function App(){
       <details className="workspace-actions"><summary>{language==='en'?'More actions':'更多操作'}<ChevronDown size={14}/></summary><div>
         <button className="text-button" onClick={()=>setModal('refs')}><BookOpen size={15}/>参考文献 <span className="count-badge">{references.length}</span></button>
         <button className="text-button" onClick={()=>setModal('notes')}><PencilLine size={15}/>我的批注{notes.length>0&&<span className="count-badge">{notes.length}</span>}</button>
-        <button className="text-button" onClick={exportImage}><Download size={15}/>导出视图</button>
+        <button className="text-button" onClick={exportImage} title={language==='en'?'Image of the current view; editable research data are saved in a project file.':'当前视图的图片；可编辑的研究数据通过项目文件保存。'}><Download size={15}/>{language==='en'?'Export image PNG':'导出图片 PNG'}</button>
       </div></details>
     </div></div>
 
@@ -475,14 +483,14 @@ export default function App(){
       </aside>
     </WorkspaceLayout>
     <footer className="app-footer"><span>NeuroAtlas <i/> 让神经科学触手可及</span><span><a href={assetURL('/data/licenses/NOTICE-DATA.md')} target="_blank" rel="noreferrer">{language==='en'?'Data licenses':'数据许可'}</a><span className="footer-divider">·</span>模板、分区与研究证据 <span className="footer-divider">·</span><button onClick={()=>setModal('data')}>数据来源与使用范围 <ArrowUpRight size={11}/></button></span></footer>
-    {toast&&<div className="toast" role="status"><CheckCircle2 size={17}/>{toast}</div>}
+    {toast&&<div className="toast" role="status"><Info size={17}/>{normalizeWorkspaceError(toast,language)}</div>}
 
     <DialogHost dialogs={[
       ...(activeResult?[{id:'result-coordinates',modal:false,title:language==='en'?'Paper result coordinates':'论文结果坐标',returnFocusRef:resultTrigger,content:<ResultCoordinates result={activeResult} selectedCoordinateId={activeResultCoordinateId} reference={refMap[activeResult.referenceId]} language={language} onOpenSource={openResultPaper} onSelectCoordinate={point=>{setActiveResultCoordinateId(point.id);setPoint([point.x,point.y,point.z],coordinateNavigationSpace(point.space||'unspecified'),{kind:'result',resultId:activeResult.id,sourceReferenceId:activeResult.referenceId,coordinateId:point.id,spaceId:point.space});}} onClose={()=>setActiveResult(null)} onReturnFocus={()=>resultTrigger.current?.focus()} onOverlay={overlayResult}/>}]:[]),
       ...(showAtlasExplorer?[{id:'atlas-explorer',modal:true,title:language==='en'?'Atlas label explorer':'完整图谱分区',content:<AtlasExplorer key={`${workspaceRevision}-${atlasExplorerState?.atlas||'atlas'}`} manifest={manifest} language={language} initialState={atlasExplorerState} onStateChange={value=>{atlasState.current=value;}} onClose={()=>navigateWorkspace({atlasExplorerOpen:false})} onRestoreReady={restoreReadyScroll} onAssignSelection={assignAtlasSelection} onRegionSelect={async(refs,pos,context)=>{if(await navigateWorkspace({atlasExplorerOpen:false}))selectRegions(refs,pos,context);}} onViewStandard={id=>navigateWorkspace({atlas:id,atlasExplorerOpen:false})} onSave={()=>setShowWorkspaceFiles(true)} onShare={shareView} onImport={enterImageTask}/>}]:[]),
       ...(showDisplaySettings?[{id:'display-settings',modal:true,title:language==='en'?'Display settings':'显示设置',returnFocusRef:displaySettingsTrigger,content:<DisplaySettingsDrawer settings={displaySettings} onChange={changeDisplaySettings} onRestoreHidden={()=>setHiddenIds([])} onClose={()=>setShowDisplaySettings(false)} language={language}/>}]:[]),
       ...(modal?[{id:'app-modal',modal:true,title:translateUI({refs:'参考文献总目录',notes:'研究批注',help:'使用指南',data:'图谱与数据来源',legend:'图谱图例'}[modal],language),content:genericDialogContent}]:[]),
-      ...(showWorkspaceFiles?[{id:'workspace-files',modal:true,title:language==='en'?'Save and share':'保存与分享',content:<WorkspaceFiles language={language} onClose={()=>setShowWorkspaceFiles(false)} getView={getWorkspaceView} onRestoreView={restoreNamedWorkspaceView} snapshot={captureWorkspace()} draftState={draftState} onFlushDrafts={()=>draftManager.flush()} undoEntries={undoEntries} onUndo={undoResearchAction} onRemovePlan={id=>stageAssetAction('remove',id)} onCommitRemoval={stage=>confirmAssetAction(stage,'remove')} onExportPlan={options=>stageAssetAction('export',options)} onConfirmExport={stage=>confirmAssetAction(stage,'export')} onStageProject={stageWorkspaceImport} onCommitProject={commitWorkspaceImport} onShare={shareView} customVolumeCount={customVolumes.length}/>}]:[]),
+      ...(showWorkspaceFiles?[{id:'workspace-files',modal:true,title:language==='en'?'Save and share':'保存与分享',content:<WorkspaceFiles language={language} onClose={()=>setShowWorkspaceFiles(false)} getView={getWorkspaceView} onRestoreView={restoreNamedWorkspaceView} snapshot={captureWorkspace()} draftState={draftState} onFlushDrafts={()=>draftManager.flush()} undoEntries={undoEntries} onUndo={undoResearchAction} onRemovePlan={id=>stageAssetAction('remove',id)} onCommitRemoval={stage=>confirmAssetAction(stage,'remove')} onExportPlan={options=>stageAssetAction('export',options)} onConfirmExport={stage=>confirmAssetAction(stage,'export')} onStageProject={stageWorkspaceImport} onCommitProject={commitWorkspaceImport} onShare={()=>shareView({inline:true})} customVolumeCount={customVolumes.length}/>}]:[]),
     ]} onCloseTop={id=>{if(id==='workspace-files')setShowWorkspaceFiles(false);else if(id==='app-modal')setModal(null);else if(id==='display-settings')setShowDisplaySettings(false);else if(id==='atlas-explorer')navigateWorkspace({atlasExplorerOpen:false});else if(id==='result-coordinates')setActiveResult(null);}}/>
 
   </div>,language);

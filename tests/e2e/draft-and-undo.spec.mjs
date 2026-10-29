@@ -27,7 +27,7 @@ test('half a finding survives filter, Anatomy/Evidence library and refresh with 
 
 test('quota failure keeps editing and prevents destructive leave; retry and discard clear dirty state',async({page})=>{
  await setup(page);await page.evaluate(()=>{const original=Storage.prototype.setItem;window.__x5Quota=true;Storage.prototype.setItem=function(name,value){if(name==='neuroatlas-workspace-current-v1'&&window.__x5Quota)throw new DOMException('Synthetic quota failure','QuotaExceededError');return original.call(this,name,value);};});
- const text='Keep my incomplete finding';await startDraft(page,text);await expect(editor(page).getByRole('status')).toContainText('Draft not saved');await expect(textInput(page)).toHaveValue(text);
+ const text='Keep my incomplete finding';await startDraft(page,text);await expect(editor(page).getByRole('alert')).toContainText('Browser storage is full');await expect(textInput(page)).toHaveValue(text);
  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Anatomy',exact:true}).click();await expect(textInput(page)).toHaveValue(text);
  await page.evaluate(()=>{window.__x5Quota=false;});await textInput(page).fill(text+' retry');await expect(editor(page).getByRole('status')).toHaveText('Draft saved');
  await editor(page).getByRole('button',{name:'Discard this draft',exact:true}).click();await expect(editor(page)).toHaveCount(0);await expect(work(page).getByRole('button',{name:/Resume draft:/})).toHaveCount(0);expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).drafts,key)).toEqual([]);
@@ -65,7 +65,7 @@ test('project export admits the current draft before its delayed autosave timer 
 });
 
 test('project export refuses an oversized failed autosave and preserves the current editor',async({page})=>{
- await setup(page);const text='x'.repeat(50021);await startDraft(page,text);await expect(editor(page).getByRole('status')).toContainText('draft-payload-budget');
- const downloads=[];page.on('download',download=>downloads.push(download));await page.getByRole('button',{name:'Projects & views',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Save and share',exact:true});await dialog.getByRole('button',{name:'Export project',exact:true}).click();await expect(dialog.getByRole('status').last()).toContainText('draft-payload-budget');await expect(dialog.getByRole('button',{name:'Confirm download',exact:true})).toHaveCount(0);expect(downloads).toHaveLength(0);
+ await setup(page);const text='x'.repeat(50021);await startDraft(page,text);await expect(editor(page).getByRole('alert')).toContainText('The draft is too large to save');
+ const downloads=[];page.on('download',download=>downloads.push(download));await page.getByRole('button',{name:'Projects & views',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Save and share',exact:true});await dialog.getByRole('button',{name:'Export project',exact:true}).click();await expect(dialog.getByRole('alert').last()).toContainText('The draft is too large to save');await expect(dialog.getByRole('button',{name:'Confirm download',exact:true})).toHaveCount(0);expect(downloads).toHaveLength(0);
  await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();await expect(textInput(page)).toHaveValue(text);
 });

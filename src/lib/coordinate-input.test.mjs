@@ -1,8 +1,20 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {validateViewState,serializeProject,parseProject} from './workspace-project.js';
 import {parseCoordinateInput, stepCoordinate, coordinateOutsideBounds, formatCoordinate, coordinateNavigationSpace, coordinateReferenceSpace, nextCoordinateOrigin} from './coordinate-input.js';
 
 const options={spaceId:'MNI152NLin6Asym',convention:'RAS',maxPoints:1000};
+test('reference admission prevents canonical view/project codecs dropping long or escaped source identity',async()=>{
+  for(const reference of ['x'.repeat(501),'independent:'+ 'x'.repeat(480),'independent:'+ '"'.repeat(480)]){
+    const result=parseCoordinateInput('1.25,2.5,3.75',{...options,spaceId:reference});
+    assert.deepEqual(result.points,[]);assert.equal(result.errors[0].field,'spaceId');assert.equal(result.errors[0].code,'space-too-long');
+  }
+  for(const reference of ['x'.repeat(500),'independent:'+ 'x'.repeat(476),'"'.repeat(500)]){
+    const parsed=parseCoordinateInput('1.25,2.5,3.75',{...options,spaceId:reference});assert.equal(parsed.errors.length,0);
+    const view={coordinateSpace:coordinateNavigationSpace(reference),coordinate:parsed.points[0]};
+    for(const saved of [validateViewState(view),(await parseProject(await serializeProject({view,volumes:[]}))).view])assert.equal(coordinateReferenceSpace(saved.coordinateSpace),reference);
+  }
+});
 test('decimal RAS input survives single and batch paste without rounding or clamping',()=>{
   assert.deepEqual(parseCoordinateInput('-38.25, -20.5, 54.1',options),{points:[[-38.25,-20.5,54.1]],errors:[]});
   assert.deepEqual(parseCoordinateInput('-38.25 -20.5 54.1\n1000, 2000, -3000',options).points,[[-38.25,-20.5,54.1],[1000,2000,-3000]]);

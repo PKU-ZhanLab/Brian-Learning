@@ -846,7 +846,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       if (destroyed) return; status.loaded = true; setLoading(false); colorCortex(); if (status.autoOverview) reset();
       propsRef.current.onReady?.({ loaded: true, method: status.atlasVolume ? 'atlas' : 'teaching', message: sceneText('MNI152NLin6Asym 真实皮层表面 · RAS', 'MNI152NLin6Asym cortical surfaces · RAS') });
     }).catch(error => { if (!destroyed) { setLoading(false); setError(error.message); propsRef.current.onReady?.({ loaded: false, message: error.message }); } });
-    loadAnatomyVolume().then(volume => { if (!destroyed) { status.anatomyVolume = volume; updateSlices(); } }).catch(() => { if (!destroyed) setError(sceneText('T1 参考影像加载失败，切片影像暂不可用。请刷新重试。', 'The reference T1 image could not be loaded. Slice images are unavailable; refresh to retry.')); });
+    loadAnatomyVolume().then(volume => { if (!destroyed) { status.anatomyVolume = volume; updateSlices(); } }).catch(() => { /* App presents the shared T1 resource error and retry action. */ });
     loadManifest().then(async manifest => {
       const meshes = Array.isArray(manifest.meshes) ? manifest.meshes : [];
       await Promise.all(meshes.filter(entry => entry.atlas === 'ho').map(async entry => {

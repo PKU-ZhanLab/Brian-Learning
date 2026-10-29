@@ -36,5 +36,5 @@ test('quota errors leave notes, the editor and every persistent key untouched',a
  await page.goto('/?lang=en');await openProject(page,await project('A'));
  await page.getByRole('button',{name:'Research notes',exact:true}).click();await page.locator('#note-draft').fill('Must survive quota error');const before=await storage(page);
  await page.evaluate(()=>{const original=Storage.prototype.setItem;Storage.prototype.setItem=function(name,value){if(name==='neuroatlas-workspace-current-v1')throw new DOMException('Synthetic quota failure','QuotaExceededError');return original.call(this,name,value);};});
- await page.getByRole('button',{name:'Save note',exact:true}).click();await expect(page.locator('#note-draft')).toHaveValue('Must survive quota error');await expect(page.getByText('Synthetic quota failure',{exact:true})).toBeVisible();expect(await storage(page)).toEqual(before);
+ await page.getByRole('button',{name:'Save note',exact:true}).click();await expect(page.locator('#note-draft')).toHaveValue('Must survive quota error');await expect(page.getByText('Browser storage is full. Free space, then retry saving; current edits remain available.',{exact:true})).toBeVisible();expect(await storage(page)).toEqual(before);
 });

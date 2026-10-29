@@ -1,4 +1,5 @@
 import React,{useEffect,useRef,useState} from 'react';
+import {resourceFeedback} from '../lib/workspace-status.js';
 import { makeSliceCanvas, sliceWorldPoint, atlasLabelAt, SLICE_BOUNDS } from '../lib/volume.js';
 import { ANATOMY_VOLUME_RESOURCE, atlasResourceKey, getResourceState, subscribe, ensureResource, retry } from '../lib/atlas-resource.js';
 import { queryableAtlasVolume } from '../lib/query-state.js';
@@ -33,7 +34,7 @@ export default function SliceViews({slices,onChange,atlas,atlasIdentity,onCoordi
   const atlasState=useSharedResource(atlasKey);
   const volume=anatomyState?.status==='ready'?anatomyState.value:null;
   const atlasVolume=atlasState?.status==='ready'?queryableAtlasVolume(atlasState.value,atlas,atlasIdentity):null;
-  if(anatomyState?.status==='error')return <div className="slice-error" role="alert">{anatomyState.error}<button onClick={()=>retry(ANATOMY_VOLUME_RESOURCE)}>{en?'Retry MRI loading':'重试加载 MRI'}</button></div>;
+  if(anatomyState?.status==='error')return <div className="slice-error" role="alert">{resourceFeedback(anatomyState,language,'T1 MRI').message}<button onClick={()=>retry(ANATOMY_VOLUME_RESOURCE)}>{en?'Retry MRI loading':'重试加载 MRI'}</button></div>;
   if(independentSpace)return <div className="slice-error" role="status">{spaceId|| (en?'Unspecified reference space':'未指定参考空间')} · {en?'Independent reference; brain MRI slices do not follow this position.':'独立参考空间；脑 MRI 切片不与该位置联动。'}<button className="text-button" onClick={onReturnToBrain}>{en?'Return to brain-template slices':'返回脑模板切片'}</button></div>;
   return <div className="slice-views">{PLANES.map(plane=><Slice key={plane.axis} plane={plane} volume={volume} atlasVolume={atlasVolume} atlasStatus={atlasState?.status||'idle'} slices={slices} onChange={onChange} onCoordinate={onCoordinate} language={language}/>)}</div>;
 }

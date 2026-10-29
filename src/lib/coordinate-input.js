@@ -1,7 +1,13 @@
 // All returned coordinates use RAS millimetres. Reference-space identity is never inferred.
+import {validateViewState} from './workspace-project.js';
+
 export function parseCoordinateInput(text,{spaceId,convention='RAS',maxPoints=1000}={}) {
   const errors=[];
   if(typeof spaceId!=='string'||!spaceId.trim())errors.push({field:'spaceId',code:'space-required'});
+  else {
+    const context=coordinateNavigationSpace(spaceId.trim());
+    if(validateViewState({coordinateSpace:context}).coordinateSpace!==context)errors.push({field:'spaceId',code:'space-too-long'});
+  }
   if(!['RAS','LPS'].includes(convention))errors.push({field:'convention',code:'invalid-convention'});
   const source=typeof text==='string'?text.trim():'';
   if(!source)errors.push({field:'coordinates',code:'coordinates-required'});

@@ -87,7 +87,7 @@ test('export: reading-only JSON reconstructs a genuinely non-builtin reading car
   await workspace.getByRole('textbox',{name:'Search papers, authors or regions'}).fill('Kanwisher');
   await workspace.locator('[data-reference-id="kanwisher1997"] .paper-open').click();
   const firstDownload=page.waitForEvent('download');
-  await workspace.getByRole('button',{name:'Export this paper’s evidence',exact:true}).click();
+  await workspace.getByRole('button',{name:'Export this paper’s evidence package JSON',exact:true}).click();
   const downloaded=JSON.parse(await readFile(await (await firstDownload).path(),'utf8'));
   expect(validateEvidencePackageClosure(downloaded).valid).toBe(true);
   expect(downloaded.results).toHaveLength(0);
@@ -104,7 +104,7 @@ test('export: reading-only JSON reconstructs a genuinely non-builtin reading car
   await expect(workspace.locator('.paper-detail')).toContainText(expected.readings[0].resultSummaries.en);
   expect(await workspace.locator('[data-mapping-id]').evaluateAll(rows=>rows.map(row=>row.dataset.support))).toEqual(expected.mappings.map(mapping=>mapping.support));
   const secondDownload=page.waitForEvent('download');
-  await workspace.getByRole('button',{name:'Export this paper’s evidence',exact:true}).click();
+  await workspace.getByRole('button',{name:'Export this paper’s evidence package JSON',exact:true}).click();
   const restored=JSON.parse(await readFile(await (await secondDownload).path(),'utf8'));
   for(const collection of ['readings','claims','mappings'])expect(restored[collection]).toEqual(synthetic[collection]);
   expect(validateEvidencePackageClosure(restored).valid).toBe(true);

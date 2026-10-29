@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CoordinateNavigator from './CoordinateNavigator.jsx';
+import WorkspaceStatus from './WorkspaceStatus.jsx';
+import {normalizeWorkspaceError} from '../lib/workspace-status.js';
+import {atlasIdentityFor} from '../lib/volume.js';
+import {atlasResourceKey,getResourceState,subscribe,retry} from '../lib/atlas-resource.js';
 import { makeAtlasRegionRef } from '../lib/atlas-identity.js';
 import { serializeAtlasSelection } from '../lib/atlas-selection.js';
 import { updateROIRegionExpectation, roiRegionIdentityMismatch } from '../lib/roi-region-state.js';
@@ -56,7 +60,10 @@ const localizedLabel = (label, language) => language === 'zh' && label?.zh ? lab
 const formatRatio = value => value == null ? '—' : value.toFixed(4);
 const formatPercent = value => value == null ? '—' : `${(value * 100).toFixed(1)}%`;
 
-function useSource(atlasId, version) {
+function useSource(atlasId, version, metadata) {
+  const key=useMemo(()=>{try{return metadata?atlasResourceKey(atlasIdentityFor(metadata)):null;}catch{return null;}},[metadata]);
+  const [generation,setGeneration]=useState(0);
+  useEffect(()=>{if(!key)return;const update=()=>setGeneration(getResourceState(key).generation);const off=subscribe(key,update);update();return off;},[key]);
   const [state, setState] = useState({ loading: true, volume: null, labels: [], error: null });
   useEffect(() => {
     let active = true;
@@ -67,8 +74,8 @@ function useSource(atlasId, version) {
       if (active) setState({ loading: false, atlasId, volume, labels: !volume.kind || volume.kind === 'label' ? positiveLabels(volume) : [], error: null });
     }).catch(error => { if (active) setState({ loading: false, atlasId, volume: null, labels: [], error: error.message }); });
     return () => { active = false; };
-  }, [atlasId, version]);
-  return state;
+  }, [atlasId, version, generation]);
+  return {...state,retry:key?()=>retry(key):undefined};
 }
 
 function SlicePreview({ axis, title, anatomy, comparison, point, onPoint }) {
@@ -108,12 +115,13 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   const [aTail, setATail] = useState(initialState?.aTail || 'positive'), [bTail, setBTail] = useState(initialState?.bTail || 'positive');
   const [resolutionMm, setResolutionMm] = useState(initialState?.resolutionMm === 1 ? 1 : 2);
   const [preflight, setPreflight] = useState(null);
-  const sourceA = useSource(aAtlas, registryVersion), sourceB = useSource(bAtlas, registryVersion);
+  const sourceA = useSource(aAtlas, registryVersion, manifest?.atlases?.[aAtlas]), sourceB = useSource(bAtlas, registryVersion, manifest?.atlases?.[bAtlas]);
   const aLabelIds = useMemo(() => new Set(sourceA.labels.map(label => label.id)), [sourceA.labels]);
   const bLabelIds = useMemo(() => new Set(sourceB.labels.map(label => label.id)), [sourceB.labels]);
   const [comparison, setComparison] = useState(null), [display, setDisplay] = useState({ ...ROI_DEFAULT_DISPLAY, ...initialState?.display });
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [anatomy, setAnatomy] = useState(null), [point, setPoint] = useState(initialState?.point??[0, 0, 0]);
-  const restoredScroll=useRef(false);
+  const restoredScroll=useRef(false),resultRef=useRef(null);
+  const [computationNotice,setComputationNotice]=useState('');
   useEffect(()=>{if(!restoredScroll.current&&!sourceA.loading&&!sourceB.loading&&sourceA.volume&&sourceB.volume){restoredScroll.current=true;onRestoreReady?.();}},[sourceA,sourceB,onRestoreReady]);
   const [importFile, setImportFile] = useState(null), [importDraft, setImportDraft] = useState(()=>newImportDraft(null));
   const importDraftRef=useRef(importDraft),labelInput=useRef(null);
@@ -150,7 +158,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setInspectedSnapshot(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
   }
   function changeSelection(update) {
-    abortRestore('selection-changed'); invalidateWork(); setRestoreWarning(''); update();
+    abortRestore('selection-changed'); invalidateWork(); setRestoreWarning('');setComputationNotice(''); update();
   }
   function reselectRegion(side,kind,update) {
     preserveSelections.current=false;
@@ -245,7 +253,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   useEffect(()=>{if(initialSaved.current)inspectSaved(initialSaved.current,initialState?.display??initialSaved.current.display);},[]);
   async function compute() {
     if (!ready) return;
-    setRestoreWarning('');
+    setRestoreWarning('');setComputationNotice('');
     restoringRequest.current = restore.current;
     restore.current = false;
     const requestId = ++sequence.current;
@@ -289,7 +297,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     const next = { ...display, ...patch }; setDisplay(next);
     if (comparison) { const value = { ...comparison, display: next }; setComparison(value); callbacks.current.onComparisonChange?.(value); }
   }
-  function clear() { abortRestore('cancelled'); invalidateWork(); setRestoreWarning(''); }
+  function clear() { if(busy)setComputationNotice(language==='en'?'Computation cancelled. Current selections and saved results are retained.':'计算已取消。当前选择与已保存结果仍保留。');abortRestore('cancelled'); invalidateWork(); setRestoreWarning(''); }
   function confirmSamplingLoss() {
     if (!preflight?.requiresConfirmation || preflight.requestId !== sequence.current || !worker.current) return;
     worker.current.postMessage({requestId:preflight.requestId, action:'confirm'});
@@ -334,7 +342,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       {['statistic', 'probability'].includes(kind) && <><label><span>{t.thresholdValue}</span><input type="number" min="0" max={kind === 'probability' ? '1' : undefined} step="any" value={threshold} aria-label={`ROI ${key} threshold`} onChange={event => changeSelection(() => setThreshold(event.target.value === '' ? '' : +event.target.value))} /></label>{kind === 'statistic' && <label><span>{t.tail}</span><select aria-label={`ROI ${key} tail`} value={tail} onChange={event => changeSelection(() => setTail(event.target.value))}>{['positive','negative','absolute'].map(value => <option key={value} value={value}>{t[value]}</option>)}</select></label>}<p className="roi-note">{t.thresholdHint}</p></>}
       {kind === 'mask' && <p className="roi-note">{t.maskHint}</p>}
       {source.volume && <p className="roi-source-space">{t[alignmentKey(source.volume.alignmentStatus)]} · {source.volume.space}{source.volume.metadata && <> · {t.range}: {source.volume.metadata.min} – {source.volume.metadata.max}</>}</p>}
-      {source.loading && <p className="roi-note" role="status">{t.loading}</p>}{source.error && <p role="alert" className="roi-error">{t[source.error] || t.sourceError}</p>}{kind === 'label' && !source.loading && !source.error && !source.labels.length && <p className="roi-note">{t.empty}</p>}
+      <WorkspaceStatus status={{phase:source.loading?'loading':source.error?'error':'ready',message:source.loading?t.loading:source.error?(t[source.error]||t.sourceError):'',retryLabel:t.retry}} onRetry={source.retry}/>{kind === 'label' && !source.loading && !source.error && !source.labels.length && <p className="roi-note">{t.empty}</p>}
     </fieldset>;
   };
   const samplingBlock = (sampling, grid) => <section className="roi-sampling" aria-label="ROI sampling report">
@@ -395,8 +403,8 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       <p className="roi-note">{t.gridHint}</p>
       <div className="roi-actions"><button type="button" className="roi-primary" onClick={compute} disabled={busy || !ready || missingThreshold} aria-label="Compute ROI overlap">{busy?t.computing:(savedSnapshot||recomputedSnapshot||initialState?.computed)?(language==='en'?'Recompute with current data':'按当前数据重新计算'):t.compare}</button>{busy && <button type="button" onClick={clear} aria-label="Cancel ROI computation">{t.cancelCompute}</button>}{comparison && <><button type="button" onClick={clear} aria-label="Clear ROI overlay">{t.clear}</button>{hasDetailedResult&&<><button type="button" onClick={() => exportMetrics('csv')} aria-label="Export ROI overlap metrics CSV">{t.export}</button><button type="button" onClick={() => exportMetrics('json')} aria-label="Export ROI provenance JSON">{language === 'en' ? 'Export provenance JSON' : '导出来源 JSON'}</button></>}</>}</div>
       {preflight && <div aria-live="polite">{samplingBlock(preflight.sampling, preflight.grid)}{preflight.blocked && <p className="roi-warning" role="alert">{t.sourceMissing}</p>}{preflight.requiresConfirmation && <><p className="roi-warning" role="alert">{t.lossWarning}</p><div className="roi-actions"><button type="button" className="roi-primary" aria-label="Confirm ROI sampling loss" onClick={confirmSamplingLoss}>{t.confirmLoss}</button><button type="button" aria-label="Cancel ROI sampling preflight" onClick={clear}>{t.cancelPreflight}</button></div></>}</div>}
-      {restoreWarning && <p role="alert" className="roi-warning">{t.restoreAborted}</p>}{error && <p role="alert" className="roi-error">{t[error] || t.computeError}</p>}{!comparison && !busy && <p className="roi-empty">{t.waiting}</p>}{busy && <p className="roi-note" role="status">{t.computing}</p>}
-      {hasDetailedResult && <div className="roi-result" aria-live="polite">{samplingBlock(comparison.sampling, comparison.grid)}<h3>{t.binary}</h3><div className="roi-metrics"><div><span>Dice</span><strong>{formatRatio(comparison.metrics.dice)}</strong><small>2|A ∩ B| / (|A| + |B|)</small></div><div><span>Jaccard</span><strong>{formatRatio(comparison.metrics.jaccard)}</strong><small>|A ∩ B| / |A ∪ B|</small></div><div><span>{t.coveredA}</span><strong>{formatPercent(comparison.metrics.aCoveredByB)}</strong></div><div><span>{t.coveredB}</span><strong>{formatPercent(comparison.metrics.bCoveredByA)}</strong></div></div>
+      {restoreWarning && <p role="alert" className="roi-warning">{t.restoreAborted}</p>}{error && <WorkspaceStatus status={{phase:'error',message:normalizeWorkspaceError(error,language)!==error?normalizeWorkspaceError(error,language):t[error]||t.computeError}}/>}{!comparison && !busy && <p className="roi-empty">{t.waiting}</p>}<WorkspaceStatus status={{phase:busy?'loading':'ready',message:busy?t.computing:computationNotice,resultLabel:language==='en'?'View result':'查看结果'}} onOpenResult={hasDetailedResult?()=>{resultRef.current?.scrollIntoView({block:'nearest'});resultRef.current?.focus();}:undefined}/>
+      {hasDetailedResult && <div ref={resultRef} tabIndex={-1} className="roi-result" aria-live="polite">{samplingBlock(comparison.sampling, comparison.grid)}<h3>{t.binary}</h3><div className="roi-metrics"><div><span>Dice</span><strong>{formatRatio(comparison.metrics.dice)}</strong><small>2|A ∩ B| / (|A| + |B|)</small></div><div><span>Jaccard</span><strong>{formatRatio(comparison.metrics.jaccard)}</strong><small>|A ∩ B| / |A ∪ B|</small></div><div><span>{t.coveredA}</span><strong>{formatPercent(comparison.metrics.aCoveredByB)}</strong></div><div><span>{t.coveredB}</span><strong>{formatPercent(comparison.metrics.bCoveredByA)}</strong></div></div>
         {comparison.probabilityMetrics ? <div className="roi-probability"><h3>{t.probabilityTitle}</h3><div className="roi-metrics"><div><span>{t.fuzzyDice}</span><strong>{formatRatio(comparison.probabilityMetrics.fuzzyDice)}</strong><small>2Σmin(p,q) / (Σp + Σq)</small></div><div><span>{t.fuzzyJaccard}</span><strong>{formatRatio(comparison.probabilityMetrics.fuzzyJaccard)}</strong><small>Σmin(p,q) / Σmax(p,q)</small></div></div><p className="roi-note">{t.probabilityHint}</p></div> : [comparison.A,comparison.B].some(source => source.selection.kind === 'probability') && <p className="roi-note">{t.probabilityOne}</p>}
         <p className="roi-grid"><strong>{t.grid}</strong> {comparison.grid.space} · {comparison.grid.shape.join(' × ')} · {t.resolution} {comparison.grid.voxelVolumeMm3.toLocaleString()} mm³</p>
         <table className="roi-counts"><thead><tr><th>{t.part}</th><th>{t.voxels}</th><th>{t.volume}</th></tr></thead><tbody>{[['A','aVoxels','aMm3'],['B','bVoxels','bMm3'],['intersection','intersectionVoxels','intersectionMm3'],['aOnly','aOnlyVoxels','aOnlyMm3'],['bOnly','bOnlyVoxels','bOnlyMm3'],['union','unionVoxels','unionMm3']].map(([key,count,volume]) => <tr key={key}><td>{ROI_COLORS[key] && <i style={{background:ROI_COLORS[key]}}/>}{t[key]}</td><td>{comparison.metrics[count].toLocaleString()}</td><td>{comparison.metrics[volume].toLocaleString(undefined,{maximumFractionDigits:2})}</td></tr>)}</tbody></table>
