@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {makeAtlasRegionRef} from './atlas-identity.js';
-import {updateROIRegionExpectation,roiRegionIdentityMismatch} from './roi-region-state.js';
+import {updateROIRegionExpectation,roiRegionIdentityMismatch,createComparisonExportTasks} from './roi-region-state.js';
 
 const manifest=JSON.parse(await readFile(new URL('../../public/data/manifest.json',import.meta.url)));
 const a=makeAtlasRegionRef('aal-registered',manifest.atlases['aal-registered'],8121);
@@ -29,4 +29,16 @@ test('only explicit A source or label reselection accepts the current A identity
     assert.deepEqual(next.B,[b]);
     assert.equal(roiRegionIdentityMismatch(next,{A:[a],B:[b]},{A:true,B:true}),false);
   }
+});
+
+test('replacement/recompute invalidates a delayed mask export, and a subsequent current export succeeds',async()=>{
+ const tasks=createComparisonExportTasks();let release,downloads=0;
+ const first=tasks.begin({id:'old-result'}),pending=new Promise(resolve=>{release=resolve;}).then(()=>{if(tasks.isCurrent(first))downloads++;return tasks.finish(first);});
+ tasks.invalidate();assert.equal(first.signal.aborted,true);release();assert.equal(await pending,false);assert.equal(downloads,0);
+ const second=tasks.begin({id:'new-result'});assert.equal(second.signal.aborted,false);if(tasks.isCurrent(second))downloads++;assert.equal(tasks.finish(second),true);assert.equal(downloads,1);
+});
+test('late completion cannot clear a newer export; explicit cancellation and unmount share invalidation',()=>{
+ const tasks=createComparisonExportTasks(),old=tasks.begin({id:'one'}),current=tasks.begin({id:'two'});
+ assert.equal(old.signal.aborted,true);assert.equal(tasks.finish(old),false);assert.equal(tasks.isCurrent(current),true);
+ tasks.invalidate();assert.equal(current.signal.aborted,true);assert.equal(tasks.isCurrent(current),false);assert.equal(tasks.finish(current),false);
 });

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {newImportDraft,reduceImportDraft,prepareImportSummary,stageVolumeImport} from './roi-import-state.js';
+import {newImportDraft,reduceImportDraft,prepareImportSummary,stageVolumeImport,createImportTaskHandoff} from './roi-import-state.js';
 import {exportNifti} from './nifti.js';
 import {createWorkspaceSession} from './workspace-session.js';
 import {emptyEvidence} from './evidence-schema.js';
@@ -71,4 +71,31 @@ test('successful import stages actual declared bytes and table through W2 withou
 test('failed import keeps the current draft available for correction and retry',async()=>{
  const draft=confirmed(),before={...draft};await assert.rejects(stageVolumeImport(draft,{file:{...file(),arrayBuffer:async()=>new ArrayBuffer(2)},stage:()=>assert.fail('must not stage')}),/nifti-/);
  assert.deepEqual(draft,before);const result=await stageVolumeImport(draft,{file:file(),stage:async(volume,summary)=>({volume,summary})});assert.equal(result.summary.labelFileName,'A.csv');assert.equal(result.volume.labels[0].name,'A label');
+});
+
+function handoffHarness(){
+ const frames=new Map();let id=0,opened=0,focused=0;
+ const handoff=createImportTaskHandoff({schedule:callback=>{frames.set(++id,callback);return id;},cancel:handle=>frames.delete(handle)});
+ return {handoff,frames,ready:()=>{opened++;focused++;},counts:()=>({opened,focused}),flush:()=>{const pending=[...frames.values()];frames.clear();pending.forEach(callback=>callback());}};
+}
+test('cold import task survives frames with no real input and consumes mount readiness once',()=>{
+ const h=handoffHarness(),intent=h.handoff.begin('project:visit');
+ h.flush();h.flush();assert.deepEqual(h.counts(),{opened:0,focused:0});
+ h.handoff.whenReady(intent,'project:visit',h.ready);assert.deepEqual(h.counts(),{opened:0,focused:0});h.flush();
+ assert.deepEqual(h.counts(),{opened:1,focused:1});h.handoff.whenReady(intent,'project:visit',h.ready);h.flush();assert.equal(h.counts().focused,1);
+});
+test('warm import readiness schedules focus after modal cleanup and consumes current task',async()=>{
+ const h=handoffHarness(),intent=h.handoff.begin('project:visit');h.handoff.whenReady(intent,'project:visit',h.ready);
+ let restoredOpener=false;queueMicrotask(()=>{restoredOpener=true;});assert.equal(h.counts().focused,0);await Promise.resolve();assert.equal(restoredOpener,true);h.flush();assert.equal(h.counts().focused,1);
+});
+test('leaving before lazy resolution or before its scheduled frame prevents late focus',()=>{
+ for(const readyBeforeLeave of [false,true]){
+  const h=handoffHarness(),intent=h.handoff.begin('project:visit');if(readyBeforeLeave)h.handoff.whenReady(intent,'project:visit',h.ready);
+  h.handoff.cancel();h.handoff.whenReady(intent,'project:visit',h.ready);h.flush();assert.deepEqual(h.counts(),{opened:0,focused:0});
+ }
+});
+test('new import visits and project scopes reject readiness from previous mounts',()=>{
+ const h=handoffHarness(),old=h.handoff.begin('project-A:visit'),current=h.handoff.begin('project-B:visit');
+ h.handoff.whenReady(old,'project-A:visit',h.ready);h.handoff.whenReady(current,'project-A:visit',h.ready);h.flush();assert.equal(h.counts().focused,0);
+ h.handoff.whenReady(current,'project-B:visit',h.ready);h.flush();assert.equal(h.counts().focused,1);
 });

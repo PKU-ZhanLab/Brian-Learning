@@ -3,6 +3,25 @@ import {validateVolumeMetadata,MAX_LABEL_FILE_BYTES} from './workspace-limits.js
 import {prepareLocalVolumeProvenance} from './computation-manifest.js';
 import {stageWorkspaceChange} from './workspace-session.js';
 
+/** One explicit task-entry intent, retained through lazy loading and consumed
+ * only by its real mounted input. Navigation/unmount cancels both pending intent
+ * and scheduled focus; the frame follows dialog return-focus microtasks.
+ */
+export function createImportTaskHandoff({schedule=callback=>requestAnimationFrame(callback),cancel=handle=>cancelAnimationFrame(handle)}={}){
+  let active=null,frame=null;
+  const clearFrame=()=>{if(frame!==null){cancel(frame);frame=null;}};
+  return {
+    begin(scope){clearFrame();active=Object.freeze({scope});return active;},
+    isCurrent(intent){return !!intent&&active===intent;},
+    cancel(){clearFrame();active=null;},
+    whenReady(intent,scope,onReady){
+      if(!intent||active!==intent||intent.scope!==scope||typeof onReady!=='function')return;
+      clearFrame();
+      frame=schedule(()=>{frame=null;if(active!==intent)return;active=null;onReady();});
+    },
+  };
+}
+
 /** A token identifies a picker selection, including a reselected same-name file. */
 export function newImportDraft(fileToken){
   return {fileToken,kind:'label',spaceId:'native-unverified',otherSpace:'',aligned:false,provenance:'',labelFile:null};

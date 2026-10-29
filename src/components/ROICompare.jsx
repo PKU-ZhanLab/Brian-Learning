@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import CoordinateNavigator from './CoordinateNavigator.jsx';
 import WorkspaceStatus from './WorkspaceStatus.jsx';
 import {normalizeWorkspaceError} from '../lib/workspace-status.js';
@@ -6,7 +6,7 @@ import {atlasIdentityFor} from '../lib/volume.js';
 import {atlasResourceKey,getResourceState,subscribe,retry} from '../lib/atlas-resource.js';
 import { makeAtlasRegionRef } from '../lib/atlas-identity.js';
 import { serializeAtlasSelection } from '../lib/atlas-selection.js';
-import { updateROIRegionExpectation, roiRegionIdentityMismatch } from '../lib/roi-region-state.js';
+import { updateROIRegionExpectation, roiRegionIdentityMismatch, createComparisonExportTasks } from '../lib/roi-region-state.js';
 import { loadAnatomyVolume, loadAtlas, makeSliceCanvas, sliceWorldPoint, SLICE_BOUNDS } from '../lib/volume.js';
 import { positiveLabels, ROI_COLORS, ROI_DEFAULT_DISPLAY, serializableVolume, comparisonMaskVolume, normalizeROISelection } from '../lib/roi.js';
 import { prepareComparisonManifest, makeComputationManifest, compareComputationManifest, exportComparisonBundle } from '../lib/computation-manifest.js';
@@ -96,7 +96,7 @@ function download(bytes, filename, type) {
   setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onComputedResult, onClose, initialState, savedSnapshot, recomputedSnapshot, provenanceStatus, onStateChange, onRestoreReady, customVolumes, onViewNative, onRestoreAborted, onImportVolume, onManageAssets, workspaceProjectId, workspaceEpoch }) {
+export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onComputedResult, onClose, initialState, savedSnapshot, recomputedSnapshot, provenanceStatus, onStateChange, onRestoreReady, customVolumes, onViewNative, onRestoreAborted, onImportVolume, onManageAssets, workspaceProjectId, workspaceEpoch, imageTaskIntent, onImportInputReady }) {
   const t = TEXT[language === 'en' ? 'en' : 'zh'];
   const callbacks = useRef({}); callbacks.current = { onComparisonChange, onComputedResult, onStateChange, onRestoreAborted };
   const initialSaved=useRef(initialState?.snapshot==='none'?null:initialState?.snapshot==='original'?savedSnapshot:initialState?.snapshot==='recomputed'?recomputedSnapshot:recomputedSnapshot??savedSnapshot),preserveSelections=useRef(!!initialState||!!initialSaved.current);
@@ -124,12 +124,14 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   const [computationNotice,setComputationNotice]=useState('');
   useEffect(()=>{if(!restoredScroll.current&&!sourceA.loading&&!sourceB.loading&&sourceA.volume&&sourceB.volume){restoredScroll.current=true;onRestoreReady?.();}},[sourceA,sourceB,onRestoreReady]);
   const [importFile, setImportFile] = useState(null), [importDraft, setImportDraft] = useState(()=>newImportDraft(null));
-  const importDraftRef=useRef(importDraft),labelInput=useRef(null);
+  const importDraftRef=useRef(importDraft),labelInput=useRef(null),imageInput=useRef(null);
+  useLayoutEffect(()=>{if(imageTaskIntent)onImportInputReady?.(imageTaskIntent,imageInput.current);},[imageTaskIntent,onImportInputReady]);
   const {kind:importKind,spaceId:importSpace,otherSpace,aligned,provenance}=importDraft;
   const [importBusy, setImportBusy] = useState(false), [importError, setImportError] = useState(''), [importMessage, setImportMessage] = useState(null);
-  const importGeneration=useRef(0),importMounted=useRef(true),importController=useRef(null),exportController=useRef(null);
+  const importGeneration=useRef(0),importMounted=useRef(true),importController=useRef(null);
+  const [exportTasks]=useState(()=>createComparisonExportTasks());
   const [imageExportBusy,setImageExportBusy]=useState(false),[imageNotice,setImageNotice]=useState('');
-  useEffect(()=>{importMounted.current=true;return()=>{importMounted.current=false;importGeneration.current++;importController.current?.abort();exportController.current?.abort();};},[]);
+  useEffect(()=>{importMounted.current=true;return()=>{importMounted.current=false;importGeneration.current++;importController.current?.abort();exportTasks.invalidate();};},[]);
   function changeImportDraft(action){
     importGeneration.current++;
     importController.current?.abort();importController.current=null;
@@ -156,9 +158,10 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       callbacks.current.onRestoreAborted?.(reason);
     }
   }
+  function invalidateMaskExport(){exportTasks.invalidate();setImageExportBusy(false);}
+  function replaceComparison(value){invalidateMaskExport();setComparison(value);}
   function invalidateWork() {
-    exportController.current?.abort();exportController.current=null;setImageExportBusy(false);
-    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setInspectedSnapshot(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
+    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setInspectedSnapshot(null); replaceComparison(null); callbacks.current.onComparisonChange?.(null);
   }
   function changeSelection(update) {
     abortRestore('selection-changed'); invalidateWork(); setRestoreWarning('');setComputationNotice(''); update();
@@ -171,8 +174,9 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   useEffect(() => {
     if (lastInitial.current === initialState) return;
     lastInitial.current = initialState;
+    invalidateMaskExport();
     if (!initialState) return;
-    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
+    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); replaceComparison(null); callbacks.current.onComparisonChange?.(null);
     restoringRequest.current = false;
     setRestoreWarning('');
     restore.current = false;
@@ -210,11 +214,12 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   },[selectionKey,sourceA,sourceB]);
   const identityMismatch = roiRegionIdentityMismatch(expectedRegionRefs,currentRegionRefs,{A:sourceA.volume,B:sourceB.volume});
   useEffect(()=>{if(identityMismatch){abortRestore('region-version-unavailable');if(!inspectedSnapshot)invalidateWork();}},[identityMismatch]);
-  useEffect(() => {
+  useLayoutEffect(() => {
+    invalidateMaskExport();
     if (previousRegistryVersion.current !== registryVersion) abortRestore('registry-changed');
     previousRegistryVersion.current = registryVersion;
     sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setError('');
-    if(!inspectedSnapshot){setComparison(null);callbacks.current.onComparisonChange?.(null);}
+    if(!inspectedSnapshot){replaceComparison(null);callbacks.current.onComparisonChange?.(null);}
   }, [selectionKey, registryVersion]);
   useEffect(() => {
     if ((sourceA.error && sourceA.atlasId === aAtlas) || (sourceB.error && sourceB.atlasId === bAtlas)) abortRestore('source-load-failed');
@@ -250,7 +255,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     try{
       const restored=restoreComputation(snapshot,{currentManifest});
       if(restored.geometryError)setError(restored.geometryError);
-      if(restored.comparison){const value={...restored.comparison,display:{...ROI_DEFAULT_DISPLAY,...restoredDisplay}};setDisplay(value.display);setComparison(value);setPoint(initialState?.point??value.center??[0,0,0]);callbacks.current.onComparisonChange?.(value,{inspection:true});}
+      if(restored.comparison){const value={...restored.comparison,display:{...ROI_DEFAULT_DISPLAY,...restoredDisplay}};setDisplay(value.display);replaceComparison(value);setPoint(initialState?.point??value.center??[0,0,0]);callbacks.current.onComparisonChange?.(value,{inspection:true});}
     }catch(problem){setError(problem.message);}
   }
   useEffect(()=>{if(initialSaved.current)inspectSaved(initialSaved.current,initialState?.display??initialSaved.current.display);},[]);
@@ -260,7 +265,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     restoringRequest.current = restore.current;
     restore.current = false;
     const requestId = ++sequence.current;
-    worker.current?.terminate(); setBusy(true); setPreflight(null); setInspectedSnapshot(null); setComparison(null); callbacks.current.onComparisonChange?.(null); setError('');
+    worker.current?.terminate(); setBusy(true); setPreflight(null); setInspectedSnapshot(null); replaceComparison(null); callbacks.current.onComparisonChange?.(null); setError('');
     try {
       const target = await loadAnatomyVolume();
       if (requestId !== sequence.current) return;
@@ -288,7 +293,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
           const result=createComputationSnapshot({ ...data.comparison, manifest: makeComputationManifest(data.comparison.manifest), display: { ...displayRef.current } });
           await callbacks.current.onComputedResult?.(result,{isCurrent:()=>requestId===sequence.current,projectId:workspaceProjectId,epoch:workspaceEpoch});
           if(requestId!==sequence.current)return;
-          setBusy(false);setInspectWhich(savedSnapshot?'recomputed':'original');setComparison(result);setPoint(result.center||[0,0,0]);callbacks.current.onComparisonChange?.(result);
+          setBusy(false);setInspectWhich(savedSnapshot?'recomputed':'original');replaceComparison(result);setPoint(result.center||[0,0,0]);callbacks.current.onComparisonChange?.(result);
         }catch(problem){if(requestId===sequence.current){setBusy(false);setError(problem.message);}}
       };
       current.onerror = () => { if (requestId === sequence.current) { abortRestore('worker-failed'); setBusy(false); setError('computeError'); current.terminate(); worker.current = null; } };
@@ -343,15 +348,15 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   }
   async function exportMask(part){
     if(imageExportBusy||!comparison)return;
-    const controller=new AbortController();exportController.current=controller;setImageExportBusy(true);setImageNotice('');
+    const task=exportTasks.begin(comparison);setImageExportBusy(true);setImageNotice('');
     try{
-      const result=await exportNiftiInWorker(comparisonMaskVolume(comparison,part),{gzip:false},{signal:controller.signal});
-      if(!controller.signal.aborted&&importMounted.current&&exportController.current===controller)download(result.bytes,`ROI-${part}${result.extension}`,'application/octet-stream');
-    }catch(problem){if(!controller.signal.aborted&&importMounted.current)setError(problem.message);}
-    finally{if(importMounted.current&&exportController.current===controller){exportController.current=null;setImageExportBusy(false);}}
+      const result=await exportNiftiInWorker(comparisonMaskVolume(task.comparison,part),{gzip:false},{signal:task.signal});
+      if(importMounted.current&&exportTasks.isCurrent(task))download(result.bytes,`ROI-${part}${result.extension}`,'application/octet-stream');
+    }catch(problem){if(importMounted.current&&exportTasks.isCurrent(task))setError(problem.message);}
+    finally{if(importMounted.current&&exportTasks.finish(task))setImageExportBusy(false);}
   }
   function cancelExport(){
-    exportController.current?.abort();exportController.current=null;setImageExportBusy(false);
+    invalidateMaskExport();
     setImageNotice(language==='en'?'Image export cancelled.':'影像导出已取消。');
   }
   const errorText = code => NIFTI_ERRORS[code]?.[language === 'en' ? 1 : 0] || t[code] || (/too-long|budget/.test(code)?(language==='en'?'The file or declaration exceeds the supported size limit.':'文件或声明超过支持的长度上限。'):t.importError);
@@ -405,7 +410,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       {provenanceError&&<p role="alert" className="roi-warning">{t[provenanceError]||provenanceError}</p>}
     </section>}
     <details className="roi-import"><summary>{t.importTitle}</summary><p className="roi-note">{t.localOnly}</p><div className="roi-import-grid">
-      <label><span>{t.file}</span><input id="roi-import-file" type="file" accept=".nii,.nii.gz" aria-label="Import NIfTI file" onChange={event => { const file=event.target.files[0]||null;setImportFile(file);changeImportDraft({type:'file-changed',fileToken:file?crypto.randomUUID():null});event.target.value=''; }} /></label>
+      <label><span>{t.file}</span><input ref={imageInput} id="roi-import-file" type="file" accept=".nii,.nii.gz" aria-label="Import NIfTI file" onChange={event => { const file=event.target.files[0]||null;setImportFile(file);changeImportDraft({type:'file-changed',fileToken:file?crypto.randomUUID():null});event.target.value=''; }} /></label>
       <label><span>{t.kind}</span><select value={importKind} aria-label="Imported image kind" onChange={event => changeImportDraft({type:'kind-changed',value:event.target.value})}>{['label','mask','statistic','probability'].map(kind => <option key={kind} value={kind}>{t[`${kind}Kind`]}</option>)}</select></label>
       <label><span>{t.reference}</span><select value={importSpace} aria-label="Imported reference space" onChange={event => changeImportDraft({type:'space-changed',value:event.target.value})}><option value="native-unverified">{t.nativeSpace}</option><option value="MNI152NLin6Asym">FSL MNI152NLin6Asym</option><option value="MNI152NLin2009cAsym">MNI152NLin2009cAsym</option><option value="other">{t.otherSpace}</option></select></label>
       {importSpace === 'other' && <label><span>{t.exactReference}</span><input value={otherSpace} aria-label="Imported reference space name" onChange={event => changeImportDraft({type:'other-space-changed',value:event.target.value})} /></label>}

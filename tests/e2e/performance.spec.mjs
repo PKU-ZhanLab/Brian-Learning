@@ -11,6 +11,27 @@ async function openImport(page){
  await page.locator('.roi-import>summary').click();return page.locator('.roi-import');
 }
 
+test('Import image consumes delayed mount readiness and also focuses a warm visit',async({page})=>{
+ let release,requested;const requestSeen=new Promise(resolve=>{requested=resolve;}),gate=new Promise(resolve=>{release=resolve;});
+ await page.route('**/src/components/ROICompare.jsx*',async route=>{requested();await gate;await route.continue();});
+ await page.goto('/?lang=en');await page.getByRole('button',{name:'Import image',exact:true}).click();await requestSeen;
+ await expect(page.getByLabel('Import NIfTI file',{exact:true})).toHaveCount(0);release();
+ const input=page.getByLabel('Import NIfTI file',{exact:true});await expect(input).toBeFocused();await expect(page.locator('.roi-import')).toHaveAttribute('open','');
+ await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Anatomy',exact:true}).click();
+ await page.getByRole('button',{name:'Import image',exact:true}).click();await expect(input).toBeFocused();await expect(page.locator('.roi-import')).toHaveAttribute('open','');
+});
+
+test('leaving the import task before its lazy panel resolves cancels late open and focus',async({page})=>{
+ let release,requested;const requestSeen=new Promise(resolve=>{requested=resolve;}),gate=new Promise(resolve=>{release=resolve;});
+ await page.route('**/src/components/ROICompare.jsx*',async route=>{requested();await gate;await route.continue();});
+ await page.goto('/?lang=en');await page.getByRole('button',{name:'Import image',exact:true}).click();await requestSeen;
+ const anatomy=page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Anatomy',exact:true});await anatomy.click();
+ const response=page.waitForResponse('**/src/components/ROICompare.jsx*');release();await response;
+ await expect(page.getByLabel('Import NIfTI file',{exact:true})).toHaveCount(0);await expect(anatomy).toBeFocused();
+ await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'ROI comparison',exact:true}).click();
+ await expect(page.getByLabel('Import NIfTI file',{exact:true})).toBeAttached();await expect(page.locator('.roi-import')).not.toHaveAttribute('open','');await expect(page.getByLabel('Import NIfTI file',{exact:true})).not.toBeFocused();
+});
+
 test('optional fonts may fail while layout and navigation remain usable',async({page},testInfo)=>{
  await page.route(/fonts\.(googleapis|gstatic)\.com/,route=>route.abort());
  await page.addInitScript(()=>{window.__x9Shifts=[];new PerformanceObserver(list=>{for(const entry of list.getEntries())if(!entry.hadRecentInput)window.__x9Shifts.push(entry.value);}).observe({type:'layout-shift',buffered:true});});
@@ -51,6 +72,23 @@ test('worker error cannot replace an admitted image; retry uses the same stage p
  await expect(panel.getByRole('alert')).toBeVisible();expect(await page.evaluate(()=>localStorage.getItem('neuroatlas-workspace-current-v1'))).toBe(before);
  await expect(page.locator('.roi-imported-volumes')).not.toContainText('retry');
  await page.unroute('**/src/workers/nifti.worker.js*');await panel.getByRole('button',{name:'Import local NIfTI',exact:true}).click();await expect(page.locator('.roi-imported-volumes')).toContainText('retry');
+});
+
+test('recompute cancels the old delayed mask export and a new current export succeeds',async({page})=>{
+ await page.goto('/?lang=en');await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'ROI comparison',exact:true}).click();
+ for(const side of ['A','B']){
+  await page.getByLabel(`ROI ${side} atlas`,{exact:true}).selectOption('dk');const labels=page.getByLabel(`ROI ${side} label`,{exact:true});
+  await expect(labels.locator('option').first()).toBeAttached();await labels.selectOption(await labels.locator('option').first().getAttribute('value'));
+ }
+ const compute=page.getByRole('button',{name:'Compute ROI overlap',exact:true});await expect(compute).toBeEnabled();await compute.click();await expect(page.locator('.roi-result')).toBeVisible();
+ let release,requested;const requestSeen=new Promise(resolve=>{requested=resolve;}),gate=new Promise(resolve=>{release=resolve;});
+ await page.route('**/src/workers/nifti.worker.js*',async route=>{requested();await gate;await route.continue().catch(()=>{});});
+ const downloads=[];page.on('download',download=>downloads.push(download.suggestedFilename()));
+ await page.getByRole('button',{name:'Export ROI A NIfTI mask',exact:true}).click();await requestSeen;await expect(page.getByRole('button',{name:'Cancel NIfTI export',exact:true})).toBeVisible();
+ await compute.click();await expect(page.getByRole('button',{name:'Cancel NIfTI export',exact:true})).toHaveCount(0);release();
+ await expect(page.locator('.roi-result')).toBeVisible();await page.waitForTimeout(1500);expect(downloads).toEqual([]);
+ await page.unroute('**/src/workers/nifti.worker.js*');const currentDownload=page.waitForEvent('download');await page.getByRole('button',{name:'Export ROI A NIfTI mask',exact:true}).click();
+ expect((await currentDownload).suggestedFilename()).toBe('ROI-A.nii');expect(downloads).toEqual(['ROI-A.nii']);
 });
 
 test('actual worker tasks under CPU throttling preserve bytes and cancel without a partial result',async({page},testInfo)=>{

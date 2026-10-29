@@ -1,6 +1,6 @@
 import {createDraftManager,captureDraftSafeWorkspace} from './lib/draft-store.js';
 import {applyUndoableAction,undoLast} from './lib/undo-history.js';
-import React, { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Brain, Search, ChevronDown, ChevronRight, Eye, EyeOff, Layers3, Scan, Move3D, RotateCcw, Focus, Maximize2, Minimize2, Download, BookOpen, GraduationCap, PencilLine, X, Plus, Minus, Check, SlidersHorizontal, Boxes, CircleHelp, ArrowUpRight, LocateFixed, Bookmark, Network, CheckCircle2, MousePointer2, SquareDashedMousePointer, FileDown, Upload, Trash2, ExternalLink, Compass, Info, Sparkles } from 'lucide-react';
 import CoordinateNavigator from './components/CoordinateNavigator.jsx';
 import TaskEntryPoints from './components/TaskEntryPoints.jsx';
@@ -10,6 +10,7 @@ import WorkspaceLayout from './components/WorkspaceLayout.jsx';
 import {normalizeLayout,comparisonReturnScroll,scheduleLayoutSave} from './lib/workspace-layout.js';
 import {retainComputation} from './lib/saved-computation.js';
 import {assignSelectionToOperand} from './lib/selection-handoff.js';
+import {createImportTaskHandoff} from './lib/roi-import-state.js';
 import {pushNavigation,replaceNavigationEntry,goBack,goForward} from './lib/navigation-history.js';
 import WorkspaceStatus from './components/WorkspaceStatus.jsx';
 import {resourceFeedback,workspaceToastMessage,describePublicLinkOmissions} from './lib/workspace-status.js';
@@ -113,6 +114,18 @@ export default function App(){
   const importEpoch=useRef(0),projectEpoch=useRef(0),importRequests=useRef(new WeakMap()),restoredEnvelope=useRef(false);
   const [language,setLanguage]=useState(()=>{try{return urlParams.get('lang')==='en'?'en':urlParams.get('lang')==='zh'?'zh':localStorage.getItem('neuroatlas-language')==='en'?'en':'zh';}catch{return 'zh';}});
   const [mode,setMode]=useState(['research','roi'].includes(urlParams.get('mode'))?urlParams.get('mode'):'anatomy'),[researchScope,setResearchScope]=useState(false),[roiComparison,setRoiComparison]=useState(null);
+  const [imageTaskHandoff]=useState(()=>createImportTaskHandoff()),[imageTaskIntent,setImageTaskIntent]=useState(null);
+  const cancelImageTask=()=>{imageTaskHandoff.cancel();setImageTaskIntent(null);};
+  const imageTaskScope=`${workspaceSnapshot.projectId}:${projectEpoch.current}`;
+  useLayoutEffect(()=>{if(mode!=='roi'||(imageTaskIntent&&imageTaskIntent.scope!==imageTaskScope))cancelImageTask();},[mode,imageTaskScope,imageTaskIntent]);
+  useEffect(()=>()=>imageTaskHandoff.cancel(),[imageTaskHandoff]);
+  const imageInputReady=(intent,input)=>{
+    if(!input)return;
+    imageTaskHandoff.whenReady(intent,imageTaskScope,()=>{
+      if(!input.isConnected||input.closest('[inert]'))return;
+      input.closest('details').open=true;input.focus();setImageTaskIntent(current=>current===intent?null:current);
+    });
+  };
   const layoutDirty=useRef(false),latestLayoutSave=useRef(null);
   const [evidenceEditing,setEvidenceEditing]=useState(false);
   const [layout,setLayout]=useState(()=>normalizeLayout({mode:'research',...(startup.restoreView?startup.initial.view.layout:{})}));
@@ -243,7 +256,12 @@ export default function App(){
   const navigateCoordinate=(p,spaceId,{reason='input'}={})=>setPoint(p,coordinateNavigationSpace(spaceId),reason==='step'?coordinateOrigin:{kind:'manual',imported:false});
   const coordinateReference=coordinateReferenceSpace(coordinateSpace);
   const enterCoordinateTask=async()=>{if(!await navigateWorkspace({mode:'anatomy',atlasExplorerOpen:false}))return;requestAnimationFrame(()=>{const input=coordinateInput.current;if(input){input.closest('details').open=true;input.focus();}});};
-  const enterImageTask=async()=>{if(!await navigateWorkspace({mode:'roi',roi:roiState.current,atlasExplorerOpen:false}))return;requestAnimationFrame(()=>{const input=document.getElementById('roi-import-file');if(input){input.closest('details').open=true;input.focus();}});};
+  const enterImageTask=async()=>{
+    const intent=imageTaskHandoff.begin(imageTaskScope);
+    const accepted=await navigateWorkspace({mode:'roi',roi:roiState.current,atlasExplorerOpen:false},{imageTaskIntent:intent});
+    if(!accepted){if(imageTaskHandoff.isCurrent(intent))cancelImageTask();return;}
+    if(imageTaskHandoff.isCurrent(intent))setImageTaskIntent(intent);
+  };
   const selectRegions=(refs,position,context={})=>{
     const restored=restoreAtlasSelection(refs,regionIndex);
     setSelectedRegions(current=>selectAtlasRegions(restored.selected,context.selectionMode||'replace',current));setUnresolvedRegions(restored.unresolved);setSelectedIds([]);
@@ -264,7 +282,8 @@ export default function App(){
   const handleRoiComparison=(value,{inspection=false}={})=>{const changed=value&&value.id!==roiComparison?.id;setRoiComparison(value);if(value&&!inspection){setExploded(false);setHemisphere('both');if(changed){if(restoreCamera.current){const camera=restoreCamera.current;restoreCamera.current=null;requestAnimationFrame(()=>scene.current?.setCameraState(camera));}else{setOpacity(.15);setPoint(value.center,"brain",{kind:"private"});setTimeout(()=>scene.current?.focusROI(),100);}}}};
   const getWorkspaceView=()=>validateViewState({navigationHistory:workspaceSession.getSnapshot().view.navigationHistory,navigationContext:{infoTab,treeTab,query,openGroups},language,layout,atlas,atlasSelection:serializeAtlasSelection(selectedRegions),unresolvedAtlasSelection:serializeAtlasSelection(unresolvedRegions),atlasSelectionQuery:regionQuery,selectedIds,visibleCategories,hiddenIds,hemisphere,opacity,exploded,labels,showSchematic,preset,view,mode,network,coordinate,coordinateSpace,coordinateOrigin,slices,showSlices,camera:scene.current?.getCameraState(),researchScope,roi:roiState.current,literature:literatureState.current,atlasExplorer:atlasState.current||atlasExplorerState,atlasExplorerOpen:showAtlasExplorer,resultLayers:workspaceSession.getSnapshot().view.resultLayers||[]});
   latestDraftView.current=getWorkspaceView;
-  const restoreWorkspaceView=async (value,{scroll}={})=>{
+  const restoreWorkspaceView=async (value,{scroll,imageTaskIntent:taskIntent}={})=>{
+    if(!imageTaskHandoff.isCurrent(taskIntent))cancelImageTask();
     await draftManager.flush();
     const v=validateViewState(value);
     // Resolve all stable references before committing storage or touching any visible state.
@@ -283,14 +302,16 @@ export default function App(){
   const navigationEntry=()=>{const view=getWorkspaceView();delete view.navigationHistory;return {view,scroll:captureNavigationScroll()};};
   const restoreReadyScroll=()=>{const scroll=restoredNavigationScroll.current;if(scroll)requestAnimationFrame(()=>restoreNavigationScroll(scroll));};
   const checkpointNavigation=()=>{const current=navigationEntry(),saved=workspaceSession.getSnapshot();return replaceNavigationEntry(saved.view.navigationHistory??{projectId:saved.projectId,entries:[],index:-1},current);};
-  async function navigateWorkspace(patch,{scroll={}}={}){
+  async function navigateWorkspace(patch,{scroll={},imageTaskIntent:taskIntent}={}){
     if(navigationLock.current)return false;navigationLock.current=true;setNavigating(true);
-    try{const current=navigationEntry(),history=checkpointNavigation(),target={view:validateViewState({...current.view,...patch}),scroll};delete target.view.navigationHistory;const next=pushNavigation(history,target);await restoreWorkspaceView({...target.view,navigationHistory:next.history},{scroll});setFocused(false);return true;}
+    if(!imageTaskHandoff.isCurrent(taskIntent))cancelImageTask();
+    try{const current=navigationEntry(),history=checkpointNavigation(),target={view:validateViewState({...current.view,...patch}),scroll};delete target.view.navigationHistory;const next=pushNavigation(history,target);await restoreWorkspaceView({...target.view,navigationHistory:next.history},{scroll,imageTaskIntent:taskIntent});setFocused(false);return true;}
     catch(error){setToast({error});return false;}finally{navigationLock.current=false;setNavigating(false);}
   }
   const returnToComparison=literature=>navigateWorkspace({mode:'research',layout:{...layout,preset:'compare',panels:{...layout.panels,active:'evidence'}},literature:{...literature,paperId:null,showCompare:true}},{scroll:comparisonReturnScroll(workspaceSession.getSnapshot().view.navigationHistory,literature)});
   async function travelNavigation(direction){
     if(navigationLock.current)return;navigationLock.current=true;setNavigating(true);
+    cancelImageTask();
     try{const history=checkpointNavigation(),next=typeof direction==='number'?{history:{...history,index:direction},target:history.entries[direction]}:(direction==='back'?goBack(history):goForward(history));if(next.target)await restoreWorkspaceView({...next.target.view,navigationHistory:next.history},{scroll:next.target.scroll});}
     catch(error){setToast({error});}finally{navigationLock.current=false;setNavigating(false);}
   }
@@ -448,7 +469,7 @@ export default function App(){
     <div className="workspace-taskbar"><TaskEntryPoints language={language} onCoordinates={enterCoordinateTask} onSearch={()=>{setMode('anatomy');setQuiz(null);requestAnimationFrame(()=>searchRef.current?.focus());}} onImport={enterImageTask} onPapers={()=>openResearch(false)} onExample={()=>{navigateCoordinate([-38.25,-20.5,54.1],'MNI152NLin6Asym');enterCoordinateTask();}}/>
     <div className="research-navigation" aria-label={language==='en'?'Research navigation':'研究导航'}><button aria-label="Research back" disabled={navigating||!(workspaceSnapshot.view.navigationHistory?.index>0)} onClick={()=>travelNavigation('back')}>← {language==='en'?'Back':'返回'}</button><button aria-label="Research forward" disabled={navigating||!workspaceSnapshot.view.navigationHistory||workspaceSnapshot.view.navigationHistory.index>=workspaceSnapshot.view.navigationHistory.entries.length-1} onClick={()=>travelNavigation('forward')}>{language==='en'?'Forward':'前进'} →</button>{!!workspaceSnapshot.view.navigationHistory?.entries.length&&<details><summary>{language==='en'?'Recent visits':'最近访问'}</summary><ol>{workspaceSnapshot.view.navigationHistory.entries.map((entry,index)=><li key={index}><button disabled={navigating||index===workspaceSnapshot.view.navigationHistory.index} aria-current={index===workspaceSnapshot.view.navigationHistory.index?'location':undefined} onClick={()=>travelNavigation(index)}>{entry.view.atlasExplorerOpen?(language==='en'?'Atlas labels':'图谱分区'):entry.view.mode==='roi'?'ROI A / B':entry.view.mode==='research'?(entry.view.literature?.paperId?refMap[entry.view.literature.paperId]?.title||entry.view.literature.paperId:entry.view.literature?.showCompare?(language==='en'?'Paper comparison':'论文比较'):(language==='en'?'Evidence library':'文献工作台')):(language==='en'?'Anatomy':'解剖探索')}</button></li>)}</ol></details>}</div></div><ResultLayerBar layers={resultLayerView.layers} results={layerResults} references={refMap} unavailable={resultLayerView.unavailable} language={language} onVisibilityChange={(layerId,visible)=>changeResultLayer({type:'visibility',layerId,visible})} onRemove={layerId=>changeResultLayer({type:'remove',layerId})} onClear={()=>changeResultLayer({type:'clear'})} onOpenResult={openResultById}/><WorkspaceLayout mode={mode} layout={layout} language={language} evidenceEditing={evidenceEditing} onChange={value=>{layoutDirty.current=true;setLayout(value);if(literatureState.current?.showCompare&&value.preset!=='compare')navigateWorkspace({layout:value,literature:{...literatureState.current,showCompare:false}});else if(value.preset==='compare'&&literatureState.current?.compared?.length>1)navigateWorkspace({layout:value,literature:{...literatureState.current,paperId:null,showCompare:true}});}}>
       <aside className="left-panel" inert={quiz&&!quiz.answered?true:undefined}>
-        {mode==='roi'?<ROICompare onRestoreReady={restoreReadyScroll} onRestoreAborted={()=>{restoreCamera.current=null;}} onViewNative={openAtlas} key={workspaceRevision} language={language} manifest={manifest} initialState={roiInitialState} savedSnapshot={computationHistory.current.roiSnapshot} recomputedSnapshot={computationHistory.current.recomputedSnapshot} provenanceStatus={workspaceSnapshot.provenanceStatus} onComputedResult={retainComputedResult} workspaceProjectId={workspaceSnapshot.projectId} workspaceEpoch={projectEpoch.current} onImportVolume={registerWorkspaceVolume} onManageAssets={()=>setShowWorkspaceFiles(true)} onStateChange={value=>{roiState.current=value;}} onComparisonChange={handleRoiComparison} onClose={()=>navigateWorkspace({mode:'anatomy',atlasExplorerOpen:false})}/>:<>
+        {mode==='roi'?<ROICompare imageTaskIntent={imageTaskIntent} onImportInputReady={imageInputReady} onRestoreReady={restoreReadyScroll} onRestoreAborted={()=>{restoreCamera.current=null;}} onViewNative={openAtlas} key={workspaceRevision} language={language} manifest={manifest} initialState={roiInitialState} savedSnapshot={computationHistory.current.roiSnapshot} recomputedSnapshot={computationHistory.current.recomputedSnapshot} provenanceStatus={workspaceSnapshot.provenanceStatus} onComputedResult={retainComputedResult} workspaceProjectId={workspaceSnapshot.projectId} workspaceEpoch={projectEpoch.current} onImportVolume={registerWorkspaceVolume} onManageAssets={()=>setShowWorkspaceFiles(true)} onStateChange={value=>{roiState.current=value;}} onComparisonChange={handleRoiComparison} onClose={()=>navigateWorkspace({mode:'anatomy',atlasExplorerOpen:false})}/>:<>
         <div className="panel-heading"><span>解剖结构</span><IconButton label="数据与图谱说明" onClick={()=>setModal('data')}><SlidersHorizontal size={16}/></IconButton></div>
         <div className="atlas-control"><label htmlFor="atlas">当前图谱 <span>ATLAS</span></label><div className="select-wrap"><Layers3 size={16}/><select id="atlas" aria-label="选择脑图谱" value={atlas} onChange={e=>selectAtlas(e.target.value)}>{(manifest?Object.entries(manifest.atlases).filter(([id])=>!['aal','aal3'].includes(id)).map(([id,m])=>({id,label:id==='aal-registered'?'AAL · 116':id==='aal3-registered'?'AAL3 · 166':atlasOptions.find(a=>a.id===id)?.label||m.name||id,metadata:m})):atlasOptions).map(a=><option key={a.id} value={a.id} disabled={Boolean(manifest)&&!a.metadata?.available}>{a.label||a.name}{manifest&&!a.metadata?.available?(language==='en'?' · unavailable':' · 暂不可用'):a.metadata?.canOverlayOnTarget===false?(language==='en'?' · native viewer':' · 原生空间查看'):''}</option>)}</select><ChevronDown size={14}/></div><button className="atlas-status" onClick={()=>setModal('data')}><span className={liveAtlas?.available?'status-dot ready':'status-dot'}/>{liveAtlas?.available?alignmentLabel(liveAtlas.alignmentStatus,language):'结构术语索引'}<Info size={11}/></button><p className="atlas-availability-note">{language==='en'?'DK, AAL and AAL3 share one standard brain. AAL mappings are project estimates; source T1 slices remain available.':'DK、AAL、AAL3 共用标准脑形。AAL 映射为项目配准估计；保留原始 T1 三视图。'}</p>{['aal-registered','aal3-registered'].includes(atlas)&&<button className="atlas-native-entry" onClick={()=>{const v={atlas:atlas.replace('-registered',''),display:'slices',opacity:1};atlasState.current=v;setAtlasExplorerState(v);setShowAtlasExplorer(true);}}>{language==='en'?'Original T1 slices':'原始 T1 三视图'} <ArrowUpRight size={12}/></button>}</div>
         <button className="atlas-explorer-entry" onClick={()=>openAtlas()}><Layers3 size={14}/>{language==='en'?'Browse all atlas labels in 3D':'浏览完整图谱标签与三维分区'}<ArrowUpRight size={13}/></button><div className="segmented tree-tabs"><button aria-pressed={treeTab==='anatomy'} className={treeTab==='anatomy'?'selected':''} onClick={()=>setTreeTab('anatomy')}>结构目录</button><button aria-pressed={treeTab==='networks'} className={treeTab==='networks'?'selected':''} onClick={()=>setTreeTab('networks')}>功能网络</button></div>
