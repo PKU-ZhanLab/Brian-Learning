@@ -23,6 +23,12 @@ function DialogLayer({dialog, active, index, register}) {
   useLayoutEffect(() => {
     if (active && !root.current.contains(document.activeElement)) focusFirst(root.current);
   }, [active]);
+  useLayoutEffect(() => {
+    // Replacing content can remove the focused action without firing focusin
+    // (Help -> Data). Keep this layer/opener mounted and repair only escaped
+    // modal focus; a nonmodal panel must still permit Return to workspace.
+    if (active && dialog.modal && !root.current.contains(document.activeElement)) focusFirst(root.current);
+  }, [active, dialog.modal, dialog.content]);
   return <div className={`dialog-layer ${dialog.modal ? 'dialog-layer-modal' : 'dialog-layer-panel'}`} style={{zIndex: index + 1}} inert={!active ? true : undefined} aria-hidden={!active ? true : undefined}>
     <div ref={root} role="dialog" aria-modal={dialog.modal && active ? true : undefined} aria-label={dialog.title} tabIndex={-1} data-dialog-id={dialog.id} className="dialog-focus-scope">{dialog.content}</div>
   </div>;

@@ -26,3 +26,24 @@ test('localization retains keyed item identity across reorder and protects user 
   assert.equal(localizeUI(prose, 'en'), prose);
   assert.equal(localizeUI(prose, 'zh'), prose);
 });
+
+test('Chinese-English-Chinese traversal preserves every research subtree reconciliation key', () => {
+  function StatefulResearchWorkspace() { return null; }
+  const tree = React.createElement('div', null,
+    React.createElement('header', null, '解剖探索'),
+    React.createElement('main', null,
+      React.createElement(StatefulResearchWorkspace, {key: 'research'}),
+      React.createElement('section', null, React.createElement('input', {title: '解剖探索'}))),
+    React.createElement('footer', null, '文献工作台'));
+  const identities = node => {
+    if (Array.isArray(node)) return node.map(identities);
+    if (!React.isValidElement(node)) return null;
+    return {type: node.type, key: node.key, children: identities(node.props.children)};
+  };
+  const chinese = localizeUI(tree, 'zh'), english = localizeUI(tree, 'en'), back = localizeUI(tree, 'zh');
+  assert.deepEqual(identities(chinese), identities(english));
+  assert.deepEqual(identities(english), identities(back));
+  assert.match(renderToStaticMarkup(chinese), /解剖探索/);
+  assert.match(renderToStaticMarkup(english), /Anatomy/);
+  assert.match(renderToStaticMarkup(back), /解剖探索/);
+});

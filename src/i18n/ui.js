@@ -40,10 +40,11 @@ export function translateUI(value,language='zh'){
 }
 // Translate a React element tree before rendering; user prose can opt out.
 export function localizeUI(node,language){
-  if(language!=='en')return node;
   if(typeof node==='string')return translateUI(node,language);
   // React's child traversal carries explicit keys across cloned siblings and
-  // supplies stable positional keys for static JSX children.
+  // supplies stable positional keys for static JSX children in every language.
+  // Skipping this traversal in Chinese would remount stateful research children
+  // when switching between the original null keys and English positional keys.
   if(Array.isArray(node))return React.Children.map(node,child=>localizeUI(child,language));
   if(!React.isValidElement(node)||node.props['data-user-content'])return node;
   const props={};for(const key of ['aria-label','title','placeholder','label'])if(typeof node.props[key]==='string')props[key]=translateUI(node.props[key],language);

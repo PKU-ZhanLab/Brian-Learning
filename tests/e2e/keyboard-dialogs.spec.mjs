@@ -97,3 +97,43 @@ test('a nonmodal coordinate panel explicitly returns focus and can be entered ag
   await expect(panel).toHaveCount(0);
   await expect(source).toBeFocused();
 });
+
+test('Help to Data keeps focus inside the replacement content and returns to the original opener', async ({page}) => {
+  await page.goto('/?lang=en');
+  const opener = page.getByRole('button', {name: 'Help and data sources', exact: true});
+  await opener.focus();
+  await opener.press('Enter');
+  const help = page.getByRole('dialog', {name: 'User guide', exact: true});
+  const dataAction = help.getByRole('button', {name: 'View atlas coverage and data notes', exact: true});
+  await dataAction.focus();
+  await dataAction.press('Enter');
+  const data = page.getByRole('dialog', {name: 'Atlases and sources', exact: true});
+  await expect(data).toBeVisible();
+  await expect.poll(() => data.evaluate(node => node.contains(document.activeElement))).toBe(true);
+  await page.keyboard.press('Escape');
+  await expect(data).toHaveCount(0);
+  await expect(opener).toBeFocused();
+});
+
+test('language changes retain mounted research input, unsaved editor and scene canvas', async ({page}) => {
+  await page.goto('/?lang=zh&mode=research');
+  const workspace = page.locator('.literature-workspace');
+  const search = workspace.locator('.literature-filters .inline-search input');
+  await search.fill('Schaum');
+  await workspace.getByRole('button', {name: '添加论文', exact: true}).click();
+  // DOI is an unlocalized field: this tests unsaved component state independent
+  // of whether a particular text field stores Chinese and English separately.
+  const draft = workspace.locator('.evidence-editor').getByLabel('DOI', {exact: true});
+  await draft.fill('10.1234/unsaved-locale-draft');
+  const originalSearch = await search.elementHandle();
+  const originalDraft = await draft.elementHandle();
+  const originalCanvas = await page.locator('.brain-scene > div canvas').first().elementHandle();
+  for (const label of ['Switch to English', '切换为中文']) {
+    await page.getByRole('button', {name: label, exact: true}).click();
+    await expect(search).toHaveValue('Schaum');
+    await expect(draft).toHaveValue('10.1234/unsaved-locale-draft');
+    expect(await originalSearch.evaluate(node => node.isConnected && node === document.querySelector('.literature-filters .inline-search input'))).toBe(true);
+    expect(await originalDraft.evaluate(node => node.isConnected && node.closest('.evidence-editor') !== null)).toBe(true);
+    expect(await originalCanvas.evaluate(node => node.isConnected && node === document.querySelector('.brain-scene > div canvas'))).toBe(true);
+  }
+});
