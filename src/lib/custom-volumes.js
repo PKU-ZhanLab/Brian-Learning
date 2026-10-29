@@ -6,6 +6,10 @@ let generation = 0;
 const ownership = new WeakMap();
 const retirementListeners = new Set();
 export const getCustomVolumeScope = id => ownership.get(volumes.get(id)) || null;
+export function isCustomVolumeScopeCurrent(scope){
+  const current=scope&&getCustomVolumeScope(scope.entryId);
+  return !!current&&current.projectId===scope.projectId&&current.entryId===scope.entryId&&current.generation===scope.generation;
+}
 export function subscribeCustomVolumeRetirement(callback){retirementListeners.add(callback);return()=>retirementListeners.delete(callback);}
 function retire(entries){
   for(const value of entries){

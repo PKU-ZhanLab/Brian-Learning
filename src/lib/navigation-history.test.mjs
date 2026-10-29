@@ -88,8 +88,11 @@ test('incoming history remaps singular result-coordinate identities without rewr
   }
   const before=structuredClone(current),merged=mergeWorkspace(current,incoming,(kind,id)=>`incoming-${kind}-${id}`);
   assert.deepEqual(merged.snapshot.view.navigationHistory.entries[0],before.view.navigationHistory.entries[0]);
+  const imported=merged.snapshot.view.navigationHistory.entries[1];
+  assert.deepEqual(imported.view.coordinateOrigin,{kind:'result',resultId:'incoming-results-result',sourceReferenceId:'incoming-references-paper',coordinateId:'incoming-locations-point',spaceId:'MNI152NLin6Asym',imported:true,cameraSensitive:true,explorerSensitive:true});
   const selected=merged.snapshot.view.navigationHistory.entries[merged.snapshot.view.navigationHistory.index];
-  assert.deepEqual(selected.view.coordinateOrigin,{kind:'result',resultId:'incoming-results-result',sourceReferenceId:'incoming-references-paper',coordinateId:'incoming-locations-point',spaceId:'MNI152NLin6Asym',imported:true,cameraSensitive:true,explorerSensitive:true});
+  const active=structuredClone(incoming.view);delete active.navigationHistory;
+  assert.deepEqual(selected.view,active);assert.equal(merged.snapshot.view.navigationHistory.index,2);
   assert.deepEqual(current,before);
 });
 test('blank B survives the real view-adapter sequence: explorer navigation, full-set A handoff, history restore',()=>{

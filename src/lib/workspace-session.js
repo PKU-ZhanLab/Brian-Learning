@@ -205,6 +205,14 @@ export function mergeWorkspace(current,incoming,makeId){
       if(target<0){target=entries.length;entries.push(entry);}
       if(at===incomingHistory.index)index=target;
     }
+    const {navigationHistory,...activeView}=snapshot.view;
+    const selected=incomingHistory?.entries[incomingHistory.index];
+    if(!selected||!sameContent(checkedView(selected.view),checkedView(activeView))){
+      // The next App checkpoint replaces the selected visit. Give the incoming
+      // active view its own visit so that checkpoint cannot overwrite A.
+      index=entries.length;
+      entries.push({view:activeView,scroll:{}});
+    }
     if(entries.length>50)throw mergeConflict('navigation history capacity');
     snapshot.view.navigationHistory={projectId:current.projectId,entries,index};
   }

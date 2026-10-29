@@ -25,7 +25,7 @@ function SourcePanel({side,value,manifest,language,onSource,onUpdate,onChoose,re
    const display=prepareComparisonDisplay(raw,{threshold:value.threshold,tail:value.tail});
    w=new Worker(new URL('../lib/atlas-explorer.worker.js',import.meta.url),{type:'module'});
    w.onmessage=({data})=>{
-    if(!alive||generation!==seq.current||data.requestId!==generation)return;
+    if(!alive||generation!==seq.current||data.requestId!==generation||!request.isCurrent())return;
     if(data.error){setError(data.error);setBusy(false);w.terminate();return;}
     if(data.result.meshes){setGeometry(data.result);setBusy(false);w.terminate();return;}
     const ids=value.labels.length?value.labels:data.result.slice(0,1).map(l=>l.id),bounds=comparisonVolumeBounds(raw);

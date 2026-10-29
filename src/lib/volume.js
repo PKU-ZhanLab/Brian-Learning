@@ -1,7 +1,7 @@
 import { Matrix4, Vector3 } from 'three';
 import { dataURL } from './assets.js';
 import { roiSliceStyle, sampleComparisonRAS } from './roi.js';
-import {getCustomVolume,listCustomVolumes,getCustomVolumeScope,subscribeCustomVolumeRetirement} from './custom-volumes.js';
+import {getCustomVolume,listCustomVolumes,getCustomVolumeScope,isCustomVolumeScopeCurrent,subscribeCustomVolumeRetirement} from './custom-volumes.js';
 import { makeAssetIdentity } from './computation-manifest.js';
 import { MAIN_MANIFEST_RESOURCE, ANATOMY_VOLUME_RESOURCE, atlasResourceKey, resourceValue,retireResource } from './atlas-resource.js';
 
@@ -112,7 +112,10 @@ export async function loadAtlas(atlasId,options={}) {
   const previous=atlasMetadata.get(key);
   if(previous&&metadataSignature(previous)!==metadataSignature(metadata))throw Error('Atlas metadata changed without a new asset identity');
   atlasMetadata.set(key,getCustomVolume(atlasId)?{...metadata}:structuredClone(metadata));
-  return loadAtlasVersion(identity,{...options,ownerScope:metadata.ownerScope});
+  const volume=await loadAtlasVersion(identity,{...options,ownerScope:metadata.ownerScope});
+  options.signal?.throwIfAborted();
+  if(metadata.ownerScope&&!isCustomVolumeScopeCurrent(metadata.ownerScope))throw Error('Project atlas ownership expired');
+  return volume;
 }
 /** Load only the declared identity; byte/catalog/transform checks remain mandatory. */
 export async function loadAtlasVersion(identity,{signal,ownerScope}={}) {
@@ -122,14 +125,16 @@ export async function loadAtlasVersion(identity,{signal,ownerScope}={}) {
     if(matches.length>1)throw Error('Project atlas entry is ambiguous; select its owned ID');
     if(matches.length===1)ownerScope=getCustomVolumeScope(matches[0].id);
   }
-  if(ownerScope&&!sameScope(ownerScope,getCustomVolumeScope(ownerScope.entryId)))throw Error('Project atlas ownership expired');
+  if(ownerScope&&!isCustomVolumeScopeCurrent(ownerScope))throw Error('Project atlas ownership expired');
   const promise=resourceValue(atlasResourceKey(identity,ownerScope));
-  if(!signal)return promise;
-  return new Promise((resolve,reject)=>{
+  const volume=await (signal?new Promise((resolve,reject)=>{
     const abort=()=>reject(signal.reason||new DOMException('Aborted','AbortError'));
     signal.addEventListener('abort',abort,{once:true});
     promise.then(resolve,reject).finally(()=>signal.removeEventListener('abort',abort));
-  });
+  }):promise);
+  signal?.throwIfAborted();
+  if(ownerScope&&!isCustomVolumeScopeCurrent(ownerScope))throw Error('Project atlas ownership expired');
+  return volume;
 }
 /** Resource loader: only atlas-resource starts/cancels the shared transfer. */
 export async function loadAtlasVersionData(identity,{signal,ownerScope}={}) {

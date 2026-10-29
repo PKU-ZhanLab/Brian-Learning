@@ -1,18 +1,20 @@
 import {validateAssetIdentity} from './computation-manifest.js';
+import {getCustomVolumeScope,isCustomVolumeScopeCurrent} from './custom-volumes.js';
 export function comparisonSourceRequestKey(value,{epoch,key,resetGeneration=0}={}){
  return JSON.stringify([value.assetId,value.threshold,value.tail,value.labels,epoch,key,resetGeneration]);
 }
-/** UI request lifetime only; loadAtlas remains the authoritative shared cache. */
+/** Request and local ownership lifetimes; loadAtlas remains the shared cache. */
 export function createComparisonSourceLoader(load){
  let generation=0;
  return {
   cancel(){generation++;},
   async run(value){
-   const request=++generation,volume=await load(value.assetId);
-   if(request!==generation)return null;
+   const request=++generation,requestedOwner=getCustomVolumeScope(value.assetId),volume=await load(value.assetId);
+   const isCurrent=()=>request===generation&&(!requestedOwner||isCustomVolumeScopeCurrent(requestedOwner))&&(!volume?.ownerScope||isCustomVolumeScopeCurrent(volume.ownerScope));
+   if(!isCurrent())return null;
    if(!volume)throw Error('Source unavailable');
    if(value.identity&&!sameComparisonIdentity(value.identity,volume.identity))throw Error('comparison-source-identity-mismatch');
-   return {volume,isCurrent:()=>request===generation};
+   return {volume,isCurrent};
   },
  };
 }
