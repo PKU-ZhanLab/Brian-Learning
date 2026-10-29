@@ -3,6 +3,11 @@
  * review-mixed even when they discuss several recording or imaging techniques.
  */
 const p=(en,topics,modalities=null,studyType=null,species=null,scope=null)=>({en,topics,modalities,studyType,species,scope});
+// Explicit paper-level methods, independent of the currently extracted results.
+// Version of Record, 2021-05-04; methods re-read at the primary publisher 2026-10-29.
+export const paperSearchAnnotations={
+  schaum2021:{topics:['attention','control'],studyModalities:{state:'reported',value:['MEG','fMRI'],sourceRefs:['https://elifesciences.org/articles/61679#s4']},methodProvenance:{source:'https://elifesciences.org/articles/61679#s4',sourceVersion:'Version of Record, 2021-05-04',sourceLocators:['Materials and methods / fMRI experiment','Materials and methods / MEG experiment / MEG data acquisition and preprocessing'],extraction:'AI-assisted factual method extraction',extractedAt:'2026-10-29'}},
+};
 // Labels retained from the existing curated descriptions, not from human targets.
 // U means laterality has not been extracted; it does not assert bilateral sampling.
 export const sourceRegionAnnotations={

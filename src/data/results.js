@@ -1,4 +1,5 @@
 import {migrateEvidence,getResultViewModel,reported,missing} from '../lib/evidence-schema.js';
+import {paperSearchAnnotations} from '../../data-sources/literature-upgrade/curation.mjs';
 // Selected primary-source records. Source checking was performed with AI assistance,
 // not human certification. Generic MNI is deliberately NOT relabelled as NLin6Asym.
 const bi = (zh, en) => ({zh,en});
@@ -37,6 +38,8 @@ const legacyCuratedResults = [
 // Source-anchored factual transcription; these additions do not create a new
 // source check, space check, human review, or an inferred experiment boundary.
 export const curatedEvidence=migrateEvidence({schema:'brain-evidence-v1',references:additionalResultsReferences,results:legacyCuratedResults,relations:[]}).value;
+// New extraction belongs to the active reference, never the retained v1 original.
+for(const reference of [...additionalResultsReferences,...curatedEvidence.references])if(paperSearchAnnotations[reference.id])Object.assign(reference,structuredClone(paperSearchAnnotations[reference.id]));
 curatedEvidence.dataVersion='2026-10-29.1';
 const table1='https://doi.org/10.1371/journal.pone.0117126.t001';
 const table2='https://doi.org/10.1371/journal.pone.0117126.t002';

@@ -31,7 +31,31 @@
       "metadataSources": [
         "https://api.crossref.org/works/10.7554%2FeLife.61679",
         "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=DOI%3A10.7554%2FeLife.61679&format=json&resultType=core"
-      ]
+      ],
+      "topics": [
+        "attention",
+        "control"
+      ],
+      "studyModalities": {
+        "state": "reported",
+        "value": [
+          "MEG",
+          "fMRI"
+        ],
+        "sourceRefs": [
+          "https://elifesciences.org/articles/61679#s4"
+        ]
+      },
+      "methodProvenance": {
+        "source": "https://elifesciences.org/articles/61679#s4",
+        "sourceVersion": "Version of Record, 2021-05-04",
+        "sourceLocators": [
+          "Materials and methods / fMRI experiment",
+          "Materials and methods / MEG experiment / MEG data acquisition and preprocessing"
+        ],
+        "extraction": "AI-assisted factual method extraction",
+        "extractedAt": "2026-10-29"
+      }
     },
     {
       "id": "axelrod2015",

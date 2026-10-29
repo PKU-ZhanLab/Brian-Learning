@@ -12,6 +12,7 @@ import {additionalResultsReferences,curatedResults,curatedEvidence} from '../src
 import {emptyEvidence,validateEvidence} from '../src/lib/evidence-workspace.js';
 import {structures as allStructures} from '../src/data/catalog.js';
 import {classifyMapping,buildLocateRequest} from '../src/lib/evidence-mapping.js';
+import {buildEvidenceSearchIndex,searchEvidence} from '../src/lib/evidence-search.js';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dir=path.join(root,'data-sources/literature-upgrade');
 const sha=s=>createHash('sha256').update(s).digest('hex');
@@ -145,4 +146,13 @@ assert.deepEqual(portable,structured,'Portable example must match the built-in s
 const frames=Object.fromEntries([...new Set(sourceCheckedCoordinates.map(c=>c.space))].map(space=>[space,sourceCheckedCoordinates.filter(c=>c.space===space).length]));
 const activeBrainStructuresWithReadingLinks=allStructures.filter(s=>s.category!=='spinal'&&mappedIds.has(s.id)).length;
 assert.equal(activeBrainStructuresWithReadingLinks,150,'Expected 150 active brain catalog structures');
+const aliases=JSON.parse(await readFile(path.join(resultsDir,'search-aliases.json'),'utf8'));
+assert.equal(aliases.schema,'evidence-search-aliases-v1');
+for(const alias of aliases.aliases){assert(alias.id&&alias.terms.length>1&&alias.sourceLocator);assert(alias.sourceRefs.length>0);alias.sourceRefs.forEach(source=>url(source,alias.id));}
+const searchIndex=buildEvidenceSearchIndex({...curatedEvidence,references:refs,readings:[...literaturePapers,...curatedEvidence.readings]},{aliases,regions:allStructures});
+for(const query of ['pre-SMA','pre SMA','BA44','BA44/45','停止','inhibitory'])assert(searchEvidence(searchIndex,{query}).some(hit=>hit.referenceId==='schaum2021'),`Search regression: ${query}`);
+assert(searchEvidence(searchIndex,{topic:'control',paperModality:'fMRI'}).some(hit=>hit.referenceId==='schaum2021'));
+assert(!searchEvidence(searchIndex,{resultModality:'fMRI'}).flatMap(hit=>hit.resultIds).includes('schaum2021-meg-stop'));
+assert.deepEqual(additionalResultsReferences.find(reference=>reference.id==='schaum2021').studyModalities.value,['MEG','fMRI']);
+assert.deepEqual(curatedEvidence.results.find(result=>result.id==='schaum2021-meg-stop').modalities,['MEG']);
 console.log(JSON.stringify({status:'passed',papers:refs.length,legacyReadingRecords:literaturePapers.length,legacyStructureRecordsWithReadingLinks:mappedIds.size,activeBrainStructuresWithReadingLinks,regionLinks:links,correctedAnimalMappings:{fullLibrary:affected.length,activeBrain:8,hiddenSpinal:3},topics:topics.size,modalities:modalities.size,comparisons:literatureDebates.length,figureLinks:figures+curatedResults.reduce((n,r)=>n+r.figures.length,0),externalSourceImages:curatedResults.flatMap(r=>r.figures).filter(f=>f.imageUrl).length,rawHashChecks:checkedHashes,unavailableRawCaches,resultMetadataHashChecks,structuredPapers:additionalResultsReferences.length,structuredFindings:curatedResults.length,sourceCheckedCoordinates:sourceCheckedCoordinates.length,coordinateFrames:frames},null,2));

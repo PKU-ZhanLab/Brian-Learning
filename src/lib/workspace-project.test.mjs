@@ -2,6 +2,20 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {encodeView,decodeView,validateViewState,validateCamera,serializeProject,prepareProjectPayload,parseProject,assertProjectVolumePayloadSize,validateProjectDrafts} from './workspace-project.js';
 import {MAX_NIFTI_FILE_BYTES} from './nifti.js';
+test('paper and recorded-result method filters survive separately with a legacy paper fallback',async()=>{
+  const literature={paperModality:'fMRI',resultModality:'MEG',modality:'EEG',query:'local search'};
+  for(const restored of [validateViewState({literature}),decodeView(encodeView({literature}).encoded),(await parseProject(await serializeProject({view:{literature},volumes:[]}))).view]){
+    assert.equal(restored.literature.paperModality,'fMRI');
+    assert.equal(restored.literature.resultModality,'MEG');
+    assert.equal(restored.literature.modality,'fMRI');
+  }
+  const legacy=validateViewState({literature:{modality:'MEG'}}).literature;
+  assert.equal(legacy.modality,'MEG');assert.equal(legacy.paperModality,'MEG');assert.equal(legacy.resultModality,'');
+  const invalid=validateViewState({literature:{paperModality:{invalid:true},resultModality:['MEG']}}).literature;
+  assert.equal(invalid.paperModality,'');assert.equal(invalid.resultModality,'');
+  const bounded=validateViewState({literature:{paperModality:'x'.repeat(101),resultModality:'y'.repeat(101)}}).literature;
+  assert.equal(bounded.paperModality.length,100);assert.equal(bounded.resultModality.length,100);
+});
 test('public link preserves camera opacity ROI and filters without custom data',()=>{const state={atlas:'jhu',language:'en',opacity:.12,camera:{position:[1,2,3],target:[0,0,0],zoom:2},roi:{aAtlas:'dk',bAtlas:'jhu',aLabels:[1,2],bLabels:[5],display:{opacityA:0},computed:true},literature:{modality:'meg',query:'private note'},atlasExplorer:{atlas:'dk',selected:[2,3]}};const restored=decodeView(encodeView(state).encoded);assert.deepEqual(restored.camera,state.camera);assert.equal(restored.opacity,.12);assert.equal(restored.roi.display.opacityA,0);assert.deepEqual(restored.roi.aLabels,[1,2]);assert.equal(restored.literature.modality,'meg');assert.equal(restored.literature.query,'');});
 test('custom volumes are omitted from links and malformed input rejected',()=>{const v=encodeView({atlas:'custom-a',roi:{aAtlas:'custom-a'},mode:'roi'});assert.deepEqual(v.omitted,['atlas','ROI']);assert.equal(decodeView(v.encoded).atlas,'dk');assert.throws(()=>decodeView('!!'));assert.equal(validateViewState({camera:{position:[NaN,0,0]}}).camera,null);});
 test('project round trip preserves binary data, notes, and user-declared frame',async()=>{const volume={id:'custom-example',data:new Uint16Array([0,1,3,4]),shape:[2,2,1],affine:[-2,0,0,12,0,2,0,-8,0,0,2,2,0,0,0,1],space:'MNI152NLin6Asym',kind:'label',name:'my labels',provenance:'My registered FSL image',metadata:{affineConflict:true},alignmentStatus:'user-declared',canOverlayOnTarget:true,labels:[{id:3,name:'three'}]};const value=await parseProject(await serializeProject({view:{atlas:'dk'},notes:[{text:'keep my note'}],volumes:[volume]}));assert.deepEqual([...value.volumes[0].data],[0,1,3,4]);assert.deepEqual(value.volumes[0].affine,volume.affine);assert.equal(value.volumes[0].canOverlayOnTarget,true);assert.equal(value.notes[0].text,'keep my note');assert.equal(value.volumes[0].labels[0].name,'three');assert.equal(value.volumes[0].metadata.sourceImport.affineConflict,true);});
