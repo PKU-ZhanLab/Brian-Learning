@@ -1,14 +1,13 @@
 // Isolated, synthetic runner only. Authored here; browser/upload execution awaits
 // the coordinator's permission path and is not desktop acceptance.
 import {test,expect} from '@playwright/test';
+import {OrthographicCamera,Vector3} from 'three';
 import {serializeProject} from '../../src/lib/workspace-project.js';
-import {migrateEvidence} from '../../src/lib/evidence-schema.js';
+import {syntheticResultEvidence as evidence,syntheticResultLayers as layers,syntheticUnknownResultEvidence,syntheticMixedResultEvidence,preflightResultLayerProject} from '../fixtures/result-layer-fixtures.mjs';
 import {curatedEvidence} from '../../src/data/results.js';
 
-const evidence=()=>migrateEvidence({schema:'brain-evidence-v1',references:[{id:'private-paper',title:'Synthetic local paper',url:'https://example.org/paper'}],results:[{id:'private-result',referenceId:'private-paper',finding:'Synthetic local result',condition:'task',sample:'n=2',roiDefinition:'table',direction:'positive',annotator:'unknown',modalities:['fmri'],regionIds:[],sourceUrl:'https://example.org/paper',curationStatus:'draft',limitations:'synthetic',coordinates:[[1,2,3],[-1,2,3]].map((xyz,i)=>({id:`private-point-${i}`,x:xyz[0],y:xyz[1],z:xyz[2],space:'MNI152NLin6Asym',status:'source-checked',label:'peak',sourceTable:'1',sourceRow:String(i+1),frameNote:'synthetic frame',sourceUrl:'https://example.org/paper'})),figures:[]}],relations:[]}).value;
-const layers=()=>[true,false].map((visible,i)=>({layerId:i?'hidden-private-layer':'private-layer-name',resultId:'private-result',sourceReferenceId:'private-paper',coordinateIds:['private-point-0','private-point-1'],spaceId:'MNI152NLin6Asym',visible,style:{color:'#123456',opacity:.5,size:2}}));
 async function files(page){await page.getByRole('button',{name:'Projects & views',exact:true}).click();return page.getByRole('dialog',{name:'Save and share',exact:true});}
-async function open(dialog,text){await dialog.locator('input[type=file]').setInputFiles({name:'synthetic.neuroatlas',mimeType:'application/json',buffer:Buffer.from(text)});await dialog.getByRole('button',{name:'Confirm open',exact:true}).click();}
+async function open(dialog,text){await preflightResultLayerProject(text);await dialog.locator('input[type=file]').setInputFiles({name:'synthetic.neuroatlas',mimeType:'application/json',buffer:Buffer.from(text)});await dialog.getByRole('button',{name:'Confirm open',exact:true}).click();}
 const storage=page=>page.evaluate(()=>Object.fromEntries(Object.keys(localStorage).sort().map(key=>[key,localStorage.getItem(key)])));
 const snapshot=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1')));
 const resolved=page=>page.evaluate(async()=>{const {resolveResultLayers}=await import('/src/lib/result-layers.js');const s=JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1'));return resolveResultLayers(s.view.resultLayers,{evidence:s.evidence});});
@@ -76,9 +75,9 @@ test('clearing layers after selecting a private point preserves source restricti
 });
 
 test('native and unknown frames expose source coordinates without a main brain overlay action',async({page})=>{
- const local=evidence();for(const point of local.locations)point.sourceSpaceId=null;
- await page.goto('/?lang=en');const dialog=await files(page);await open(dialog,await serializeProject({projectId:'unknown-frame',view:{language:'en',resultLayers:[{...layers()[0],spaceId:null}]},evidence:local,volumes:[]}));await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
- await expect(page.locator('.result-layer-bar')).toContainText('Independent coordinates');await page.getByRole('button',{name:'Open result private-result',exact:true}).click();const panel=page.getByRole('dialog',{name:'Paper result coordinates',exact:true});await expect(panel).toContainText('Unspecified frame');await expect(panel.getByRole('button',{name:'Save layer and show on brain',exact:true})).toHaveCount(0);await expect(panel.getByRole('button',{name:'Save result layer',exact:true})).toBeVisible();await expect(panel.getByRole('button',{name:'Locate result point private-point-0',exact:true})).toBeVisible();
+ const local=syntheticUnknownResultEvidence();
+ await page.goto('/?lang=en');const dialog=await files(page);await open(dialog,await serializeProject({projectId:'unknown-frame',view:{language:'en',resultLayers:[{...layers()[0],spaceId:'MNI-unspecified'}]},evidence:local,volumes:[]}));await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
+ await expect(page.locator('.result-layer-bar')).toContainText('Independent coordinates');await page.getByRole('button',{name:'Open result private-result',exact:true}).click();const panel=page.getByRole('dialog',{name:'Paper result coordinates',exact:true});await expect(panel).toContainText('MNI-unspecified');await expect(panel.getByRole('button',{name:'Save layer and show on brain',exact:true})).toHaveCount(0);await expect(panel.getByRole('button',{name:'Save result layer',exact:true})).toBeVisible();await expect(panel.getByRole('button',{name:'Locate result point private-point-0',exact:true})).toBeVisible();
 });
 
 test('compact layer disclosure keeps source, visibility, removal and clear controls reachable without color',async({page})=>{
@@ -86,4 +85,15 @@ test('compact layer disclosure keeps source, visibility, removal and clear contr
  const bar=page.locator('.result-layer-bar');await expect(bar).not.toHaveAttribute('open');await expect(bar.locator('summary')).toContainText('private-result');await bar.locator('summary').click();
  for(const name of ['Hide layer private-layer-name','Open result private-result','Remove layer private-layer-name','Clear result layers']){const control=bar.getByRole('button',{name,exact:true}).first();await expect(control).toBeVisible();const rect=await control.boundingBox();expect(rect.x).toBeGreaterThanOrEqual(0);expect(rect.x+rect.width).toBeLessThanOrEqual(390);}
  await bar.getByRole('button',{name:'Remove layer private-layer-name',exact:true}).click();await expect.poll(async()=>(await snapshot(page)).view.resultLayers.map(l=>l.layerId)).toEqual(['hidden-private-layer']);await bar.getByRole('button',{name:'Clear result layers',exact:true}).click();await expect(bar).toHaveCount(0);
+});
+
+test('a mixed-space marker opens its own MNI frame and selected point, updates for the next marker, and survives source return',async({page})=>{
+ const local=syntheticMixedResultEvidence();
+ const original=[{...layers()[0],style:{color:'#123456',opacity:1,size:6}}],camera={position:[1,202,83],target:[1,2,3],up:[0,0,1],zoom:1,frameExtent:100};
+ await page.goto('/?lang=en');const dialog=await files(page);await open(dialog,await serializeProject({projectId:'mixed-space-point-return',view:{language:'en',mode:'anatomy',atlas:'dk',visibleCategories:['cortex'],opacity:.2,camera,resultLayers:original},evidence:local,volumes:[]}));await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
+ const canvas=page.locator('.scene-wrap canvas').first();await expect(canvas).toBeVisible();const bounds=await canvas.boundingBox();await canvas.click({position:{x:bounds.width/2,y:bounds.height/2}});
+ const panel=page.getByRole('dialog',{name:'Paper result coordinates',exact:true});await expect(panel.getByRole('combobox',{name:'Reported coordinate frame',exact:true})).toHaveValue('1');await expect(panel.locator('tr[aria-selected="true"]')).toContainText('private-point-0');await expect(panel.getByRole('button',{name:'Locate result point private-native-point',exact:true})).toHaveCount(0);
+ const aspect=bounds.width/bounds.height,projection=new OrthographicCamera(-100*aspect,100*aspect,100,-100,.1,2000);projection.position.fromArray(camera.position);projection.up.fromArray(camera.up);projection.lookAt(new Vector3(...camera.target));projection.updateMatrixWorld();const screen=new Vector3(-1,2,3).project(projection);
+ await canvas.click({position:{x:(screen.x*.5+.5)*bounds.width,y:(-.5*screen.y+.5)*bounds.height}});await expect(panel.locator('tr[aria-selected="true"]')).toContainText('private-point-1');
+ await panel.getByRole('button',{name:'Open source paper',exact:true}).click();await expect(page.locator('.paper-detail h2')).toHaveText('Synthetic local paper');await expect(panel.getByRole('combobox',{name:'Reported coordinate frame',exact:true})).toHaveValue('1');await expect(panel.locator('tr[aria-selected="true"]')).toContainText('private-point-1');
 });

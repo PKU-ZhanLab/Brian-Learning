@@ -4,6 +4,7 @@ import * as controls from './result-layer-controls.js';
 import {migrateEvidence,getResultViewModel} from './evidence-schema.js';
 import {resolveResultLayers} from './result-layers.js';
 import {validateViewState,encodeView,decodeView,serializeProject,parseProject} from './workspace-project.js';
+import {stageProjectImport} from './workspace-session.js';
 
 const evidence=migrateEvidence({schema:'brain-evidence-v1',references:[{id:'paper-a',title:'Paper A',url:'https://example.org/a'},{id:'paper-b',title:'Paper B',url:'https://example.org/b'}],results:[{id:'result-a',referenceId:'paper-a',finding:'Exact finding A',condition:'task',sample:'n=2',roiDefinition:'table',direction:'positive',annotator:'unknown',limitations:'synthetic',regionIds:[],curationStatus:'draft',modalities:['fmri'],sourceUrl:'https://example.org/a',coordinates:[{id:'peak-a',x:1.25,y:2,z:3,space:'MNI152NLin6Asym',status:'source-checked',label:'Peak A',sourceTable:'1',sourceRow:'1',frameNote:'explicit frame',sourceUrl:'https://example.org/a'}],figures:[]}],relations:[]}).value;
 const layer=(layerId='layer-a')=>({layerId,resultId:'result-a',sourceReferenceId:'paper-a',coordinateIds:['peak-a'],spaceId:'MNI152NLin6Asym',visible:true,style:{}});
@@ -33,12 +34,13 @@ test('clearing a private layer cannot release its coordinate, camera or explorer
 
 test('unknown/native layers remain independently readable and local layer edits round trip through W5/W6',async()=>{
  assert.equal(typeof controls.editResultLayers,'function','layer actions are available');
- const native=structuredClone(evidence);native.locations[0].sourceSpaceId=null;
- const original={...view(),resultLayers:[{...layer(),spaceId:null}]};
+ const native=structuredClone(evidence);native.locations[0].sourceSpaceId='MNI-unspecified';
+ const original={...view(),resultLayers:[{...layer(),spaceId:'MNI-unspecified'}]};
  const hidden=controls.editResultLayers(original,{type:'visibility',layerId:'layer-a',visible:false},{evidence:native});
  const shown=controls.editResultLayers(hidden,{type:'visibility',layerId:'layer-a',visible:true},{evidence:native});
  const resolved=resolveResultLayers(shown.resultLayers,{evidence:native});assert.deepEqual(resolved.markers,[]);assert.equal(resolved.unavailable[0].reason,'unavailable-space');
- const restored=await parseProject(await serializeProject({projectId:'layers',view:shown,evidence:native,notes:[],volumes:[]}));
+ const text=await serializeProject({projectId:'layers',view:shown,evidence:native,notes:[],volumes:[]}),restored=await parseProject(text);
+ await stageProjectImport(text,{current:{projectId:'before-import',revision:0,view:validateViewState({}),evidence,volumes:[],notes:[],drafts:[]}});
  assert.deepEqual(restored.view.resultLayers,shown.resultLayers);assert.equal(getResultViewModel(restored.view.resultLayers[0].resultId,restored.evidence).finding,'Exact finding A');
 });
 
