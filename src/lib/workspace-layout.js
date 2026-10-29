@@ -20,3 +20,24 @@ export function replaceComparedPaper(paperIds,removedId,paperId){
   if(!current.includes(removedId)||current.includes(paperId)||typeof paperId!=='string'||!paperId)return current;
   return current.map(id=>id===removedId?paperId:id);
 }
+
+// A return borrows reading position only. The current view, evidence and basket
+// remain authoritative, including edits made while reading an individual paper.
+export function comparisonReturnScroll(history,literature){
+  const context=value=>JSON.stringify({compared:ids(value?.compared),query:value?.query||'',topic:value?.topic||'',paperModality:value?.paperModality??value?.modality??'',resultModality:value?.resultModality||'',scope:value?.scope===true,scopeRegionId:value?.scopeRegionId||null,onlyResults:value?.onlyResults===true});
+  const wanted=context(literature);
+  for(let i=(history?.index??-1)-1;i>=0;i--){const entry=history.entries[i];if(entry.view?.mode==='research'&&entry.view.literature?.showCompare&&context(entry.view.literature)===wanted)return {...entry.scroll};}
+  return {};
+}
+
+/** Read a current render at execution, then save through the existing transaction. */
+export function scheduleLayoutSave(latest,{projectId,epoch,delay=300}){
+  let active=true;
+  const timer=setTimeout(async()=>{
+    const current=latest.current;
+    if(!active||!current.isCurrent(projectId,epoch))return;
+    try{await current.save(current.readView());if(active&&latest.current.isCurrent(projectId,epoch))latest.current.onSaved?.();}
+    catch(error){if(active)latest.current.onError?.(error);}
+  },delay);
+  return()=>{active=false;clearTimeout(timer);};
+}
