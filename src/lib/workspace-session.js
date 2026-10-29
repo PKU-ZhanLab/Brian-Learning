@@ -1,6 +1,7 @@
 import {parseProject,prepareProjectPayload,validateViewState,validateProjectDrafts,validateProjectNotes,validateMissingAssetIds} from './workspace-project.js';
 import {savedComputationUsage} from './saved-computation.js';
 import {validateResultLayers} from './result-layers.js';
+import {validateNavigationHistory} from './navigation-history.js';
 import {referencedAssetIds} from './workspace-assets.js';
 import {boundedJsonStringify,utf8ByteLength,assertWorkspaceBudget,MAX_PROJECT_UTF8_BYTES} from './workspace-limits.js';
 import {emptyEvidence,EVIDENCE_COLLECTIONS} from './evidence-schema.js';
@@ -33,6 +34,10 @@ function assertReferences(snapshot,known){
   scan(snapshot.view);historical=true;scan(snapshot.notes);scan(snapshot.roiSnapshot);scan(snapshot.recomputedSnapshot);scan(snapshot.evidence);
   for(const key of ['roiSnapshot','recomputedSnapshot'])if(referencedAssetIds(snapshot[key]).some(id=>missing.has(id))&&snapshot[key]?.status!=='missing-input')throw Error('missing-input-status-required');
   snapshot.view.resultLayers=validateResultLayers(snapshot.view.resultLayers,{evidence:snapshot.evidence,publicEvidence:known});
+  if(snapshot.view.navigationHistory){
+    validateNavigationHistory(snapshot.view.navigationHistory,{projectId:snapshot.projectId});
+    for(const entry of snapshot.view.navigationHistory.entries)entry.view.resultLayers=validateResultLayers(entry.view.resultLayers,{evidence:snapshot.evidence,publicEvidence:known});
+  }
 }
 
 const cloneSnapshot=value=>{if(value==null)return null;const {maskA,maskB,surfaces,...saved}=value;return structuredClone(saved);};
@@ -84,14 +89,16 @@ export function restoreWorkspaceInitial({storage,fallback,knownEvidence,legacyNo
   if(raw){
     const saved=json(JSON.parse(raw),32*1024*1024);if(saved.schema!==WORKSPACE_STORAGE_KEY||!identifier(saved.projectId)||!Number.isSafeInteger(saved.revision)||saved.revision<0)throw Error('invalid-workspace-envelope');
     const restored={...fallback,...saved,view:checkedView(saved.view),notes:validateProjectNotes(saved.notes),evidence:checkedEvidence(saved.evidence,knownEvidence).value,drafts:validateProjectDrafts(saved.drafts??[],saved.projectId),missingAssetIds:validateMissingAssetIds(saved.missingAssetIds??[]),volumes:[],roiSnapshot:null,recomputedSnapshot:null};
-    restored.view.resultLayers=validateResultLayers(restored.view.resultLayers,{evidence:restored.evidence,publicEvidence:knownEvidence});return restored;
+    restored.view.resultLayers=validateResultLayers(restored.view.resultLayers,{evidence:restored.evidence,publicEvidence:knownEvidence});
+    if(restored.view.navigationHistory){validateNavigationHistory(restored.view.navigationHistory,{projectId:restored.projectId});for(const entry of restored.view.navigationHistory.entries)entry.view.resultLayers=validateResultLayers(entry.view.resultLayers,{evidence:restored.evidence,publicEvidence:knownEvidence});}
+    return restored;
   }
   const legacyNotes=storage?.getItem(legacyNotesKey),legacyEvidence=loadEvidence(storage,contextOptions(knownEvidence));
   if(legacyEvidence.storageError)throw Error(legacyEvidence.storageError);
   return {...fallback,notes:validateProjectNotes(legacyNotes?json(JSON.parse(legacyNotes),8*1024*1024):fallback.notes),evidence:legacyEvidence,drafts:fallback.drafts??[]};
 }
 
-const fields={referenceId:'references',sourceReferenceId:'references',referenceIds:'references',paperId:'references',compared:'references',experimentId:'experiments',resultId:'results',resultIds:'results',fromResultId:'results',toResultId:'results',locationIds:'locations',coordinateIds:'locations',claimId:'claims',claimIds:'claims',artifactId:'sourceArtifacts',sourceArtifactId:'sourceArtifacts',volumeId:'volumes',assetId:'volumes',sourceAssetId:'volumes',missingAssetIds:'volumes',atlas:'volumes',atlasId:'volumes',aAtlas:'volumes',bAtlas:'volumes'};
+const fields={referenceId:'references',sourceReferenceId:'references',referenceIds:'references',paperId:'references',compared:'references',experimentId:'experiments',resultId:'results',resultIds:'results',fromResultId:'results',toResultId:'results',locationIds:'locations',coordinateIds:'locations',coordinateId:'locations',layerId:'resultLayers',claimId:'claims',claimIds:'claims',artifactId:'sourceArtifacts',sourceArtifactId:'sourceArtifacts',volumeId:'volumes',assetId:'volumes',sourceAssetId:'volumes',missingAssetIds:'volumes',atlas:'volumes',atlasId:'volumes',aAtlas:'volumes',bAtlas:'volumes'};
 function rewriteIncoming(value,maps,counts,key='',parent=''){
   if(['legacyV1','legacyImports'].includes(key))return structuredClone(value);
   if(ArrayBuffer.isView(value))return value;
@@ -143,6 +150,7 @@ export function mergeWorkspace(current,incoming,makeId){
   }
   const snapshotFor=key=>incoming[key]==null?current[key]:rewriteIncoming(incoming[key],maps,counts);
   const snapshot={...incoming,projectId:current.projectId,missingAssetIds:[...new Set([...currentMissing,...incomingMissing.map(id=>maps.get('volumes').get(id)||id)])],view:{...rewriteIncoming(incoming.view,maps,counts),resultLayers:merged.resultLayers},notes:merged.notes,drafts:merged.drafts,volumes:merged.volumes,evidence:{...current.evidence,...Object.fromEntries(EVIDENCE_COLLECTIONS.map(k=>[k,merged[k]]))},roiSnapshot:snapshotFor('roiSnapshot'),recomputedSnapshot:snapshotFor('recomputedSnapshot')};
+  if(snapshot.view.navigationHistory)snapshot.view.navigationHistory.projectId=current.projectId;
   const legacy=[...(current.evidence.legacyImports||[]),...(incoming.evidence.legacyImports||[]),...(incoming.evidence.legacyV1?[incoming.evidence.legacyV1]:[])];if(legacy.length)snapshot.evidence.legacyImports=legacy;
   return {snapshot,preview:{mode:'merge',includedAssetIds:merged.volumes.map(v=>v.id),removedAssetIds:[],collisions,remap:Object.fromEntries([...maps].map(([k,v])=>[k,Object.fromEntries(v)])),changedReferenceCounts:counts}};
 }

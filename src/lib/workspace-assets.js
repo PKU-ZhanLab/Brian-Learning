@@ -31,6 +31,11 @@ function detachView(view,ids){
   for(const key of ['aRegionRefs','bRegionRefs','unresolvedRegionRefs'])if(next.roi[key]?.some(ref=>ids.has(ref.atlasId))){next.roi[key]=next.roi[key].filter(ref=>!ids.has(ref.atlasId));next.roi.computed=false;fields.push(`roi.${key}`);}
  }
  if(hit(next.atlasExplorer)){delete next.atlasExplorer;next.atlasExplorerOpen=false;fields.push('atlasExplorer');}
+ if(next.navigationHistory){
+  const h=next.navigationHistory,retained=h.entries.map((entry,index)=>({entry,index})).filter(({entry})=>!hit(entry.view));
+  const removed=h.entries.length-retained.length;
+  if(removed){h.entries=retained.map(({entry})=>entry);h.index=retained.length?Math.max(0,retained.filter(({index})=>index<=h.index).length-1):-1;fields.push(`navigationHistory:${removed}`);}
+ }
  return {view:next,fields};
 }
 function detach(snapshot,excluded){

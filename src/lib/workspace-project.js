@@ -1,6 +1,7 @@
 import {validateVolumeMetadata,assertWorkspaceBudget,MAX_WORKSPACE_RAW_PAYLOAD_BYTES,MAX_PROJECT_UTF8_BYTES,utf8ByteLength,boundedJsonStringify} from './workspace-limits.js';
 import {parseNifti,exportNifti,MAX_NIFTI_FILE_BYTES} from './nifti.js';
 import {atlasRegionKey} from './atlas-identity.js';
+import {validateNavigationHistory} from './navigation-history.js';
 import {savedComputationUsage,encodeSavedComputation,inspectEncodedSavedComputation,decodeSavedComputation} from './saved-computation.js';
 import {validateResultLayers,projectPublicResultLayers,resolveResultLayers} from './result-layers.js';
 import {migrateEvidence,emptyEvidence} from './evidence-schema.js';
@@ -73,6 +74,7 @@ export function validateProjectDrafts(value=[],projectId){
 
 export function validateViewState(input,{savedProjectId,projectId}={}){
   if(!input||typeof input!=='object'||Array.isArray(input))throw Error('Invalid view state');
+  if(projectId!==undefined&&input.navigationHistory&&savedProjectId!==projectId)throw Error('navigation-history-project-mismatch');
   // Named local references are meaningful only in their original project. A v1
   // view has no layers; public URLs use their separate canonical-public gate.
   if(projectId!==undefined&&input.schema!=='neuroatlas-view-v1'&&input.resultLayers?.length&&savedProjectId!==projectId)throw Error('named-view-project-mismatch: Open the originating project before restoring these result layers.');
@@ -86,12 +88,16 @@ export function validateViewState(input,{savedProjectId,projectId}={}){
   const s=input.slices||{};output.slices={enabled:s.enabled===true,x:finiteCoordinate(s.x,-38),y:finiteCoordinate(s.y,-20),z:finiteCoordinate(s.z,54),axis:['x','y','z'].includes(s.axis)?s.axis:'z'};
   if(input.roi){const r=input.roi;output.roi={aAtlas:r.aAtlas===''?'':boundedString(r.aAtlas,120)||'dk',bAtlas:r.bAtlas===''?'':boundedString(r.bAtlas,120)||'ba-histology',aLabels:Array.isArray(r.aLabels)?r.aLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],bLabels:Array.isArray(r.bLabels)?r.bLabels.filter(x=>Number.isSafeInteger(x)&&x>0).slice(0,5000):[],aThreshold:number(r.aThreshold,-1e12,1e12,0),bThreshold:number(r.bThreshold,-1e12,1e12,0),aTail:['negative','absolute'].includes(r.aTail)?r.aTail:'positive',bTail:['negative','absolute'].includes(r.bTail)?r.bTail:'positive',computed:r.computed===true,display:{mode:['parts','overlap','A','B'].includes(r.display?.mode)?r.display.mode:'parts',opacityA:number(r.display?.opacityA,0,1,.65),opacityB:number(r.display?.opacityB,0,1,.65),opacityOverlap:number(r.display?.opacityOverlap,0,1,.9),xray:r.display?.xray===true}};}
   if(input.literature){const l=input.literature,paperModality=boundedString(l.paperModality??l.modality,100);output.literature={query:boundedString(l.query,500),topic:boundedString(l.topic,100),modality:paperModality,paperModality,resultModality:boundedString(l.resultModality,100),scope:l.scope===true,paperId:boundedString(l.paperId,160)||null,compared:stringArray(l.compared,3),showCompare:l.showCompare===true,scopeRegionId:boundedString(l.scopeRegionId,120)||null,onlyResults:l.onlyResults===true};}
-  if(input.atlasExplorer){const a=input.atlasExplorer;output.atlasExplorer={atlas:boundedString(a.atlas,120)||'dk',query:boundedString(a.query,200),selected:Array.isArray(a.selected)?a.selected.filter(x=>Number.isInteger(x)&&x>0).slice(0,5000):[],opacity:number(a.opacity,0,1,1),camera:validateCamera(a.camera),threshold:number(a.threshold,0,1e12,.5),tail:['negative','absolute'].includes(a.tail)?a.tail:'positive',display:a.display==='slices'?'slices':'boundaries',slicePoint:coordinatePoint(a.slicePoint)||[0,0,0],sliceOpacity:number(a.sliceOpacity,0,1,.55)};}
+  if(input.atlasExplorer){const a=input.atlasExplorer;output.atlasExplorer={atlas:boundedString(a.atlas,120)||'dk',query:boundedString(a.query,200),selected:Array.isArray(a.selected)?a.selected.filter(x=>Number.isInteger(x)&&x>0).slice(0,5000):[],picked:Number.isSafeInteger(a.picked)&&a.picked>0?a.picked:null,opacity:number(a.opacity,0,1,1),camera:validateCamera(a.camera),threshold:number(a.threshold,0,1e12,.5),tail:['negative','absolute'].includes(a.tail)?a.tail:'positive',display:a.display==='slices'?'slices':'boundaries',slicePoint:coordinatePoint(a.slicePoint)||[0,0,0],sliceOpacity:number(a.sliceOpacity,0,1,.55)};}
   for(const key of ['atlasSelection','unresolvedAtlasSelection'])if(input[key]!==undefined)output[key]=regionRefs(input[key]);
   if(input.atlasSelectionQuery!==undefined)output.atlasSelectionQuery=safeObject(input.atlasSelectionQuery);
   output.resultLayers=input.schema==='neuroatlas-view-v1'?[]:validateResultLayers(safeObject(input.resultLayers??[],2*1024*1024));
   if(input.roi){for(const key of ['aRegionRefs','bRegionRefs','unresolvedRegionRefs'])if(input.roi[key]!==undefined)output.roi[key]=regionRefs(input.roi[key]);if(input.roi.resolutionMm!==undefined){if(![1,2].includes(input.roi.resolutionMm))throw Error('Invalid ROI grid spacing');output.roi.resolutionMm=input.roi.resolutionMm;}}
   if(input.roi?.snapshot!==undefined){if(!['original','recomputed','none'].includes(input.roi.snapshot))throw Error('Invalid ROI snapshot reference');output.roi.snapshot=input.roi.snapshot;}
+  if(input.roi?.snapshotId!==undefined)output.roi.snapshotId=boundedString(input.roi.snapshotId,160)||null;
+  if(input.roi?.point!==undefined)output.roi.point=coordinatePoint(input.roi.point)||[0,0,0];
+  if(input.navigationContext){const c=input.navigationContext;output.navigationContext={infoTab:c.infoTab==='references'?'references':'anatomy',treeTab:c.treeTab==='networks'?'networks':'anatomy',query:boundedString(c.query,500),openGroups:stringArray(c.openGroups,20)};}
+  if(input.navigationHistory!==undefined)output.navigationHistory=validateNavigationHistory(input.navigationHistory,{projectId,validateView:view=>validateViewState(view,{savedProjectId,projectId})});
   return output;
 }
 function bytesToBase64(bytes){let s='';for(let i=0;i<bytes.length;i+=32768)s+=String.fromCharCode(...bytes.subarray(i,i+32768));return btoa(s);}
@@ -100,6 +106,8 @@ function base64ToBytes(text,maxBytes=MAX_FILE_BYTES){encodedByteLength(text,maxB
 
 export function encodeView(input,{publicReferenceIds=[],publicResults,publicEvidence,evidence}={}){
   const state=validateViewState(input);const omitted=[];
+  if(state.navigationHistory){delete state.navigationHistory;omitted.push('navigationHistory');}
+  if(state.navigationContext){delete state.navigationContext;omitted.push('navigationContext');}
   if(state.coordinateSpace!=='brain'||!shareableCoordinate(state,{publicReferenceIds,publicResults,publicEvidence,evidence})){
     state.coordinateSpace='brain';state.coordinate=[-38,-20,54];state.slices={enabled:false,x:-38,y:-20,z:54,axis:'z'};state.camera=null;state.showSlices=false;
     state.coordinateOrigin={kind:'manual',cameraSensitive:false,explorerSensitive:false,imported:false};
@@ -128,7 +136,7 @@ export function encodeView(input,{publicReferenceIds=[],publicResults,publicEvid
   if(state.atlas.startsWith('custom-')){state.atlas='dk';omitted.push('atlas');}
   if(state.roi&&[state.roi.aAtlas,state.roi.bAtlas].some(id=>id.startsWith('custom-'))){delete state.roi;if(state.mode==='roi')state.mode='anatomy';omitted.push('ROI');}
   projectRegionRefs(state.roi,['aRegionRefs','bRegionRefs','unresolvedRegionRefs'],'roi.');
-  if(state.roi){delete state.roi.snapshot;state.roi.computed=false;}
+  if(state.roi){delete state.roi.snapshot;delete state.roi.snapshotId;delete state.roi.point;state.roi.computed=false;}
   if(state.atlasExplorer?.atlas.startsWith('custom-')){delete state.atlasExplorer;state.atlasExplorerOpen=false;omitted.push('atlasExplorer');}
   // IDs are not inherently public. Only the caller's bundled reference allowlist can authorize link inclusion.
   const publicIds=new Set(publicReferenceIds instanceof Set||Array.isArray(publicReferenceIds)?publicReferenceIds:[]);
@@ -141,7 +149,7 @@ export function encodeView(input,{publicReferenceIds=[],publicResults,publicEvid
   const bytes=new TextEncoder().encode(JSON.stringify(state));if(bytes.length>30000)throw Error('View is too large for a link; export a project file');
   return {encoded:bytesToBase64(bytes).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,''),omitted};
 }
-export function decodeView(encoded){if(!encoded||encoded.length>45000)throw Error('Invalid view link');const base=encoded.replaceAll('-','+').replaceAll('_','/');const view=validateViewState(JSON.parse(new TextDecoder().decode(base64ToBytes(base+'='.repeat((4-base.length%4)%4)))));if(view.roi){view.roi.snapshot='none';view.roi.computed=false;}return view;}
+export function decodeView(encoded){if(!encoded||encoded.length>45000)throw Error('Invalid view link');const base=encoded.replaceAll('-','+').replaceAll('_','/');const input=JSON.parse(new TextDecoder().decode(base64ToBytes(base+'='.repeat((4-base.length%4)%4))));delete input.navigationHistory;delete input.navigationContext;const view=validateViewState(input);if(view.roi){view.roi.snapshot='none';view.roi.computed=false;}return view;}
 
 const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
 function checkedVolumeId(id,ids){if(typeof id!=='string'||!/^custom-[a-zA-Z0-9_-]{1,112}$/.test(id)||ids.has(id))throw Error('Invalid or duplicate custom volume ID');ids.add(id);return id;}
@@ -226,6 +234,7 @@ async function verifyVolumeProvenance(volume,provenance){
 
 export async function prepareProjectPayload({projectId=`project-${crypto.randomUUID()}`,view,notes=[],evidence=null,drafts=[],volumes=[],missingAssetIds=[],roiSnapshot=null,recomputedSnapshot=null,provenanceStatus}){
   if(typeof projectId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(projectId))throw Error('Invalid project ID');
+  if(view?.navigationHistory)validateNavigationHistory(view.navigationHistory,{projectId});
   if(!Array.isArray(volumes))throw Error('Invalid project volumes');
   const usage={assetCount:volumes.length,rawPayloadBytes:0,compressedAssetBytes:[],projectUtf8Bytes:0};
   assertWorkspaceBudget(usage);
@@ -294,8 +303,10 @@ export async function parseProject(text){
   // File claims cannot attest how a point or camera was obtained. Exact public
   // result references can still be independently authorized at link projection.
   view.coordinateOrigin={...view.coordinateOrigin,cameraSensitive:true,explorerSensitive:true,imported:true};
+  if(view.navigationHistory)for(const entry of view.navigationHistory.entries){entry.view.coordinateOrigin={...entry.view.coordinateOrigin,cameraSensitive:true,explorerSensitive:true,imported:true};if(entry.view.roi)entry.view.roi.computed=false;}
   const projectId=p.schema===PROJECT_SCHEMA?p.projectId:`project-${crypto.randomUUID()}`;
   if(typeof projectId!=='string'||!/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,159}$/.test(projectId))throw Error('Invalid project ID');
+  if(view.navigationHistory)validateNavigationHistory(view.navigationHistory,{projectId});
   const drafts=validateProjectDrafts(p.schema===LEGACY_PROJECT_SCHEMA?[]:p.drafts??[],projectId);
   const notes=validateProjectNotes(p.notes),evidence=safeObject(p.evidence,20*1024*1024);
   const ids=new Set(),volumes=[],usage={assetCount:p.volumes.length,rawPayloadBytes:0,compressedAssetBytes:[],projectUtf8Bytes};
