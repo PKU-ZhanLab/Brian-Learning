@@ -119,7 +119,7 @@ export function getResultViewModel(resultId,bundle) {
     const state=deriveReviewState(bundle.reviewEvents.filter(e=>e.subjectId===l.id&&(!l.recordVersion||e.recordVersion===l.recordVersion)));
     return {...(l.legacyV1||{}),id:l.id,label:l.sourceLabel,x:l.xyz[0],y:l.xyz[1],z:l.xyz[2],space:l.sourceSpaceId,kind:l.kind,sourceUrl:l.sourceRefs[0]||'',status:state.sourceChecked?'source-checked':'draft',uncertainty:structuredClone(l.uncertainty)};
   });
-  return {...old,id:r.id,referenceId:r.referenceId||experiment?.referenceId||claims[0]?.referenceId||null,finding:r.finding,condition:r.contrast,sample:old.sample||bi(r.sample?.perAnalysis?.state==='reported'?`n = ${r.sample.perAnalysis.value}`:r.sample?.perAnalysis?.reason||'Sample not extracted'),roiDefinition:old.roiDefinition||bi('ROI definition not extracted'),direction:old.direction||bi(r.statistics.reason||'Statistics not extracted'),modalities:r.modalities,topics:old.topics||[],coordinates,regionIds:old.regionIds||bundle.mappings.filter(m=>m.resultId===r.id).map(m=>m.targetConceptId).filter(Boolean),figures:old.figures||[],sourceUrl:old.sourceUrl||claims.flatMap(c=>c.sourceRefs)[0]||'',limitations:old.limitations||bi((r.limitations||[]).map(v=>typeof v==='string'?v:v.en||v.zh).join(' ')),reviewState,curationStatus:reviewState.sourceChecked?'source-checked':'draft'};
+  return {...old,id:r.id,referenceId:resultReferenceId(r,bundle),finding:r.finding,condition:r.contrast,sample:old.sample||bi(r.sample?.perAnalysis?.state==='reported'?`n = ${r.sample.perAnalysis.value}`:r.sample?.perAnalysis?.reason||'Sample not extracted'),roiDefinition:old.roiDefinition||bi('ROI definition not extracted'),direction:old.direction||bi(r.statistics.reason||'Statistics not extracted'),modalities:r.modalities,topics:old.topics||[],coordinates,regionIds:old.regionIds||bundle.mappings.filter(m=>m.resultId===r.id).map(m=>m.targetConceptId).filter(Boolean),figures:old.figures||[],sourceUrl:old.sourceUrl||claims.flatMap(c=>c.sourceRefs)[0]||'',limitations:old.limitations||bi((r.limitations||[]).map(v=>typeof v==='string'?v:v.en||v.zh).join(' ')),reviewState,curationStatus:reviewState.sourceChecked?'source-checked':'draft'};
 }
 
 /** Convert an existing editor's text fields at this boundary, retaining structured fields it cannot edit. */
@@ -129,25 +129,53 @@ export function resultViewModelToEvidence(record,bundle,options={}) {
   const previous=bundle?.results.find(r=>r.id===record.id);
   for(const location of converted.locations){const original=bundle?.locations.find(l=>l.id===location.id);if(original&&original.sourceSpaceId===location.sourceSpaceId&&JSON.stringify(original.xyz)===JSON.stringify(location.xyz)&&JSON.stringify(original.sourceLabel)===JSON.stringify(location.sourceLabel)&&original.sourceRefs[0]===location.sourceRefs[0]){for(const key of ['uncertainty','dispersion','derivedAsset','transformRef','sourceRefs'])if(Object.hasOwn(original,key))location[key]=structuredClone(original[key]);}}
   if(previous){const next=converted.results[0];for(const key of ['experimentId','statistics','effectEstimate','correction','timeWindow','frequencyBand','sample'])next[key]=structuredClone(previous[key]);next.claimIds=[...new Set([...previous.claimIds,...next.claimIds])];converted.claims=[...bundle.claims.filter(c=>previous.claimIds.includes(c.id)&&!converted.claims.some(n=>n.id===c.id)),...converted.claims];if(previous.experimentId)converted.experiments=bundle.experiments.filter(e=>e.id===previous.experimentId);}
-  const version=`edit-${globalThis.crypto.randomUUID()}`;converted.results[0].recordVersion=version;for(const location of converted.locations)location.recordVersion=version;for(const event of converted.reviewEvents){event.id=`${event.id}:${version}`;event.recordVersion=version;event.actorType='unknown';}
+  const version=`edit-${globalThis.crypto.randomUUID()}`;
+  converted.results[0].recordVersion=version;
+  for(const location of converted.locations)location.recordVersion=version;
+  // Status fields are display projections, not a fresh review authorization.
+  // Preserve actual history verbatim; only a separately supplied ReviewEvent
+  // for the new version can certify the edited result or its locations.
+  const subjects=new Set([record.id,...converted.locations.map(l=>l.id)]);
+  converted.reviewEvents=structuredClone((bundle?.reviewEvents||[]).filter(e=>subjects.has(e.subjectId)));
   return converted;
 }
 
+/** Resolve the paper through the same graph used by result display. */
+function resultReferenceId(result,bundle) {
+  return result.referenceId||bundle.experiments.find(e=>e.id===result.experimentId)?.referenceId||bundle.claims.find(c=>result.claimIds.includes(c.id))?.referenceId||null;
+}
+
 /** Remove explicitly selected local records and their dependent edges. */
-export function removeEvidenceRecords(bundle,{referenceIds=[],resultIds=[]}={}) {
-  const next=structuredClone(bundle),references=new Set(referenceIds),results=new Set(resultIds);
-  for(const r of next.results)if(references.has(r.referenceId))results.add(r.id);
-  next.references=next.references.filter(r=>!references.has(r.id));next.results=next.results.filter(r=>!results.has(r.id));
-  next.experiments=next.experiments.filter(e=>!references.has(e.referenceId));next.readings=next.readings.filter(r=>!references.has(r.referenceId));
-  next.locations=next.locations.filter(l=>!results.has(l.resultId));next.claims=next.claims.filter(c=>!references.has(c.referenceId)&&!results.has(c.resultId));
-  next.mappings=next.mappings.filter(m=>!references.has(m.referenceId)&&!results.has(m.resultId));next.sourceArtifacts=next.sourceArtifacts.filter(a=>!references.has(a.referenceId)&&!results.has(a.resultId));
-  next.relations=next.relations.filter(r=>!results.has(r.fromResultId)&&!results.has(r.toResultId));
+export function removeEvidenceRecords(bundle,{referenceIds=[],resultIds=[],retainedResultIds=[]}={}) {
+  const next=structuredClone(bundle),references=new Set(referenceIds),results=new Set(resultIds),retained=new Set(retainedResultIds);
+  const experiments=new Set(bundle.experiments.filter(e=>references.has(e.referenceId)).map(e=>e.id));
+  for(const r of bundle.results)if(references.has(resultReferenceId(r,bundle)))results.add(r.id);
+  const claims=new Set(bundle.claims.filter(c=>references.has(c.referenceId)||experiments.has(c.experimentId)||results.has(c.resultId)).map(c=>c.id));
+  const dependent=row=>references.has(row.referenceId)||references.has(row.sourceReferenceId)||experiments.has(row.experimentId)||results.has(row.resultId)||claims.has(row.claimId);
+  next.references=next.references.filter(r=>!references.has(r.id));
+  next.results=next.results.filter(r=>!results.has(r.id));
+  next.experiments=next.experiments.filter(e=>!experiments.has(e.id));
+  next.readings=next.readings.filter(r=>!references.has(r.referenceId));
+  next.locations=next.locations.filter(l=>!results.has(l.resultId));
+  next.claims=next.claims.filter(c=>!claims.has(c.id));
+  next.mappings=next.mappings.filter(m=>!dependent(m));
+  next.sourceArtifacts=next.sourceArtifacts.filter(a=>!dependent(a));
+  for(const row of [...next.results,...next.readings])row.claimIds=row.claimIds.filter(id=>!claims.has(id));
+  // A built-in override can disappear locally while its endpoint survives in
+  // the built-in bundle. Its independently authored relations must survive.
+  const deletedEndpoint=id=>results.has(id)&&!retained.has(id);
+  next.relations=next.relations.filter(r=>!deletedEndpoint(r.fromResultId)&&!deletedEndpoint(r.toResultId));
   const removedSubjects=new Set(EVIDENCE_COLLECTIONS.filter(k=>k!=='reviewEvents').flatMap(k=>bundle[k].filter(r=>!next[k].some(n=>n.id===r.id)).map(r=>r.id)));
   next.reviewEvents=next.reviewEvents.filter(e=>!removedSubjects.has(e.subjectId));
   return next;
 }
 
-export function validateEvidenceV2(input,{knownReferences=[],knownResults=[],knownRegions}={}) {
+export function validateEvidenceV2(input,options={}) {
+  try{return validateEvidenceV2Model(input,options);}
+  catch(error){return {valid:false,errors:[`Malformed evidence: ${String(error.message||error)}`],warnings:[],value:null};}
+}
+
+function validateEvidenceV2Model(input,{knownReferences=[],knownResults=[],knownRegions}={}) {
   const errors=[],warnings=[];let value=input;
   if(typeof input==='string'){try{value=JSON.parse(input);}catch{return {valid:false,errors:['Invalid JSON'],warnings,value:null};}}
   if(!value||typeof value!=='object'||Array.isArray(value))return {valid:false,errors:['Evidence must be an object'],warnings,value:null};
@@ -176,7 +204,23 @@ export function validateEvidenceV2(input,{knownReferences=[],knownResults=[],kno
     strings(r.locationIds,`${r.id}.locationIds`);strings(r.claimIds,`${r.id}.claimIds`);for(const id of Array.isArray(r.locationIds)?r.locationIds:[]){link(id,identifiers.get('locations'),`${r.id}.locationIds`);if(value.locations.some(l=>l.id===id&&l.resultId!==r.id))errors.push(`${r.id}: location belongs to a different result`);}for(const id of Array.isArray(r.claimIds)?r.claimIds:[])link(id,identifiers.get('claims'),`${r.id}.claimIds`);
     if(!Array.isArray(r.limitations))errors.push(`${r.id}.limitations: expected array`);
     if(r.sample)for(const k of ['enrolled','included','perAnalysis'])report(r.sample[k],`${r.id}.sample.${k}`,v=>Number.isInteger(v)&&v>0);
-    report(r.statistics,`${r.id}.statistics`,v=>Array.isArray(v)&&v.length>0&&v.every(s=>typeof s.type==='string'&&!!s.type.trim()&&finite(s.value)&&(s.df===null||finite(s.df)||Array.isArray(s.df)&&s.df.every(finite))&&typeof s.unit==='string'&&!!s.unit.trim()&&Array.isArray(s.sourceRefs)&&s.sourceRefs.length>0&&s.sourceRefs.every(x=>typeof x==='string')&&(s.p===null||s.p&&['=','<','>'].includes(s.p.operator)&&finite(s.p.value)&&s.p.value>=0&&s.p.value<=1)));
+    report(r.statistics,`${r.id}.statistics`,statistics=>{
+      if(!Array.isArray(statistics)||!statistics.length)return false;
+      let valid=true;
+      statistics.forEach((statistic,index)=>{
+        const path=`${r.id}.statistics.value[${index}]`;
+        if(!statistic||typeof statistic!=='object'||Array.isArray(statistic)){errors.push(`${path}: expected statistic object`);valid=false;return;}
+        const before=errors.length;
+        refs(statistic.sourceRefs,`${path}.sourceRefs`,true);
+        const shape=typeof statistic.type==='string'&&!!statistic.type.trim()&&finite(statistic.value)
+          &&(statistic.df===null||finite(statistic.df)||Array.isArray(statistic.df)&&statistic.df.every(finite))
+          &&typeof statistic.unit==='string'&&!!statistic.unit.trim()
+          &&(statistic.p===null||statistic.p&&typeof statistic.p==='object'&&!Array.isArray(statistic.p)&&['=','<','>'].includes(statistic.p.operator)&&finite(statistic.p.value)&&statistic.p.value>=0&&statistic.p.value<=1);
+        if(!shape){errors.push(`${path}: invalid statistic fields`);valid=false;}
+        if(errors.length!==before)valid=false;
+      });
+      return valid;
+    });
     report(r.correction,`${r.id}.correction`,v=>v&&typeof v.method==='string'&&!!v.method.trim()&&typeof v.comparisonFamily==='string'&&!!v.comparisonFamily.trim()&&(typeof v.passed==='boolean'||v.passed===null)&&v.threshold&&['=','<','>','<=','>='].includes(v.threshold.operator)&&finite(v.threshold.value)&&v.threshold.value>=0&&v.threshold.value<=1);
     report(r.timeWindow,`${r.id}.timeWindow`,v=>v&&finite(v.start)&&finite(v.end)&&v.end>=v.start&&v.unit==='ms');
     report(r.frequencyBand,`${r.id}.frequencyBand`,v=>v&&finite(v.min)&&finite(v.max)&&v.min>=0&&v.max>=v.min&&v.unit==='Hz');
