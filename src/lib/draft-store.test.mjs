@@ -1,7 +1,9 @@
+import * as draftModule from './draft-store.js';
+import {planProjectExport} from './workspace-assets.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {validateDrafts,saveDraft,readDraft,createDraftManager,recoverDraftPayload} from './draft-store.js';
-import {createWorkspaceSession,restoreWorkspaceInitial,WORKSPACE_STORAGE_KEY,stageProjectImport} from './workspace-session.js';
+import {createWorkspaceSession,restoreWorkspaceInitial,WORKSPACE_STORAGE_KEY,stageProjectImport,stageWorkspaceChange} from './workspace-session.js';
 import {validateProjectDrafts,serializeProject,parseProject,encodeView,decodeView} from './workspace-project.js';
 import {emptyEvidence} from './evidence-schema.js';
 import {createEvidenceEditorState,prepareEvidenceEditorSubmission} from './evidence-editor.js';
@@ -62,4 +64,19 @@ test('a delayed autosave cannot resurrect a draft after a successful discard or 
  const session=createWorkspaceSession({storage:storage(),initial:workspace()}),manager=createDraftManager(session);manager.update(draft());
  let release;const gate=new Promise(resolve=>{release=resolve;});const blocking=session.transact(async s=>{await gate;return s;});
  const clearing=manager.discard('draft-1'),lateAutosave=manager.flush();release();await Promise.all([blocking,clearing,lateAutosave]);assert.deepEqual(session.getSnapshot().drafts,[]);assert.equal(manager.getSnapshot().dirty,false);
+});
+test('project export capture admits pending pre-debounce edits through the real W2 session before serialization',async()=>{
+ const session=createWorkspaceSession({storage:storage(),initial:workspace()}),manager=createDraftManager(session);manager.update(draft({payload:{finding:'latest pending before debounce'}}));assert.equal(session.getSnapshot().drafts.length,0);
+ const {base,captured}=await draftModule.captureDraftSafeWorkspace(session,manager);
+ const plan=planProjectExport(captured,{assetIds:[],dependentPolicy:'include'}),stage=await stageWorkspaceChange(plan.workspace,{current:base,preview:plan.preview});
+ assert.equal(JSON.parse(stage.projectText).drafts[0].payload.finding,'latest pending before debounce');assert.equal(manager.getSnapshot().dirty,false);
+ // A scheduled autosave after this admission must not invalidate its preview.
+ await manager.flush();assert.strictEqual(session.getSnapshot(),base);
+});
+test('project export refuses failed oversized/quota autosaves instead of capturing older durable drafts',async()=>{
+ const store=storage(),session=createWorkspaceSession({storage:store,initial:workspace()}),manager=createDraftManager(session);manager.update(draft());await manager.flush();const original=store.getItem(WORKSPACE_STORAGE_KEY),before=session.getSnapshot();
+ manager.update(draft({payload:{finding:'x'.repeat(50021)}}));await assert.rejects(manager.flush(),/draft-payload-budget/);let captures=0;
+ await assert.rejects(draftModule.captureDraftSafeWorkspace(session,manager,()=>{captures++;return session.getSnapshot();}),/draft-payload-budget/);assert.equal(captures,0);assert.strictEqual(session.getSnapshot(),before);assert.equal(store.getItem(WORKSPACE_STORAGE_KEY),original);assert.equal(manager.getSnapshot().records[0].payload.finding.length,50021);
+ manager.update(draft({payload:{finding:'latest after quota'}}));store.fail=true;await assert.rejects(draftModule.captureDraftSafeWorkspace(session,manager),/quota/);assert.equal(manager.getSnapshot().records[0].payload.finding,'latest after quota');assert.equal(store.getItem(WORKSPACE_STORAGE_KEY),original);
+ store.fail=false;const {captured}=await draftModule.captureDraftSafeWorkspace(session,manager);assert.equal(captured.drafts[0].payload.finding,'latest after quota');
 });

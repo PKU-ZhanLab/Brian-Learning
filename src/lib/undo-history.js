@@ -34,7 +34,8 @@ export function applyUndoableAction(state,action,{limit=20,undoState}={}){
     const evidence=action.collection==='relations'?{...state.evidence,relations:state.evidence.relations.filter(r=>r.id!==action.id)}:action.collection==='references'&&action.revert?{...state.evidence,references:state.evidence.references.filter(r=>r.id!==action.id)}:removeEvidenceRecords(state.evidence,action);
     const removedReferences=new Set(state.evidence.references.filter(r=>!evidence.references.some(n=>n.id===r.id)).map(r=>r.id)),removedResults=new Set(state.evidence.results.filter(r=>!evidence.results.some(n=>n.id===r.id)&&!(action.retainedResultIds??[]).includes(r.id)).map(r=>r.id));
     next={...state,evidence,view:cleanView(state.view,evidence,action.revert?new Set():removedReferences,removedResults)};
-  }else if(action.type==='change')next={...state,...action.patch};
+  }else if(action.type==='delete-note')next={...state,notes:state.notes.filter(note=>note.id!==action.id)};
+  else if(action.type==='change')next={...state,...action.patch};
   else throw Error('unsupported-undo-action');
   const patches=[];for(const name of ['notes','evidence','drafts','view'])differences(state[name],next[name],[name],patches);
   const counts=Object.fromEntries(EVIDENCE_COLLECTIONS.map(name=>[name,state.evidence[name].filter(r=>!next.evidence[name].some(n=>n.id===r.id)).length]));

@@ -31,3 +31,12 @@ test('cascade undo restores three ordered result records and preserves later nav
  const later={...deleted.state,view:{...deleted.state.view,literature:{...deleted.state.view.literature,paperId:'later-paper'},coordinate:[9,8,7]}};
  const restored=undoLast(deleted.undoState,later);assert.deepEqual(restored.state.evidence.results,initial.evidence.results);assert.equal(restored.state.view.literature.paperId,'later-paper');assert.deepEqual(restored.state.view.coordinate,[9,8,7]);assert.deepEqual(restored.state.view.resultLayers,[layer]);
 });
+test('semantic queued note deletions do not resurrect a deleted note or erase an intervening addition',async()=>{
+ const initial=workspace();initial.notes=[{id:'A',text:'A'},{id:'B',text:'B'}];const session=createWorkspaceSession({storage:{setItem(){}},initial});
+ let release;const gate=new Promise(resolve=>{release=resolve;});const blocker=session.transact(async base=>{await gate;return base;});
+ const deleteA={type:'delete-note',id:'A',label:'Delete A'},deleteB={type:'delete-note',id:'B',label:'Delete B'};
+ const first=session.transact(base=>applyUndoableAction(base,deleteA).state);
+ const intervening=session.transact(base=>({...base,notes:[...base.notes,{id:'C',text:'Added while deletes waited'}]}));
+ const second=session.transact(base=>applyUndoableAction(base,deleteB).state);release();await Promise.all([blocker,first,intervening,second]);
+ assert.deepEqual(session.getSnapshot().notes.map(n=>n.id),['C']);assert.equal(session.getSnapshot().notes[0].text,'Added while deletes waited');
+});

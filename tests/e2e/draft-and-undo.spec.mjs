@@ -1,3 +1,4 @@
+import {readFile} from 'node:fs/promises';
 import {test,expect} from '@playwright/test';
 import {migrateEvidence} from '../../src/lib/evidence-schema.js';
 import {validateViewState,serializeProject} from '../../src/lib/workspace-project.js';
@@ -52,4 +53,19 @@ test('failed imports preserve current draft; successful project replacement clea
  await page.getByRole('button',{name:'Projects & views',exact:true}).click();await input.setInputFiles({name:'B.neuroatlas',mimeType:'application/json',buffer:Buffer.from(await serializeProject({projectId:'X5-B',view:initial.view,evidence,notes:[],drafts:[],volumes:[]}))});await dialog.getByRole('button',{name:'Confirm open',exact:true}).click();await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
  await expect(editor(page)).toHaveCount(0);await expect(work(page).getByRole('button',{name:/Resume draft:/})).toHaveCount(0);await expect(work(page).getByRole('button',{name:/^Undo:/})).toHaveCount(0);
  const stored=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),key);expect(stored.projectId).toBe('X5-B');expect(stored.drafts).toEqual([]);
+});
+
+test('project export admits the current draft before its delayed autosave timer fires',async({page})=>{
+ await setup(page);
+ // Hold only the 300 ms autosave timer to make the pre-debounce window deterministic.
+ await page.evaluate(()=>{const original=window.setTimeout;window.setTimeout=function(callback,delay,...args){return original.call(this,callback,delay===300?60000:delay,...args);};});
+ const text='Pending before debounce must be exported';await startDraft(page,text);expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).drafts.length,key)).toBe(0);
+ await page.getByRole('button',{name:'Projects & views',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Save and share',exact:true});await dialog.getByRole('button',{name:'Export project',exact:true}).click();await expect(dialog.getByRole('button',{name:'Confirm download',exact:true})).toBeVisible();
+ const downloaded=page.waitForEvent('download');await dialog.getByRole('button',{name:'Confirm download',exact:true}).click();const payload=JSON.parse(await readFile(await (await downloaded).path(),'utf8'));expect(payload.drafts).toHaveLength(1);expect(payload.drafts[0].payload.finding).toBe(text);
+});
+
+test('project export refuses an oversized failed autosave and preserves the current editor',async({page})=>{
+ await setup(page);const text='x'.repeat(50021);await startDraft(page,text);await expect(editor(page).getByRole('status')).toContainText('draft-payload-budget');
+ const downloads=[];page.on('download',download=>downloads.push(download));await page.getByRole('button',{name:'Projects & views',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Save and share',exact:true});await dialog.getByRole('button',{name:'Export project',exact:true}).click();await expect(dialog.getByRole('status').last()).toContainText('draft-payload-budget');await expect(dialog.getByRole('button',{name:'Confirm download',exact:true})).toHaveCount(0);expect(downloads).toHaveLength(0);
+ await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();await expect(textInput(page)).toHaveValue(text);
 });

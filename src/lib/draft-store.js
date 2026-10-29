@@ -61,3 +61,13 @@ export function createDraftManager(session,{readView}={}){
   session.subscribe(emit);
   return {getSnapshot,subscribe(fn){listeners.add(fn);return()=>listeners.delete(fn);},update(record){if(record.projectId!==session.getSnapshot().projectId)throw Error('draft-project-mismatch');pending.set(record.id,structuredClone(record));lastError=null;emit();},flush,complete,discard:id=>complete(id),reset(){generation++;pending.clear();lastError=null;emit();}};
 }
+/** Exports must admit current editing before capturing the canonical workspace. */
+export async function captureDraftSafeWorkspace(session,manager,capture){
+  const projectId=session.getSnapshot().projectId;
+  await manager.flush();
+  const base=session.getSnapshot();
+  if(base.projectId!==projectId||manager.getSnapshot().dirty)throw Error('stale-workspace');
+  const captured=capture?capture(base):base;
+  if(session.getSnapshot()!==base||captured.projectId!==base.projectId||captured.revision!==base.revision)throw Error('stale-workspace');
+  return {base,captured};
+}
