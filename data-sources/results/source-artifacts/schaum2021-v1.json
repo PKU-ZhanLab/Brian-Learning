@@ -1,0 +1,1034 @@
+{
+  "schema": "source-artifact-v1",
+  "id": "schaum2021-v1",
+  "referenceId": "schaum2021",
+  "doi": "10.7554/eLife.61679",
+  "sourceUrl": "https://elifesciences.org/articles/61679",
+  "sourceVersion": "Versioned minimal extraction v1; capture-specific primary source versions listed separately",
+  "retrievedAt": "2026-10-29",
+  "locator": "Selected cells and named sections; exact per-field locators below",
+  "rights": "CC BY 4.0; Schaum et al. (2021), eLife, doi:10.7554/eLife.61679. Retain only selected necessary factual cells and short phrases.",
+  "sourceFileSha256": null,
+  "captures": [
+    {
+      "id": "xml",
+      "sourceUrl": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8096430/fullTextXML",
+      "sourceVersion": "Europe PMC fullTextXML / PMC8096430 / response 2026-10-29",
+      "retrievedAt": "2026-10-29T14:38:31.982Z",
+      "sourceFileSha256": "4448e66e6f314e18f960f5b76714300ef48b12ddc0fda92d3591ee74a3c60e80",
+      "sourceFilePersisted": false,
+      "retrievalMethod": "source-response-bytes"
+    },
+    {
+      "id": "methods",
+      "sourceUrl": "https://elifesciences.org/articles/61679",
+      "sourceVersion": "Version of Record, 2021-05-04",
+      "retrievedAt": "2026-10-29",
+      "sourceFileSha256": null,
+      "sourceFilePersisted": false,
+      "retrievalMethod": "rendered-source"
+    }
+  ],
+  "excerpt": {
+    "format": "minimal-factual-cells-v1",
+    "cells": [
+      {
+        "id": "doi",
+        "rawText": "10.7554/eLife.61679",
+        "locator": "Article front matter / DOI",
+        "captureId": "methods"
+      },
+      {
+        "id": "source-url",
+        "rawText": "https://elifesciences.org/articles/61679",
+        "locator": "Article identity / inspected primary source URL",
+        "captureId": "methods"
+      },
+      {
+        "id": "author-0",
+        "rawText": "Michael Schaum",
+        "locator": "Article front matter / ordered author 1",
+        "captureId": "methods"
+      },
+      {
+        "id": "author-1",
+        "rawText": "Edoardo Pinzuti",
+        "locator": "Article front matter / ordered author 2",
+        "captureId": "methods"
+      },
+      {
+        "id": "author-2",
+        "rawText": "Alexandra Sebastian",
+        "locator": "Article front matter / ordered author 3",
+        "captureId": "methods"
+      },
+      {
+        "id": "author-3",
+        "rawText": "Klaus Lieb",
+        "locator": "Article front matter / ordered author 4",
+        "captureId": "methods"
+      },
+      {
+        "id": "author-4",
+        "rawText": "Pascal Fries",
+        "locator": "Article front matter / ordered author 5",
+        "captureId": "methods"
+      },
+      {
+        "id": "author-5",
+        "rawText": "Arian Mobascher",
+        "locator": "Article front matter / ordered author 6",
+        "captureId": "methods"
+      },
+      {
+        "id": "author-6",
+        "rawText": "Patrick Jung",
+        "locator": "Article front matter / ordered author 7",
+        "captureId": "methods"
+      },
+      {
+        "id": "author-7",
+        "rawText": "Michael Wibral",
+        "locator": "Article front matter / ordered author 8",
+        "captureId": "methods"
+      },
+      {
+        "id": "author-8",
+        "rawText": "Oliver Tüscher",
+        "locator": "Article front matter / ordered author 9",
+        "captureId": "methods"
+      },
+      {
+        "id": "schaum-rifg-label",
+        "rawText": "Inferior frontal gyrus BA44/45 R (rIFG)",
+        "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / row label",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-rifg-x",
+        "rawText": "50",
+        "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / x coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-rifg-y",
+        "rawText": "20",
+        "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / y coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-rifg-z",
+        "rawText": "20",
+        "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / z coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-rifg-table",
+        "rawText": "Table 1",
+        "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / table identifier",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-rifg-mni",
+        "rawText": "MNI",
+        "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / coordinate-system header or associated Methods",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-rifg-t",
+        "rawText": "3.654",
+        "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / t-Value",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-lifg-label",
+        "rawText": "Inferior frontal gyrus BA44/45 L (l-IFG)",
+        "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / row label",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-lifg-x",
+        "rawText": "–50",
+        "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / x coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-lifg-y",
+        "rawText": "10",
+        "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / y coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-lifg-z",
+        "rawText": "20",
+        "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / z coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-lifg-table",
+        "rawText": "Table 1",
+        "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / table identifier",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-lifg-mni",
+        "rawText": "MNI",
+        "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / coordinate-system header or associated Methods",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-lifg-t",
+        "rawText": "2.820",
+        "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / t-Value",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-insula-label",
+        "rawText": "Anterior insula/left IFG (lAIns)",
+        "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / row label",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-insula-x",
+        "rawText": "–40",
+        "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / x coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-insula-y",
+        "rawText": "30",
+        "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / y coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-insula-z",
+        "rawText": "0",
+        "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / z coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-insula-table",
+        "rawText": "Table 1",
+        "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / table identifier",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-insula-mni",
+        "rawText": "MNI",
+        "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / coordinate-system header or associated Methods",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-insula-t",
+        "rawText": "2.894",
+        "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / t-Value",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-presma-label",
+        "rawText": "Pre-supplementary motor area (pre-SMA)",
+        "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / row label",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-presma-x",
+        "rawText": "0",
+        "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / x coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-presma-y",
+        "rawText": "20",
+        "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / y coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-presma-z",
+        "rawText": "60",
+        "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / z coordinate (mm)",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-presma-table",
+        "rawText": "Table 1",
+        "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / table identifier",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-presma-mni",
+        "rawText": "MNI",
+        "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / coordinate-system header or associated Methods",
+        "captureId": "xml"
+      },
+      {
+        "id": "schaum-presma-t",
+        "rawText": "3.878",
+        "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / t-Value",
+        "captureId": "xml"
+      },
+      {
+        "id": "meg-n",
+        "rawText": "59",
+        "locator": "Methods / Source statistics / MEG sample",
+        "captureId": "methods"
+      },
+      {
+        "id": "source-window-start",
+        "rawText": "100",
+        "locator": "Methods / Source imaging / CSD window / start (ms)",
+        "captureId": "methods"
+      },
+      {
+        "id": "source-window-end",
+        "rawText": "373",
+        "locator": "Methods / Source imaging / CSD window / end (ms)",
+        "captureId": "methods"
+      },
+      {
+        "id": "temporal-roi-start",
+        "rawText": "100",
+        "locator": "Methods / MEG data acquisition and preprocessing / a priori temporal ROI / start (ms)",
+        "captureId": "methods"
+      },
+      {
+        "id": "temporal-roi-end",
+        "rawText": "350",
+        "locator": "Methods / MEG data acquisition and preprocessing / a priori temporal ROI / end (ms)",
+        "captureId": "methods"
+      },
+      {
+        "id": "beta-min",
+        "rawText": "12",
+        "locator": "Methods / Source imaging / beta lower limit (Hz)",
+        "captureId": "methods"
+      },
+      {
+        "id": "beta-max",
+        "rawText": "32",
+        "locator": "Methods / Source imaging / beta upper limit (Hz)",
+        "captureId": "methods"
+      },
+      {
+        "id": "beta-center",
+        "rawText": "22",
+        "locator": "Methods / Source imaging / center frequency (Hz)",
+        "captureId": "methods"
+      },
+      {
+        "id": "beta-smoothing",
+        "rawText": "10",
+        "locator": "Methods / Source imaging / spectral smoothing half-width (Hz)",
+        "captureId": "methods"
+      },
+      {
+        "id": "sensor-beta-min",
+        "rawText": "12.0",
+        "locator": "Results / MEG source reconstruction / sensor-level cluster lower limit (Hz)",
+        "captureId": "methods"
+      },
+      {
+        "id": "sensor-beta-max",
+        "rawText": "31.9",
+        "locator": "Results / MEG source reconstruction / sensor-level cluster upper limit (Hz)",
+        "captureId": "methods"
+      },
+      {
+        "id": "cluster-alpha",
+        "rawText": ".05",
+        "locator": "Methods / Source statistics; Figure 2A caption / cluster alpha",
+        "captureId": "methods"
+      },
+      {
+        "id": "permutations",
+        "rawText": "5000",
+        "locator": "Methods / Source statistics refers to Spectral analysis at sensor level / permutations",
+        "captureId": "methods"
+      },
+      {
+        "id": "source-grid",
+        "rawText": "10",
+        "locator": "Methods / Source imaging / source-grid spacing (mm)",
+        "captureId": "methods"
+      }
+    ]
+  },
+  "fields": [
+    {
+      "path": "references/schaum2021/doi",
+      "cellId": "doi",
+      "rawText": "10.7554/eLife.61679",
+      "locator": "Article front matter / DOI",
+      "encoding": "text"
+    },
+    {
+      "path": "references/schaum2021/url",
+      "cellId": "source-url",
+      "rawText": "https://elifesciences.org/articles/61679",
+      "locator": "Article identity / inspected primary source URL",
+      "encoding": "normalization",
+      "normalizedValue": "https://doi.org/10.7554/eLife.61679",
+      "rationale": "Canonical DOI resolver URL for the same inspected article DOI."
+    },
+    {
+      "path": "references/schaum2021/fullAuthorList/0",
+      "cellId": "author-0",
+      "rawText": "Michael Schaum",
+      "locator": "Article front matter / ordered author 1",
+      "encoding": "text"
+    },
+    {
+      "path": "references/schaum2021/fullAuthorList/1",
+      "cellId": "author-1",
+      "rawText": "Edoardo Pinzuti",
+      "locator": "Article front matter / ordered author 2",
+      "encoding": "text"
+    },
+    {
+      "path": "references/schaum2021/fullAuthorList/2",
+      "cellId": "author-2",
+      "rawText": "Alexandra Sebastian",
+      "locator": "Article front matter / ordered author 3",
+      "encoding": "text"
+    },
+    {
+      "path": "references/schaum2021/fullAuthorList/3",
+      "cellId": "author-3",
+      "rawText": "Klaus Lieb",
+      "locator": "Article front matter / ordered author 4",
+      "encoding": "text"
+    },
+    {
+      "path": "references/schaum2021/fullAuthorList/4",
+      "cellId": "author-4",
+      "rawText": "Pascal Fries",
+      "locator": "Article front matter / ordered author 5",
+      "encoding": "text"
+    },
+    {
+      "path": "references/schaum2021/fullAuthorList/5",
+      "cellId": "author-5",
+      "rawText": "Arian Mobascher",
+      "locator": "Article front matter / ordered author 6",
+      "encoding": "text"
+    },
+    {
+      "path": "references/schaum2021/fullAuthorList/6",
+      "cellId": "author-6",
+      "rawText": "Patrick Jung",
+      "locator": "Article front matter / ordered author 7",
+      "encoding": "text"
+    },
+    {
+      "path": "references/schaum2021/fullAuthorList/7",
+      "cellId": "author-7",
+      "rawText": "Michael Wibral",
+      "locator": "Article front matter / ordered author 8",
+      "encoding": "text"
+    },
+    {
+      "path": "references/schaum2021/fullAuthorList/8",
+      "cellId": "author-8",
+      "rawText": "Oliver Tüscher",
+      "locator": "Article front matter / ordered author 9",
+      "encoding": "text"
+    },
+    {
+      "path": "references/schaum2021/fullAuthorList/length",
+      "cellId": "source-url",
+      "rawText": "https://elifesciences.org/articles/61679",
+      "locator": "Article identity / inspected primary source URL",
+      "encoding": "normalization",
+      "normalizedValue": 9,
+      "rationale": "Number of names in the ordered primary article author list transcribed above."
+    },
+    {
+      "path": "locations/schaum-rifg/xyz/0",
+      "cellId": "schaum-rifg-x",
+      "rawText": "50",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / x coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-rifg/xyz/1",
+      "cellId": "schaum-rifg-y",
+      "rawText": "20",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / y coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-rifg/xyz/2",
+      "cellId": "schaum-rifg-z",
+      "rawText": "20",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / z coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-rifg/legacyV1/sourceTable",
+      "cellId": "schaum-rifg-table",
+      "rawText": "Table 1",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / table identifier",
+      "encoding": "text"
+    },
+    {
+      "path": "locations/schaum-rifg/legacyV1/sourceRow",
+      "cellId": "schaum-rifg-label",
+      "rawText": "Inferior frontal gyrus BA44/45 R (rIFG)",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "Inferior frontal gyrus BA44/45 R",
+      "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+    },
+    {
+      "path": "locations/schaum-rifg/sourceRefs/0",
+      "cellId": "schaum-rifg-label",
+      "rawText": "Inferior frontal gyrus BA44/45 R (rIFG)",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+      "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+    },
+    {
+      "path": "locations/schaum-rifg/legacyV1/sourceUrl",
+      "cellId": "schaum-rifg-label",
+      "rawText": "Inferior frontal gyrus BA44/45 R (rIFG)",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+      "rationale": "Retained original publisher source link to this row."
+    },
+    {
+      "path": "locations/schaum-rifg/sourceSpaceId",
+      "cellId": "schaum-rifg-mni",
+      "rawText": "MNI",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / coordinate-system header or associated Methods",
+      "encoding": "normalization",
+      "normalizedValue": "MNI-unspecified",
+      "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+    },
+    {
+      "path": "locations/schaum-rifg/kind",
+      "cellId": "schaum-rifg-label",
+      "rawText": "Inferior frontal gyrus BA44/45 R (rIFG)",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "peak",
+      "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/0/value",
+      "cellId": "schaum-rifg-t",
+      "rawText": "3.654",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / t-Value",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/0/type",
+      "cellId": "schaum-rifg-t",
+      "rawText": "3.654",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": "t",
+      "rationale": "The Table 1 column is a t-Value, not an effect size."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/0/df",
+      "cellId": "schaum-rifg-t",
+      "rawText": "3.654",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": null,
+      "rationale": "No peak-specific degrees of freedom transcribed from the selected table cells; do not infer it."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/0/p",
+      "cellId": "schaum-rifg-t",
+      "rawText": "3.654",
+      "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": null,
+      "rationale": "Selected peak t cells do not supply peak-level p values; cluster inference is recorded separately."
+    },
+    {
+      "path": "locations/schaum-lifg/xyz/0",
+      "cellId": "schaum-lifg-x",
+      "rawText": "–50",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / x coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-lifg/xyz/1",
+      "cellId": "schaum-lifg-y",
+      "rawText": "10",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / y coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-lifg/xyz/2",
+      "cellId": "schaum-lifg-z",
+      "rawText": "20",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / z coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-lifg/legacyV1/sourceTable",
+      "cellId": "schaum-lifg-table",
+      "rawText": "Table 1",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / table identifier",
+      "encoding": "text"
+    },
+    {
+      "path": "locations/schaum-lifg/legacyV1/sourceRow",
+      "cellId": "schaum-lifg-label",
+      "rawText": "Inferior frontal gyrus BA44/45 L (l-IFG)",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "Inferior frontal gyrus BA44/45 L",
+      "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+    },
+    {
+      "path": "locations/schaum-lifg/sourceRefs/0",
+      "cellId": "schaum-lifg-label",
+      "rawText": "Inferior frontal gyrus BA44/45 L (l-IFG)",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+      "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+    },
+    {
+      "path": "locations/schaum-lifg/legacyV1/sourceUrl",
+      "cellId": "schaum-lifg-label",
+      "rawText": "Inferior frontal gyrus BA44/45 L (l-IFG)",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+      "rationale": "Retained original publisher source link to this row."
+    },
+    {
+      "path": "locations/schaum-lifg/sourceSpaceId",
+      "cellId": "schaum-lifg-mni",
+      "rawText": "MNI",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / coordinate-system header or associated Methods",
+      "encoding": "normalization",
+      "normalizedValue": "MNI-unspecified",
+      "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+    },
+    {
+      "path": "locations/schaum-lifg/kind",
+      "cellId": "schaum-lifg-label",
+      "rawText": "Inferior frontal gyrus BA44/45 L (l-IFG)",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "peak",
+      "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/1/value",
+      "cellId": "schaum-lifg-t",
+      "rawText": "2.820",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / t-Value",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/1/type",
+      "cellId": "schaum-lifg-t",
+      "rawText": "2.820",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": "t",
+      "rationale": "The Table 1 column is a t-Value, not an effect size."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/1/df",
+      "cellId": "schaum-lifg-t",
+      "rawText": "2.820",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": null,
+      "rationale": "No peak-specific degrees of freedom transcribed from the selected table cells; do not infer it."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/1/p",
+      "cellId": "schaum-lifg-t",
+      "rawText": "2.820",
+      "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": null,
+      "rationale": "Selected peak t cells do not supply peak-level p values; cluster inference is recorded separately."
+    },
+    {
+      "path": "locations/schaum-insula/xyz/0",
+      "cellId": "schaum-insula-x",
+      "rawText": "–40",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / x coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-insula/xyz/1",
+      "cellId": "schaum-insula-y",
+      "rawText": "30",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / y coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-insula/xyz/2",
+      "cellId": "schaum-insula-z",
+      "rawText": "0",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / z coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-insula/legacyV1/sourceTable",
+      "cellId": "schaum-insula-table",
+      "rawText": "Table 1",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / table identifier",
+      "encoding": "text"
+    },
+    {
+      "path": "locations/schaum-insula/legacyV1/sourceRow",
+      "cellId": "schaum-insula-label",
+      "rawText": "Anterior insula/left IFG (lAIns)",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "Anterior insula/left IFG",
+      "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+    },
+    {
+      "path": "locations/schaum-insula/sourceRefs/0",
+      "cellId": "schaum-insula-label",
+      "rawText": "Anterior insula/left IFG (lAIns)",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+      "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+    },
+    {
+      "path": "locations/schaum-insula/legacyV1/sourceUrl",
+      "cellId": "schaum-insula-label",
+      "rawText": "Anterior insula/left IFG (lAIns)",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+      "rationale": "Retained original publisher source link to this row."
+    },
+    {
+      "path": "locations/schaum-insula/sourceSpaceId",
+      "cellId": "schaum-insula-mni",
+      "rawText": "MNI",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / coordinate-system header or associated Methods",
+      "encoding": "normalization",
+      "normalizedValue": "MNI-unspecified",
+      "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+    },
+    {
+      "path": "locations/schaum-insula/kind",
+      "cellId": "schaum-insula-label",
+      "rawText": "Anterior insula/left IFG (lAIns)",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "peak",
+      "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/2/value",
+      "cellId": "schaum-insula-t",
+      "rawText": "2.894",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / t-Value",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/2/type",
+      "cellId": "schaum-insula-t",
+      "rawText": "2.894",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": "t",
+      "rationale": "The Table 1 column is a t-Value, not an effect size."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/2/df",
+      "cellId": "schaum-insula-t",
+      "rawText": "2.894",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": null,
+      "rationale": "No peak-specific degrees of freedom transcribed from the selected table cells; do not infer it."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/2/p",
+      "cellId": "schaum-insula-t",
+      "rawText": "2.894",
+      "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": null,
+      "rationale": "Selected peak t cells do not supply peak-level p values; cluster inference is recorded separately."
+    },
+    {
+      "path": "locations/schaum-presma/xyz/0",
+      "cellId": "schaum-presma-x",
+      "rawText": "0",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / x coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-presma/xyz/1",
+      "cellId": "schaum-presma-y",
+      "rawText": "20",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / y coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-presma/xyz/2",
+      "cellId": "schaum-presma-z",
+      "rawText": "60",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / z coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/schaum-presma/legacyV1/sourceTable",
+      "cellId": "schaum-presma-table",
+      "rawText": "Table 1",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / table identifier",
+      "encoding": "text"
+    },
+    {
+      "path": "locations/schaum-presma/legacyV1/sourceRow",
+      "cellId": "schaum-presma-label",
+      "rawText": "Pre-supplementary motor area (pre-SMA)",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "Pre-supplementary motor area",
+      "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+    },
+    {
+      "path": "locations/schaum-presma/sourceRefs/0",
+      "cellId": "schaum-presma-label",
+      "rawText": "Pre-supplementary motor area (pre-SMA)",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+      "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+    },
+    {
+      "path": "locations/schaum-presma/legacyV1/sourceUrl",
+      "cellId": "schaum-presma-label",
+      "rawText": "Pre-supplementary motor area (pre-SMA)",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+      "rationale": "Retained original publisher source link to this row."
+    },
+    {
+      "path": "locations/schaum-presma/sourceSpaceId",
+      "cellId": "schaum-presma-mni",
+      "rawText": "MNI",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / coordinate-system header or associated Methods",
+      "encoding": "normalization",
+      "normalizedValue": "MNI-unspecified",
+      "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+    },
+    {
+      "path": "locations/schaum-presma/kind",
+      "cellId": "schaum-presma-label",
+      "rawText": "Pre-supplementary motor area (pre-SMA)",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / row label",
+      "encoding": "normalization",
+      "normalizedValue": "peak",
+      "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/3/value",
+      "cellId": "schaum-presma-t",
+      "rawText": "3.878",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / t-Value",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/3/type",
+      "cellId": "schaum-presma-t",
+      "rawText": "3.878",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": "t",
+      "rationale": "The Table 1 column is a t-Value, not an effect size."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/3/df",
+      "cellId": "schaum-presma-t",
+      "rawText": "3.878",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": null,
+      "rationale": "No peak-specific degrees of freedom transcribed from the selected table cells; do not infer it."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/statistics/value/3/p",
+      "cellId": "schaum-presma-t",
+      "rawText": "3.878",
+      "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / t-Value",
+      "encoding": "normalization",
+      "normalizedValue": null,
+      "rationale": "Selected peak t cells do not supply peak-level p values; cluster inference is recorded separately."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/sample/included/value",
+      "cellId": "meg-n",
+      "rawText": "59",
+      "locator": "Methods / Source statistics / MEG sample",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/sample/perAnalysis/value",
+      "cellId": "meg-n",
+      "rawText": "59",
+      "locator": "Methods / Source statistics / MEG sample",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/timeWindow/value/start",
+      "cellId": "source-window-start",
+      "rawText": "100",
+      "locator": "Methods / Source imaging / CSD window / start (ms)",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/timeWindow/value/end",
+      "cellId": "source-window-end",
+      "rawText": "373",
+      "locator": "Methods / Source imaging / CSD window / end (ms)",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/timeWindow/value/temporalROI/start",
+      "cellId": "temporal-roi-start",
+      "rawText": "100",
+      "locator": "Methods / MEG data acquisition and preprocessing / a priori temporal ROI / start (ms)",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/timeWindow/value/temporalROI/end",
+      "cellId": "temporal-roi-end",
+      "rawText": "350",
+      "locator": "Methods / MEG data acquisition and preprocessing / a priori temporal ROI / end (ms)",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/frequencyBand/value/min",
+      "cellId": "beta-min",
+      "rawText": "12",
+      "locator": "Methods / Source imaging / beta lower limit (Hz)",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/frequencyBand/value/max",
+      "cellId": "beta-max",
+      "rawText": "32",
+      "locator": "Methods / Source imaging / beta upper limit (Hz)",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/frequencyBand/value/spectralCenter",
+      "cellId": "beta-center",
+      "rawText": "22",
+      "locator": "Methods / Source imaging / center frequency (Hz)",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/frequencyBand/value/smoothingHalfWidth",
+      "cellId": "beta-smoothing",
+      "rawText": "10",
+      "locator": "Methods / Source imaging / spectral smoothing half-width (Hz)",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/frequencyBand/value/sensorCluster/min",
+      "cellId": "sensor-beta-min",
+      "rawText": "12.0",
+      "locator": "Results / MEG source reconstruction / sensor-level cluster lower limit (Hz)",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/frequencyBand/value/sensorCluster/max",
+      "cellId": "sensor-beta-max",
+      "rawText": "31.9",
+      "locator": "Results / MEG source reconstruction / sensor-level cluster upper limit (Hz)",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/correction/value/threshold/value",
+      "cellId": "cluster-alpha",
+      "rawText": ".05",
+      "locator": "Methods / Source statistics; Figure 2A caption / cluster alpha",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/correction/value/permutations",
+      "cellId": "permutations",
+      "rawText": "5000",
+      "locator": "Methods / Source statistics refers to Spectral analysis at sensor level / permutations",
+      "encoding": "number"
+    },
+    {
+      "path": "results/schaum2021-meg-stop/correction/value/method",
+      "cellId": "cluster-alpha",
+      "rawText": ".05",
+      "locator": "Methods / Source statistics; Figure 2A caption / cluster alpha",
+      "encoding": "normalization",
+      "normalizedValue": "two-sided cluster-based permutation inference",
+      "rationale": "Named Methods / Source statistics describes a two-sided cluster-based permutation test."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/correction/value/passed",
+      "cellId": "cluster-alpha",
+      "rawText": ".05",
+      "locator": "Methods / Source statistics; Figure 2A caption / cluster alpha",
+      "encoding": "normalization",
+      "normalizedValue": null,
+      "rationale": "Cluster alpha does not supply a peak-level corrected significance decision."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/timeWindow/value/role",
+      "cellId": "source-window-end",
+      "rawText": "373",
+      "locator": "Methods / Source imaging / CSD window / end (ms)",
+      "encoding": "normalization",
+      "normalizedValue": "source-reconstruction cross-spectral-density window",
+      "rationale": "Methods / Source imaging supplies this extended CSD analysis window."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/timeWindow/value/temporalROI/role",
+      "cellId": "temporal-roi-end",
+      "rawText": "350",
+      "locator": "Methods / MEG data acquisition and preprocessing / a priori temporal ROI / end (ms)",
+      "encoding": "normalization",
+      "normalizedValue": "a priori temporal ROI",
+      "rationale": "Methods distinguishes the a priori temporal ROI from the extended source-imaging window."
+    },
+    {
+      "path": "results/schaum2021-meg-stop/frequencyBand/value/role",
+      "cellId": "beta-max",
+      "rawText": "32",
+      "locator": "Methods / Source imaging / beta upper limit (Hz)",
+      "encoding": "normalization",
+      "normalizedValue": "source reconstruction",
+      "rationale": "Source-imaging beta band; the separately recorded sensor cluster has a different role."
+    }
+  ],
+  "paraphrases": [
+    {
+      "locator": "Methods / Source imaging",
+      "text": "The Methods explicitly explain extending the source-imaging window beyond 350 ms to align with an integer number of oscillatory cycles and reduce spectral leakage. The 100-350 ms temporal ROI and 100-373 ms source-imaging window describe different analysis roles; retain both with their roles rather than treating them as an unexplained contradiction."
+    },
+    {
+      "locator": "Methods / Source statistics",
+      "text": "Dependent-samples t statistics use two-sided cluster-based permutation inference. The 10 mm source grid is not localization precision. fMRI n=76 and its thresholds are not applied to this MEG result."
+    }
+  ],
+  "limitations": [
+    "AI-assisted source inspection by Codex/root; human or expert review remains pending.",
+    "Only the listed minimal cells are available offline; complete articles and images are not retained.",
+    "A source-file digest records actual observed bytes of the named response only; it cannot re-verify absent full-source bytes.",
+    "Generic MNI does not establish an exact template variant or direct overlay eligibility."
+  ],
+  "sha256": "d324b1480a6ab7c9aa448b3aff68099326f27444c2c0b70aa69b6f3f735d4d7c",
+  "recordSha256": "9fe0d0cebe836171d094544cff6c34a1511b889fbaf98161116c9a4c8103dde2"
+}

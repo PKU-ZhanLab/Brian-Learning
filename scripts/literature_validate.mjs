@@ -13,6 +13,7 @@ import {emptyEvidence,validateEvidence} from '../src/lib/evidence-workspace.js';
 import {structures as allStructures} from '../src/data/catalog.js';
 import {classifyMapping,buildLocateRequest} from '../src/lib/evidence-mapping.js';
 import {buildEvidenceSearchIndex,searchEvidence} from '../src/lib/evidence-search.js';
+import {auditFromDisk} from './evidence-audit.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dir=path.join(root,'data-sources/literature-upgrade');
 const sha=s=>createHash('sha256').update(s).digest('hex');
@@ -143,6 +144,12 @@ for(const record of audit.metadataSources){
 for(const source of audit.coordinates){const c=sourceCheckedCoordinates.find(c=>c.id===source.id);assert(c,`Missing audited coordinate ${source.id}`);assert.deepEqual([c.x,c.y,c.z],source.xyz);assert.equal(c.space,source.space);assert.equal(c.sourceRow,source.sourceRow);assert.equal(c.sourceTable,source.sourceTable);assert.equal(c.sourceUrl,source.sourceURL);assert.equal(c.kind,source.kind);}
 const portable=JSON.parse(await readFile(path.join(resultsDir,'curated-results.json'),'utf8'));
 assert.deepEqual(portable,structured,'Portable example must match the built-in structured findings');
+const offlineSources=await auditFromDisk();
+assert(offlineSources.valid,JSON.stringify(offlineSources,null,2));
+assert.equal(offlineSources.coverage.coordinates.length,8,'Every coordinate requires verified per-axis primary-source anchors');
+assert.equal(audit.sourceArtifactIndex,'source-artifacts/index.json');
+const sourceIndex=JSON.parse(await readFile(path.join(resultsDir,audit.sourceArtifactIndex),'utf8'));
+assert.deepEqual(audit.sourceArtifacts,sourceIndex.artifacts,'Source audit must retain exact versioned artifact file identities');
 const frames=Object.fromEntries([...new Set(sourceCheckedCoordinates.map(c=>c.space))].map(space=>[space,sourceCheckedCoordinates.filter(c=>c.space===space).length]));
 const activeBrainStructuresWithReadingLinks=allStructures.filter(s=>s.category!=='spinal'&&mappedIds.has(s.id)).length;
 assert.equal(activeBrainStructuresWithReadingLinks,150,'Expected 150 active brain catalog structures');

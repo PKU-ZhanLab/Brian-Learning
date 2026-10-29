@@ -1,6 +1,6 @@
 {
   "schema": "brain-evidence-v2",
-  "dataVersion": "2026-10-29.1",
+  "dataVersion": "2026-10-29.2",
   "references": [
     {
       "id": "schaum2021",
@@ -114,7 +114,7 @@
       "id": "schaum2021-meg-stop",
       "referenceId": "schaum2021",
       "experimentId": null,
-      "recordVersion": "legacy-v1",
+      "recordVersion": "2026-10-29.2",
       "contrast": {
         "zh": "sSTOP > cAC-GO；刺激选择性停止任务，beta 源功率",
         "en": "sSTOP > cAC-GO; stimulus-selective stopping, beta source power"
@@ -133,20 +133,80 @@
           "sourceRefs": []
         },
         "included": {
-          "state": "not-extracted",
-          "reason": "Not extracted from the source",
-          "sourceRefs": []
+          "state": "reported",
+          "value": 59,
+          "sourceRefs": [
+            "schaum2021-v1"
+          ]
         },
         "perAnalysis": {
-          "state": "not-extracted",
-          "reason": "Not extracted from the source",
-          "sourceRefs": []
+          "state": "reported",
+          "value": 59,
+          "sourceRefs": [
+            "schaum2021-v1"
+          ]
         }
       },
       "statistics": {
-        "state": "not-extracted",
-        "reason": "Not extracted from the source",
-        "sourceRefs": []
+        "state": "reported",
+        "value": [
+          {
+            "type": "t",
+            "value": 3.654,
+            "df": null,
+            "p": null,
+            "unit": "dimensionless",
+            "locationId": "schaum-rifg",
+            "sourceRefs": [
+              "schaum2021-v1",
+              "https://elifesciences.org/articles/61679#table1"
+            ],
+            "sourceLocator": "Table 1 / schaum-rifg / t-Value; no peak-level p reported in selected cells"
+          },
+          {
+            "type": "t",
+            "value": 2.82,
+            "df": null,
+            "p": null,
+            "unit": "dimensionless",
+            "locationId": "schaum-lifg",
+            "sourceRefs": [
+              "schaum2021-v1",
+              "https://elifesciences.org/articles/61679#table1"
+            ],
+            "sourceLocator": "Table 1 / schaum-lifg / t-Value; no peak-level p reported in selected cells"
+          },
+          {
+            "type": "t",
+            "value": 2.894,
+            "df": null,
+            "p": null,
+            "unit": "dimensionless",
+            "locationId": "schaum-insula",
+            "sourceRefs": [
+              "schaum2021-v1",
+              "https://elifesciences.org/articles/61679#table1"
+            ],
+            "sourceLocator": "Table 1 / schaum-insula / t-Value; no peak-level p reported in selected cells"
+          },
+          {
+            "type": "t",
+            "value": 3.878,
+            "df": null,
+            "p": null,
+            "unit": "dimensionless",
+            "locationId": "schaum-presma",
+            "sourceRefs": [
+              "schaum2021-v1",
+              "https://elifesciences.org/articles/61679#table1"
+            ],
+            "sourceLocator": "Table 1 / schaum-presma / t-Value; no peak-level p reported in selected cells"
+          }
+        ],
+        "sourceRefs": [
+          "schaum2021-v1",
+          "https://elifesciences.org/articles/61679#table1"
+        ]
       },
       "effectEstimate": {
         "state": "not-extracted",
@@ -154,19 +214,62 @@
         "sourceRefs": []
       },
       "correction": {
-        "state": "not-extracted",
-        "reason": "Not extracted from the source",
-        "sourceRefs": []
+        "state": "reported",
+        "value": {
+          "method": "two-sided cluster-based permutation inference",
+          "comparisonFamily": "MEG source statistics; dependent-samples t statistic",
+          "passed": null,
+          "threshold": {
+            "operator": "<",
+            "value": 0.05,
+            "appliesTo": "cluster alpha"
+          },
+          "permutations": 5000
+        },
+        "sourceRefs": [
+          "schaum2021-v1"
+        ]
       },
       "timeWindow": {
-        "state": "not-extracted",
-        "reason": "Not extracted from the source",
-        "sourceRefs": []
+        "state": "reported",
+        "value": {
+          "start": 100,
+          "end": 373,
+          "unit": "ms",
+          "role": "source-reconstruction cross-spectral-density window",
+          "event": "STOP/AC-GO signal onset",
+          "temporalROI": {
+            "start": 100,
+            "end": 350,
+            "unit": "ms",
+            "role": "a priori temporal ROI"
+          },
+          "explanationParaphrase": "Methods / Source imaging explicitly extends the window beyond 350 ms to fit integer oscillatory cycles and reduce spectral leakage."
+        },
+        "sourceRefs": [
+          "schaum2021-v1",
+          "https://elifesciences.org/articles/61679"
+        ]
       },
       "frequencyBand": {
-        "state": "not-extracted",
-        "reason": "Not extracted from the source",
-        "sourceRefs": []
+        "state": "reported",
+        "value": {
+          "min": 12,
+          "max": 32,
+          "unit": "Hz",
+          "role": "source reconstruction",
+          "spectralCenter": 22,
+          "smoothingHalfWidth": 10,
+          "sensorCluster": {
+            "min": 12,
+            "max": 31.9,
+            "unit": "Hz",
+            "role": "sensor-level cluster selected for source reconstruction"
+          }
+        },
+        "sourceRefs": [
+          "schaum2021-v1"
+        ]
       },
       "locationIds": [
         "schaum-rifg",
@@ -328,7 +431,7 @@
       "id": "axelrod2015-rffa",
       "referenceId": "axelrod2015",
       "experimentId": null,
-      "recordVersion": "legacy-v1",
+      "recordVersion": "2026-10-29.2",
       "contrast": {
         "zh": "两名著名人物，每人 8 张图；独立首轮定位，其余轮次身份解码",
         "en": "Two famous identities, 8 images each; first run used for localization, remaining runs for decoding"
@@ -374,7 +477,8 @@
               "value": 0.001
             },
             "sourceRefs": [
-              "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126"
+              "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+              "axelrod2015-v1"
             ],
             "sourceLocator": "Results / Neuroimaging Results / MVPA"
           },
@@ -388,14 +492,16 @@
               "value": 0.001
             },
             "sourceRefs": [
-              "https://doi.org/10.1371/journal.pone.0117126.t002"
+              "https://doi.org/10.1371/journal.pone.0117126.t002",
+              "axelrod2015-v1"
             ],
             "sourceLocator": "Table 2 / FFA / 20 voxels"
           }
         ],
         "sourceRefs": [
           "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
-          "https://doi.org/10.1371/journal.pone.0117126.t002"
+          "https://doi.org/10.1371/journal.pone.0117126.t002",
+          "axelrod2015-v1"
         ]
       },
       "effectEstimate": {
@@ -411,13 +517,14 @@
           "passed": true,
           "threshold": {
             "operator": "<",
-            "value": 0.05,
-            "appliesTo": "Bonferroni-adjusted p"
+            "value": 0.004,
+            "appliesTo": "reported Bonferroni threshold across 12 regions"
           }
         },
         "sourceRefs": [
           "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
-          "https://doi.org/10.1371/journal.pone.0117126.t002"
+          "https://doi.org/10.1371/journal.pone.0117126.t002",
+          "axelrod2015-v1"
         ]
       },
       "timeWindow": {
@@ -532,7 +639,7 @@
       "id": "axelrod2015-lffa",
       "referenceId": "axelrod2015",
       "experimentId": null,
-      "recordVersion": "legacy-v1",
+      "recordVersion": "2026-10-29.2",
       "contrast": {
         "zh": "两名著名人物身份解码，与右 FFA 使用相同任务",
         "en": "Famous-face identity decoding, same task as right FFA"
@@ -578,7 +685,8 @@
               "value": 0.012
             },
             "sourceRefs": [
-              "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126"
+              "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+              "axelrod2015-v1"
             ],
             "sourceLocator": "Results / Neuroimaging Results / MVPA"
           },
@@ -592,14 +700,16 @@
               "value": 0.01
             },
             "sourceRefs": [
-              "https://doi.org/10.1371/journal.pone.0117126.t002"
+              "https://doi.org/10.1371/journal.pone.0117126.t002",
+              "axelrod2015-v1"
             ],
             "sourceLocator": "Table 2 / FFA / 20 voxels"
           }
         ],
         "sourceRefs": [
           "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
-          "https://doi.org/10.1371/journal.pone.0117126.t002"
+          "https://doi.org/10.1371/journal.pone.0117126.t002",
+          "axelrod2015-v1"
         ]
       },
       "effectEstimate": {
@@ -615,13 +725,14 @@
           "passed": false,
           "threshold": {
             "operator": "<",
-            "value": 0.05,
-            "appliesTo": "Bonferroni-adjusted p"
+            "value": 0.004,
+            "appliesTo": "reported Bonferroni threshold across 12 regions"
           }
         },
         "sourceRefs": [
           "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
-          "https://doi.org/10.1371/journal.pone.0117126.t002"
+          "https://doi.org/10.1371/journal.pone.0117126.t002",
+          "axelrod2015-v1"
         ]
       },
       "timeWindow": {
@@ -720,7 +831,7 @@
       "id": "bosco2008-tms-protocol1",
       "referenceId": "bosco2008",
       "experimentId": null,
-      "recordVersion": "legacy-v1",
+      "recordVersion": "2026-10-29.2",
       "contrast": {
         "zh": "协议 1：rTMS 前后比较；自然重力或反重力下落目标；反应时控制任务",
         "en": "Protocol 1: before/after rTMS; gravity-consistent or reversed-gravity descent; reaction-time control"
@@ -916,7 +1027,8 @@
         ]
       },
       "sourceRefs": [
-        "https://elifesciences.org/articles/61679#table1"
+        "https://elifesciences.org/articles/61679#table1",
+        "schaum2021-v1"
       ],
       "derivedAsset": null,
       "transformRef": null,
@@ -936,7 +1048,8 @@
           "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
           "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
         }
-      }
+      },
+      "recordVersion": "2026-10-29.2"
     },
     {
       "id": "schaum-lifg",
@@ -959,7 +1072,8 @@
         ]
       },
       "sourceRefs": [
-        "https://elifesciences.org/articles/61679#table1"
+        "https://elifesciences.org/articles/61679#table1",
+        "schaum2021-v1"
       ],
       "derivedAsset": null,
       "transformRef": null,
@@ -979,7 +1093,8 @@
           "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
           "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
         }
-      }
+      },
+      "recordVersion": "2026-10-29.2"
     },
     {
       "id": "schaum-insula",
@@ -1002,7 +1117,8 @@
         ]
       },
       "sourceRefs": [
-        "https://elifesciences.org/articles/61679#table1"
+        "https://elifesciences.org/articles/61679#table1",
+        "schaum2021-v1"
       ],
       "derivedAsset": null,
       "transformRef": null,
@@ -1022,7 +1138,8 @@
           "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
           "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
         }
-      }
+      },
+      "recordVersion": "2026-10-29.2"
     },
     {
       "id": "schaum-presma",
@@ -1045,7 +1162,8 @@
         ]
       },
       "sourceRefs": [
-        "https://elifesciences.org/articles/61679#table1"
+        "https://elifesciences.org/articles/61679#table1",
+        "schaum2021-v1"
       ],
       "derivedAsset": null,
       "transformRef": null,
@@ -1065,7 +1183,8 @@
           "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
           "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
         }
-      }
+      },
+      "recordVersion": "2026-10-29.2"
     },
     {
       "id": "axelrod-rffa",
@@ -1088,7 +1207,8 @@
         ]
       },
       "sourceRefs": [
-        "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001"
+        "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+        "axelrod2015-v1"
       ],
       "derivedAsset": null,
       "transformRef": null,
@@ -1108,7 +1228,8 @@
           "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
           "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
         }
-      }
+      },
+      "recordVersion": "2026-10-29.2"
     },
     {
       "id": "axelrod-lffa",
@@ -1131,7 +1252,8 @@
         ]
       },
       "sourceRefs": [
-        "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001"
+        "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+        "axelrod2015-v1"
       ],
       "derivedAsset": null,
       "transformRef": null,
@@ -1151,7 +1273,8 @@
           "zh": "原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。",
           "en": "The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame."
         }
-      }
+      },
+      "recordVersion": "2026-10-29.2"
     },
     {
       "id": "bosco-tpj",
@@ -1174,7 +1297,8 @@
         ]
       },
       "sourceRefs": [
-        "https://www.jneurosci.org/content/28/46/12071#T1"
+        "https://www.jneurosci.org/content/28/46/12071#T1",
+        "bosco2008-v1"
       ],
       "derivedAsset": null,
       "transformRef": null,
@@ -1210,7 +1334,8 @@
         "sourceRefs": [
           "https://www.jneurosci.org/content/28/46/12071#T1"
         ]
-      }
+      },
+      "recordVersion": "2026-10-29.2"
     },
     {
       "id": "bosco-mt",
@@ -1233,7 +1358,8 @@
         ]
       },
       "sourceRefs": [
-        "https://www.jneurosci.org/content/28/46/12071#T1"
+        "https://www.jneurosci.org/content/28/46/12071#T1",
+        "bosco2008-v1"
       ],
       "derivedAsset": null,
       "transformRef": null,
@@ -1269,7 +1395,8 @@
         "sourceRefs": [
           "https://www.jneurosci.org/content/28/46/12071#T1"
         ]
-      }
+      },
+      "recordVersion": "2026-10-29.2"
     }
   ],
   "claims": [
@@ -1351,7 +1478,2222 @@
     }
   ],
   "mappings": [],
-  "sourceArtifacts": [],
+  "sourceArtifacts": [
+    {
+      "schema": "source-artifact-v1",
+      "id": "schaum2021-v1",
+      "referenceId": "schaum2021",
+      "doi": "10.7554/eLife.61679",
+      "sourceUrl": "https://elifesciences.org/articles/61679",
+      "sourceVersion": "Versioned minimal extraction v1; capture-specific primary source versions listed separately",
+      "retrievedAt": "2026-10-29",
+      "locator": "Selected cells and named sections; exact per-field locators below",
+      "rights": "CC BY 4.0; Schaum et al. (2021), eLife, doi:10.7554/eLife.61679. Retain only selected necessary factual cells and short phrases.",
+      "sourceFileSha256": null,
+      "captures": [
+        {
+          "id": "xml",
+          "sourceUrl": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8096430/fullTextXML",
+          "sourceVersion": "Europe PMC fullTextXML / PMC8096430 / response 2026-10-29",
+          "retrievedAt": "2026-10-29T14:38:31.982Z",
+          "sourceFileSha256": "4448e66e6f314e18f960f5b76714300ef48b12ddc0fda92d3591ee74a3c60e80",
+          "sourceFilePersisted": false,
+          "retrievalMethod": "source-response-bytes"
+        },
+        {
+          "id": "methods",
+          "sourceUrl": "https://elifesciences.org/articles/61679",
+          "sourceVersion": "Version of Record, 2021-05-04",
+          "retrievedAt": "2026-10-29",
+          "sourceFileSha256": null,
+          "sourceFilePersisted": false,
+          "retrievalMethod": "rendered-source"
+        }
+      ],
+      "excerpt": {
+        "format": "minimal-factual-cells-v1",
+        "cells": [
+          {
+            "id": "doi",
+            "rawText": "10.7554/eLife.61679",
+            "locator": "Article front matter / DOI",
+            "captureId": "methods"
+          },
+          {
+            "id": "source-url",
+            "rawText": "https://elifesciences.org/articles/61679",
+            "locator": "Article identity / inspected primary source URL",
+            "captureId": "methods"
+          },
+          {
+            "id": "author-0",
+            "rawText": "Michael Schaum",
+            "locator": "Article front matter / ordered author 1",
+            "captureId": "methods"
+          },
+          {
+            "id": "author-1",
+            "rawText": "Edoardo Pinzuti",
+            "locator": "Article front matter / ordered author 2",
+            "captureId": "methods"
+          },
+          {
+            "id": "author-2",
+            "rawText": "Alexandra Sebastian",
+            "locator": "Article front matter / ordered author 3",
+            "captureId": "methods"
+          },
+          {
+            "id": "author-3",
+            "rawText": "Klaus Lieb",
+            "locator": "Article front matter / ordered author 4",
+            "captureId": "methods"
+          },
+          {
+            "id": "author-4",
+            "rawText": "Pascal Fries",
+            "locator": "Article front matter / ordered author 5",
+            "captureId": "methods"
+          },
+          {
+            "id": "author-5",
+            "rawText": "Arian Mobascher",
+            "locator": "Article front matter / ordered author 6",
+            "captureId": "methods"
+          },
+          {
+            "id": "author-6",
+            "rawText": "Patrick Jung",
+            "locator": "Article front matter / ordered author 7",
+            "captureId": "methods"
+          },
+          {
+            "id": "author-7",
+            "rawText": "Michael Wibral",
+            "locator": "Article front matter / ordered author 8",
+            "captureId": "methods"
+          },
+          {
+            "id": "author-8",
+            "rawText": "Oliver Tüscher",
+            "locator": "Article front matter / ordered author 9",
+            "captureId": "methods"
+          },
+          {
+            "id": "schaum-rifg-label",
+            "rawText": "Inferior frontal gyrus BA44/45 R (rIFG)",
+            "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / row label",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-rifg-x",
+            "rawText": "50",
+            "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / x coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-rifg-y",
+            "rawText": "20",
+            "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / y coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-rifg-z",
+            "rawText": "20",
+            "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / z coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-rifg-table",
+            "rawText": "Table 1",
+            "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / table identifier",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-rifg-mni",
+            "rawText": "MNI",
+            "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / coordinate-system header or associated Methods",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-rifg-t",
+            "rawText": "3.654",
+            "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / t-Value",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-lifg-label",
+            "rawText": "Inferior frontal gyrus BA44/45 L (l-IFG)",
+            "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / row label",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-lifg-x",
+            "rawText": "–50",
+            "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / x coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-lifg-y",
+            "rawText": "10",
+            "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / y coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-lifg-z",
+            "rawText": "20",
+            "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / z coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-lifg-table",
+            "rawText": "Table 1",
+            "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / table identifier",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-lifg-mni",
+            "rawText": "MNI",
+            "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / coordinate-system header or associated Methods",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-lifg-t",
+            "rawText": "2.820",
+            "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / t-Value",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-insula-label",
+            "rawText": "Anterior insula/left IFG (lAIns)",
+            "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / row label",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-insula-x",
+            "rawText": "–40",
+            "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / x coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-insula-y",
+            "rawText": "30",
+            "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / y coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-insula-z",
+            "rawText": "0",
+            "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / z coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-insula-table",
+            "rawText": "Table 1",
+            "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / table identifier",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-insula-mni",
+            "rawText": "MNI",
+            "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / coordinate-system header or associated Methods",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-insula-t",
+            "rawText": "2.894",
+            "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / t-Value",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-presma-label",
+            "rawText": "Pre-supplementary motor area (pre-SMA)",
+            "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / row label",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-presma-x",
+            "rawText": "0",
+            "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / x coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-presma-y",
+            "rawText": "20",
+            "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / y coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-presma-z",
+            "rawText": "60",
+            "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / z coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-presma-table",
+            "rawText": "Table 1",
+            "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / table identifier",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-presma-mni",
+            "rawText": "MNI",
+            "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / coordinate-system header or associated Methods",
+            "captureId": "xml"
+          },
+          {
+            "id": "schaum-presma-t",
+            "rawText": "3.878",
+            "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / t-Value",
+            "captureId": "xml"
+          },
+          {
+            "id": "meg-n",
+            "rawText": "59",
+            "locator": "Methods / Source statistics / MEG sample",
+            "captureId": "methods"
+          },
+          {
+            "id": "source-window-start",
+            "rawText": "100",
+            "locator": "Methods / Source imaging / CSD window / start (ms)",
+            "captureId": "methods"
+          },
+          {
+            "id": "source-window-end",
+            "rawText": "373",
+            "locator": "Methods / Source imaging / CSD window / end (ms)",
+            "captureId": "methods"
+          },
+          {
+            "id": "temporal-roi-start",
+            "rawText": "100",
+            "locator": "Methods / MEG data acquisition and preprocessing / a priori temporal ROI / start (ms)",
+            "captureId": "methods"
+          },
+          {
+            "id": "temporal-roi-end",
+            "rawText": "350",
+            "locator": "Methods / MEG data acquisition and preprocessing / a priori temporal ROI / end (ms)",
+            "captureId": "methods"
+          },
+          {
+            "id": "beta-min",
+            "rawText": "12",
+            "locator": "Methods / Source imaging / beta lower limit (Hz)",
+            "captureId": "methods"
+          },
+          {
+            "id": "beta-max",
+            "rawText": "32",
+            "locator": "Methods / Source imaging / beta upper limit (Hz)",
+            "captureId": "methods"
+          },
+          {
+            "id": "beta-center",
+            "rawText": "22",
+            "locator": "Methods / Source imaging / center frequency (Hz)",
+            "captureId": "methods"
+          },
+          {
+            "id": "beta-smoothing",
+            "rawText": "10",
+            "locator": "Methods / Source imaging / spectral smoothing half-width (Hz)",
+            "captureId": "methods"
+          },
+          {
+            "id": "sensor-beta-min",
+            "rawText": "12.0",
+            "locator": "Results / MEG source reconstruction / sensor-level cluster lower limit (Hz)",
+            "captureId": "methods"
+          },
+          {
+            "id": "sensor-beta-max",
+            "rawText": "31.9",
+            "locator": "Results / MEG source reconstruction / sensor-level cluster upper limit (Hz)",
+            "captureId": "methods"
+          },
+          {
+            "id": "cluster-alpha",
+            "rawText": ".05",
+            "locator": "Methods / Source statistics; Figure 2A caption / cluster alpha",
+            "captureId": "methods"
+          },
+          {
+            "id": "permutations",
+            "rawText": "5000",
+            "locator": "Methods / Source statistics refers to Spectral analysis at sensor level / permutations",
+            "captureId": "methods"
+          },
+          {
+            "id": "source-grid",
+            "rawText": "10",
+            "locator": "Methods / Source imaging / source-grid spacing (mm)",
+            "captureId": "methods"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "path": "references/schaum2021/doi",
+          "cellId": "doi",
+          "rawText": "10.7554/eLife.61679",
+          "locator": "Article front matter / DOI",
+          "encoding": "text"
+        },
+        {
+          "path": "references/schaum2021/url",
+          "cellId": "source-url",
+          "rawText": "https://elifesciences.org/articles/61679",
+          "locator": "Article identity / inspected primary source URL",
+          "encoding": "normalization",
+          "normalizedValue": "https://doi.org/10.7554/eLife.61679",
+          "rationale": "Canonical DOI resolver URL for the same inspected article DOI."
+        },
+        {
+          "path": "references/schaum2021/fullAuthorList/0",
+          "cellId": "author-0",
+          "rawText": "Michael Schaum",
+          "locator": "Article front matter / ordered author 1",
+          "encoding": "text"
+        },
+        {
+          "path": "references/schaum2021/fullAuthorList/1",
+          "cellId": "author-1",
+          "rawText": "Edoardo Pinzuti",
+          "locator": "Article front matter / ordered author 2",
+          "encoding": "text"
+        },
+        {
+          "path": "references/schaum2021/fullAuthorList/2",
+          "cellId": "author-2",
+          "rawText": "Alexandra Sebastian",
+          "locator": "Article front matter / ordered author 3",
+          "encoding": "text"
+        },
+        {
+          "path": "references/schaum2021/fullAuthorList/3",
+          "cellId": "author-3",
+          "rawText": "Klaus Lieb",
+          "locator": "Article front matter / ordered author 4",
+          "encoding": "text"
+        },
+        {
+          "path": "references/schaum2021/fullAuthorList/4",
+          "cellId": "author-4",
+          "rawText": "Pascal Fries",
+          "locator": "Article front matter / ordered author 5",
+          "encoding": "text"
+        },
+        {
+          "path": "references/schaum2021/fullAuthorList/5",
+          "cellId": "author-5",
+          "rawText": "Arian Mobascher",
+          "locator": "Article front matter / ordered author 6",
+          "encoding": "text"
+        },
+        {
+          "path": "references/schaum2021/fullAuthorList/6",
+          "cellId": "author-6",
+          "rawText": "Patrick Jung",
+          "locator": "Article front matter / ordered author 7",
+          "encoding": "text"
+        },
+        {
+          "path": "references/schaum2021/fullAuthorList/7",
+          "cellId": "author-7",
+          "rawText": "Michael Wibral",
+          "locator": "Article front matter / ordered author 8",
+          "encoding": "text"
+        },
+        {
+          "path": "references/schaum2021/fullAuthorList/8",
+          "cellId": "author-8",
+          "rawText": "Oliver Tüscher",
+          "locator": "Article front matter / ordered author 9",
+          "encoding": "text"
+        },
+        {
+          "path": "references/schaum2021/fullAuthorList/length",
+          "cellId": "source-url",
+          "rawText": "https://elifesciences.org/articles/61679",
+          "locator": "Article identity / inspected primary source URL",
+          "encoding": "normalization",
+          "normalizedValue": 9,
+          "rationale": "Number of names in the ordered primary article author list transcribed above."
+        },
+        {
+          "path": "locations/schaum-rifg/xyz/0",
+          "cellId": "schaum-rifg-x",
+          "rawText": "50",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / x coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-rifg/xyz/1",
+          "cellId": "schaum-rifg-y",
+          "rawText": "20",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / y coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-rifg/xyz/2",
+          "cellId": "schaum-rifg-z",
+          "rawText": "20",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / z coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-rifg/legacyV1/sourceTable",
+          "cellId": "schaum-rifg-table",
+          "rawText": "Table 1",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / table identifier",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/schaum-rifg/legacyV1/sourceRow",
+          "cellId": "schaum-rifg-label",
+          "rawText": "Inferior frontal gyrus BA44/45 R (rIFG)",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "Inferior frontal gyrus BA44/45 R",
+          "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+        },
+        {
+          "path": "locations/schaum-rifg/sourceRefs/0",
+          "cellId": "schaum-rifg-label",
+          "rawText": "Inferior frontal gyrus BA44/45 R (rIFG)",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+          "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+        },
+        {
+          "path": "locations/schaum-rifg/legacyV1/sourceUrl",
+          "cellId": "schaum-rifg-label",
+          "rawText": "Inferior frontal gyrus BA44/45 R (rIFG)",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+          "rationale": "Retained original publisher source link to this row."
+        },
+        {
+          "path": "locations/schaum-rifg/sourceSpaceId",
+          "cellId": "schaum-rifg-mni",
+          "rawText": "MNI",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / coordinate-system header or associated Methods",
+          "encoding": "normalization",
+          "normalizedValue": "MNI-unspecified",
+          "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+        },
+        {
+          "path": "locations/schaum-rifg/kind",
+          "cellId": "schaum-rifg-label",
+          "rawText": "Inferior frontal gyrus BA44/45 R (rIFG)",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "peak",
+          "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/0/value",
+          "cellId": "schaum-rifg-t",
+          "rawText": "3.654",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / t-Value",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/0/type",
+          "cellId": "schaum-rifg-t",
+          "rawText": "3.654",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "The Table 1 column is a t-Value, not an effect size."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/0/df",
+          "cellId": "schaum-rifg-t",
+          "rawText": "3.654",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": null,
+          "rationale": "No peak-specific degrees of freedom transcribed from the selected table cells; do not infer it."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/0/p",
+          "cellId": "schaum-rifg-t",
+          "rawText": "3.654",
+          "locator": "Table 1 / row 2 / Inferior frontal gyrus BA44/45 R (rIFG) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": null,
+          "rationale": "Selected peak t cells do not supply peak-level p values; cluster inference is recorded separately."
+        },
+        {
+          "path": "locations/schaum-lifg/xyz/0",
+          "cellId": "schaum-lifg-x",
+          "rawText": "–50",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / x coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-lifg/xyz/1",
+          "cellId": "schaum-lifg-y",
+          "rawText": "10",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / y coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-lifg/xyz/2",
+          "cellId": "schaum-lifg-z",
+          "rawText": "20",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / z coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-lifg/legacyV1/sourceTable",
+          "cellId": "schaum-lifg-table",
+          "rawText": "Table 1",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / table identifier",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/schaum-lifg/legacyV1/sourceRow",
+          "cellId": "schaum-lifg-label",
+          "rawText": "Inferior frontal gyrus BA44/45 L (l-IFG)",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "Inferior frontal gyrus BA44/45 L",
+          "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+        },
+        {
+          "path": "locations/schaum-lifg/sourceRefs/0",
+          "cellId": "schaum-lifg-label",
+          "rawText": "Inferior frontal gyrus BA44/45 L (l-IFG)",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+          "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+        },
+        {
+          "path": "locations/schaum-lifg/legacyV1/sourceUrl",
+          "cellId": "schaum-lifg-label",
+          "rawText": "Inferior frontal gyrus BA44/45 L (l-IFG)",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+          "rationale": "Retained original publisher source link to this row."
+        },
+        {
+          "path": "locations/schaum-lifg/sourceSpaceId",
+          "cellId": "schaum-lifg-mni",
+          "rawText": "MNI",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / coordinate-system header or associated Methods",
+          "encoding": "normalization",
+          "normalizedValue": "MNI-unspecified",
+          "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+        },
+        {
+          "path": "locations/schaum-lifg/kind",
+          "cellId": "schaum-lifg-label",
+          "rawText": "Inferior frontal gyrus BA44/45 L (l-IFG)",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "peak",
+          "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/1/value",
+          "cellId": "schaum-lifg-t",
+          "rawText": "2.820",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / t-Value",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/1/type",
+          "cellId": "schaum-lifg-t",
+          "rawText": "2.820",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "The Table 1 column is a t-Value, not an effect size."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/1/df",
+          "cellId": "schaum-lifg-t",
+          "rawText": "2.820",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": null,
+          "rationale": "No peak-specific degrees of freedom transcribed from the selected table cells; do not infer it."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/1/p",
+          "cellId": "schaum-lifg-t",
+          "rawText": "2.820",
+          "locator": "Table 1 / row 3 / Inferior frontal gyrus BA44/45 L (l-IFG) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": null,
+          "rationale": "Selected peak t cells do not supply peak-level p values; cluster inference is recorded separately."
+        },
+        {
+          "path": "locations/schaum-insula/xyz/0",
+          "cellId": "schaum-insula-x",
+          "rawText": "–40",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / x coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-insula/xyz/1",
+          "cellId": "schaum-insula-y",
+          "rawText": "30",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / y coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-insula/xyz/2",
+          "cellId": "schaum-insula-z",
+          "rawText": "0",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / z coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-insula/legacyV1/sourceTable",
+          "cellId": "schaum-insula-table",
+          "rawText": "Table 1",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / table identifier",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/schaum-insula/legacyV1/sourceRow",
+          "cellId": "schaum-insula-label",
+          "rawText": "Anterior insula/left IFG (lAIns)",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "Anterior insula/left IFG",
+          "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+        },
+        {
+          "path": "locations/schaum-insula/sourceRefs/0",
+          "cellId": "schaum-insula-label",
+          "rawText": "Anterior insula/left IFG (lAIns)",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+          "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+        },
+        {
+          "path": "locations/schaum-insula/legacyV1/sourceUrl",
+          "cellId": "schaum-insula-label",
+          "rawText": "Anterior insula/left IFG (lAIns)",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+          "rationale": "Retained original publisher source link to this row."
+        },
+        {
+          "path": "locations/schaum-insula/sourceSpaceId",
+          "cellId": "schaum-insula-mni",
+          "rawText": "MNI",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / coordinate-system header or associated Methods",
+          "encoding": "normalization",
+          "normalizedValue": "MNI-unspecified",
+          "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+        },
+        {
+          "path": "locations/schaum-insula/kind",
+          "cellId": "schaum-insula-label",
+          "rawText": "Anterior insula/left IFG (lAIns)",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "peak",
+          "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/2/value",
+          "cellId": "schaum-insula-t",
+          "rawText": "2.894",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / t-Value",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/2/type",
+          "cellId": "schaum-insula-t",
+          "rawText": "2.894",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "The Table 1 column is a t-Value, not an effect size."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/2/df",
+          "cellId": "schaum-insula-t",
+          "rawText": "2.894",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": null,
+          "rationale": "No peak-specific degrees of freedom transcribed from the selected table cells; do not infer it."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/2/p",
+          "cellId": "schaum-insula-t",
+          "rawText": "2.894",
+          "locator": "Table 1 / row 4 / Anterior insula/left IFG (lAIns) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": null,
+          "rationale": "Selected peak t cells do not supply peak-level p values; cluster inference is recorded separately."
+        },
+        {
+          "path": "locations/schaum-presma/xyz/0",
+          "cellId": "schaum-presma-x",
+          "rawText": "0",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / x coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-presma/xyz/1",
+          "cellId": "schaum-presma-y",
+          "rawText": "20",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / y coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-presma/xyz/2",
+          "cellId": "schaum-presma-z",
+          "rawText": "60",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / z coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/schaum-presma/legacyV1/sourceTable",
+          "cellId": "schaum-presma-table",
+          "rawText": "Table 1",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / table identifier",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/schaum-presma/legacyV1/sourceRow",
+          "cellId": "schaum-presma-label",
+          "rawText": "Pre-supplementary motor area (pre-SMA)",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "Pre-supplementary motor area",
+          "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+        },
+        {
+          "path": "locations/schaum-presma/sourceRefs/0",
+          "cellId": "schaum-presma-label",
+          "rawText": "Pre-supplementary motor area (pre-SMA)",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+          "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+        },
+        {
+          "path": "locations/schaum-presma/legacyV1/sourceUrl",
+          "cellId": "schaum-presma-label",
+          "rawText": "Pre-supplementary motor area (pre-SMA)",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://elifesciences.org/articles/61679#table1",
+          "rationale": "Retained original publisher source link to this row."
+        },
+        {
+          "path": "locations/schaum-presma/sourceSpaceId",
+          "cellId": "schaum-presma-mni",
+          "rawText": "MNI",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / coordinate-system header or associated Methods",
+          "encoding": "normalization",
+          "normalizedValue": "MNI-unspecified",
+          "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+        },
+        {
+          "path": "locations/schaum-presma/kind",
+          "cellId": "schaum-presma-label",
+          "rawText": "Pre-supplementary motor area (pre-SMA)",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / row label",
+          "encoding": "normalization",
+          "normalizedValue": "peak",
+          "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/3/value",
+          "cellId": "schaum-presma-t",
+          "rawText": "3.878",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / t-Value",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/3/type",
+          "cellId": "schaum-presma-t",
+          "rawText": "3.878",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "The Table 1 column is a t-Value, not an effect size."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/3/df",
+          "cellId": "schaum-presma-t",
+          "rawText": "3.878",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": null,
+          "rationale": "No peak-specific degrees of freedom transcribed from the selected table cells; do not infer it."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/statistics/value/3/p",
+          "cellId": "schaum-presma-t",
+          "rawText": "3.878",
+          "locator": "Table 1 / row 5 / Pre-supplementary motor area (pre-SMA) / t-Value",
+          "encoding": "normalization",
+          "normalizedValue": null,
+          "rationale": "Selected peak t cells do not supply peak-level p values; cluster inference is recorded separately."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/sample/included/value",
+          "cellId": "meg-n",
+          "rawText": "59",
+          "locator": "Methods / Source statistics / MEG sample",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/sample/perAnalysis/value",
+          "cellId": "meg-n",
+          "rawText": "59",
+          "locator": "Methods / Source statistics / MEG sample",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/timeWindow/value/start",
+          "cellId": "source-window-start",
+          "rawText": "100",
+          "locator": "Methods / Source imaging / CSD window / start (ms)",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/timeWindow/value/end",
+          "cellId": "source-window-end",
+          "rawText": "373",
+          "locator": "Methods / Source imaging / CSD window / end (ms)",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/timeWindow/value/temporalROI/start",
+          "cellId": "temporal-roi-start",
+          "rawText": "100",
+          "locator": "Methods / MEG data acquisition and preprocessing / a priori temporal ROI / start (ms)",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/timeWindow/value/temporalROI/end",
+          "cellId": "temporal-roi-end",
+          "rawText": "350",
+          "locator": "Methods / MEG data acquisition and preprocessing / a priori temporal ROI / end (ms)",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/frequencyBand/value/min",
+          "cellId": "beta-min",
+          "rawText": "12",
+          "locator": "Methods / Source imaging / beta lower limit (Hz)",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/frequencyBand/value/max",
+          "cellId": "beta-max",
+          "rawText": "32",
+          "locator": "Methods / Source imaging / beta upper limit (Hz)",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/frequencyBand/value/spectralCenter",
+          "cellId": "beta-center",
+          "rawText": "22",
+          "locator": "Methods / Source imaging / center frequency (Hz)",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/frequencyBand/value/smoothingHalfWidth",
+          "cellId": "beta-smoothing",
+          "rawText": "10",
+          "locator": "Methods / Source imaging / spectral smoothing half-width (Hz)",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/frequencyBand/value/sensorCluster/min",
+          "cellId": "sensor-beta-min",
+          "rawText": "12.0",
+          "locator": "Results / MEG source reconstruction / sensor-level cluster lower limit (Hz)",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/frequencyBand/value/sensorCluster/max",
+          "cellId": "sensor-beta-max",
+          "rawText": "31.9",
+          "locator": "Results / MEG source reconstruction / sensor-level cluster upper limit (Hz)",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/correction/value/threshold/value",
+          "cellId": "cluster-alpha",
+          "rawText": ".05",
+          "locator": "Methods / Source statistics; Figure 2A caption / cluster alpha",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/correction/value/permutations",
+          "cellId": "permutations",
+          "rawText": "5000",
+          "locator": "Methods / Source statistics refers to Spectral analysis at sensor level / permutations",
+          "encoding": "number"
+        },
+        {
+          "path": "results/schaum2021-meg-stop/correction/value/method",
+          "cellId": "cluster-alpha",
+          "rawText": ".05",
+          "locator": "Methods / Source statistics; Figure 2A caption / cluster alpha",
+          "encoding": "normalization",
+          "normalizedValue": "two-sided cluster-based permutation inference",
+          "rationale": "Named Methods / Source statistics describes a two-sided cluster-based permutation test."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/correction/value/passed",
+          "cellId": "cluster-alpha",
+          "rawText": ".05",
+          "locator": "Methods / Source statistics; Figure 2A caption / cluster alpha",
+          "encoding": "normalization",
+          "normalizedValue": null,
+          "rationale": "Cluster alpha does not supply a peak-level corrected significance decision."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/timeWindow/value/role",
+          "cellId": "source-window-end",
+          "rawText": "373",
+          "locator": "Methods / Source imaging / CSD window / end (ms)",
+          "encoding": "normalization",
+          "normalizedValue": "source-reconstruction cross-spectral-density window",
+          "rationale": "Methods / Source imaging supplies this extended CSD analysis window."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/timeWindow/value/temporalROI/role",
+          "cellId": "temporal-roi-end",
+          "rawText": "350",
+          "locator": "Methods / MEG data acquisition and preprocessing / a priori temporal ROI / end (ms)",
+          "encoding": "normalization",
+          "normalizedValue": "a priori temporal ROI",
+          "rationale": "Methods distinguishes the a priori temporal ROI from the extended source-imaging window."
+        },
+        {
+          "path": "results/schaum2021-meg-stop/frequencyBand/value/role",
+          "cellId": "beta-max",
+          "rawText": "32",
+          "locator": "Methods / Source imaging / beta upper limit (Hz)",
+          "encoding": "normalization",
+          "normalizedValue": "source reconstruction",
+          "rationale": "Source-imaging beta band; the separately recorded sensor cluster has a different role."
+        }
+      ],
+      "paraphrases": [
+        {
+          "locator": "Methods / Source imaging",
+          "text": "The Methods explicitly explain extending the source-imaging window beyond 350 ms to align with an integer number of oscillatory cycles and reduce spectral leakage. The 100-350 ms temporal ROI and 100-373 ms source-imaging window describe different analysis roles; retain both with their roles rather than treating them as an unexplained contradiction."
+        },
+        {
+          "locator": "Methods / Source statistics",
+          "text": "Dependent-samples t statistics use two-sided cluster-based permutation inference. The 10 mm source grid is not localization precision. fMRI n=76 and its thresholds are not applied to this MEG result."
+        }
+      ],
+      "limitations": [
+        "AI-assisted source inspection by Codex/root; human or expert review remains pending.",
+        "Only the listed minimal cells are available offline; complete articles and images are not retained.",
+        "A source-file digest records actual observed bytes of the named response only; it cannot re-verify absent full-source bytes.",
+        "Generic MNI does not establish an exact template variant or direct overlay eligibility."
+      ],
+      "sha256": "d324b1480a6ab7c9aa448b3aff68099326f27444c2c0b70aa69b6f3f735d4d7c",
+      "recordSha256": "9fe0d0cebe836171d094544cff6c34a1511b889fbaf98161116c9a4c8103dde2"
+    },
+    {
+      "schema": "source-artifact-v1",
+      "id": "axelrod2015-v1",
+      "referenceId": "axelrod2015",
+      "doi": "10.1371/journal.pone.0117126",
+      "sourceUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+      "sourceVersion": "Versioned minimal extraction v1; capture-specific primary source versions listed separately",
+      "retrievedAt": "2026-10-29",
+      "locator": "Selected cells and named sections; exact per-field locators below",
+      "rights": "Creative Commons Attribution; Axelrod and Yovel (2015), PLOS ONE, doi:10.1371/journal.pone.0117126. Minimal factual cells only.",
+      "sourceFileSha256": null,
+      "captures": [
+        {
+          "id": "xml",
+          "sourceUrl": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC4340964/fullTextXML",
+          "sourceVersion": "Europe PMC fullTextXML / PMC4340964 / response 2026-10-29",
+          "retrievedAt": "2026-10-29T14:38:31.491Z",
+          "sourceFileSha256": "17443b3861014404ba0f117b76b93d298329074dbf7f2dda692a4b97f8023e86",
+          "sourceFilePersisted": false,
+          "retrievalMethod": "source-response-bytes"
+        },
+        {
+          "id": "text",
+          "sourceUrl": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "sourceVersion": "Publisher Version of Record / 2015-02-25 / rendered 2026-10-29",
+          "retrievedAt": "2026-10-29",
+          "sourceFileSha256": null,
+          "sourceFilePersisted": false,
+          "retrievalMethod": "rendered-source"
+        }
+      ],
+      "excerpt": {
+        "format": "minimal-factual-cells-v1",
+        "cells": [
+          {
+            "id": "doi",
+            "rawText": "10.1371/journal.pone.0117126",
+            "locator": "Article front matter / DOI",
+            "captureId": "text"
+          },
+          {
+            "id": "source-url",
+            "rawText": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+            "locator": "Article identity / inspected primary source URL",
+            "captureId": "text"
+          },
+          {
+            "id": "author-0",
+            "rawText": "Vadim Axelrod",
+            "locator": "Article front matter / ordered author 1",
+            "captureId": "text"
+          },
+          {
+            "id": "author-1",
+            "rawText": "Galit Yovel",
+            "locator": "Article front matter / ordered author 2",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-label",
+            "rawText": "left FFA",
+            "locator": "Table 1 / row 2 / left FFA / row label",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-x",
+            "rawText": "-41",
+            "locator": "Table 1 / row 2 / left FFA / x coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-y",
+            "rawText": "-53",
+            "locator": "Table 1 / row 2 / left FFA / y coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-z",
+            "rawText": "-18",
+            "locator": "Table 1 / row 2 / left FFA / z coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-table",
+            "rawText": "Table 1",
+            "locator": "Table 1 / row 2 / left FFA / table identifier",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-mni",
+            "rawText": "MNI",
+            "locator": "Table 1 / row 2 / left FFA / coordinate-system header or associated Methods",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-n",
+            "rawText": "13",
+            "locator": "Table 1 / left FFA / number of participants",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-localizer-z",
+            "rawText": "7.03",
+            "locator": "Table 1 / left FFA / average localization z-score (not MVPA t)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-t-0",
+            "rawText": "2.57",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / t",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-df-0",
+            "rawText": "12",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / df",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-p-0",
+            "rawText": "0.012",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / p",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-operator-0",
+            "rawText": "=",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / p operator",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-t-1",
+            "rawText": "2.57",
+            "locator": "Table 2 / left FFA / 20 voxels / t",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-df-1",
+            "rawText": "12",
+            "locator": "Table 2 / left FFA / 20 voxels / df",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-p-1",
+            "rawText": "0.01",
+            "locator": "Table 2 / left FFA / 20 voxels / p",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-operator-1",
+            "rawText": "=",
+            "locator": "Table 2 / left FFA / 20 voxels / p operator",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-lffa-corrected-threshold",
+            "rawText": ".004",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-lffa-correction",
+            "rawText": "Bonferroni",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / multiple-comparison method",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-label",
+            "rawText": "right FFA",
+            "locator": "Table 1 / row 3 / right FFA / row label",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-x",
+            "rawText": "39",
+            "locator": "Table 1 / row 3 / right FFA / x coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-y",
+            "rawText": "-52",
+            "locator": "Table 1 / row 3 / right FFA / y coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-z",
+            "rawText": "-16",
+            "locator": "Table 1 / row 3 / right FFA / z coordinate (mm)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-table",
+            "rawText": "Table 1",
+            "locator": "Table 1 / row 3 / right FFA / table identifier",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-mni",
+            "rawText": "MNI",
+            "locator": "Table 1 / row 3 / right FFA / coordinate-system header or associated Methods",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-n",
+            "rawText": "16",
+            "locator": "Table 1 / right FFA / number of participants",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-localizer-z",
+            "rawText": "8.50",
+            "locator": "Table 1 / right FFA / average localization z-score (not MVPA t)",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-t-0",
+            "rawText": "4.29",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / t",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-df-0",
+            "rawText": "15",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / df",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-p-0",
+            "rawText": "0.001",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / p",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-operator-0",
+            "rawText": "<",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / p operator",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-t-1",
+            "rawText": "4.3",
+            "locator": "Table 2 / right FFA / 20 voxels / t",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-df-1",
+            "rawText": "15",
+            "locator": "Table 2 / right FFA / 20 voxels / df",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-p-1",
+            "rawText": "0.001",
+            "locator": "Table 2 / right FFA / 20 voxels / p",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-operator-1",
+            "rawText": "<",
+            "locator": "Table 2 / right FFA / 20 voxels / p operator",
+            "captureId": "xml"
+          },
+          {
+            "id": "axelrod-rffa-corrected-threshold",
+            "rawText": ".004",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+            "captureId": "text"
+          },
+          {
+            "id": "axelrod-rffa-correction",
+            "rawText": "Bonferroni",
+            "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / multiple-comparison method",
+            "captureId": "text"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "path": "references/axelrod2015/doi",
+          "cellId": "doi",
+          "rawText": "10.1371/journal.pone.0117126",
+          "locator": "Article front matter / DOI",
+          "encoding": "text"
+        },
+        {
+          "path": "references/axelrod2015/url",
+          "cellId": "source-url",
+          "rawText": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "locator": "Article identity / inspected primary source URL",
+          "encoding": "normalization",
+          "normalizedValue": "https://doi.org/10.1371/journal.pone.0117126",
+          "rationale": "Canonical DOI resolver URL for the same inspected article DOI."
+        },
+        {
+          "path": "references/axelrod2015/fullAuthorList/0",
+          "cellId": "author-0",
+          "rawText": "Vadim Axelrod",
+          "locator": "Article front matter / ordered author 1",
+          "encoding": "text"
+        },
+        {
+          "path": "references/axelrod2015/fullAuthorList/1",
+          "cellId": "author-1",
+          "rawText": "Galit Yovel",
+          "locator": "Article front matter / ordered author 2",
+          "encoding": "text"
+        },
+        {
+          "path": "references/axelrod2015/fullAuthorList/length",
+          "cellId": "source-url",
+          "rawText": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "locator": "Article identity / inspected primary source URL",
+          "encoding": "normalization",
+          "normalizedValue": 2,
+          "rationale": "Number of names in the ordered primary article author list transcribed above."
+        },
+        {
+          "path": "locations/axelrod-lffa/xyz/0",
+          "cellId": "axelrod-lffa-x",
+          "rawText": "-41",
+          "locator": "Table 1 / row 2 / left FFA / x coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-lffa/xyz/1",
+          "cellId": "axelrod-lffa-y",
+          "rawText": "-53",
+          "locator": "Table 1 / row 2 / left FFA / y coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-lffa/xyz/2",
+          "cellId": "axelrod-lffa-z",
+          "rawText": "-18",
+          "locator": "Table 1 / row 2 / left FFA / z coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-lffa/legacyV1/sourceTable",
+          "cellId": "axelrod-lffa-table",
+          "rawText": "Table 1",
+          "locator": "Table 1 / row 2 / left FFA / table identifier",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/axelrod-lffa/legacyV1/sourceRow",
+          "cellId": "axelrod-lffa-label",
+          "rawText": "left FFA",
+          "locator": "Table 1 / row 2 / left FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "left FFA; n=13",
+          "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+        },
+        {
+          "path": "locations/axelrod-lffa/sourceRefs/0",
+          "cellId": "axelrod-lffa-label",
+          "rawText": "left FFA",
+          "locator": "Table 1 / row 2 / left FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+          "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+        },
+        {
+          "path": "locations/axelrod-lffa/legacyV1/sourceUrl",
+          "cellId": "axelrod-lffa-label",
+          "rawText": "left FFA",
+          "locator": "Table 1 / row 2 / left FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+          "rationale": "Retained original publisher source link to this row."
+        },
+        {
+          "path": "locations/axelrod-lffa/sourceSpaceId",
+          "cellId": "axelrod-lffa-mni",
+          "rawText": "MNI",
+          "locator": "Table 1 / row 2 / left FFA / coordinate-system header or associated Methods",
+          "encoding": "normalization",
+          "normalizedValue": "MNI-unspecified",
+          "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+        },
+        {
+          "path": "locations/axelrod-lffa/kind",
+          "cellId": "axelrod-lffa-label",
+          "rawText": "left FFA",
+          "locator": "Table 1 / row 2 / left FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "roi-mean",
+          "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+        },
+        {
+          "path": "results/axelrod2015-lffa/sample/perAnalysis/value",
+          "cellId": "axelrod-lffa-n",
+          "rawText": "13",
+          "locator": "Table 1 / left FFA / number of participants",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/value",
+          "cellId": "axelrod-lffa-t-0",
+          "rawText": "2.57",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / t",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/df",
+          "cellId": "axelrod-lffa-df-0",
+          "rawText": "12",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / df",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/p/value",
+          "cellId": "axelrod-lffa-p-0",
+          "rawText": "0.012",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / p",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/p/operator",
+          "cellId": "axelrod-lffa-operator-0",
+          "rawText": "=",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / p operator",
+          "encoding": "text"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/type",
+          "cellId": "axelrod-lffa-t-0",
+          "rawText": "2.57",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / t",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "Both the primary text and Table 2 report t statistics for identity decoding."
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/0/sourceRefs/0",
+          "cellId": "axelrod-lffa-t-0",
+          "rawText": "2.57",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / left FFA / t",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "rationale": "Public article or table DOI locator for the same primary source observation."
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/value",
+          "cellId": "axelrod-lffa-t-1",
+          "rawText": "2.57",
+          "locator": "Table 2 / left FFA / 20 voxels / t",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/df",
+          "cellId": "axelrod-lffa-df-1",
+          "rawText": "12",
+          "locator": "Table 2 / left FFA / 20 voxels / df",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/p/value",
+          "cellId": "axelrod-lffa-p-1",
+          "rawText": "0.01",
+          "locator": "Table 2 / left FFA / 20 voxels / p",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/p/operator",
+          "cellId": "axelrod-lffa-operator-1",
+          "rawText": "=",
+          "locator": "Table 2 / left FFA / 20 voxels / p operator",
+          "encoding": "text"
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/type",
+          "cellId": "axelrod-lffa-t-1",
+          "rawText": "2.57",
+          "locator": "Table 2 / left FFA / 20 voxels / t",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "Both the primary text and Table 2 report t statistics for identity decoding."
+        },
+        {
+          "path": "results/axelrod2015-lffa/statistics/value/1/sourceRefs/0",
+          "cellId": "axelrod-lffa-t-1",
+          "rawText": "2.57",
+          "locator": "Table 2 / left FFA / 20 voxels / t",
+          "encoding": "normalization",
+          "normalizedValue": "https://doi.org/10.1371/journal.pone.0117126.t002",
+          "rationale": "Public article or table DOI locator for the same primary source observation."
+        },
+        {
+          "path": "results/axelrod2015-lffa/correction/value/threshold/value",
+          "cellId": "axelrod-lffa-corrected-threshold",
+          "rawText": ".004",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-lffa/correction/value/passed",
+          "cellId": "axelrod-lffa-corrected-threshold",
+          "rawText": ".004",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+          "encoding": "normalization",
+          "normalizedValue": false,
+          "rationale": "The reported threshold applies across 12 regions; right FFA passes and left FFA does not."
+        },
+        {
+          "path": "results/axelrod2015-lffa/correction/value/method",
+          "cellId": "axelrod-lffa-correction",
+          "rawText": "Bonferroni",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / multiple-comparison method",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/axelrod-rffa/xyz/0",
+          "cellId": "axelrod-rffa-x",
+          "rawText": "39",
+          "locator": "Table 1 / row 3 / right FFA / x coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-rffa/xyz/1",
+          "cellId": "axelrod-rffa-y",
+          "rawText": "-52",
+          "locator": "Table 1 / row 3 / right FFA / y coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-rffa/xyz/2",
+          "cellId": "axelrod-rffa-z",
+          "rawText": "-16",
+          "locator": "Table 1 / row 3 / right FFA / z coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/axelrod-rffa/legacyV1/sourceTable",
+          "cellId": "axelrod-rffa-table",
+          "rawText": "Table 1",
+          "locator": "Table 1 / row 3 / right FFA / table identifier",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/axelrod-rffa/legacyV1/sourceRow",
+          "cellId": "axelrod-rffa-label",
+          "rawText": "right FFA",
+          "locator": "Table 1 / row 3 / right FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "right FFA; n=16",
+          "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+        },
+        {
+          "path": "locations/axelrod-rffa/sourceRefs/0",
+          "cellId": "axelrod-rffa-label",
+          "rawText": "right FFA",
+          "locator": "Table 1 / row 3 / right FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+          "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+        },
+        {
+          "path": "locations/axelrod-rffa/legacyV1/sourceUrl",
+          "cellId": "axelrod-rffa-label",
+          "rawText": "right FFA",
+          "locator": "Table 1 / row 3 / right FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126#pone.0117126.t001",
+          "rationale": "Retained original publisher source link to this row."
+        },
+        {
+          "path": "locations/axelrod-rffa/sourceSpaceId",
+          "cellId": "axelrod-rffa-mni",
+          "rawText": "MNI",
+          "locator": "Table 1 / row 3 / right FFA / coordinate-system header or associated Methods",
+          "encoding": "normalization",
+          "normalizedValue": "MNI-unspecified",
+          "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+        },
+        {
+          "path": "locations/axelrod-rffa/kind",
+          "cellId": "axelrod-rffa-label",
+          "rawText": "right FFA",
+          "locator": "Table 1 / row 3 / right FFA / row label",
+          "encoding": "normalization",
+          "normalizedValue": "roi-mean",
+          "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+        },
+        {
+          "path": "results/axelrod2015-rffa/sample/perAnalysis/value",
+          "cellId": "axelrod-rffa-n",
+          "rawText": "16",
+          "locator": "Table 1 / right FFA / number of participants",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/value",
+          "cellId": "axelrod-rffa-t-0",
+          "rawText": "4.29",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / t",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/df",
+          "cellId": "axelrod-rffa-df-0",
+          "rawText": "15",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / df",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/p/value",
+          "cellId": "axelrod-rffa-p-0",
+          "rawText": "0.001",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / p",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/p/operator",
+          "cellId": "axelrod-rffa-operator-0",
+          "rawText": "<",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / p operator",
+          "encoding": "text"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/type",
+          "cellId": "axelrod-rffa-t-0",
+          "rawText": "4.29",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / t",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "Both the primary text and Table 2 report t statistics for identity decoding."
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/0/sourceRefs/0",
+          "cellId": "axelrod-rffa-t-0",
+          "rawText": "4.29",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / right FFA / t",
+          "encoding": "normalization",
+          "normalizedValue": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126",
+          "rationale": "Public article or table DOI locator for the same primary source observation."
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/value",
+          "cellId": "axelrod-rffa-t-1",
+          "rawText": "4.3",
+          "locator": "Table 2 / right FFA / 20 voxels / t",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/df",
+          "cellId": "axelrod-rffa-df-1",
+          "rawText": "15",
+          "locator": "Table 2 / right FFA / 20 voxels / df",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/p/value",
+          "cellId": "axelrod-rffa-p-1",
+          "rawText": "0.001",
+          "locator": "Table 2 / right FFA / 20 voxels / p",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/p/operator",
+          "cellId": "axelrod-rffa-operator-1",
+          "rawText": "<",
+          "locator": "Table 2 / right FFA / 20 voxels / p operator",
+          "encoding": "text"
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/type",
+          "cellId": "axelrod-rffa-t-1",
+          "rawText": "4.3",
+          "locator": "Table 2 / right FFA / 20 voxels / t",
+          "encoding": "normalization",
+          "normalizedValue": "t",
+          "rationale": "Both the primary text and Table 2 report t statistics for identity decoding."
+        },
+        {
+          "path": "results/axelrod2015-rffa/statistics/value/1/sourceRefs/0",
+          "cellId": "axelrod-rffa-t-1",
+          "rawText": "4.3",
+          "locator": "Table 2 / right FFA / 20 voxels / t",
+          "encoding": "normalization",
+          "normalizedValue": "https://doi.org/10.1371/journal.pone.0117126.t002",
+          "rationale": "Public article or table DOI locator for the same primary source observation."
+        },
+        {
+          "path": "results/axelrod2015-rffa/correction/value/threshold/value",
+          "cellId": "axelrod-rffa-corrected-threshold",
+          "rawText": ".004",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+          "encoding": "number"
+        },
+        {
+          "path": "results/axelrod2015-rffa/correction/value/passed",
+          "cellId": "axelrod-rffa-corrected-threshold",
+          "rawText": ".004",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / Bonferroni significance threshold",
+          "encoding": "normalization",
+          "normalizedValue": true,
+          "rationale": "The reported threshold applies across 12 regions; right FFA passes and left FFA does not."
+        },
+        {
+          "path": "results/axelrod2015-rffa/correction/value/method",
+          "cellId": "axelrod-rffa-correction",
+          "rawText": "Bonferroni",
+          "locator": "Results / Neuroimaging Results / MVPA paragraph immediately following the average-activation results / multiple-comparison method",
+          "encoding": "text"
+        }
+      ],
+      "paraphrases": [
+        {
+          "locator": "Results / Neuroimaging Results / MVPA; Table 2",
+          "text": "Preserve separate reported precision: left FFA text p=.012 and table p=.01; right FFA text t=4.29 and table t=4.3. Bonferroni covers 12 regions; the reported raw-p threshold is .004. Table 1 z values belong to the localizer, not identity decoding."
+        }
+      ],
+      "limitations": [
+        "AI-assisted source inspection by Codex/root; human or expert review remains pending.",
+        "Only the listed minimal cells are available offline; complete articles and images are not retained.",
+        "A source-file digest records actual observed bytes of the named response only; it cannot re-verify absent full-source bytes.",
+        "Generic MNI does not establish an exact template variant or direct overlay eligibility."
+      ],
+      "sha256": "8efd11200e06d1c51df878ea3651b0905b23cdd70eea146dca1d31c657426cbb",
+      "recordSha256": "c37fee8e7629699078334ef9ed4c8712d431c5b657fe596874fdd6cf3a917391"
+    },
+    {
+      "schema": "source-artifact-v1",
+      "id": "bosco2008-v1",
+      "referenceId": "bosco2008",
+      "doi": "10.1523/JNEUROSCI.2869-08.2008",
+      "sourceUrl": "https://www.jneurosci.org/content/28/46/12071",
+      "sourceVersion": "Versioned minimal extraction v1; capture-specific primary source versions listed separately",
+      "retrievedAt": "2026-10-29",
+      "locator": "Selected cells and named sections; exact per-field locators below",
+      "rights": "Copyright Society for Neuroscience; retain only necessary numerical cells and source locators, not the complete article or table.",
+      "sourceFileSha256": null,
+      "captures": [
+        {
+          "id": "table",
+          "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6671632/#T1",
+          "sourceVersion": "Journal of Neuroscience Version of Record / 2008 / PMC6671632 rendered 2026-10-29",
+          "retrievedAt": "2026-10-29",
+          "sourceFileSha256": null,
+          "sourceFilePersisted": false,
+          "retrievalMethod": "rendered-source"
+        }
+      ],
+      "excerpt": {
+        "format": "minimal-factual-cells-v1",
+        "cells": [
+          {
+            "id": "doi",
+            "rawText": "10.1523/JNEUROSCI.2869-08.2008",
+            "locator": "Article front matter / DOI",
+            "captureId": "table"
+          },
+          {
+            "id": "source-url",
+            "rawText": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6671632/#T1",
+            "locator": "Article identity / inspected primary source URL",
+            "captureId": "table"
+          },
+          {
+            "id": "author-0",
+            "rawText": "Gianfranco Bosco",
+            "locator": "Article front matter / ordered author 1",
+            "captureId": "table"
+          },
+          {
+            "id": "author-1",
+            "rawText": "Mauro Carrozzo",
+            "locator": "Article front matter / ordered author 2",
+            "captureId": "table"
+          },
+          {
+            "id": "author-2",
+            "rawText": "Francesco Lacquaniti",
+            "locator": "Article front matter / ordered author 3",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-raw-cell",
+            "rawText": "65, −36.6, 30.1 (1.2, 3.3, 3.6)",
+            "locator": "Table 1 / Protocol 1 / TPJ / mean (SD) cell",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-label",
+            "rawText": "TPJ",
+            "locator": "Table 1 / Protocol 1 / TPJ / row label",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-x",
+            "rawText": "65",
+            "locator": "Table 1 / Protocol 1 / TPJ / x coordinate (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-y",
+            "rawText": "−36.6",
+            "locator": "Table 1 / Protocol 1 / TPJ / y coordinate (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-z",
+            "rawText": "30.1",
+            "locator": "Table 1 / Protocol 1 / TPJ / z coordinate (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-table",
+            "rawText": "Table 1",
+            "locator": "Table 1 / Protocol 1 / TPJ / table identifier",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-mni",
+            "rawText": "MNI",
+            "locator": "Table 1 / Protocol 1 / TPJ / coordinate-system header or associated Methods",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-sd-0",
+            "rawText": "1.2",
+            "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / x (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-sd-1",
+            "rawText": "3.3",
+            "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / y (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-sd-2",
+            "rawText": "3.6",
+            "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / z (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-tpj-sd-label",
+            "rawText": "SD",
+            "locator": "Table 1 / Protocol 1 / TPJ / dispersion label in table note",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-raw-cell",
+            "rawText": "55, −67.8, 1.8 (1.4, 2.2, 3.0)",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / mean (SD) cell",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-label",
+            "rawText": "hMT/V5+",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / row label",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-x",
+            "rawText": "55",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / x coordinate (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-y",
+            "rawText": "−67.8",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / y coordinate (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-z",
+            "rawText": "1.8",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / z coordinate (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-table",
+            "rawText": "Table 1",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / table identifier",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-mni",
+            "rawText": "MNI",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate-system header or associated Methods",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-sd-0",
+            "rawText": "1.4",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / x (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-sd-1",
+            "rawText": "2.2",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / y (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-sd-2",
+            "rawText": "3.0",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / z (mm)",
+            "captureId": "table"
+          },
+          {
+            "id": "bosco-mt-sd-label",
+            "rawText": "SD",
+            "locator": "Table 1 / Protocol 1 / hMT/V5+ / dispersion label in table note",
+            "captureId": "table"
+          }
+        ]
+      },
+      "fields": [
+        {
+          "path": "references/bosco2008/doi",
+          "cellId": "doi",
+          "rawText": "10.1523/JNEUROSCI.2869-08.2008",
+          "locator": "Article front matter / DOI",
+          "encoding": "text"
+        },
+        {
+          "path": "references/bosco2008/url",
+          "cellId": "source-url",
+          "rawText": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6671632/#T1",
+          "locator": "Article identity / inspected primary source URL",
+          "encoding": "normalization",
+          "normalizedValue": "https://doi.org/10.1523/JNEUROSCI.2869-08.2008",
+          "rationale": "Canonical DOI resolver URL for the same inspected article DOI."
+        },
+        {
+          "path": "references/bosco2008/fullAuthorList/0",
+          "cellId": "author-0",
+          "rawText": "Gianfranco Bosco",
+          "locator": "Article front matter / ordered author 1",
+          "encoding": "text"
+        },
+        {
+          "path": "references/bosco2008/fullAuthorList/1",
+          "cellId": "author-1",
+          "rawText": "Mauro Carrozzo",
+          "locator": "Article front matter / ordered author 2",
+          "encoding": "text"
+        },
+        {
+          "path": "references/bosco2008/fullAuthorList/2",
+          "cellId": "author-2",
+          "rawText": "Francesco Lacquaniti",
+          "locator": "Article front matter / ordered author 3",
+          "encoding": "text"
+        },
+        {
+          "path": "references/bosco2008/fullAuthorList/length",
+          "cellId": "source-url",
+          "rawText": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6671632/#T1",
+          "locator": "Article identity / inspected primary source URL",
+          "encoding": "normalization",
+          "normalizedValue": 3,
+          "rationale": "Number of names in the ordered primary article author list transcribed above."
+        },
+        {
+          "path": "locations/bosco-tpj/xyz/0",
+          "cellId": "bosco-tpj-x",
+          "rawText": "65",
+          "locator": "Table 1 / Protocol 1 / TPJ / x coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-tpj/xyz/1",
+          "cellId": "bosco-tpj-y",
+          "rawText": "−36.6",
+          "locator": "Table 1 / Protocol 1 / TPJ / y coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-tpj/xyz/2",
+          "cellId": "bosco-tpj-z",
+          "rawText": "30.1",
+          "locator": "Table 1 / Protocol 1 / TPJ / z coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-tpj/legacyV1/sourceTable",
+          "cellId": "bosco-tpj-table",
+          "rawText": "Table 1",
+          "locator": "Table 1 / Protocol 1 / TPJ / table identifier",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/bosco-tpj/legacyV1/sourceRow",
+          "cellId": "bosco-tpj-label",
+          "rawText": "TPJ",
+          "locator": "Table 1 / Protocol 1 / TPJ / row label",
+          "encoding": "normalization",
+          "normalizedValue": "Protocol 1 — TPJ",
+          "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+        },
+        {
+          "path": "locations/bosco-tpj/sourceRefs/0",
+          "cellId": "bosco-tpj-label",
+          "rawText": "TPJ",
+          "locator": "Table 1 / Protocol 1 / TPJ / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://www.jneurosci.org/content/28/46/12071#T1",
+          "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+        },
+        {
+          "path": "locations/bosco-tpj/legacyV1/sourceUrl",
+          "cellId": "bosco-tpj-label",
+          "rawText": "TPJ",
+          "locator": "Table 1 / Protocol 1 / TPJ / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://www.jneurosci.org/content/28/46/12071#T1",
+          "rationale": "Retained original publisher source link to this row."
+        },
+        {
+          "path": "locations/bosco-tpj/sourceSpaceId",
+          "cellId": "bosco-tpj-mni",
+          "rawText": "MNI",
+          "locator": "Table 1 / Protocol 1 / TPJ / coordinate-system header or associated Methods",
+          "encoding": "normalization",
+          "normalizedValue": "MNI-unspecified",
+          "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+        },
+        {
+          "path": "locations/bosco-tpj/kind",
+          "cellId": "bosco-tpj-label",
+          "rawText": "TPJ",
+          "locator": "Table 1 / Protocol 1 / TPJ / row label",
+          "encoding": "normalization",
+          "normalizedValue": "stimulation-target",
+          "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+        },
+        {
+          "path": "locations/bosco-tpj/dispersion/value/value/0",
+          "cellId": "bosco-tpj-sd-0",
+          "rawText": "1.2",
+          "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / x (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-tpj/dispersion/value/value/1",
+          "cellId": "bosco-tpj-sd-1",
+          "rawText": "3.3",
+          "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / y (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-tpj/dispersion/value/value/2",
+          "cellId": "bosco-tpj-sd-2",
+          "rawText": "3.6",
+          "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / z (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-tpj/dispersion/value/kind",
+          "cellId": "bosco-tpj-sd-label",
+          "rawText": "SD",
+          "locator": "Table 1 / Protocol 1 / TPJ / dispersion label in table note",
+          "encoding": "normalization",
+          "normalizedValue": "sd",
+          "rationale": "Standard deviation across subjects, not localization error or standard error."
+        },
+        {
+          "path": "locations/bosco-mt/xyz/0",
+          "cellId": "bosco-mt-x",
+          "rawText": "55",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / x coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-mt/xyz/1",
+          "cellId": "bosco-mt-y",
+          "rawText": "−67.8",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / y coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-mt/xyz/2",
+          "cellId": "bosco-mt-z",
+          "rawText": "1.8",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / z coordinate (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-mt/legacyV1/sourceTable",
+          "cellId": "bosco-mt-table",
+          "rawText": "Table 1",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / table identifier",
+          "encoding": "text"
+        },
+        {
+          "path": "locations/bosco-mt/legacyV1/sourceRow",
+          "cellId": "bosco-mt-label",
+          "rawText": "hMT/V5+",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / row label",
+          "encoding": "normalization",
+          "normalizedValue": "Protocol 1 — hMT/V5+",
+          "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+        },
+        {
+          "path": "locations/bosco-mt/sourceRefs/0",
+          "cellId": "bosco-mt-label",
+          "rawText": "hMT/V5+",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://www.jneurosci.org/content/28/46/12071#T1",
+          "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+        },
+        {
+          "path": "locations/bosco-mt/legacyV1/sourceUrl",
+          "cellId": "bosco-mt-label",
+          "rawText": "hMT/V5+",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / row label",
+          "encoding": "normalization",
+          "normalizedValue": "https://www.jneurosci.org/content/28/46/12071#T1",
+          "rationale": "Retained original publisher source link to this row."
+        },
+        {
+          "path": "locations/bosco-mt/sourceSpaceId",
+          "cellId": "bosco-mt-mni",
+          "rawText": "MNI",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate-system header or associated Methods",
+          "encoding": "normalization",
+          "normalizedValue": "MNI-unspecified",
+          "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+        },
+        {
+          "path": "locations/bosco-mt/kind",
+          "cellId": "bosco-mt-label",
+          "rawText": "hMT/V5+",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / row label",
+          "encoding": "normalization",
+          "normalizedValue": "stimulation-target",
+          "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+        },
+        {
+          "path": "locations/bosco-mt/dispersion/value/value/0",
+          "cellId": "bosco-mt-sd-0",
+          "rawText": "1.4",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / x (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-mt/dispersion/value/value/1",
+          "cellId": "bosco-mt-sd-1",
+          "rawText": "2.2",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / y (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-mt/dispersion/value/value/2",
+          "cellId": "bosco-mt-sd-2",
+          "rawText": "3.0",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / z (mm)",
+          "encoding": "number"
+        },
+        {
+          "path": "locations/bosco-mt/dispersion/value/kind",
+          "cellId": "bosco-mt-sd-label",
+          "rawText": "SD",
+          "locator": "Table 1 / Protocol 1 / hMT/V5+ / dispersion label in table note",
+          "encoding": "normalization",
+          "normalizedValue": "sd",
+          "rationale": "Standard deviation across subjects, not localization error or standard error."
+        }
+      ],
+      "paraphrases": [
+        {
+          "locator": "Table 1, Protocol 1, TPJ and hMT/V5+ mean MNI coordinate columns",
+          "text": "Protocol 1 reports across-subject mean actual stimulation coordinates and coordinate SD. These are not BOLD peaks or millimetre localization accuracy; other protocols have distinct coordinates."
+        }
+      ],
+      "limitations": [
+        "AI-assisted source inspection by Codex/root; human or expert review remains pending.",
+        "Only the listed minimal cells are available offline; complete articles and images are not retained.",
+        "A source-file digest records actual observed bytes of the named response only; it cannot re-verify absent full-source bytes.",
+        "Generic MNI does not establish an exact template variant or direct overlay eligibility."
+      ],
+      "sha256": "8143a4f6712099c5ad4e850f0900d9eb4dafe560209584b6b0d664b02efbc41e",
+      "recordSha256": "95617355ac01e36f51090e71a843f5bc3cd579345c5c11c67a30ad16b18d4f22"
+    }
+  ],
   "reviewEvents": [
     {
       "id": "schaum2021-meg-stop:legacy-source-check",
@@ -1652,6 +3994,234 @@
         "checkedAt": "2026-10-26",
         "scope": "Table 1 / Protocol 1 — hMT/V5+"
       }
+    },
+    {
+      "id": "schaum2021-meg-stop:e4-source-check-v1",
+      "subjectId": "schaum2021-meg-stop",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment.",
+      "sourceRefs": [
+        "schaum2021-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "仅核对所列最小原文单元；人工审阅仍待完成。",
+          "en": "Only listed minimal source cells checked; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "schaum-rifg:e4-source-check-v1",
+      "subjectId": "schaum-rifg",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment. All three axes independently anchored.",
+      "sourceRefs": [
+        "schaum2021-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "MNI 模板变体未知；人工审阅仍待完成。",
+          "en": "MNI template variant remains unspecified; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "schaum-lifg:e4-source-check-v1",
+      "subjectId": "schaum-lifg",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment. All three axes independently anchored.",
+      "sourceRefs": [
+        "schaum2021-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "MNI 模板变体未知；人工审阅仍待完成。",
+          "en": "MNI template variant remains unspecified; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "schaum-insula:e4-source-check-v1",
+      "subjectId": "schaum-insula",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment. All three axes independently anchored.",
+      "sourceRefs": [
+        "schaum2021-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "MNI 模板变体未知；人工审阅仍待完成。",
+          "en": "MNI template variant remains unspecified; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "schaum-presma:e4-source-check-v1",
+      "subjectId": "schaum-presma",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment. All three axes independently anchored.",
+      "sourceRefs": [
+        "schaum2021-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "MNI 模板变体未知；人工审阅仍待完成。",
+          "en": "MNI template variant remains unspecified; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "axelrod2015-rffa:e4-source-check-v1",
+      "subjectId": "axelrod2015-rffa",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment.",
+      "sourceRefs": [
+        "axelrod2015-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "仅核对所列最小原文单元；人工审阅仍待完成。",
+          "en": "Only listed minimal source cells checked; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "axelrod-rffa:e4-source-check-v1",
+      "subjectId": "axelrod-rffa",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment. All three axes independently anchored.",
+      "sourceRefs": [
+        "axelrod2015-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "MNI 模板变体未知；人工审阅仍待完成。",
+          "en": "MNI template variant remains unspecified; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "axelrod2015-lffa:e4-source-check-v1",
+      "subjectId": "axelrod2015-lffa",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment.",
+      "sourceRefs": [
+        "axelrod2015-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "仅核对所列最小原文单元；人工审阅仍待完成。",
+          "en": "Only listed minimal source cells checked; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "axelrod-lffa:e4-source-check-v1",
+      "subjectId": "axelrod-lffa",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment. All three axes independently anchored.",
+      "sourceRefs": [
+        "axelrod2015-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "MNI 模板变体未知；人工审阅仍待完成。",
+          "en": "MNI template variant remains unspecified; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "bosco2008-tms-protocol1:e4-source-check-v1",
+      "subjectId": "bosco2008-tms-protocol1",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment.",
+      "sourceRefs": [
+        "bosco2008-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "仅核对所列最小原文单元；人工审阅仍待完成。",
+          "en": "Only listed minimal source cells checked; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "bosco-tpj:e4-source-check-v1",
+      "subjectId": "bosco-tpj",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment. All three axes independently anchored.",
+      "sourceRefs": [
+        "bosco2008-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "MNI 模板变体未知；人工审阅仍待完成。",
+          "en": "MNI template variant remains unspecified; human review remains pending."
+        }
+      ]
+    },
+    {
+      "id": "bosco-mt:e4-source-check-v1",
+      "subjectId": "bosco-mt",
+      "stage": "source-checked",
+      "actorType": "ai",
+      "actorName": "Codex AI-assisted source extraction / AI 辅助原文摘录",
+      "date": "2026-10-29",
+      "scope": "AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment. All three axes independently anchored.",
+      "sourceRefs": [
+        "bosco2008-v1"
+      ],
+      "recordVersion": "2026-10-29.2",
+      "limitations": [
+        {
+          "zh": "MNI 模板变体未知；人工审阅仍待完成。",
+          "en": "MNI template variant remains unspecified; human review remains pending."
+        }
+      ]
     }
   ],
   "relations": [],

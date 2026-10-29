@@ -155,6 +155,21 @@ export function resultViewModelToEvidence(record,bundle,options={}) {
       converted.reviewEvents.push({id:`${subjectId}:source-check:${version}`,subjectId,stage:'source-checked',actorType:intent.actorType,actorName:intent.actorName,date:intent.date,scope:intent.scope,sourceRefs:[coordinate?.sourceUrl||record.sourceUrl],limitations:[bi('Source checking records only the supplied scope; it does not certify study quality, spatial alignment or expert/human review.')],recordVersion:version});
     }
   }
+  // Statistics, unchanged locations and historic review events can reference
+  // versioned source artifacts. Carry that exact closure into the editor's
+  // standalone payload; unrelated papers' source material stays outside it.
+  const artifacts=new Map((bundle?.sourceArtifacts||[]).map(artifact=>[artifact.id,artifact])),needed=new Set();
+  const retainSources=node=>{
+    if(Array.isArray(node)){node.forEach(retainSources);return;}
+    if(!node||typeof node!=='object')return;
+    for(const [key,value] of Object.entries(node)){
+      if(key==='sourceRefs'&&Array.isArray(value)){
+        for(const ref of value)if(artifacts.has(ref)&&!needed.has(ref)){needed.add(ref);retainSources(artifacts.get(ref));}
+      }else if(key!=='sourceRefs')retainSources(value);
+    }
+  };
+  retainSources(converted);
+  converted.sourceArtifacts=structuredClone([...needed].map(id=>artifacts.get(id)));
   return converted;
 }
 

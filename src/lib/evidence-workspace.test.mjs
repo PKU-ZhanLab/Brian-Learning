@@ -36,15 +36,31 @@ test('DOI merge rewrites experiments readings claims mappings artifacts review s
   for(const r of [...incoming.results,...incoming.claims])r.referenceId=imported;
   incoming.readings=[{id:'reading',referenceId:imported,resultSummaries:'Reading summary',methodProvenance:{source:'https://example.org'},limitations:'Reading only',claimIds:[incoming.claims[0].id]}];
   incoming.experiments=[{id:'exp',referenceId:imported,task:'Explicit experiment',species:'human',sample:incoming.results[0].sample,modalities:['fMRI'],sourceRefs:['https://example.org']}];
-  incoming.sourceArtifacts=[{id:'source',referenceId:imported,sourceReferenceId:imported,referenceIds:[imported]}];incoming.mappings=[classifyMapping({id:'mapping',referenceId:imported,claimId:incoming.claims[0].id})];
+  incoming.sourceArtifacts=[...incoming.sourceArtifacts,{id:'source',referenceId:imported,sourceReferenceId:imported,referenceIds:[imported]}];incoming.mappings=[classifyMapping({id:'mapping',referenceId:imported,claimId:incoming.claims[0].id})];
   incoming.reviewEvents.push({id:'paper-check',subjectId:imported,stage:'extracted',actorType:'ai',actorName:'Codex',date:'2026-10-29',scope:'Metadata only',sourceRefs:[],limitations:[],recordVersion:'1'});
   const copy=structuredClone(incoming),merged=mergeEvidence(base,incoming);
   for(const key of ['results','claims','readings','experiments','mappings','sourceArtifacts'])for(const row of merged[key].filter(r=>r.referenceId))assert.notEqual(row.referenceId,imported);
-  assert.equal(merged.sourceArtifacts[0].sourceReferenceId,oldId);assert.deepEqual(merged.sourceArtifacts[0].referenceIds,[oldId]);assert.equal(merged.reviewEvents.find(e=>e.id==='paper-check').subjectId,oldId);assert.deepEqual(incoming,copy);assert.equal(merged.references.length,3);
+  const mergedSource=merged.sourceArtifacts.find(row=>row.id==='source');assert.equal(mergedSource.sourceReferenceId,oldId);assert.deepEqual(mergedSource.referenceIds,[oldId]);assert.equal(merged.reviewEvents.find(e=>e.id==='paper-check').subjectId,oldId);assert.deepEqual(incoming,copy);assert.equal(merged.references.length,3);
 });
 test('legacy text editor preserves structured fields, resets current checks and retains history',()=>{
   const b=curated(),vm=getResultViewModel('axelrod2015-lffa',b);vm.finding='Changed annotation';vm.curationStatus='draft';vm.coordinates[0].status='draft';
   const p=resultViewModelToEvidence(vm,b,{knownReferences:additionalResultsReferences});const merged=mergeEvidence(b,p);const updated=getResultViewModel(vm.id,merged);assert.equal(updated.finding,'Changed annotation');assert.equal(updated.curationStatus,'draft');assert.equal(updated.coordinates[0].status,'draft');assert.deepEqual(merged.results.find(r=>r.id===vm.id).statistics,b.results.find(r=>r.id===vm.id).statistics);assert.ok(merged.reviewEvents.some(e=>e.id===`${vm.id}:legacy-source-check`));
+});
+
+test('production editor payload saves only its referenced source artifacts with statistics and review anchors',()=>{
+  for(const id of ['axelrod2015-lffa','schaum2021-meg-stop']){
+    const original=curated(),record=getResultViewModel(id,original),referenceId=original.results.find(row=>row.id===id).referenceId;
+    record.finding='Edited narrative; source observations retained';
+    const options={knownReferences:additionalResultsReferences};
+    const payload=resultViewModelToEvidence(record,original,options);
+    assert.deepEqual(payload.sourceArtifacts.map(row=>row.id),original.sourceArtifacts.filter(row=>row.referenceId===referenceId).map(row=>row.id));
+    assert.equal(validateEvidence(payload,options).valid,true);
+    assert.deepEqual(payload.results[0].statistics,original.results.find(row=>row.id===id).statistics);
+    for(const event of payload.reviewEvents)for(const source of event.sourceRefs.filter(ref=>!/^https?:/.test(ref)))assert(payload.sourceArtifacts.some(artifact=>artifact.id===source));
+    const storage=store();saveEvidence(payload,storage,options);const reopened=loadEvidence(storage,options);
+    assert.deepEqual(reopened,payload);assert.deepEqual(reopened.sourceArtifacts,original.sourceArtifacts.filter(row=>row.referenceId===referenceId));
+    const merged=mergeEvidence(original,reopened,options);assert.equal(getResultViewModel(id,merged).reviewState.sourceChecked,false);
+  }
 });
 test('editor preserves coordinate dispersion and explicit coordinate deletion cleans dependent records',()=>{
   const b=curated(),vm=getResultViewModel('bosco2008-tms-protocol1',b);vm.finding='Edited narrative';vm.curationStatus='draft';
@@ -68,12 +84,12 @@ test('paper pruning resolves native v2 experiment-owned results and removes only
   b.experiments=[{id:'native-experiment',referenceId:removedPaper,task:'Explicit native experiment',species:'human',sample,modalities:['fMRI'],sourceRefs:['https://example.org/experiment']}];
   for(const r of removed){delete r.referenceId;delete r.legacyV1;r.experimentId='native-experiment';}
   b.claims.push({id:'experiment-claim',referenceId:removedPaper,experimentId:'native-experiment',resultId:null,text:'Experiment-level claim',sourceRefs:[],limitations:[]});
-  b.sourceArtifacts=[{id:'experiment-artifact',experimentId:'native-experiment'},{id:'claim-artifact',claimId:'experiment-claim'},{id:'unrelated-artifact',referenceId:'schaum2021'}];
+  b.sourceArtifacts.push({id:'experiment-artifact',experimentId:'native-experiment'},{id:'claim-artifact',claimId:'experiment-claim'},{id:'unrelated-artifact',referenceId:'schaum2021'});
   b.mappings.push(classifyMapping({id:'claim-mapping',referenceId:removedPaper,claimId:'experiment-claim'}));
   b.relations=[{id:'cross-paper-relation',fromResultId:removed[0].id,toResultId:'schaum2021-meg-stop',type:'not-comparable',rationale:'Different methods',annotator:'Reader',sourceUrl:'https://example.org/relation'}];
   assert.equal(validateEvidence(b).valid,true);
   const before=structuredClone(b),next=removeEvidenceRecords(b,{referenceIds:[removedPaper]});assert.deepEqual(b,before);assert.equal(validateEvidence(next).valid,true);
-  assert.equal(next.results.length,2);assert.equal(next.locations.length,6);assert.equal(next.experiments.length,0);assert.equal(next.relations.length,0);assert.ok(!next.claims.some(c=>c.referenceId===removedPaper));assert.ok(!next.mappings.some(m=>m.id==='claim-mapping'));assert.deepEqual(next.sourceArtifacts,[b.sourceArtifacts[2]]);assert.ok(next.reviewEvents.every(e=>!removed.some(r=>r.id===e.subjectId)));
+  assert.equal(next.results.length,2);assert.equal(next.locations.length,6);assert.equal(next.experiments.length,0);assert.equal(next.relations.length,0);assert.ok(!next.claims.some(c=>c.referenceId===removedPaper));assert.ok(!next.mappings.some(m=>m.id==='claim-mapping'));assert.deepEqual(next.sourceArtifacts,b.sourceArtifacts.filter(row=>row.referenceId!==removedPaper&&!row.experimentId&&!row.claimId));assert.ok(next.reviewEvents.every(e=>!removed.some(r=>r.id===e.subjectId)));
   assert.deepEqual(next.results,b.results.filter(r=>!removed.some(x=>x.id===r.id)));
   // The selected-paper export prunes every unrelated paper using this same API.
   const selected=removeEvidenceRecords(b,{referenceIds:b.references.filter(r=>r.id!==removedPaper).map(r=>r.id)});assert.equal(validateEvidence(selected).valid,true);assert.deepEqual(selected.results.map(r=>r.id),removed.map(r=>r.id));assert.equal(selected.experiments.length,1);assert.equal(selected.locations.length,2);

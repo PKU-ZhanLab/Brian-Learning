@@ -1,5 +1,8 @@
 import {migrateEvidence,getResultViewModel,reported,missing} from '../lib/evidence-schema.js';
 import {paperSearchAnnotations} from '../../data-sources/literature-upgrade/curation.mjs';
+import schaumSource from '../../data-sources/results/source-artifacts/schaum2021-v1.json' with {type:'json'};
+import axelrodSource from '../../data-sources/results/source-artifacts/axelrod2015-v1.json' with {type:'json'};
+import boscoSource from '../../data-sources/results/source-artifacts/bosco2008-v1.json' with {type:'json'};
 // Selected primary-source records. Source checking was performed with AI assistance,
 // not human certification. Generic MNI is deliberately NOT relabelled as NLin6Asym.
 const bi = (zh, en) => ({zh,en});
@@ -55,6 +58,33 @@ for(const [id,sd] of [['bosco-tpj',[1.2,3.3,3.6]],['bosco-mt',[1.4,2.2,3.0]]]){
   const location=curatedEvidence.locations.find(l=>l.id===id);
   location.dispersion=reported({kind:'sd',value:sd,unit:'mm',scope:'Between-subject distribution of stimulation-site coordinates'},[`${sources.bosco}#T1`]);
   location.uncertainty={kind:'unknown',reason:'Localization error is not established by between-subject coordinate SD',unit:'mm',sourceRefs:[`${sources.bosco}#T1`]};
+}
+// E4 observations are scoped to these exact versions and minimal source cells.
+// Historic v1 values/events remain intact; no spatial or human review is added.
+curatedEvidence.dataVersion='2026-10-29.2';
+curatedEvidence.sourceArtifacts=structuredClone([schaumSource,axelrodSource,boscoSource]);
+const schaum=curatedEvidence.results.find(result=>result.id==='schaum2021-meg-stop');
+const schaumTable=`${sources.schaum}#table1`;
+schaum.sample.included=reported(59,[schaumSource.id]);
+schaum.sample.perAnalysis=reported(59,[schaumSource.id]);
+schaum.statistics=reported([['schaum-rifg',3.654],['schaum-lifg',2.820],['schaum-insula',2.894],['schaum-presma',3.878]].map(([locationId,value])=>({type:'t',value,df:null,p:null,unit:'dimensionless',locationId,sourceRefs:[schaumSource.id,schaumTable],sourceLocator:`Table 1 / ${locationId} / t-Value; no peak-level p reported in selected cells`})),[schaumSource.id,schaumTable]);
+schaum.timeWindow=reported({start:100,end:373,unit:'ms',role:'source-reconstruction cross-spectral-density window',event:'STOP/AC-GO signal onset',temporalROI:{start:100,end:350,unit:'ms',role:'a priori temporal ROI'},explanationParaphrase:'Methods / Source imaging explicitly extends the window beyond 350 ms to fit integer oscillatory cycles and reduce spectral leakage.'},[schaumSource.id,sources.schaum]);
+schaum.frequencyBand=reported({min:12,max:32,unit:'Hz',role:'source reconstruction',spectralCenter:22,smoothingHalfWidth:10,sensorCluster:{min:12,max:31.9,unit:'Hz',role:'sensor-level cluster selected for source reconstruction'}},[schaumSource.id]);
+schaum.correction=reported({method:'two-sided cluster-based permutation inference',comparisonFamily:'MEG source statistics; dependent-samples t statistic',passed:null,threshold:{operator:'<',value:.05,appliesTo:'cluster alpha'},permutations:5000},[schaumSource.id]);
+for(const result of curatedEvidence.results){
+  const artifact=curatedEvidence.sourceArtifacts.find(source=>source.referenceId===result.referenceId);
+  result.recordVersion='2026-10-29.2';
+  if(result.referenceId==='axelrod2015'){
+    result.correction.value.threshold={operator:'<',value:.004,appliesTo:'reported Bonferroni threshold across 12 regions'};
+    for(const statistic of result.statistics.value)statistic.sourceRefs.push(artifact.id);
+    result.statistics.sourceRefs.push(artifact.id);result.correction.sourceRefs.push(artifact.id);
+  }
+  const scope='AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment.';
+  curatedEvidence.reviewEvents.push({id:`${result.id}:e4-source-check-v1`,subjectId:result.id,stage:'source-checked',actorType:'ai',actorName:annotator,date:'2026-10-29',scope,sourceRefs:[artifact.id],recordVersion:result.recordVersion,limitations:[bi('仅核对所列最小原文单元；人工审阅仍待完成。','Only listed minimal source cells checked; human review remains pending.')]});
+  for(const location of curatedEvidence.locations.filter(row=>row.resultId===result.id)){
+    location.recordVersion=result.recordVersion;location.sourceRefs.push(artifact.id);
+    curatedEvidence.reviewEvents.push({id:`${location.id}:e4-source-check-v1`,subjectId:location.id,stage:'source-checked',actorType:'ai',actorName:annotator,date:'2026-10-29',scope:`${scope} All three axes independently anchored.`,sourceRefs:[artifact.id],recordVersion:location.recordVersion,limitations:[bi('MNI 模板变体未知；人工审阅仍待完成。','MNI template variant remains unspecified; human review remains pending.')]});
+  }
 }
 export const curatedResults=curatedEvidence.results.map(result=>getResultViewModel(result.id,curatedEvidence));
 

@@ -1,0 +1,25 @@
+{
+  "schema": "source-artifact-index-v1",
+  "version": "2026-10-29.1",
+  "policy": "Immutable versioned artifacts: changed source observations require a new v2 file and index entry; preserve v1. Digests establish identity, not human certification.",
+  "artifacts": [
+    {
+      "id": "schaum2021-v1",
+      "referenceId": "schaum2021",
+      "file": "schaum2021-v1.json",
+      "sha256": "a0eacb856dfb1b6f7e648875f98455f59573968d4d617ae62dffb90faef33b45"
+    },
+    {
+      "id": "axelrod2015-v1",
+      "referenceId": "axelrod2015",
+      "file": "axelrod2015-v1.json",
+      "sha256": "cd79af8a7f638550c6760596071cdb710a8e2ce91abec9b4a473e5368cbc03f1"
+    },
+    {
+      "id": "bosco2008-v1",
+      "referenceId": "bosco2008",
+      "file": "bosco2008-v1.json",
+      "sha256": "4ac841a0c515fbf8a41594aa071a5352e77ae0d1ac27d367dd029ce3da1b39dc"
+    }
+  ]
+}

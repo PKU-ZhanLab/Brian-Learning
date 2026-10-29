@@ -74,7 +74,7 @@ test('each statistic requires a safe resolvable source and malformed statistics 
   for(const bad of [null,3,'t',[],{}, {type:'t',value:2,df:12,unit:'dimensionless',p:null,sourceRefs:['javascript:alert(1)']}, {type:'t',value:2,df:12,unit:'dimensionless',p:null,sourceRefs:['missing-artifact']}]){
     const b=structuredClone(curatedEvidence);b.results[1].statistics.value=[bad];let report;assert.doesNotThrow(()=>{report=validateEvidenceV2(b);});assert.equal(report.valid,false,JSON.stringify(bad));assert.ok(report.errors.some(e=>e.includes('statistics')));
   }
-  const b=structuredClone(curatedEvidence);b.sourceArtifacts=[{id:'statistic-source'}];b.results[1].statistics.value[0].sourceRefs=['statistic-source'];assert.equal(validateEvidenceV2(b).valid,true);
+  const b=structuredClone(curatedEvidence);b.sourceArtifacts.push({id:'statistic-source'});b.results[1].statistics.value[0].sourceRefs=['statistic-source'];assert.equal(validateEvidenceV2(b).valid,true);
 });
 test('fresh editor checks require supplied identity date and scope and can only produce source-check events',()=>{
   const bundle=migrateEvidence(fixture).value,record=getResultViewModel(bundle.results[0].id,bundle),intent={result:true,coordinateIds:[],actorType:'unknown',actorName:'Supplied annotator',date:'2026-10-29',scope:'Selected Table 1 cells'};

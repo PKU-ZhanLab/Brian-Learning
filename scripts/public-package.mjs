@@ -78,7 +78,7 @@ const sourceInputs={
   space:['sources.json','TemplateFlow-commit.txt','MNI152NLin2009aAsym-template_description.json','LICENSE-MNI.txt'],
   literature:['verification.json','candidates.json','README.md'],
   'literature-upgrade':['curation.mjs','discovery.mjs','candidates.json','figure-audit.json','metadata.json'],
-  results:['source-audit.json','curated-results.json','search-aliases.json','schaum2021-metadata.json','axelrod2015-metadata.json','bosco2008-metadata.json','verify-sources.mjs'],
+  results:['source-audit.json','curated-results.json','search-aliases.json','schaum2021-metadata.json','axelrod2015-metadata.json','bosco2008-metadata.json','verify-sources.mjs','source-artifacts/index.json','source-artifacts/schaum2021-v1.json','source-artifacts/axelrod2015-v1.json','source-artifacts/bosco2008-v1.json'],
 };
 
 export async function prepareSourceRelease(target){
