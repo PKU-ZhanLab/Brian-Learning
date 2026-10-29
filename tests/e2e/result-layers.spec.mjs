@@ -8,6 +8,7 @@ import {curatedEvidence} from '../../src/data/results.js';
 
 async function files(page){await page.getByRole('button',{name:'Projects & views',exact:true}).click();return page.getByRole('dialog',{name:'Save and share',exact:true});}
 async function open(dialog,text){await preflightResultLayerProject(text);await dialog.locator('input[type=file]').setInputFiles({name:'synthetic.neuroatlas',mimeType:'application/json',buffer:Buffer.from(text)});await dialog.getByRole('button',{name:'Confirm open',exact:true}).click();}
+async function expandLayers(page){const bar=page.locator('.result-layer-bar');if(!await bar.evaluate(element=>element.open))await bar.locator('summary').click();return bar;}
 const storage=page=>page.evaluate(()=>Object.fromEntries(Object.keys(localStorage).sort().map(key=>[key,localStorage.getItem(key)])));
 const snapshot=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1')));
 const resolved=page=>page.evaluate(async()=>{const {resolveResultLayers}=await import('/src/lib/result-layers.js');const s=JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1'));return resolveResultLayers(s.view.resultLayers,{evidence:s.evidence});});
@@ -61,6 +62,7 @@ test('visiting paper B retains layer A and a real brain point returns to A’s e
  await panel.getByRole('button',{name:'Locate result point private-point-0',exact:true}).click();await expect(panel.locator('tr[aria-selected="true"]')).toContainText('private-point-0');
  await panel.getByRole('button',{name:'Open source paper',exact:true}).click();await expect(page.locator('.paper-detail h2')).toHaveText('Synthetic local paper');await expect(panel.locator('[data-result-id="private-result"]')).toBeVisible();
  await panel.getByRole('button',{name:'Close result coordinates',exact:true}).click();
+ await expandLayers(page);
  await bar.getByRole('button',{name:`Hide layer ${original[0].layerId}`,exact:true}).click();await expect.poll(async()=>(await snapshot(page)).view.resultLayers[0].visible).toBe(false);expect((await snapshot(page)).view.atlas).toBe('dk');
  await bar.getByRole('button',{name:`Show layer ${original[0].layerId}`,exact:true}).click();await expect.poll(async()=>(await resolved(page)).markers.length).toBe(2);
 });
@@ -68,6 +70,7 @@ test('visiting paper B retains layer A and a real brain point returns to A’s e
 test('clearing layers after selecting a private point preserves source restrictions in the shared view',async({page,context})=>{
  await context.grantPermissions(['clipboard-read','clipboard-write']);await page.goto('/?lang=en');let dialog=await files(page);
  await open(dialog,await serializeProject({projectId:'private-clear',view:{language:'en',atlas:'aal3-registered',resultLayers:layers()},evidence:evidence(),volumes:[]}));await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
+ await expandLayers(page);
  await page.getByRole('button',{name:'Open result private-result',exact:true}).first().click();const panel=page.getByRole('dialog',{name:'Paper result coordinates',exact:true});await panel.getByRole('button',{name:'Locate result point private-point-0',exact:true}).click();await panel.getByRole('button',{name:'Close result coordinates',exact:true}).click();
  await page.getByRole('button',{name:'Clear result layers',exact:true}).click();await expect.poll(async()=>(await snapshot(page)).view.resultLayers).toEqual([]);const current=(await snapshot(page)).view;expect(current.atlas).toBe('aal3-registered');expect(current.coordinateOrigin.resultId).toBe('private-result');expect(current.coordinateOrigin.cameraSensitive).toBe(true);expect(current.coordinateOrigin.explorerSensitive).toBe(true);
  dialog=await files(page);await dialog.getByRole('button',{name:'Copy view link',exact:true}).click();const url=await page.evaluate(()=>navigator.clipboard.readText()),encoded=new URLSearchParams(new URL(url).hash.slice(1)).get('view'),shared=JSON.parse(Buffer.from(encoded,'base64url').toString('utf8'));
@@ -77,6 +80,7 @@ test('clearing layers after selecting a private point preserves source restricti
 test('native and unknown frames expose source coordinates without a main brain overlay action',async({page})=>{
  const local=syntheticUnknownResultEvidence();
  await page.goto('/?lang=en');const dialog=await files(page);await open(dialog,await serializeProject({projectId:'unknown-frame',view:{language:'en',resultLayers:[{...layers()[0],spaceId:'MNI-unspecified'}]},evidence:local,volumes:[]}));await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
+ await expandLayers(page);
  await expect(page.locator('.result-layer-bar')).toContainText('Independent coordinates');await page.getByRole('button',{name:'Open result private-result',exact:true}).click();const panel=page.getByRole('dialog',{name:'Paper result coordinates',exact:true});await expect(panel).toContainText('MNI-unspecified');await expect(panel.getByRole('button',{name:'Save layer and show on brain',exact:true})).toHaveCount(0);await expect(panel.getByRole('button',{name:'Save result layer',exact:true})).toBeVisible();await expect(panel.getByRole('button',{name:'Locate result point private-point-0',exact:true})).toBeVisible();
 });
 

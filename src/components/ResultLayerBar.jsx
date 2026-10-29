@@ -1,12 +1,12 @@
-import React,{useEffect,useState} from 'react';
+import React,{useState} from 'react';
 import {Eye,EyeOff,Trash2,MapPin,ArrowUpRight} from 'lucide-react';
 import './ResultLayerBar.css';
 
 const text=(value,language)=>typeof value==='string'?value:value?.[language]||value?.en||value?.zh||'';
 export default function ResultLayerBar({layers=[],results={},references={},unavailable=[],language='zh',onVisibilityChange,onRemove,onOpenResult,onClear}){
   const en=language==='en',t=(zh,eng)=>en?eng:zh;
-  const [expanded,setExpanded]=useState(()=>typeof matchMedia==='function'?!matchMedia('(max-width: 650px)').matches:true);
-  useEffect(()=>{const query=window.matchMedia('(max-width: 650px)'),change=()=>setExpanded(!query.matches);query.addEventListener('change',change);return()=>query.removeEventListener('change',change);},[]);
+  // Reading space is the default; only the user's disclosure action changes it.
+  const [expanded,setExpanded]=useState(false);
   if(!layers.length)return null;
   const names=[...new Set(layers.map(layer=>`${layer.resultId} · ${references[layer.sourceReferenceId]?.title||layer.sourceReferenceId}`))].join(' / ');
   return <details className="result-layer-bar" open={expanded} onToggle={event=>setExpanded(event.currentTarget.open)}>

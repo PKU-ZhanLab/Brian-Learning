@@ -254,3 +254,46 @@ for(const layoutPreset of ['model','evidence'])for(const source of [
   await summary.focus();await summary.press('Enter');await expect(context).toContainText('Atlas reference');
   await noPageOverflow(page);await recordViewport(page,testInfo,`provenance-${layoutPreset}-${source.atlas}-reflow`);
 });
+
+// X7 round2 RED: at1366 two default-expanded layers consumed236px and left
+// only273px for reading; collapsing the same disclosure restored468px.
+test('two-layer reading starts with compact source context and preserves the reclaimed paper space',async({page},testInfo)=>{
+  await page.setViewportSize({width:1366,height:768});await setup(page,{layers:true});
+  await page.evaluate(()=>document.fonts.ready);
+  const bar=page.locator('.result-layer-bar'),summary=bar.locator('summary');
+  await expect(bar).not.toHaveAttribute('open');
+  await expect(summary).toContainText('private-result');await expect(summary).toContainText(longTitle);
+  const before=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).view.resultLayers,storageKey);
+  const measure=()=>page.evaluate(()=>({readingHeight:document.querySelector('.workspace-layout>.right-panel').getBoundingClientRect().height,headingY:document.querySelector('.paper-detail h2').getBoundingClientRect().top,layerHeight:document.querySelector('.result-layer-bar').getBoundingClientRect().height}));
+  const compact=await measure();
+  // Measure actual available reading area and heading position, not a CSS string.
+  expect(compact.readingHeight).toBeGreaterThanOrEqual(400);
+  expect(compact.headingY).toBeLessThan(768-100);
+  await summary.click();await expect(bar).toHaveAttribute('open');
+  await expect(bar.locator('.result-layer-content').getByRole('button')).toHaveCount(7);
+  const expanded=await measure();
+  expect(compact.readingHeight-expanded.readingHeight).toBeGreaterThan(100);
+  expect(expanded.headingY-compact.headingY).toBeGreaterThan(100);
+  await summary.click();await expect(bar).not.toHaveAttribute('open');
+  const restored=await measure();
+  expect(Math.abs(restored.readingHeight-compact.readingHeight)).toBeLessThanOrEqual(1);
+  expect(Math.abs(restored.headingY-compact.headingY)).toBeLessThanOrEqual(1);
+  expect(await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).view.resultLayers,storageKey)).toEqual(before);
+  await testInfo.attach('two-layer-reading-space',{body:JSON.stringify({compact,expanded,restored},null,2),contentType:'application/json'});
+  await recordViewport(page,testInfo,'compact-two-layer-reading-1366');
+});
+
+for(const width of [390,650,651,1366])test(`layer source summary defaults compact at ${width} and user choice survives narrowing/widening`,async({page})=>{
+  await page.setViewportSize({width,height:844});await setup(page,{layers:true});
+  const bar=page.locator('.result-layer-bar'),summary=bar.locator('summary');
+  await expect(bar).not.toHaveAttribute('open');
+  await expect(summary).toContainText('private-result');await expect(summary).toContainText(longTitle);
+  await expect(bar.locator('.result-layer-content').getByRole('button')).toHaveCount(0);
+  for(const next of [390,1366]){await page.setViewportSize({width:next,height:844});await expect(bar).not.toHaveAttribute('open');}
+  await summary.click();await expect(bar).toHaveAttribute('open');
+  for(const next of [390,650,1366]){await page.setViewportSize({width:next,height:844});await expect(bar).toHaveAttribute('open');}
+  await expect(bar.getByRole('button',{name:'Hide layer private-layer-name',exact:true})).toBeVisible();
+  await expect(bar.getByRole('button',{name:'Clear result layers',exact:true})).toBeVisible();
+  await summary.click();await expect(bar).not.toHaveAttribute('open');
+  for(const next of [390,1366]){await page.setViewportSize({width:next,height:844});await expect(bar).not.toHaveAttribute('open');}
+});
