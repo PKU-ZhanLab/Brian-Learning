@@ -131,7 +131,7 @@ export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[])
     if(!selected.size&&collection==='references')selected=paperSelections.get(row.id)||new Set();
     return selected;
   };
-  const activeArtifacts=new Set();
+  const activeArtifacts=new Set(),verifiedById=new Map(verified.map(artifact=>[artifact.id,artifact]));
   for(const artifact of verified){
     for(const field of artifact.fields){
       const [collection,recordId,...segments]=field.path.split('/');
@@ -142,7 +142,16 @@ export function auditTranscription(bundle,artifacts=bundle?.sourceArtifacts||[])
       // legacyV1 is retained historical data, never a required native-v2
       // provenance container. Native source locators live in artifact fields.
       if(segments[0]==='legacyV1'&&sourceFieldValue(bundle,field.path)===undefined)continue;
-      if(!activeSources(collection,row,segments).has(artifact.id))continue;
+      const selected=activeSources(collection,row,segments);
+      const applicable=[...selected].some(id=>verifiedById.get(id)?.fields.some(binding=>binding.path===field.path));
+      if(!applicable){
+        // Retaining a declared historical binding is evidence that this field
+        // needs an explicit current source/version decision. Never turn that
+        // unresolved decision into a successful audit by silently skipping it,
+        // including nonnumeric fields such as corrected significance.
+        semanticReviewRequired.push({artifactId:artifact.id,cellId:field.cellId,path:field.path,locator:field.locator,recordVersion:row.recordVersion??null,reasonCode:'unresolved-source-version',reason:'declared field binding has no applicable explicit current source/version selection or exact-current-version source event'});
+      }
+      if(!selected.has(artifact.id))continue;
       activeArtifacts.add(artifact.id);
       fields.add(field.path);
       const actual=sourceFieldValue(bundle,field.path),expected=decodeField(field);

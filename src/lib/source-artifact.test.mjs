@@ -160,3 +160,29 @@ test('native v2 provenance uses verified source locators without fabricated lega
   assert.equal(validateEvidenceV2(native).valid,true);
   const artifactOnly=auditTranscription(native,native.sourceArtifacts);assert.deepEqual(artifactOnly.semanticReviewRequired,[]);assert.equal(artifactOnly.coverage.coordinates.length,8);
 });
+
+test('a declared Boolean binding with no current source selection stays unresolved instead of disappearing',()=>{
+  const bundle=copy(),history=structuredClone(bundle.reviewEvents),retainedArtifacts=structuredClone(bundle.sourceArtifacts);
+  const result=bundle.results.find(row=>row.id==='axelrod2015-lffa');result.recordVersion='focused-probe-new-current';
+  const onlyURLs=node=>{
+    if(!node||typeof node!=='object')return;
+    for(const [key,value] of Object.entries(node)){
+      if(key==='sourceRefs')node[key]=value.filter(ref=>/^https?:\/\//.test(ref));
+      else onlyURLs(value);
+    }
+  };
+  onlyURLs(result);result.correction.value.passed=true;
+  assert.equal(validateEvidenceV2(bundle).valid,true);
+  const audit=auditTranscription(bundle,bundle.sourceArtifacts),path='results/axelrod2015-lffa/correction/value/passed';
+  assert.deepEqual(audit.integrityErrors,[]);assert.deepEqual(audit.unavailableArtifacts,[]);assert.equal(audit.coverage.coordinates.length,8);
+  assert(audit.semanticReviewRequired.some(item=>item.path===path&&item.artifactId==='axelrod2015-v1'&&item.cellId&&item.reasonCode==='unresolved-source-version'));
+  assert(!audit.coverage.fields.includes(path),'missing current selection is not a comparison');
+  assert.deepEqual(bundle.reviewEvents,history);assert.deepEqual(bundle.sourceArtifacts,retainedArtifacts);
+  result.correction.value.passed=false;
+  assert(auditTranscription(bundle,bundle.sourceArtifacts).semanticReviewRequired.some(item=>item.path===path&&item.reasonCode==='unresolved-source-version'),'correct-looking values do not resolve missing current provenance');
+  result.sourceRefs=['axelrod2015-v1'];result.correction.value.passed=true;
+  assert(auditTranscription(bundle,bundle.sourceArtifacts).semanticReviewRequired.some(item=>item.path===path&&item.expected===false&&item.actual===true),'an explicit selection restores the actual Boolean comparison');
+  result.correction.value.passed=false;
+  const resolved=auditTranscription(bundle,bundle.sourceArtifacts);assert.deepEqual(resolved.semanticReviewRequired,[]);
+  assert.deepEqual(resolved.coverage.uncheckedReportedNumericFields,['results/axelrod2015-lffa/sample/included/value','results/axelrod2015-rffa/sample/included/value']);
+});
