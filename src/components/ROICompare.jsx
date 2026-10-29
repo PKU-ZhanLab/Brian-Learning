@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { loadAnatomyVolume, loadAtlas, makeSliceCanvas, sliceWorldPoint } from '../lib/volume.js';
 import { positiveLabels, ROI_COLORS, ROI_DEFAULT_DISPLAY, serializableVolume, comparisonMaskVolume } from '../lib/roi.js';
+import { makeComparisonGrid } from '../lib/roi-grid.js';
 import { parseNifti, exportNifti, parseLabelTable, MAX_NIFTI_FILE_BYTES } from '../lib/nifti.js';
 import { registerCustomVolume, getCustomVolume, listCustomVolumes, subscribeCustomVolumes } from '../lib/custom-volumes.js';
 import './ROICompare.css';
@@ -14,6 +15,12 @@ const TEXT = {
   },
 };
 const ATLAS_NAMES = { dk: 'Desikan–Killiany (DK)', ho: 'Harvard–Oxford', jhu: 'JHU ICBM-DTI-81', ba: 'Talairach BA → MNI', 'ba-histology': 'Jülich BA', aal: 'AAL', aal3: 'AAL3', 'ba-legacy': 'Legacy BA' };
+Object.assign(TEXT.zh, {
+  spacing:'采样间距', gridHint:'1 mm 是输出采样间距，不代表 1 mm 定位精度；AAL/AAL3 配准场估计于 2 mm。', sampling:'采样检查', sourceSample:'源网格：体素 / mm³', targetSample:'共同网格：体素 / mm³', lostLabels:'采样后消失的标签', absentLabels:'源数据不存在的标签', 'retained':'所选标签均有保留', 'partial-loss':'部分所选标签缺失', 'empty-target':'源区域存在，但在共同网格内为空', 'empty-source':'源选择没有体素，已停止计算', confirmLoss:'确认采样损失并计算', lossWarning:'共同网格未保留全部所选区域。确认后将生成带此警示的结果。', cancelPreflight:'取消采样检查', sourceMissing:'源选择缺少标签，已停止计算。', 'unsupported-reference-grid':'此参考网格不在支持的 NLin6Asym 标准网格中。',
+});
+Object.assign(TEXT.en, {
+  spacing:'Sampling spacing', gridHint:'1 mm is output spacing, not 1 mm localization accuracy; AAL/AAL3 transform fields were estimated at 2 mm.', sampling:'Sampling check', sourceSample:'Source grid: voxels / mm³', targetSample:'Shared grid: voxels / mm³', lostLabels:'Labels lost in sampling', absentLabels:'Labels absent from source', retained:'All selected labels retained', 'partial-loss':'Some selected labels are missing', 'empty-target':'Source region exists but is empty on the shared grid', 'empty-source':'Source selection has no voxels; computation stopped', confirmLoss:'Confirm sampling loss and compute', lossWarning:'The shared grid does not retain every selected region. Confirm to compute a result carrying this warning.', cancelPreflight:'Cancel sampling check', sourceMissing:'Selected labels are absent from the source; computation stopped.', 'unsupported-reference-grid':'This reference is not a supported NLin6Asym standard grid.',
+});
 Object.assign(TEXT.zh, {
   subtitle:'比较图谱区域与论文结果、掩膜或连续图的空间重叠。', importTitle:'导入本地 NIfTI', localOnly:'文件仅在当前浏览器内读取，不上传。支持三维 .nii / .nii.gz，最多 128 MiB 文件、6400 万体素。', file:'影像文件', kind:'数据类型', labelKind:'整数标签图', maskKind:'二值掩膜（0/1）', statisticKind:'统计图', probabilityKind:'概率图（0–1）', reference:'确切参考空间', nativeSpace:'原生或尚未核实', otherSpace:'其他参考空间', exactReference:'参考空间的完整名称', aligned:'我确认该文件已与当前 FSL MNI152NLin6Asym 模板配准', provenance:'来源及配准依据（DOI、处理流程、变换文件等）', provenanceHint:'仅有 NIfTI 仿射或“MNI”名称不能证明模板一致。此声明会保存并随指标导出。', labelsFile:'标签名称表（可选 CSV / JSON）', labelsHint:'CSV 列为 id,name,zh；JSON 为标签数组或 ID 到名称的映射。', importButton:'导入影像', importing:'正在检查影像…', importDone:'已导入', nativeImport:'空间尚未核实，可在原生空间查看；不能与当前模板计算重叠。', declared:'用户声明已对齐（未独立核验）', conflict:'文件的 sform 与 qform 不一致；本次按 sform 读取，请核对来源。', combine:'选择多个标签求并集（按住 Ctrl / ⌘ 多选）', thresholdValue:'阈值（包含边界）', positive:'正值：v ≥ 阈值', negative:'负值：v ≤ −阈值', absolute:'绝对值：|v| ≥ 阈值', tail:'统计方向', range:'数值范围', binary:'阈值后二值指标', probabilityTitle:'概率权重重叠（不受二值阈值影响）', fuzzyDice:'模糊 Dice', fuzzyJaccard:'模糊 Jaccard', probabilityHint:'先将两张概率图三线性采样到共同网格，再对完整概率权重求 min/max；不代表独立事件联合概率。下方体素数与三维表面仍来自各自阈值后的二值掩膜。', probabilityOne:'概率权重指标需要 A、B 都是概率图；当前仅报告二值阈值结果。', maskExport:'导出 NIfTI 掩膜', thresholdHint:'连续图先三线性采样再阈值；源网格外为 0，零背景始终排除。', maskHint:'使用所有非零体素。', 'invalid-threshold':'阈值必须为有限非负数；概率阈值须在 0–1。', 'invalid-probability-range':'概率数据必须在 0–1 内。', 'invalid-values':'数据包含非有限数值。', provenanceRequired:'请填写来源及配准依据。', importError:'无法读取影像，请检查 NIfTI 文件。',
 });
@@ -88,6 +95,8 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   const [aLabels, setALabels] = useState(initialState?.aLabels || []), [bLabels, setBLabels] = useState(initialState?.bLabels || []);
   const [aThreshold, setAThreshold] = useState(initialState?.aThreshold ?? .5), [bThreshold, setBThreshold] = useState(initialState?.bThreshold ?? .5);
   const [aTail, setATail] = useState(initialState?.aTail || 'positive'), [bTail, setBTail] = useState(initialState?.bTail || 'positive');
+  const [resolutionMm, setResolutionMm] = useState(initialState?.resolutionMm === 1 ? 1 : 2);
+  const [preflight, setPreflight] = useState(null);
   const sourceA = useSource(aAtlas, registryVersion), sourceB = useSource(bAtlas, registryVersion);
   const aLabelIds = useMemo(() => new Set(sourceA.labels.map(label => label.id)), [sourceA.labels]);
   const bLabelIds = useMemo(() => new Set(sourceB.labels.map(label => label.id)), [sourceB.labels]);
@@ -117,7 +126,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     }
   }
   function invalidateWork() {
-    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setComparison(null); callbacks.current.onComparisonChange?.(null);
+    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
   }
   function changeSelection(update) {
     abortRestore('selection-changed'); invalidateWork(); setRestoreWarning(''); update();
@@ -126,7 +135,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     if (lastInitial.current === initialState) return;
     lastInitial.current = initialState;
     if (!initialState) return;
-    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setComparison(null); callbacks.current.onComparisonChange?.(null);
+    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
     restoringRequest.current = false;
     setRestoreWarning('');
     restore.current = !!initialState.computed;
@@ -134,6 +143,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     setALabels(initialState.aLabels || []); setBLabels(initialState.bLabels || []);
     setAThreshold(initialState.aThreshold ?? .5); setBThreshold(initialState.bThreshold ?? .5);
     setATail(initialState.aTail || 'positive'); setBTail(initialState.bTail || 'positive');
+    setResolutionMm(initialState.resolutionMm === 1 ? 1 : 2);
     setDisplay({ ...ROI_DEFAULT_DISPLAY, ...initialState.display });
     setRestoreEpoch(value => value + 1);
   }, [initialState]);
@@ -155,11 +165,11 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       setBLabels(current => { const valid = current.filter(id => bLabelIds.has(+id)); return valid.length ? valid : [(sourceB.labels.find(label => /BA4a L$/.test(label.name)) || sourceB.labels[0]).id]; });
     }
   }, [sourceB.labels, bLabelIds]);
-  const selectionKey = JSON.stringify([aAtlas, bAtlas, aLabels, bLabels, aThreshold, bThreshold, aTail, bTail]);
+  const selectionKey = JSON.stringify([aAtlas, bAtlas, aLabels, bLabels, aThreshold, bThreshold, aTail, bTail, resolutionMm]);
   useEffect(() => {
     if (previousRegistryVersion.current !== registryVersion) abortRestore('registry-changed');
     previousRegistryVersion.current = registryVersion;
-    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setError(''); setComparison(null); callbacks.current.onComparisonChange?.(null);
+    sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setError(''); setComparison(null); callbacks.current.onComparisonChange?.(null);
   }, [selectionKey, registryVersion]);
   useEffect(() => {
     if ((sourceA.error && sourceA.atlasId === aAtlas) || (sourceB.error && sourceB.atlasId === bAtlas)) abortRestore('source-load-failed');
@@ -171,7 +181,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   }, [selectionKey, sourceA, sourceB, aLabelIds, bLabelIds]);
   useEffect(() => () => { sequence.current++; worker.current?.terminate(); }, []);
   useEffect(() => {
-    callbacks.current.onStateChange?.({ aAtlas, bAtlas, aLabels, bLabels, aThreshold, bThreshold, aTail, bTail, display, computed: !!comparison || restore.current || restoringRequest.current });
+    callbacks.current.onStateChange?.({ aAtlas, bAtlas, aLabels, bLabels, aThreshold, bThreshold, aTail, bTail, resolutionMm, display, computed: !!comparison || restore.current || restoringRequest.current });
   }, [selectionKey, display, comparison, busy, restoreWarning]);
 
   const ready = sourceA.atlasId === aAtlas && sourceB.atlasId === bAtlas && sourceA.volume && sourceB.volume && !sourceA.loading && !sourceB.loading && ((sourceA.volume.kind || 'label') !== 'label' || (aLabels.length && aLabels.every(id => aLabelIds.has(+id)))) && ((sourceB.volume.kind || 'label') !== 'label' || (bLabels.length && bLabels.every(id => bLabelIds.has(+id))));
@@ -182,23 +192,30 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     restoringRequest.current = restore.current;
     restore.current = false;
     const requestId = ++sequence.current;
-    worker.current?.terminate(); setBusy(true); setError('');
+    worker.current?.terminate(); setBusy(true); setPreflight(null); setComparison(null); callbacks.current.onComparisonChange?.(null); setError('');
     try {
       const target = await loadAnatomyVolume();
       if (requestId !== sequence.current) return;
       setAnatomy(target);
+      const grid = makeComparisonGrid(target, resolutionMm);
       const current = new Worker(new URL('../lib/roi.worker.js', import.meta.url), { type: 'module' }); worker.current = current;
       current.onmessage = ({ data }) => {
         if (requestId !== sequence.current || data.requestId !== requestId) return;
+        if (data.phase === 'preflight' && !data.error) {
+          setPreflight(data);
+          if (data.blocked) { abortRestore('empty-source'); setBusy(false); current.terminate(); worker.current = null; }
+          return;
+        }
         setBusy(false); current.terminate(); worker.current = null;
         if (data.error) { abortRestore('compute-failed'); setError(data.error); return; }
         restoringRequest.current = false;
+        setPreflight(null);
         const result = { ...data.comparison, display: { ...displayRef.current } };
         setComparison(result); setPoint(result.center || [0, 0, 0]); callbacks.current.onComparisonChange?.(result);
       };
       current.onerror = () => { if (requestId === sequence.current) { abortRestore('worker-failed'); setBusy(false); setError('computeError'); current.terminate(); worker.current = null; } };
       const describe = (source, atlasId, labels) => ({ atlasId, name: source.labels.length ? source.labels.filter(label => labels.includes(label.id)).map(label => label.name).join(' + ') : source.volume.name });
-      current.postMessage({ requestId, volumeA: serializableVolume(sourceA.volume), volumeB: serializableVolume(sourceB.volume), selectionA: { labels: aLabels, threshold: aThreshold, tail: aTail }, selectionB: { labels: bLabels, threshold: bThreshold, tail: bTail }, target: { shape: target.shape, affine: target.affine, space: target.space }, descriptors: { A: describe(sourceA, aAtlas, aLabels), B: describe(sourceB, bAtlas, bLabels) } });
+      current.postMessage({ requestId, volumeA: serializableVolume(sourceA.volume), volumeB: serializableVolume(sourceB.volume), selectionA: { labels: aLabels, threshold: aThreshold, tail: aTail }, selectionB: { labels: bLabels, threshold: bThreshold, tail: bTail }, target: grid, descriptors: { A: describe(sourceA, aAtlas, aLabels), B: describe(sourceB, bAtlas, bLabels) } });
     } catch (problem) { if (requestId === sequence.current) { abortRestore('compute-failed'); setBusy(false); setError(problem.message); } }
   }
   useEffect(() => { if (restore.current && ready && !busy) compute(); }, [ready, selectionKey, sourceA.volume, sourceB.volume, restoreEpoch]);
@@ -207,6 +224,11 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     if (comparison) { const value = { ...comparison, display: next }; setComparison(value); callbacks.current.onComparisonChange?.(value); }
   }
   function clear() { abortRestore('cancelled'); invalidateWork(); setRestoreWarning(''); }
+  function confirmSamplingLoss() {
+    if (!preflight?.requiresConfirmation || preflight.requestId !== sequence.current || !worker.current) return;
+    worker.current.postMessage({requestId:preflight.requestId, action:'confirm'});
+    setPreflight(null);
+  }
   function exportMetrics() {
     if (!comparison) return;
     const lines = [['metric', 'value'], ...Object.entries(comparison.metrics)];
@@ -214,6 +236,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     for (const key of ['A', 'B']) {
       const source = comparison[key];
       lines.push([`${key} atlas`, source.atlasId], [`${key} label ID`, source.labelId], [`${key} label IDs`, source.labelIds.join(' + ')], [`${key} label name`, source.name], [`${key} alignment`, source.alignmentStatus], [`${key} space`, source.space], [`${key} source`, source.source], [`${key} provenance`, source.provenance], [`${key} selection`, JSON.stringify(source.selection)], [`${key} interpolation`, source.interpolation], [`${key} source voxel count`, source.sourceLabelVoxels]);
+      lines.push([`${key} sampling`, JSON.stringify(comparison.sampling[key])]);
     }
     lines.push(['target space', comparison.grid.space], ['voxel volume mm3', comparison.grid.voxelVolumeMm3], ['shape', comparison.grid.shape.join(' × ')], ['affine row-major', comparison.grid.affine.join(' ')], ['method', comparison.method]);
     download('\ufeff' + lines.map(row => row.map(safeCSV).join(',')).join('\r\n'), `${t.downloadName}-${comparison.A.atlasId}-${comparison.B.atlasId}.csv`, 'text/csv;charset=utf-8');
@@ -250,6 +273,15 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       {source.loading && <p className="roi-note" role="status">{t.loading}</p>}{source.error && <p role="alert" className="roi-error">{t[source.error] || t.sourceError}</p>}{kind === 'label' && !source.loading && !source.error && !source.labels.length && <p className="roi-note">{t.empty}</p>}
     </fieldset>;
   };
+  const samplingBlock = (sampling, grid) => <section className="roi-sampling" aria-label="ROI sampling report">
+    <h3>{t.sampling}</h3>
+    <p className="roi-grid"><strong>{t.grid}</strong> {grid.space} · {grid.shape.join(' × ')} · {grid.affine[0]} mm · RAS · [{[grid.affine[3],grid.affine[7],grid.affine[11]].join(', ')}]</p>
+    <table className="roi-counts"><thead><tr><th>{t.part}</th><th>{t.sourceSample}</th><th>{t.targetSample}</th></tr></thead><tbody>{['A','B'].flatMap(key => {
+      const report = sampling[key];
+      return [<tr key={key}><td>ROI {key}</td><td>{report.sourceVoxels.toLocaleString()} / {report.sourceMm3.toLocaleString()}</td><td>{report.targetVoxels.toLocaleString()} / {report.targetMm3.toLocaleString()}</td></tr>, ...(report.labels.length > 1 ? report.labels.map(label => <tr key={`${key}-${label.labelId}`}><td>{key} · {label.labelId}</td><td>{label.sourceVoxels.toLocaleString()} / {label.sourceMm3.toLocaleString()}</td><td>{label.targetVoxels.toLocaleString()} / {label.targetMm3.toLocaleString()}</td></tr>) : [])];
+    })}</tbody></table>
+    {['A','B'].map(key => <p key={key} className={sampling[key].status === 'retained' ? 'roi-note' : 'roi-warning'}>ROI {key}: {t[sampling[key].status]}{!!sampling[key].lostLabelIds.length && <> · {t.lostLabels}: {sampling[key].lostLabelIds.join(', ')}</>}{!!sampling[key].absentLabelIds.length && <> · {t.absentLabels}: {sampling[key].absentLabelIds.join(', ')}</>}</p>)}
+  </section>;
   return <section className="roi-compare" aria-label="ROI overlap comparison"><header className="roi-header"><div><h2>{t.title}</h2><p>{t.subtitle}</p></div>{onClose && <button type="button" className="roi-close" onClick={onClose} aria-label="Close ROI comparison" title={t.close}>×</button>}</header>
     <details className="roi-import"><summary>{t.importTitle}</summary><p className="roi-note">{t.localOnly}</p><div className="roi-import-grid">
       <label><span>{t.file}</span><input type="file" accept=".nii,.nii.gz" aria-label="Import NIfTI file" onChange={event => { setImportFile(event.target.files[0] || null); setImportMessage(null); }} /></label>
@@ -265,15 +297,18 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     {!!importedVolumes.length && <div className="roi-imported-volumes"><h3>{t.importedVolumes}</h3>{importedVolumes.map(([id, volume]) => <div key={id}><span><strong>{volume.name || id}</strong><small>{volume.space} · {volume.canOverlayOnTarget === true ? t.declared : t.blocked}</small>{volume.metadata?.affineConflict && <small className="roi-imported-warning">{t.conflict}</small>}</span>{onViewNative && <button type="button" onClick={() => onViewNative(id)} aria-label={`${t.viewNative}: ${volume.name || id}`}>{t.viewNative}</button>}</div>)}</div>}
     {!manifest ? <p role="status">{t.notLoaded}</p> : !allowed.length ? <p role="status">{t.noAtlases}</p> : <>
       <div className="roi-selectors">{sourceBlock('A', aAtlas, setAAtlas, aLabels, setALabels, aThreshold, setAThreshold, aTail, setATail, sourceA)}{sourceBlock('B', bAtlas, setBAtlas, bLabels, setBLabels, bThreshold, setBThreshold, bTail, setBTail, sourceB)}</div>
+      <label className="roi-grid"><strong>{t.grid}</strong> <select aria-label="ROI shared grid spacing" value={resolutionMm} onChange={event => changeSelection(() => setResolutionMm(+event.target.value))}><option value="2">2 mm · 91 × 109 × 91</option><option value="1">1 mm · 181 × 217 × 181</option></select></label>
+      <p className="roi-note">{t.gridHint}</p>
       <div className="roi-actions"><button type="button" className="roi-primary" onClick={compute} disabled={busy || !ready || missingThreshold} aria-label="Compute ROI overlap">{busy ? t.computing : t.compare}</button>{busy && <button type="button" onClick={clear} aria-label="Cancel ROI computation">{t.cancelCompute}</button>}{comparison && <><button type="button" onClick={clear} aria-label="Clear ROI overlay">{t.clear}</button><button type="button" onClick={exportMetrics} aria-label="Export ROI overlap metrics CSV">{t.export}</button></>}</div>
+      {preflight && <div aria-live="polite">{samplingBlock(preflight.sampling, preflight.grid)}{preflight.blocked && <p className="roi-warning" role="alert">{t.sourceMissing}</p>}{preflight.requiresConfirmation && <><p className="roi-warning" role="alert">{t.lossWarning}</p><div className="roi-actions"><button type="button" className="roi-primary" aria-label="Confirm ROI sampling loss" onClick={confirmSamplingLoss}>{t.confirmLoss}</button><button type="button" aria-label="Cancel ROI sampling preflight" onClick={clear}>{t.cancelPreflight}</button></div></>}</div>}
       {restoreWarning && <p role="alert" className="roi-warning">{t.restoreAborted}</p>}{error && <p role="alert" className="roi-error">{t[error] || t.computeError}</p>}{!comparison && !busy && <p className="roi-empty">{t.waiting}</p>}{busy && <p className="roi-note" role="status">{t.computing}</p>}
-      {comparison && <div className="roi-result" aria-live="polite"><h3>{t.binary}</h3><div className="roi-metrics"><div><span>Dice</span><strong>{formatRatio(comparison.metrics.dice)}</strong><small>2|A ∩ B| / (|A| + |B|)</small></div><div><span>Jaccard</span><strong>{formatRatio(comparison.metrics.jaccard)}</strong><small>|A ∩ B| / |A ∪ B|</small></div><div><span>{t.coveredA}</span><strong>{formatPercent(comparison.metrics.aCoveredByB)}</strong></div><div><span>{t.coveredB}</span><strong>{formatPercent(comparison.metrics.bCoveredByA)}</strong></div></div>
+      {comparison && <div className="roi-result" aria-live="polite">{samplingBlock(comparison.sampling, comparison.grid)}<h3>{t.binary}</h3><div className="roi-metrics"><div><span>Dice</span><strong>{formatRatio(comparison.metrics.dice)}</strong><small>2|A ∩ B| / (|A| + |B|)</small></div><div><span>Jaccard</span><strong>{formatRatio(comparison.metrics.jaccard)}</strong><small>|A ∩ B| / |A ∪ B|</small></div><div><span>{t.coveredA}</span><strong>{formatPercent(comparison.metrics.aCoveredByB)}</strong></div><div><span>{t.coveredB}</span><strong>{formatPercent(comparison.metrics.bCoveredByA)}</strong></div></div>
         {comparison.probabilityMetrics ? <div className="roi-probability"><h3>{t.probabilityTitle}</h3><div className="roi-metrics"><div><span>{t.fuzzyDice}</span><strong>{formatRatio(comparison.probabilityMetrics.fuzzyDice)}</strong><small>2Σmin(p,q) / (Σp + Σq)</small></div><div><span>{t.fuzzyJaccard}</span><strong>{formatRatio(comparison.probabilityMetrics.fuzzyJaccard)}</strong><small>Σmin(p,q) / Σmax(p,q)</small></div></div><p className="roi-note">{t.probabilityHint}</p></div> : [comparison.A,comparison.B].some(source => source.selection.kind === 'probability') && <p className="roi-note">{t.probabilityOne}</p>}
         <p className="roi-grid"><strong>{t.grid}</strong> {comparison.grid.space} · {comparison.grid.shape.join(' × ')} · {t.resolution} {comparison.grid.voxelVolumeMm3.toLocaleString()} mm³</p>
         <table className="roi-counts"><thead><tr><th>{t.part}</th><th>{t.voxels}</th><th>{t.volume}</th></tr></thead><tbody>{[['A','aVoxels','aMm3'],['B','bVoxels','bMm3'],['intersection','intersectionVoxels','intersectionMm3'],['aOnly','aOnlyVoxels','aOnlyMm3'],['bOnly','bOnlyVoxels','bOnlyMm3'],['union','unionVoxels','unionMm3']].map(([key,count,volume]) => <tr key={key}><td>{ROI_COLORS[key] && <i style={{background:ROI_COLORS[key]}}/>}{t[key]}</td><td>{comparison.metrics[count].toLocaleString()}</td><td>{comparison.metrics[volume].toLocaleString(undefined,{maximumFractionDigits:2})}</td></tr>)}</tbody></table>
         <div className="roi-actions roi-export-masks"><span>{t.maskExport}</span>{['A','B','intersection','union'].map(part => <button key={part} aria-label={`Export ROI ${part} NIfTI mask`} onClick={() => download(exportNifti(comparisonMaskVolume(comparison, part)), `ROI-${part}.nii`, 'application/octet-stream')}>{t[part]}</button>)}</div>
         {!!comparison.surfaceWarnings?.length && <p className="roi-warning">{t.surfaceOmitted} ({comparison.surfaceWarnings.map(key => t[key]).join(', ')})</p>}
-        {comparison.metrics.intersectionVoxels === 0 && <p className="roi-note">{t.noOverlap}</p>}{(!comparison.metrics.aVoxels || !comparison.metrics.bVoxels) && <p className="roi-warning">{t.emptyTarget}</p>}
+        {comparison.metrics.aVoxels > 0 && comparison.metrics.bVoxels > 0 && comparison.metrics.intersectionVoxels === 0 && <p className="roi-note">{t.noOverlap}</p>}{(!comparison.metrics.aVoxels || !comparison.metrics.bVoxels) && <p className="roi-warning">{t.emptyTarget}</p>}
         <fieldset className="roi-display"><legend>{t.showControls}</legend><label className="roi-mode"><span>{t.view}</span><select aria-label="ROI display mode" value={display.mode} onChange={event => changeDisplay({mode:event.target.value})}>{['parts','overlap','A','B'].map(mode=><option key={mode} value={mode}>{t[mode]}</option>)}</select></label><div className="roi-opacity">{[['opacityA','A'],['opacityB','B'],['opacityOverlap','intersection']].map(([key,color])=><label key={key}><span><i style={{background:ROI_COLORS[color]}}/>{t[key]}<output>{Math.round(display[key]*100)}%</output></span><input type="range" min="0" max="1" step="0.05" value={display[key]} onChange={event=>changeDisplay({[key]:+event.target.value})} aria-label={key==='opacityA'?'ROI A opacity':key==='opacityB'?'ROI B opacity':'ROI intersection opacity'}/></label>)}</div><label className="roi-xray"><input type="checkbox" checked={display.xray} onChange={event=>changeDisplay({xray:event.target.checked})} aria-label="ROI X-ray view"/>{t.xray}</label><p className="roi-note">{t.depthHint} {t.anatomyHint}</p></fieldset>
         {anatomy && <div className="roi-slices"><h3>{t.sliceTitle}</h3><div>{[['x','sagittal'],['y','coronal'],['z','axial']].map(([axis,title])=><SlicePreview key={axis} axis={axis} title={t[title]} anatomy={anatomy} comparison={comparison} point={point} onPoint={setPoint}/>)}</div><p className="roi-note">{t.sliceHint}</p></div>}
         <div className="roi-provenance">{[comparison.A,comparison.B].map((source,index)=><p key={index}><strong>ROI {index?'B':'A'}</strong> · {source.name} · {t[alignmentKey(source.alignmentStatus)]} · {source.resampled?t.resampled:t.sameGrid}{source.thresholdPercent!=null?` · ${t.threshold} ${source.thresholdPercent}%`:''}{source.provenance && <> · {source.provenance}</>}</p>)}{[comparison.A,comparison.B].some(source=>source.alignmentStatus==='published-affine')&&<p className="roi-warning">{t.approx}</p>}<p>{t.categorical}</p>{aAtlas===bAtlas&&sourceA.volume?.kind!=='probability'&&sourceA.volume?.kind!=='statistic'&&<p>{t.exclusive}</p>}<p>{t.continuousMethod}</p></div>

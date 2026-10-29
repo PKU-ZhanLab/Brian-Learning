@@ -39,11 +39,11 @@ test('z-fastest input is reordered without changing anatomy', () => {
   assert.equal(compareLabelROIs({ ...source, order: 'z-fastest', data: zfast }, 1, source, 1, grid).metrics.dice, 1);
 });
 
-test('unverified alignment, background, missing labels and invalid geometry are rejected', () => {
+test('unverified alignment, background and invalid geometry are rejected; missing source labels are explicit', () => {
   const source = volume([0]);
   assert.throws(() => compareLabelROIs({ ...source, canOverlayOnTarget: false }, 1, source, 1, grid), /unaligned-atlas/);
   assert.throws(() => compareLabelROIs(source, 0, source, 1, grid), /invalid-label/);
-  assert.throws(() => compareLabelROIs(source, 2, source, 1, grid), /empty-label/);
+  assert.equal(compareLabelROIs(source, 2, source, 1, grid).sampling.A.status, 'empty-source');
   assert.throws(() => compareLabelROIs({ ...source, affine: new Array(16).fill(0) }, 1, source, 1, grid), /invalid-affine/);
   assert.deepEqual(positiveLabels(source).map(label => [label.id, label.voxels]), [[1,1]]);
 });
@@ -126,4 +126,36 @@ test('oversized surfaces preserve exact metrics, masks and slices instead of fai
   const result=attachROISurfaces(compareROIs(source,1,source,1,{...grid,shape}));
   assert.equal(result.metrics.dice,1);assert.equal(result.metrics.aVoxels,121000);
   assert.deepEqual(result.surfaceWarnings,['intersection','A','B']);assert.equal(result.surfaces.A.positions.length,0);assert.equal(result.surfaces.A.omitted,true);
+});
+
+test('worker preflight blocks absent source, waits for loss confirmation, and ignores cancelled or stale confirmation', async () => {
+  const messages = [];
+  globalThis.self = { postMessage:message => messages.push(message) };
+  try {
+    await import(`./roi.worker.js?test=${Date.now()}`);
+    const source = volume([0]);
+    const shifted = [...affine]; shifted[3] = 100;
+    const input = {requestId:1, volumeA:source, volumeB:source, selectionA:1, selectionB:1, target:{...grid,affine:shifted}};
+    self.onmessage({data:input});
+    assert.deepEqual(messages.map(message => message.phase), ['preflight']);
+    assert.equal(messages[0].requiresConfirmation, true);
+    self.onmessage({data:{requestId:999,action:'confirm'}});
+    assert.equal(messages.length, 1);
+    self.onmessage({data:{requestId:1,action:'cancel'}});
+    self.onmessage({data:{requestId:1,action:'confirm'}});
+    assert.equal(messages.length, 1);
+    self.onmessage({data:{...input,requestId:2}});
+    self.onmessage({data:{requestId:2,action:'confirm'}});
+    assert.equal(messages.at(-1).phase, 'complete');
+    assert.equal(messages.at(-1).requestId, 2);
+    assert.equal(messages.at(-1).comparison.sampling.A.status, 'empty-target');
+    self.onmessage({data:{...input,requestId:3,selectionA:999}});
+    assert.equal(messages.at(-1).blocked, true);
+    assert.equal(messages.at(-1).sampling.A.status, 'empty-source');
+    const length = messages.length;
+    self.onmessage({data:{requestId:3,action:'confirm'}});
+    assert.equal(messages.length, length);
+    self.onmessage({data:{...input,requestId:4,target:grid}});
+    assert.deepEqual(messages.slice(-2).map(message => message.phase), ['preflight','complete']);
+  } finally { delete globalThis.self; }
 });
