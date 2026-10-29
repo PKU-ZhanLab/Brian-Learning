@@ -8,6 +8,7 @@ import { createPAM50Loader } from '../lib/pam50.js';
 import { overviewFrame } from '../lib/scene-frame.js';
 import { surfaceLabelAt } from '../lib/surface-projection.js';
 import { atlasRegionKey, makeAtlasRegionRef, relationsForRegion } from '../lib/atlas-identity.js';
+import { pickDisplayedSurfaceRegion } from '../lib/atlas-surface-selection.js';
 
 const PASTELS = ['#9ebdb2', '#e4bcaa', '#b6b7d3', '#b8cbb0', '#d9c797', '#a6becf', '#d5b0ba', '#b8c5d5', '#c9c1a7', '#98bfbf', '#d7c4b9', '#c2b5ca'];
 const axisColors = { x: '#c999a0', y: '#a3b6cb', z: '#87afa0' };
@@ -498,7 +499,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       const p = propsRef.current;
       status.cortexMeshes.forEach(mesh => {
         const position = mesh.geometry.attributes.position;
-        const colors = new Float32Array(position.count * 3), regions = new Array(position.count), atlasRegions = new Array(position.count), palette = PASTELS.map(c => new THREE.Color(c));
+        const colors = new Float32Array(position.count * 3), regions = new Array(position.count), atlasRegions = new Array(position.count), atlasLabelIds = new Uint32Array(position.count), palette = PASTELS.map(c => new THREE.Color(c));
         const world = new THREE.Vector3();
         const atlasCache = new Map();
         const compatible = p.structures.filter(s => s.category === 'cortex' && s.hemisphere === mesh.userData.hemisphere);
@@ -524,10 +525,12 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
             atlasRegions[i] = match.ref; structure = match.structure;
           }
           regions[i] = structure;
+          atlasLabelIds[i] = atlasLabel?.value || 0;
           const c = atlasLabel ? palette[(atlasLabel.value * 7) % palette.length] : new THREE.Color('#cbd1c8');
           colors[i * 3] = c.r; colors[i * 3 + 1] = c.g; colors[i * 3 + 2] = c.b;
         }
-        mesh.userData.baseColors = colors.slice(); mesh.userData.regionIds = regions; mesh.userData.atlasRegions = atlasRegions;
+        mesh.userData.baseColors = colors.slice(); mesh.userData.regionIds = regions; mesh.userData.atlasRegions = atlasRegions; mesh.userData.atlasLabelIds = atlasLabelIds;
+        mesh.userData.displayedAtlas = activeVolume ? {atlasId:p.atlas,atlasVersion:activeVolume.atlasVersion,spaceId:activeVolume.spaceId,method:directDK?'original-vertex-annotation':projected?'cortical-ribbon':'surface-vertex-volume-sample'} : null;
         mesh.userData.visibilityKey = null;
         mesh.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
       });
@@ -748,22 +751,17 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
           } else if (hit.object.userData.category === 'cortex') {
             point.sub(hit.object.position);
             const activeVolume = status.atlasVolume?.atlasId === p.atlas ? status.atlasVolume : null;
-            let label = atlasLabelAt(activeVolume, point.toArray());
-            const directDK = p.atlas === 'dk' && activeVolume && hit.object.userData.vertexLabels;
-            const projected=activeVolume?.surfaceLabels?.[hit.object.userData.hemisphere];
-            if ((directDK||projected) && hit.face) {
-              const positions = hit.object.geometry.attributes.position;
-              const vertex = [hit.face.a, hit.face.b, hit.face.c].sort((a, b) => new THREE.Vector3().fromBufferAttribute(positions, a).distanceToSquared(point) - new THREE.Vector3().fromBufferAttribute(positions, b).distanceToSquared(point))[0];
-              if(projected)label=surfaceLabelAt(status.atlasVolume,hit.object.userData.hemisphere,vertex);
-              else {const value = hit.object.userData.vertexLabels[vertex];const entry = hit.object.userData.dkLabels.find(item => item.id === value);label = entry ? { ...entry, value } : null;}
-            }
-            let region = null;
-            try { if (label) region = makeAtlasRegionRef(p.atlas,activeVolume,label.value); } catch { /* Preserve unsourced labels without inventing identity. */ }
-            if (region && ['L','R'].includes(region.hemisphere) && region.hemisphere !== hit.object.userData.hemisphere) region = null;
+            const displayed=hit.object.userData.displayedAtlas;
+            const sameSource=activeVolume && displayed?.atlasId===p.atlas && displayed.atlasVersion===activeVolume.atlasVersion && displayed.spaceId===activeVolume.spaceId;
+            const picked=sameSource && hit.face ? pickDisplayedSurfaceRegion({positions:hit.object.geometry.attributes.position.array,face:[hit.face.a,hit.face.b,hit.face.c],point:point.toArray(),labelIds:hit.object.userData.atlasLabelIds,regionRefs:hit.object.userData.atlasRegions}) : null;
+            const entry=picked && activeVolume.labels?.find(item=>item.id===picked.labelId);
+            const label=entry ? {...entry,value:picked.labelId} : null;
+            const region=picked?.ref ?? null;
+            const directDK=displayed?.method==='original-vertex-annotation',projected=displayed?.method==='cortical-ribbon';
             const relation = region && relationsForRegion(region,p.regionRelations).find(row => row.type === 'exact-source');
             structure = relation ? p.structures.find(s => s.id === relation.conceptId) : null;
             const matched = Boolean(structure);
-            const method = directDK ? 'original-vertex-annotation' : projected ? 'cortical-ribbon' : 'volume-voxel';
+            const method = displayed?.method || 'unlabelled-surface';
             p.onReady?.({ loaded: true, method: label ? 'atlas' : 'unlabelled', mapping: projected ? 'cortical-ribbon' : region ? method : 'none', atlasLabel: label?.name, position: point.toArray(), message: label ? `${label.name} · ${directDK ? sceneText('同源 DK 顶点注释', 'Matched DK vertex annotation') : projected ? sceneText('皮层厚度投影标签', 'Cortical ribbon label') : sceneText('体素标签', 'Voxel label')}${matched ? '' : sceneText(' · 无对应结构卡片', ' · No matching structure card')}` : status.atlasOverlayBlocked ? sceneText('该图谱未配准，已停止标签查询', 'Atlas alignment is unverified; label queries are disabled') : sceneText('此处没有图谱标签，未按邻近脑回补标', 'No atlas label here; no nearest-gyrus inference was applied') });
             p.onRegionSelect?.(region ? [region] : [],point.toArray(),{atlasId:p.atlas,atlasVersion:activeVolume?.atlasVersion,coordinate:point.toArray(),method,requestId:status.atlasGeneration,selectionMode:start.shift?'add':'replace',surfaceHemisphere:hit.object.userData.hemisphere});
             start = null; setSelectionBox(null); return;

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { atlasRegionKey, makeAtlasRegionRef } from '../lib/atlas-identity.js';
+import { makeAtlasRegionRef } from '../lib/atlas-identity.js';
 import { serializeAtlasSelection } from '../lib/atlas-selection.js';
+import { updateROIRegionExpectation, roiRegionIdentityMismatch } from '../lib/roi-region-state.js';
 import { loadAnatomyVolume, loadAtlas, makeSliceCanvas, sliceWorldPoint } from '../lib/volume.js';
 import { positiveLabels, ROI_COLORS, ROI_DEFAULT_DISPLAY, serializableVolume, comparisonMaskVolume, normalizeROISelection } from '../lib/roi.js';
 import { prepareComparisonManifest, prepareLocalVolumeProvenance, makeComputationManifest, compareComputationManifest, exportComparisonBundle } from '../lib/computation-manifest.js';
@@ -129,7 +130,11 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     sequence.current++; worker.current?.terminate(); worker.current = null; setBusy(false); setPreflight(null); setComparison(null); callbacks.current.onComparisonChange?.(null);
   }
   function changeSelection(update) {
-    abortRestore('selection-changed'); invalidateWork(); setRestoreWarning(''); setExpectedRegionRefs({A:null,B:null}); update();
+    abortRestore('selection-changed'); invalidateWork(); setRestoreWarning(''); update();
+  }
+  function reselectRegion(side,kind,update) {
+    setExpectedRegionRefs(current=>updateROIRegionExpectation(current,{side,kind}));
+    changeSelection(update);
   }
   useEffect(() => {
     if (lastInitial.current === initialState) return;
@@ -172,7 +177,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     try { return {A:refsFor(aAtlas,sourceA,aLabels),B:refsFor(bAtlas,sourceB,bLabels)}; }
     catch { return {A:[],B:[]}; }
   },[selectionKey,sourceA,sourceB]);
-  const identityMismatch = ['A','B'].some(key => expectedRegionRefs[key]?.length && ((key === 'A' ? sourceA : sourceB).volume) && JSON.stringify(expectedRegionRefs[key].map(atlasRegionKey).sort()) !== JSON.stringify(currentRegionRefs[key].map(atlasRegionKey).sort()));
+  const identityMismatch = roiRegionIdentityMismatch(expectedRegionRefs,currentRegionRefs,{A:sourceA.volume,B:sourceB.volume});
   useEffect(()=>{if(identityMismatch){abortRestore('region-version-unavailable');invalidateWork();}},[identityMismatch]);
   useEffect(() => {
     if (previousRegistryVersion.current !== registryVersion) abortRestore('registry-changed');
@@ -264,7 +269,7 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       Object.assign(volume, { canOverlayOnTarget: accepted, alignmentStatus: accepted ? 'user-declared' : 'unverified', provenance: provenance.trim(), source: importFile.name, metadata: { ...volume.metadata, userDeclaredAligned: accepted, referenceSpace: space } });
       const identifiedVolume = await prepareLocalVolumeProvenance(volume, originalBytes, { id: importFile.name });
       const id = registerCustomVolume(identifiedVolume);
-      if (accepted) { setBAtlas(id); setBLabels([]); setBThreshold(importKind === 'probability' ? .5 : 0); }
+      if (accepted) reselectRegion('B','source',() => { setBAtlas(id); setBLabels([]); setBThreshold(importKind === 'probability' ? .5 : 0); });
       setImportMessage({ name: volume.name, aligned: accepted, conflict: volume.metadata.affineConflict });
     } catch (problem) { setImportError(problem.message); }
     finally { setImportBusy(false); }
@@ -273,8 +278,8 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   const sourceBlock = (key, atlasId, setAtlas, labels, setLabels, threshold, setThreshold, tail, setTail, source) => {
     const kind = source.volume?.kind || 'label';
     return <fieldset className={`roi-source roi-source-${key.toLowerCase()}`}><legend>ROI {key}</legend>
-      <label><span>{t.atlas}</span><select aria-label={`ROI ${key} atlas`} value={atlasId} onChange={event => changeSelection(() => { setLabels([]); setAtlas(event.target.value); })}>{atlases.map(([id, meta]) => <option key={id} value={id} disabled={meta.canOverlayOnTarget !== true}>{ATLAS_NAMES[id] || meta.name || id}{meta.canOverlayOnTarget !== true ? ` · ${t.blocked}` : ''}</option>)}</select></label>
-      {kind === 'label' && <label><span>{t.label}</span><select multiple size={5} aria-label={`ROI ${key} label`} value={labels.map(String)} disabled={source.loading || !source.labels.length} onChange={event => changeSelection(() => setLabels([...event.target.selectedOptions].map(option => +option.value)))}>{source.labels.map(label => <option key={label.id} value={label.id}>{label.id} · {localizedLabel(label, language)} ({label.voxels.toLocaleString()} {t.voxels})</option>)}</select><small className="roi-note">{t.combine}</small></label>}
+      <label><span>{t.atlas}</span><select aria-label={`ROI ${key} atlas`} value={atlasId} onChange={event => reselectRegion(key,'source',() => { setLabels([]); setAtlas(event.target.value); })}>{atlases.map(([id, meta]) => <option key={id} value={id} disabled={meta.canOverlayOnTarget !== true}>{ATLAS_NAMES[id] || meta.name || id}{meta.canOverlayOnTarget !== true ? ` · ${t.blocked}` : ''}</option>)}</select></label>
+      {kind === 'label' && <label><span>{t.label}</span><select multiple size={5} aria-label={`ROI ${key} label`} value={labels.map(String)} disabled={source.loading || !source.labels.length} onChange={event => reselectRegion(key,'labels',() => setLabels([...event.target.selectedOptions].map(option => +option.value)))}>{source.labels.map(label => <option key={label.id} value={label.id}>{label.id} · {localizedLabel(label, language)} ({label.voxels.toLocaleString()} {t.voxels})</option>)}</select><small className="roi-note">{t.combine}</small></label>}
       {['statistic', 'probability'].includes(kind) && <><label><span>{t.thresholdValue}</span><input type="number" min="0" max={kind === 'probability' ? '1' : undefined} step="any" value={threshold} aria-label={`ROI ${key} threshold`} onChange={event => changeSelection(() => setThreshold(event.target.value === '' ? '' : +event.target.value))} /></label>{kind === 'statistic' && <label><span>{t.tail}</span><select aria-label={`ROI ${key} tail`} value={tail} onChange={event => changeSelection(() => setTail(event.target.value))}>{['positive','negative','absolute'].map(value => <option key={value} value={value}>{t[value]}</option>)}</select></label>}<p className="roi-note">{t.thresholdHint}</p></>}
       {kind === 'mask' && <p className="roi-note">{t.maskHint}</p>}
       {source.volume && <p className="roi-source-space">{t[alignmentKey(source.volume.alignmentStatus)]} · {source.volume.space}{source.volume.metadata && <> · {t.range}: {source.volume.metadata.min} – {source.volume.metadata.max}</>}</p>}
