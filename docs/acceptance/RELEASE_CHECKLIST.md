@@ -37,7 +37,7 @@ node scripts/public-package.mjs output/release-candidate/REPLACE_WITH_NEW_ID/sou
 
 包内有src/scripts/docs/tests、浏览器config/CI、许可及固定允许源，另有experiments/viewer-comparison的源/锁/notices。没有node_modules、dist、output、候选源rawcache、受限全文/原始图。原型依赖与生产分离；如要复现原型，在原型目录单独npm ci --ignore-scripts，运行其fixture测试/构建。原型../../src引用指向同包父源码，不引用用户原资料。
 
-SOURCE_ORIGIN.json记录originCommit、原工作区状态与变换后树哈希。经过公开打包的源码是transformed-source-package，即使嵌套在父Git仓库里，也不能自称父仓库的干净提交。源码被增删/修改将使构建来源校验失败。npm ci后node_modules仍排除在源码身份之外。仅排除文档化生成目录（node_modules/dist/dist-public/output/.git/.vite/test-results/playwright-report/browserprofiles/.superpowers）；未声明的源码、配置或根文件变化仍会失败。QC候选缓存保持包外，必须按固定准备清单另行校验。
+SOURCE_ORIGIN.json记录originCommit、原工作区状态与变换后树哈希。经过公开打包的源码是transformed-source-package，即使嵌套在父Git仓库里，也不能自称父仓库的干净提交。源码被增删/修改将使构建来源校验失败。npm ci后node_modules仍排除在源码身份之外。仅排除文档化生成目录（node_modules/dist/dist-public/output/.git/.vite/test-results/playwright-report/browserprofiles/.superpowers）；未声明的源码、配置或根文件变化仍会失败。QC候选缓存保持发行包外。接收者在运行副本执行固定准备流程后，仅 source-preparation.json 列出的确切 data-cache/spatial-qc 路径可作为生成缓存排除在源码指纹之外；排除前仍通过准备器 check-only 核对完整固定清单的字节数、SHA256和Gitblob。未知缓存文件或真正源码/配置变化仍使来源校验失败，不刷新 SOURCE_ORIGIN。准备→QC→构建可在同一副本按序执行。
 
 ## 不可变发布清单
 
@@ -50,7 +50,7 @@ node scripts/verify-release.mjs --create-manifest dist-public output/release-can
 node scripts/verify-release.mjs --verify dist-public output/release-candidate/REPLACE_WITH_NEW_ID/expected.json $releaseCommit .
 ```
 
-先创建父目录；清单使用独占创建，拒绝覆盖。--verify只读清单和产物，不会刷新期望。验证先要求主数据/解剖/QC/公开版/资产清单/结果页清单与build-source，核对版本、声明文件、每个结果版本/内容摘要、静态HTML哈希，再比较完整文件列表/哈希、缺失/额外/变更文件与指定源树。篡改、缺文件、额外文件、旧源身份均失败。exactCommit校验必须提供真实源码根；sourcepackage只报告变换后来源。
+先创建父目录；清单使用独占创建，拒绝覆盖。--verify只读清单和产物，不会刷新期望。验证先要求主数据/解剖/QC/公开版/资产清单/结果页清单与build-source，核对版本、完整类型化运行依赖图（包括概率、表面投影及其逐半球文件、二级图谱/原生T1清单、资产verificationFiles及声明哈希；不把source/provenance原始路径当作运行时发行文件）、每个结果版本/内容摘要、静态HTML哈希，再比较完整文件列表/哈希、缺失/额外/变更文件与指定源树。篡改、缺文件、额外文件、旧源身份均失败。exactCommit校验必须提供真实源码根；sourcepackage只报告变换后来源。
 
 不要将expected.json写在构建目录内部。保存整个构建与expected.json、verify输出、源提交及Gitbundle/archive；根负责人在最终提交后生成这些保全文件。例如在同一新候选父目录执行下列只读归档命令，并保存返回的SHA256：
 

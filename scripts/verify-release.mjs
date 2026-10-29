@@ -3,6 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {prepareSpatialQCSources} from './prepare-spatial-qc-sources.mjs';
 import registry from '../data-sources/results/publication-registry.json' with {type:'json'};
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
 const readJSON=async p=>JSON.parse(await fs.readFile(p,'utf8'));
@@ -13,6 +14,20 @@ async function tree(root,{source=false}={}){const entries=Object.create(null);as
 const treeHash=files=>hash(JSON.stringify(files));
 const git=(root,...args)=>execFileSync('git',['-C',root,...args],{encoding:'utf8'}).trim();
 
+/** Only the pinned candidate bytes are generated cache. Unknown cache/source files remain attested. */
+export async function sourcePackageFiles(sourceRoot){
+ const actual=await tree(sourceRoot,{source:true});delete actual['SOURCE_ORIGIN.json'];
+ const preparation=await readJSON(path.join(sourceRoot,'data-sources/spatial-qc/source-preparation.json')).catch(error=>{if(error.code==='ENOENT')return null;throw error;});
+ if(preparation){
+  const pinned=preparation.files?.map(file=>`${preparation.cacheRoot}/${file.path}`)||[];
+  if(pinned.some(file=>Object.hasOwn(actual,file))){
+   await prepareSpatialQCSources({root:sourceRoot,manifest:preparation,checkOnly:true});
+   for(const file of pinned)delete actual[file];
+  }
+ }
+ return actual;
+}
+
 /** Called by the builder, before compilation; a parent repository is never an origin. */
 export async function recordBuildSource({sourceRoot}){
  sourceRoot=path.resolve(sourceRoot);let repo;
@@ -20,7 +35,7 @@ export async function recordBuildSource({sourceRoot}){
  if(repo!==sourceRoot){
   const origin=await readJSON(path.join(sourceRoot,'SOURCE_ORIGIN.json')).catch(()=>null);
   if(!origin||!validCommit(origin.originCommit)||origin.schema!=='neuroatlas-packaged-source-v1')throw Error('Source is not a repository root and has no explicit packaged origin');
-  const actual=await tree(sourceRoot,{source:true});for(const name of Object.keys(actual))if(name==='SOURCE_ORIGIN.json'||/^(node_modules|dist|dist-public|output|\.git)\//.test(name))delete actual[name];
+  const actual=await sourcePackageFiles(sourceRoot);
   if(treeHash(actual)!==origin.packagedTreeSha256)throw Error('Packaged source is stale or modified');
   return {schema:'neuroatlas-build-source-v1',originCommit:origin.originCommit,sourceKind:'transformed-source-package',sourceTreeSha256:treeHash(actual),version:(await readJSON(path.join(sourceRoot,'package.json'))).version,clean:false,exactCommit:false};
  }
@@ -33,6 +48,53 @@ export async function recordBuildSource({sourceRoot}){
 export async function writeBuildOutput({buildDir,source}){
  const receipt={schema:'neuroatlas-build-output-v1',version:source.version,originCommit:source.originCommit,sourceTreeSha256:source.sourceTreeSha256,files:await tree(buildDir)};
  await fs.writeFile(path.join(buildDir,'build-files.json'),JSON.stringify(receipt,null,2)+'\n',{flag:'wx'});return receipt;
+}
+
+/** Follow runtime contracts only; source/provenance paths are not distribution declarations. */
+async function validateRuntimeData(buildDir,dataFiles){
+ const seen=new Set(),volumes=new Set();
+ const file=(value,digest)=>{
+  const name=value?.replace?.(/^\/data\//,'');
+  safe(path.join(buildDir,'data'),name);
+  if(!Object.hasOwn(dataFiles,name))throw Error('Missing declared runtime data: '+name);
+  if(digest&&dataFiles[name]!==digest)throw Error('Declared runtime digest mismatch: '+name);
+  return name;
+ };
+ async function volume(value){
+  if(!value||value.available===false)return;
+  const binary=value.data||value.file||value.path;
+  if(binary){file(binary,value.sha256);volumes.add(binary.replace(/^\/data\//,''));}
+  if(value.metadata)await manifest(value.metadata,'volume',value.metadataSha256);
+  if(value.probability)file(value.probability,value.probabilitySha256);
+  if(value.surfaceProjection)await manifest(value.surfaceProjection,'surface',value.surfaceProjectionSha256);
+ }
+ async function collection(value){
+  await volume(value.nativeTemplate);
+  for(const entry of Object.values(value.atlases||{}))await volume(entry);
+ }
+ async function manifest(value,kind,digest){
+  const name=file(value,digest),key=kind+':'+name;if(seen.has(key))return;seen.add(key);
+  const content=await readJSON(safe(path.join(buildDir,'data'),name));
+  if(kind==='volume')await volume(content);
+  if(kind==='collection')await collection(content);
+  if(kind==='main'){
+   await collection(content);await volume(content.template);
+   for(const mesh of content.meshes||[])if(mesh.file)file(mesh.file,mesh.sha256);
+   for(const [field,type]of Object.entries({anatomy:'anatomy',alignment:'leaf',baCoverage:'collection',aalSourceManifest:'collection',aalRegistrationReview:'leaf',dataLicenseNotice:'leaf',regionRelations:'leaf',spatialQC:'leaf'}))if(content[field]){if(type==='leaf')file(content[field],content[field+'Sha256']);else await manifest(content[field],type,content[field+'Sha256']);}
+  }
+  if(kind==='anatomy')for(const entry of Object.values(content.structures||{}))if(entry.geometry)file(entry.geometry,entry.sha256);
+  if(kind==='surface')for(const projection of Object.values(content.atlases||{})){
+   if(projection.sourceVolume)file(projection.sourceVolume,projection.sourceSha256);
+   for(const entry of Object.values(projection.hemispheres||{})){
+    if(entry.file)file(entry.file,entry.sha256);
+    for(const [field,digestField]of [['supportFile','supportSha256'],['pialFile','pialSha256'],['whiteFile','whiteSha256']])if(entry[field])file(entry[field],entry[digestField]);
+   }
+  }
+ }
+ await manifest('manifest.json','main');await manifest('anatomy/manifest.json','anatomy');
+ await manifest('volume.json','volume');await manifest('aal-v3/manifest.json','collection');await manifest('ba-v2/manifest.json','collection');
+ const identities=await readJSON(safe(path.join(buildDir,'data'),file('asset-identities.json')));
+ for(const name of volumes){const entry=identities.assets?.[name];if(entry?.identity?.sha256)file(name,entry.identity.sha256);for(const dependency of entry?.verificationFiles||[])file(dependency.path,dependency.sha256);}
 }
 
 async function validateBuild(buildDir,version,sourceCommit,sourceRoot){
@@ -54,10 +116,7 @@ async function validateBuild(buildDir,version,sourceCommit,sourceRoot){
  const actual=Object.keys(dataFiles).filter(n=>n!=='asset-checksums.json').sort();
  if(JSON.stringify(actual)!==JSON.stringify(Object.keys(checks.files).sort()))throw Error('Data manifest file list differs');
  for(const [file,digest] of Object.entries(checks.files))if(dataFiles[file]!==digest)throw Error('Data hash mismatch: '+file);
- const main=await readJSON(safe(buildDir,'data/manifest.json')),anatomy=await readJSON(safe(buildDir,'data/anatomy/manifest.json'));
- const runtimeKeys=new Set(['file','data','metadata','geometry','probabilityData','anatomy','aalSourceManifest','aalRegistrationReview','dataLicenseNotice','regionRelations','spatialQC']);
- async function declared(value){if(!value||typeof value!=='object')return;for(const [key,item] of Object.entries(value)){if(runtimeKeys.has(key)&&typeof item==='string'&&!/^https?:/.test(item)&&/\.(?:json|bin|nii(?:\.gz)?|md|txt)$/.test(item)){const file=item.replace(/^\/data\//,'');if(!dataFiles[file])throw Error('Missing declared data file: '+file);if((key==='data'||key==='file')&&value.sha256&&dataFiles[file]!==value.sha256)throw Error('Declared data digest mismatch: '+file);}else if(item&&typeof item==='object')await declared(item);}}
- await declared(main);await declared(anatomy);
+ await validateRuntimeData(buildDir,dataFiles);
  const pages=await readJSON(safe(buildDir,'results/manifest.json'));
  const required=registry.versions.flatMap(v=>v.records.flatMap(r=>['zh','en'].map(language=>({resultId:r.resultId,dataVersion:v.dataVersion,language,contentHash:r.contentHash,snapshotSha256:v.sha256}))));
  if(pages.schema!=='public-result-pages-v1'||pages.records?.length!==required.length||pages.files?.length!==2)throw Error('Incomplete result page manifest');

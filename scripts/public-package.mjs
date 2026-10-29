@@ -1,5 +1,5 @@
 import {APP_VERSION} from '../src/lib/app-version.js';
-import {recordBuildSource} from './verify-release.mjs';
+import {recordBuildSource,sourcePackageFiles} from './verify-release.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -121,7 +121,7 @@ export async function prepareSourceRelease(target){
   await fs.writeFile(path.join(target,'.gitignore'),'node_modules/\ndist/\ndist-public/\n.vite/\noutput/\n.deployment/\nsnapshots/\ndata-cache/\n__pycache__/\n*.pyc\n*.log\n!/data-sources/dk/scripts/recon-all.log\ndata-sources/literature/raw/\ndata-sources/literature-upgrade/raw/\n');
   await writeJSON(path.join(target,'PUBLIC_RELEASE.json'),{...report,aalSourceInputCount:aalSources.requiredFiles.length,sourceInputs:'Licensed originals, saved transforms, transformation scripts and result source metadata included; PAM50 precomputed files, article PDFs and full-text caches excluded.'});
   const origin=await recordBuildSource({sourceRoot:projectRoot});
-  const packageHashes={};for(const file of await files(target)){const name=slash(path.relative(target,file));if(name!=='SOURCE_ORIGIN.json')packageHashes[name]=sha(await fs.readFile(file));}
+  const packageHashes=await sourcePackageFiles(target);
   const sorted=Object.fromEntries(Object.entries(packageHashes).sort(([a],[b])=>a<b?-1:a>b?1:0));
   await writeJSON(path.join(target,'SOURCE_ORIGIN.json'),{schema:'neuroatlas-packaged-source-v1',originCommit:origin.originCommit,originSource:origin,packagedTreeSha256:sha(JSON.stringify(sorted)),transformed:true});
   return report;
