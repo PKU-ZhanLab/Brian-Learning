@@ -110,7 +110,7 @@ export async function prepareSourceRelease(target){
   for(const entry of metadata.records){delete entry.abstract;delete entry.fulltext;}
   metadata.publicationPolicy='Full abstracts, raw API bodies and full article XML are omitted. Source URLs, dates and hashes remain; fetch scripts can restore local verification caches.';
   await writeJSON(metadataFile,metadata);
-  await fs.writeFile(path.join(target,'.gitignore'),'node_modules/\ndist/\ndist-public/\n.vite/\noutput/\n.deployment/\nsnapshots/\ndata-cache/\n__pycache__/\n*.pyc\n*.log\ndata-sources/literature/raw/\ndata-sources/literature-upgrade/raw/\n');
+  await fs.writeFile(path.join(target,'.gitignore'),'node_modules/\ndist/\ndist-public/\n.vite/\noutput/\n.deployment/\nsnapshots/\ndata-cache/\n__pycache__/\n*.pyc\n*.log\n!/data-sources/dk/scripts/recon-all.log\ndata-sources/literature/raw/\ndata-sources/literature-upgrade/raw/\n');
   await writeJSON(path.join(target,'PUBLIC_RELEASE.json'),{...report,aalSourceInputCount:aalSources.requiredFiles.length,sourceInputs:'Licensed originals, saved transforms, transformation scripts and result source metadata included; PAM50 precomputed files, article PDFs and full-text caches excluded.'});
   return report;
 }
