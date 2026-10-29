@@ -74,12 +74,15 @@ export async function loadAnatomyVolume() {
 export async function loadAtlas(atlasId) {
   const custom=getCustomVolume(atlasId);
   if(custom)return prepareVolume(custom.data,custom);
-  if (cache.has(atlasId)) return cache.get(atlasId);
-  const key = `atlas-${atlasId}`;
-  if (!pending.has(key)) pending.set(key, loadManifest().then(async manifest => {
-    let metadata = manifest.atlases?.[atlasId];
-    if (!metadata?.available || !(metadata.data || metadata.file || metadata.metadata)) return null;
-    if (metadata.metadata) metadata = { ...metadata, ...await fetch(assetPath(metadata.metadata)).then(r => { if (!r.ok) throw new Error('图谱空间信息加载失败'); return r.json(); }) };
+  const manifest = await loadManifest();
+  let metadata = manifest.atlases?.[atlasId];
+  if (!metadata?.available || !(metadata.data || metadata.file || metadata.metadata)) return null;
+  if (metadata.metadata) metadata = { ...metadata, ...await fetch(assetPath(metadata.metadata)).then(r => { if (!r.ok) throw new Error('图谱空间信息加载失败'); return r.json(); }) };
+  metadata = { ...metadata, atlasId };
+  if (!metadata.atlasVersion || !/^[a-f\d]{64}$/i.test(metadata.sha256) || !metadata.spaceId) throw Error('Atlas version, digest and source space identity are required');
+  const key = JSON.stringify(['atlas', atlasId, metadata.atlasVersion, metadata.sha256, metadata.spaceId, metadata.probabilitySha256 ?? null, metadata.shape, metadata.affine, metadata.order]);
+  if (cache.has(key)) return cache.get(key);
+  if (!pending.has(key)) pending.set(key, (async () => {
     const volume = await loadBinaryVolume(metadata);
     if(metadata.surfaceProjection){
       const response=await fetch(dataURL(metadata.surfaceProjection));
@@ -94,9 +97,10 @@ export async function loadAtlas(atlasId) {
         volume.surfaceLabels[hemi]=labels;
       }));
     }
-    cache.set(atlasId, volume);
+    cache.set(key, volume);
+    pending.delete(key);
     return volume;
-  }).catch(error => { pending.delete(key); throw error; }));
+  })().catch(error => { pending.delete(key); throw error; }));
   return pending.get(key);
 }
 
