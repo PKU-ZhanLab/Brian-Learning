@@ -29,6 +29,12 @@
           "spaceId": null
         },
         {
+          "id": "data-sources/raw/MNI152_T1_2mm_brain.nii.gz",
+          "version": "sha256:09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+          "sha256": "09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+          "spaceId": null
+        },
+        {
           "id": "data-sources/dk/label/aparc.annot.ctab",
           "version": "sha256:a43af4cbe595e60829a72fa223725098abbea7bc40e18aad87eb4e626e6d9972",
           "sha256": "a43af4cbe595e60829a72fa223725098abbea7bc40e18aad87eb4e626e6d9972",
@@ -263,6 +269,12 @@
           "id": "scripts/data_build.py",
           "version": "sha256:ad518280f18aa424cfc73414a55f97a3b7e5be3956b8a812eb31cda08026a727",
           "sha256": "ad518280f18aa424cfc73414a55f97a3b7e5be3956b8a812eb31cda08026a727",
+          "spaceId": null
+        },
+        {
+          "id": "data-sources/raw/HarvardOxford-fs-labels.txt",
+          "version": "sha256:c9659394b6252949e44aebe2a8a8d4fceb18f25bb933367d876adb84989ce80f",
+          "sha256": "c9659394b6252949e44aebe2a8a8d4fceb18f25bb933367d876adb84989ce80f",
           "spaceId": null
         },
         {
@@ -640,6 +652,12 @@
           "version": "sha256:6cc011b70aff924982d3547a7855dbb3bfbe36ffbd0d9a64558977ed839946b5",
           "sha256": "6cc011b70aff924982d3547a7855dbb3bfbe36ffbd0d9a64558977ed839946b5",
           "spaceId": null
+        },
+        {
+          "id": "scripts/register_volume.py",
+          "version": "sha256:eb05bb1ac1e2e49b89d82902272385f11622010617f51d459d48c833442fc91d",
+          "sha256": "eb05bb1ac1e2e49b89d82902272385f11622010617f51d459d48c833442fc91d",
+          "spaceId": null
         }
       ],
       "transforms": [
@@ -763,6 +781,12 @@
           "id": "scripts/aal_apply_registration.py",
           "version": "sha256:6cc011b70aff924982d3547a7855dbb3bfbe36ffbd0d9a64558977ed839946b5",
           "sha256": "6cc011b70aff924982d3547a7855dbb3bfbe36ffbd0d9a64558977ed839946b5",
+          "spaceId": null
+        },
+        {
+          "id": "scripts/register_volume.py",
+          "version": "sha256:eb05bb1ac1e2e49b89d82902272385f11622010617f51d459d48c833442fc91d",
+          "sha256": "eb05bb1ac1e2e49b89d82902272385f11622010617f51d459d48c833442fc91d",
           "spaceId": null
         }
       ],
