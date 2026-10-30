@@ -1,0 +1,3 @@
+node --input-type=module < witness-4.mjs.txt
+exit=0
+{"probe":"project-merge-snapshot-history","before":"original-A","after":"original-B","recomputed":null,"preview":{"mode":"merge","includedAssetIds":[],"removedAssetIds":[],"collisions":[],"remap":{"volumes":{},"notes":{},"drafts":{},"resultLayers":{},"references":{},"readings":{},"experiments":{},"results":{},"locations":{},"claims":{},"mappings":{},"sourceArtifacts":{},"reviewEvents":{},"relations":{}},"changedReferenceCounts":{}},"originalRetained":false}

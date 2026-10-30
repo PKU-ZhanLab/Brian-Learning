@@ -1,6 +1,12 @@
 # G1 validation results
 
-Current working implementation started from b73910b22f7b44d49a7ec0bd692682349372ccef. Final root commit/candidate remains pending. This file records actual commands only; no browser executed in G1.
+Current reviewed code: **aa20e40f2e6261492f4ef8d63ba4f89204fca386**. See [FINAL_SOFTWARE_STATUS](FINAL_SOFTWARE_STATUS.md) for the independent review → scoped WITH FIXES → ROOT direct residual-closure attribution, current corrections and all open gates. ROOT ran the exact stable residual source: data/literature passed; **450/450 tests,0failed/cancelled/skipped** ([actual receipt](evidence/final-code/root-450-check.txt)). Final-code evidence is byte-preserved in [its inventory](evidence/final-code/inventory.json).
+
+The cdeb6ed archive/fresh-source build is a **WITHHELD intermediate**, with two residual issues at that point. The final artifact will come from a documentation-only successor to aa20e40; ROOT will record its actual commit, source/package/build/expected-manifest evidence after this documentation commit. No final clean package/fresh install, runtime or deployment is claimed here.
+
+## Earlier G1 worker receipts (historical scope)
+
+These commands started from b73910b22f7b44d49a7ec0bd692682349372ccef and prove only the named intermediate working/probe sources. “Final” in their preserved filenames means the end of that worker phase, not final software acceptance. No browser executed in G1.
 
 | Action | Status | Receipt / scope |
 |---|---|---|
@@ -28,7 +34,7 @@ The first portable probe failed: its new closure test tried to read intentionall
 
 The completeness witness deleted an application entry before creating a new expected release; the old verifier incorrectly accepted it (g1-output-receipt-red.txt). The builder now independently records all output files in build-files.json; expected-manifest creation rejects missing output (g1-output-receipt-green.txt,3/3). The full414-test suite and actual build/222-file verification then passed. Earlier221-file candidates predate this stricter receipt and are historical probes, not final candidates.
 
-Source-tree sorting uses deterministic code-point order for cross-platform fingerprints. Final root clean-commit reproduction, fresh dependency installation, independent branch review, runtime/scientific acceptance and deployment remain separate. Documentation updates after the working build deliberately make that build stale against the current root source; immutable artifact verification still describes its recorded earlier source. Root must rebuild after the final commit.
+Source-tree sorting uses deterministic code-point order for cross-platform fingerprints. Later independent reviews and ROOT direct residual closure are recorded in the current software status; final artifact reproduction, runtime/scientific acceptance and deployment remain separate. Documentation updates after the working build deliberately make that build stale against the current root source; immutable artifact verification still describes its recorded earlier source. Root must rebuild after the final commit.
 
 ## Final worker source-package probe
 

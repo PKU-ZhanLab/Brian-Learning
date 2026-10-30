@@ -1,0 +1,3 @@
+node --input-type=module < residual-witness-1.mjs.txt
+exit=0
+{"probe":"ready-cache-late-publication","pendingResult":{"rejected":"Project atlas ownership expired"},"currentResult":"B label"}

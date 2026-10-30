@@ -1,0 +1,3 @@
+node --input-type=module < residual-witness-2.mjs.txt
+exit=0
+{"probe":"ready-cache-consumer-timing","events":["A cache ready","A consumer request invoked","B registry published","A consumer request delivered"],"requestStillCurrent":true,"returnedOwner":{"projectId":"A","entryId":"custom-a","generation":1},"currentOwner":{"projectId":"B","entryId":"custom-a","generation":2},"returnedLabel":"A label","registryLabel":"B label"}

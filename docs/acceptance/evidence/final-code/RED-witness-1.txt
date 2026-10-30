@@ -1,0 +1,4 @@
+node --input-type=module < witness-1.mjs.txt
+exit=0
+{"probe":"verified-volume-roundtrip","before":"received-bytes","after":null,"linkBefore":{"allowed":true,"reason":"User-declared alignment; not independently verified / 用户声明对齐，未经独立核验"},"linkAfter":{"allowed":false,"reason":"Recorded reference evidence is required / 缺少参考空间依据"}}
+{"probe":"same-file-two-owned-assets","first":"custom-a","second":{"error":"Atlas metadata changed without a new asset identity"}}

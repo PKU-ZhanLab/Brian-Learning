@@ -1,0 +1,40 @@
+{
+  "base": "cdeb6ed550733b13fb0cb3c24ccf41f0f80bcbd2",
+  "files": [
+    {
+      "path": "src/components/ComparisonViewport.jsx",
+      "bytes": 8957,
+      "sha256": "e1150e9a13debe53dcbedebea442ab59ad5c29fc486f30539278cc3d9221cdbc"
+    },
+    {
+      "path": "src/lib/comparison-link.js",
+      "bytes": 6110,
+      "sha256": "88454a68bf45ed739165b908d37e70a60f8d378e567db28f053d499a47621744"
+    },
+    {
+      "path": "src/lib/custom-volumes.js",
+      "bytes": 3638,
+      "sha256": "d954106909fc9e793d3727de606f10521f5c420c27bd6d9db863068157179b79"
+    },
+    {
+      "path": "src/lib/final-residual.test.mjs",
+      "bytes": 10056,
+      "sha256": "0db0c9066a98355d41899ae344ce3424b29dacc9dc437ce9e2183503dab03b7b"
+    },
+    {
+      "path": "src/lib/navigation-history.test.mjs",
+      "bytes": 12136,
+      "sha256": "abe9cbf43b8d8c427985a3a0f53987c2b2a5366b6644e39080b5de0ae1b98db6"
+    },
+    {
+      "path": "src/lib/volume.js",
+      "bytes": 17658,
+      "sha256": "7a05252d5a70748408a0593ff1d30259a4f9e673cb28adfd92060b6702d19083"
+    },
+    {
+      "path": "src/lib/workspace-session.js",
+      "bytes": 24445,
+      "sha256": "dda60f51c8f3bb0439b305816cfb9091e894fd47d46f0d71c6b7cc416fea9fc4"
+    }
+  ]
+}

@@ -20,4 +20,8 @@ v1 项目/证据/视图仍可读取；缺失的来源、空间或数值历史不
 
 Keep the original v1 file and save migrated v2 separately. Missing provenance remains missing. Restoring a saved result never silently recomputes it; inspect differences and explicitly recompute into a distinct history slot. Removing an input can retain historical numbers while disabling recomputation.
 
+刷新后若会话影像不可用，可在“项目与视图”选择“归档恢复记录并继续”，另存原样的刷新前元数据 **.json**。它独立于 **.neuroatlas** 完整项目，不含已丢失的影像字节。下载本身不会丢弃恢复副本；确认文件已保存后，点击“我已保存，继续工作”，才允许移除活动项目中的嵌入副本并正常继续。配额、合并或提交失败保留原件；选择只导出部分影像时，须先归档恢复记录。要恢复影像本身，请打开之前保存的完整项目文件。
+
+If session images are unavailable after a reload, choose **Archive recovery record and continue** in Projects & views to save the exact pre-refresh metadata as a separate **.json** archive. This is separate from a complete **.neuroatlas** project and contains no lost image bytes. Downloading alone keeps the recovery copy; after verifying the file is saved, **I saved it; continue** acknowledges it and allows normal work while removing the embedded active-project copy. Quota, merge or commit failures preserve the originals; archive recovery first before exporting only selected images. Restore image bytes from a previously saved complete project.
+
 [结果与来源](RESULTS_WORKFLOW.md) · [空间说明](SPACE_ALIGNMENT.md) · [当前验收及限制](acceptance/STATUS.md) · [键盘与可访问性](acceptance/ACCESSIBILITY.md)。

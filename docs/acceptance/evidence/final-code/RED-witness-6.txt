@@ -1,0 +1,3 @@
+node --input-type=module < witness-6.mjs.txt
+exit=0
+{"probe":"G1-journey-input-contract","expectedByTest":2,"actualInputs":15,"operands":["public/data/dk-v2/dk68.bin","public/data/aal-v3/aal3-fsl1mm.bin"],"dependencyCount":13}
