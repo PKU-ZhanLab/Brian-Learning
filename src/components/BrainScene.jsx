@@ -7,10 +7,14 @@ import { ROI_COLORS, ROI_DEFAULT_DISPLAY, voxelMaskSurface } from '../lib/roi.js
 import { createPAM50Loader } from '../lib/pam50.js';
 import { overviewFrame } from '../lib/scene-frame.js';
 import { surfaceLabelAt } from '../lib/surface-projection.js';
+import { atlasRegionKey, makeAtlasRegionRef, relationsForRegion } from '../lib/atlas-identity.js';
+import { pickDisplayedSurfaceRegion } from '../lib/atlas-surface-selection.js';
+import { queryableAtlasVolume } from '../lib/query-state.js';
+import { ANATOMY_MANIFEST_RESOURCE, resourceValue } from '../lib/atlas-resource.js';
+import { representationForAsset } from '../lib/spatial-qc.js';
 
 const PASTELS = ['#9ebdb2', '#e4bcaa', '#b6b7d3', '#b8cbb0', '#d9c797', '#a6becf', '#d5b0ba', '#b8c5d5', '#c9c1a7', '#98bfbf', '#d7c4b9', '#c2b5ca'];
 const axisColors = { x: '#c999a0', y: '#a3b6cb', z: '#87afa0' };
-const normalized = value => String(value || '').toLowerCase().replace(/ventrical/g, 'ventricle').replace(/brodmann\s*(?:area)?\s*/g, 'ba').replace(/left|right|hemisphere|ctx|cortex|cortical|\blh\b|\brh\b|_/g, '').replace(/[^a-z0-9]/g, '');
 const isWhole = preset => ['whole', 'cns', 'full', 'whole-cns', 'all'].includes(preset);
 const isCord = preset => ['brainstem', 'spine', 'brainstem-spinal', 'brainstem-spine'].includes(preset);
 const sideOf = s => s.hemisphere === 'L' ? -1 : s.hemisphere === 'R' ? 1 : Math.sign(s.position?.[0] || 0);
@@ -180,31 +184,8 @@ function schematicObject(structure, spinalSegments = []) {
   return group;
 }
 
-function findMatchingStructure(structures, label, hemisphere) {
-  const token = normalized(label);
-  if (!token) return null;
-  const compatible = structures.filter(s => s.hemisphere === 'M' || s.hemisphere === hemisphere);
-  let result = null, score = 0;
-  for (const structure of compatible) {
-    const terms = [structure.en, structure.id.replace(/-[lr]$/, ''), ...(structure.aliases || []), ...Object.values(structure.atlasLabels || {}).flat()].map(normalized);
-    for (const term of terms) {
-      const current = term === token ? 1000 + term.length : term.length > 5 && (token.includes(term) || term.includes(token)) ? Math.min(term.length, token.length) : 0;
-      if (current > score) { score = current; result = structure; }
-    }
-  }
-  return result;
-}
-
-function nearestStructure(structures, point, hemi, category = 'cortex') {
-  let best, distance = Infinity;
-  for (const structure of structures) {
-    if (structure.category !== category || (hemi && structure.hemisphere !== hemi && structure.hemisphere !== 'M')) continue;
-    const p = structure.position;
-    const d = (p[0] - point.x) ** 2 + (p[1] - point.y) ** 2 + (p[2] - point.z) ** 2;
-    if (d < distance) { distance = d; best = structure; }
-  }
-  return best;
-}
+// Existing display-object ownership only; these are not atlas/concept equivalence claims.
+const HO_DISPLAY_OBJECTS = { 'ho-3':'lateral-ventricle-l', 'ho-4':'thalamus-l', 'ho-5':'caudate-l', 'ho-6':'putamen-l', 'ho-7':'pallidum-l', 'ho-9':'hippocampus-l', 'ho-10':'amygdala-l', 'ho-11':'accumbens-l', 'ho-14':'lateral-ventricle-r', 'ho-15':'thalamus-r', 'ho-16':'caudate-r', 'ho-17':'putamen-r', 'ho-18':'pallidum-r', 'ho-19':'hippocampus-r', 'ho-20':'amygdala-r', 'ho-21':'accumbens-r' };
 
 const BrainScene = forwardRef(function BrainScene(props, ref) {
   const containerRef = useRef(null);
@@ -241,8 +222,9 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.98;
     renderer.localClippingEnabled = true;
-    renderer.domElement.style.cssText = 'width:100%;height:100%;display:block;touch-action:none;outline:none;';
+    renderer.domElement.style.cssText = 'width:100%;height:100%;display:block;touch-action:none;';
     renderer.domElement.setAttribute('aria-label', 'Interactive 3D brain: drag to rotate, right-drag to pan, scroll to zoom, click a structure for details');
+    renderer.domElement.setAttribute('aria-describedby', 'brain-keyboard-help');
     renderer.domElement.tabIndex = 0;
     container.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
@@ -456,6 +438,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     function updateMaterials() {
       const p = propsRef.current;
       const selected = new Set(p.selectedIds || []);
+      const selectedRegions = new Set((p.selectedRegions || []).map(atlasRegionKey));
       const graySelected = [...selected].some(id => /spinal-(gray|.*horn)/.test(id));
       const whiteSelected = selected.has('spinal-white');
       const hornSelected = [...selected].some(id => id.includes('spinal-') && id.includes('horn'));
@@ -465,9 +448,9 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         object.traverse(child => { if (child.material) {
           const materials = Array.isArray(child.material) ? child.material : [child.material];
           materials.forEach(mat => {
-            mat.emissive?.set(selected.has(id) ? '#286b4e' : '#000000'); mat.emissiveIntensity = selected.has(id) ? 0.28 : 0;
-            if (mat.isLineBasicMaterial) mat.color.set(selected.has(id) ? '#c28850' : structure.color || '#8fae9c');
-            const selectionOpacity = (graySelected || whiteSelected) && /spinal-(C\d|T\d|L\d|S\d|Co\d)/.test(id) ? 0.10 : graySelected && id === 'spinal-white' ? 0.12 : hornSelected && id === 'spinal-gray' ? 0.22 : selected.size > 0 && !selected.has(id) ? 0.82 : 1;
+            mat.emissive?.set('#000000'); mat.emissiveIntensity = 0;
+            if (mat.isLineBasicMaterial) mat.color.set(structure.color || '#8fae9c');
+            const selectionOpacity = (graySelected || whiteSelected) && /spinal-(C\d|T\d|L\d|S\d|Co\d)/.test(id) ? 0.10 : graySelected && id === 'spinal-white' ? 0.12 : hornSelected && id === 'spinal-gray' ? 0.22 : 1;
             mat.opacity = selectionOpacity * THREE.MathUtils.clamp(p.categoryOpacity?.[structure.category] ?? 1, 0, 1); mat.transparent = mat.opacity < 0.999;
             mat.depthWrite = !mat.transparent;
             child.renderOrder = mat.transparent ? ({ cerebellum: 12, brainstem: 14, subcortical: 16, ventricle: 17, tract: 18, cranial: 19, spinal: 20 }[structure.category] || 15) : 0;
@@ -482,13 +465,11 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         mesh.material.opacity = cortexOpacity; mesh.material.transparent = mesh.material.opacity < 0.999; mesh.material.depthWrite = !mesh.material.transparent; mesh.renderOrder = mesh.material.transparent ? 10 : 0;
         const colorAttribute = mesh.geometry.attributes.color, base = mesh.userData.baseColors, ids = mesh.userData.regionIds;
         if (!base || !colorAttribute) return;
-        const c = new THREE.Color(), hiddenColor = new THREE.Color('#dce3de'), highlight = new THREE.Color('#c08753'), muted = new THREE.Color('#dce2dc');
+        const c = new THREE.Color(), hiddenColor = new THREE.Color('#dce3de');
         for (let i = 0; i < colorAttribute.count; i++) {
           c.setRGB(base[i * 3], base[i * 3 + 1], base[i * 3 + 2]);
           const structure = ids[i];
           if (structure && (!isStructureVisible(structure) || (p.hiddenIds || []).includes(structure.id))) c.copy(hiddenColor);
-          else if (structure && selected.has(structure.id)) c.lerp(highlight, 0.46);
-          else if (selected.size > 0) c.lerp(muted, 0.13);
           colorAttribute.setXYZ(i, c.r, c.g, c.b);
         }
         colorAttribute.needsUpdate = true;
@@ -505,40 +486,73 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         }
       });
       selectionGroup.children.forEach(disposeObject); selectionGroup.clear();
-      for (const id of selected) {
-        const structure = p.structures.find(s => s.id === id);
-        if (!structure || !isStructureVisible(structure)) continue;
-        const pin = new THREE.Mesh(new THREE.SphereGeometry(1.7, 12, 12), new THREE.MeshBasicMaterial({ color: '#f5d09a', depthTest: false }));
-        pin.position.copy(labelPosition(structure)); pin.renderOrder = 10; selectionGroup.add(pin);
+      // A separate contour marks categorical selections; the atlas palette stays intact.
+      for (const mesh of status.cortexMeshes) {
+        if (!mesh.visible || (!selected.size && !selectedRegions.size)) continue;
+        const positions = mesh.geometry.attributes.position, indices = mesh.geometry.index, segments = [];
+        if (!indices) continue;
+        const chosen = new Uint8Array(positions.count);
+        for (let index = 0; index < positions.count; index++) {
+          const ref = mesh.userData.atlasRegions?.[index], structure = mesh.userData.regionIds?.[index];
+          chosen[index] = Number(Boolean(ref && selectedRegions.has(atlasRegionKey(ref)) || structure && selected.has(structure.id)));
+        }
+        for (let i = 0; i < indices.count; i += 3) {
+          const triangle = [indices.getX(i), indices.getX(i + 1), indices.getX(i + 2)], crossings = [];
+          for (let edge = 0; edge < 3; edge++) {
+            const a = triangle[edge], b = triangle[(edge + 1) % 3];
+            if (chosen[a] !== chosen[b]) crossings.push([(positions.getX(a) + positions.getX(b)) / 2, (positions.getY(a) + positions.getY(b)) / 2, (positions.getZ(a) + positions.getZ(b)) / 2]);
+          }
+          if (crossings.length === 2) segments.push(...crossings[0], ...crossings[1]);
+        }
+        if (segments.length) {
+          const geometry = new THREE.BufferGeometry(); geometry.setAttribute('position', new THREE.Float32BufferAttribute(segments, 3));
+          const boundary = new THREE.LineSegments(geometry, new THREE.LineBasicMaterial({color:'#263e30',depthTest:false}));
+          boundary.position.copy(mesh.position); boundary.renderOrder = 1000; selectionGroup.add(boundary);
+        }
       }
+      status.objects.forEach((object,id) => {
+        const sourceRegion = object.userData.sourceMetadata?.regionRef;
+        if (!object.visible || !(selected.has(id) || sourceRegion && selectedRegions.has(atlasRegionKey(sourceRegion)))) return;
+        const boundary = new THREE.BoxHelper(object, '#263e30'); boundary.material.depthTest = false; boundary.renderOrder = 1000; selectionGroup.add(boundary);
+      });
       updateLabels(); roiGroup.visible = Boolean(p.roiComparison && !p.exploded); markerGroup.visible = !p.exploded; status.invalidate();
     }
     function colorCortex() {
       const p = propsRef.current;
       status.cortexMeshes.forEach(mesh => {
         const position = mesh.geometry.attributes.position;
-        const colors = new Float32Array(position.count * 3), regions = new Array(position.count), palette = PASTELS.map(c => new THREE.Color(c));
+        const colors = new Float32Array(position.count * 3), regions = new Array(position.count), atlasRegions = new Array(position.count), atlasLabelIds = new Uint32Array(position.count), palette = PASTELS.map(c => new THREE.Color(c));
         const world = new THREE.Vector3();
         const atlasCache = new Map();
         const compatible = p.structures.filter(s => s.category === 'cortex' && s.hemisphere === mesh.userData.hemisphere);
-        const directDK = p.atlas === 'dk' && mesh.userData.vertexLabels;
-        const projected=status.atlasVolume?.surfaceLabels?.[mesh.userData.hemisphere];
+        const activeVolume = queryableAtlasVolume(status.atlasVolume,p.atlas,p.atlasIdentity);
+        const directDK = p.atlas === 'dk' && activeVolume && mesh.userData.vertexLabels;
+        const projected=activeVolume?.surfaceLabels?.[mesh.userData.hemisphere];
         if(projected&&(projected.length!==position.count||status.atlasVolume.surfaceProjectionInfo.hemispheres[mesh.userData.hemisphere].pialSha256!==mesh.userData.sourceMetadata.sha256))throw Error('Projected atlas labels do not match the displayed cortical geometry');
         const dkLabels = new Map((mesh.userData.dkLabels || []).map(label => [label.id, label]));
         for (let i = 0; i < position.count; i++) {
           world.fromBufferAttribute(position, i);
           const directLabel = directDK ? dkLabels.get(mesh.userData.vertexLabels[i]) : null;
-          const atlasLabel = directDK ? directLabel && { ...directLabel, value: directLabel.id } : projected ? surfaceLabelAt(status.atlasVolume,mesh.userData.hemisphere,i) : atlasLabelAt(status.atlasVolume, world.toArray());
+          const atlasLabel = directDK ? directLabel && { ...directLabel, value: directLabel.id } : projected ? surfaceLabelAt(activeVolume,mesh.userData.hemisphere,i) : atlasLabelAt(activeVolume, world.toArray());
           let structure;
           if (atlasLabel) {
-            if (!atlasCache.has(atlasLabel.value)) atlasCache.set(atlasLabel.value, atlasLabel.structureId ? compatible.find(s => s.id === atlasLabel.structureId) : findMatchingStructure(compatible, atlasLabel.name, mesh.userData.hemisphere));
-            structure = atlasCache.get(atlasLabel.value);
+            if (!atlasCache.has(atlasLabel.value)) {
+              let ref = null;
+              try { ref = makeAtlasRegionRef(p.atlas,activeVolume,atlasLabel.value); } catch { /* Unsourced user labels do not become atlas references. */ }
+              if (ref && ['L','R'].includes(ref.hemisphere) && ref.hemisphere !== mesh.userData.hemisphere) ref = null;
+              const relation = ref && relationsForRegion(ref,p.regionRelations).find(row => row.type === 'exact-source');
+              atlasCache.set(atlasLabel.value,{ref,structure:relation ? compatible.find(s => s.id === relation.conceptId) : null});
+            }
+            const match = atlasCache.get(atlasLabel.value);
+            atlasRegions[i] = match.ref; structure = match.structure;
           }
           regions[i] = structure;
+          atlasLabelIds[i] = atlasLabel?.value || 0;
           const c = atlasLabel ? palette[(atlasLabel.value * 7) % palette.length] : new THREE.Color('#cbd1c8');
           colors[i * 3] = c.r; colors[i * 3 + 1] = c.g; colors[i * 3 + 2] = c.b;
         }
-        mesh.userData.baseColors = colors.slice(); mesh.userData.regionIds = regions;
+        mesh.userData.baseColors = colors.slice(); mesh.userData.regionIds = regions; mesh.userData.atlasRegions = atlasRegions; mesh.userData.atlasLabelIds = atlasLabelIds;
+        mesh.userData.displayedAtlas = activeVolume ? {atlasId:p.atlas,atlasVersion:activeVolume.atlasVersion,spaceId:activeVolume.spaceId,method:directDK?'original-vertex-annotation':projected?'cortical-ribbon':'surface-vertex-volume-sample'} : null;
         mesh.userData.visibilityKey = null;
         mesh.geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
       });
@@ -590,7 +604,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         const geometry = new THREE.PlaneGeometry(h[1] - h[0], v[1] - v[0]);
         let map;
         if (status.anatomyVolume) {
-          const canvas = makeSliceCanvas(status.anatomyVolume, axis, slices[axis], { size: 192, atlasVolume: status.atlasVolume, radiological: false, transparent: true, roiComparison: propsRef.current.exploded ? null : propsRef.current.roiComparison, roiDisplay: propsRef.current.roiDisplay });
+          const canvas = makeSliceCanvas(status.anatomyVolume, axis, slices[axis], { size: 192, atlasVolume: queryableAtlasVolume(status.atlasVolume,propsRef.current.atlas,propsRef.current.atlasIdentity), radiological: false, transparent: true, roiComparison: propsRef.current.exploded ? null : propsRef.current.roiComparison, roiDisplay: propsRef.current.roiDisplay });
           map = new THREE.CanvasTexture(canvas); map.colorSpace = THREE.SRGBColorSpace;
         }
         const mat = new THREE.MeshBasicMaterial({ map, color: map ? '#ffffff' : axisColors[axis], side: THREE.DoubleSide, transparent: true, opacity: map ? 0.82 : 0.12, depthWrite: false });
@@ -631,8 +645,9 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       markerGroup.children.forEach(disposeObject); markerGroup.clear();
       for (const marker of propsRef.current.studyMarkers || []) {
         if (marker.verified !== true || marker.coordinateSpace !== 'MNI152NLin6Asym' || marker.position?.length !== 3 || !marker.position.every(Number.isFinite)) continue;
-        const radius = THREE.MathUtils.clamp(marker.radiusMm || 2, 0.5, 8);
-        const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 16, 12), new THREE.MeshBasicMaterial({ color: marker.color || '#b85163' }));
+        const radius = THREE.MathUtils.clamp(marker.radiusMm || 2, 1, 20);
+        const markerOpacity = THREE.MathUtils.clamp(marker.opacity ?? 1, 0, 1);
+        const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 16, 12), new THREE.MeshBasicMaterial({ color: marker.color || '#b85163', opacity: markerOpacity, transparent: markerOpacity < 1 }));
         mesh.position.set(...marker.position); mesh.userData = { category: 'study-marker', marker }; markerGroup.add(mesh);
       }
       markerGroup.visible = !propsRef.current.exploded; status.invalidate();
@@ -749,33 +764,40 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
           if (hit.object.userData.category === 'roi') {
             const comparison = p.roiComparison, part = hit.object.userData.roiPart;
             p.onCoordinate?.(point.toArray(), { coordinateSpace: 'brain' });
-            p.onReady?.({ loaded: true, method: 'roi', mapping: 'none', roiPart: part, position: point.toArray(), message: `${sceneText('ROI 二值标签', 'ROI binary labels')} · ${part === 'intersection' ? sceneText('交集', 'Intersection') : part === 'aOnly' ? sceneText('仅 A', 'A only') : part === 'bOnly' ? sceneText('仅 B', 'B only') : part} · ${comparison?.grid.space || ''}` });
+            p.onQueryStatus?.({ loaded: true, method: 'roi', mapping: 'none', roiPart: part, position: point.toArray(), message: `${sceneText('ROI 二值标签', 'ROI binary labels')} · ${part === 'intersection' ? sceneText('交集', 'Intersection') : part === 'aOnly' ? sceneText('仅 A', 'A only') : part === 'bOnly' ? sceneText('仅 B', 'B only') : part} · ${comparison?.grid.space || ''}` });
             start = null; setSelectionBox(null); return;
           } else if (hit.object.userData.category === 'study-marker') {
             const marker = hit.object.userData.marker;
-            p.onCoordinate?.(marker.position, { coordinateSpace: 'brain' }); p.onStudyMarkerSelect?.(marker);
-            p.onReady?.({ loaded: true, method: 'study-marker', mapping: 'none', position: marker.position, message: marker.label || marker.studyId || sceneText('研究坐标', 'Study coordinate') });
+            p.onStudyMarkerSelect?.(marker);
+            p.onQueryStatus?.({ loaded: true, method: 'study-marker', mapping: 'none', position: marker.position, message: `${marker.resultId} · ${marker.coordinateId}` });
             start = null; setSelectionBox(null); return;
           } else if (hit.object.userData.category === 'cortex') {
             point.sub(hit.object.position);
-            let label = atlasLabelAt(status.atlasVolume, point.toArray());
-            const directDK = p.atlas === 'dk' && hit.object.userData.vertexLabels;
-            const projected=status.atlasVolume?.surfaceLabels?.[hit.object.userData.hemisphere];
-            if ((directDK||projected) && hit.face) {
-              const positions = hit.object.geometry.attributes.position;
-              const vertex = [hit.face.a, hit.face.b, hit.face.c].sort((a, b) => new THREE.Vector3().fromBufferAttribute(positions, a).distanceToSquared(point) - new THREE.Vector3().fromBufferAttribute(positions, b).distanceToSquared(point))[0];
-              if(projected)label=surfaceLabelAt(status.atlasVolume,hit.object.userData.hemisphere,vertex);
-              else {const value = hit.object.userData.vertexLabels[vertex];const entry = hit.object.userData.dkLabels.find(item => item.id === value);label = entry ? { ...entry, value } : null;}
-            }
-            structure = label?.structureId ? p.structures.find(s => s.id === label.structureId) : label ? findMatchingStructure(p.structures, label.name, hit.object.userData.hemisphere) : null;
-            const matched = Boolean(structure);
-            p.onReady?.({ loaded: true, method: label ? 'atlas' : 'unlabelled', mapping: projected ? 'cortical-ribbon' : matched ? directDK ? 'original-vertex-annotation' : 'label-name' : 'none', atlasLabel: label?.name, position: point.toArray(), message: label ? `${label.name} · ${directDK ? sceneText('同源 DK 顶点注释', 'Matched DK vertex annotation') : projected ? sceneText('皮层厚度投影标签', 'Cortical ribbon label') : sceneText('体素标签', 'Voxel label')}${matched ? '' : sceneText(' · 无对应结构卡片', ' · No matching structure card')}` : status.atlasOverlayBlocked ? sceneText('该图谱未配准，已停止标签查询', 'Atlas alignment is unverified; label queries are disabled') : sceneText('此处没有图谱标签，未按邻近脑回补标', 'No atlas label here; no nearest-gyrus inference was applied') });
+            const activeVolume = queryableAtlasVolume(status.atlasVolume,p.atlas,p.atlasIdentity);
+            if(!activeVolume){start=null;setSelectionBox(null);return;}
+            const displayed=hit.object.userData.displayedAtlas;
+            const sameSource=activeVolume && displayed?.atlasId===p.atlas && displayed.atlasVersion===activeVolume.atlasVersion && displayed.spaceId===activeVolume.spaceId;
+            const picked=sameSource && hit.face ? pickDisplayedSurfaceRegion({positions:hit.object.geometry.attributes.position.array,face:[hit.face.a,hit.face.b,hit.face.c],point:point.toArray(),labelIds:hit.object.userData.atlasLabelIds,regionRefs:hit.object.userData.atlasRegions}) : null;
+            const entry=picked && activeVolume.labels?.find(item=>item.id===picked.labelId);
+            const label=entry ? {...entry,value:picked.labelId} : null;
+            const region=picked?.ref ?? null;
+            const projected=displayed?.method==='cortical-ribbon';
+            const relation = region && relationsForRegion(region,p.regionRelations).find(row => row.type === 'exact-source');
+            structure = relation ? p.structures.find(s => s.id === relation.conceptId) : null;
+            const method = displayed?.method || 'unlabelled-surface';
+            p.onRegionSelect?.(region ? [region] : [],point.toArray(),{atlasId:p.atlas,atlasVersion:activeVolume.atlasVersion,coordinate:point.toArray(),method,requestId:status.atlasGeneration,selectionMode:start.shift?'add':'replace',surfaceHemisphere:hit.object.userData.hemisphere,sourceAsset:activeVolume.identity,label,mapping:projected?'cortical-ribbon':region?method:'none'});
+            start = null; setSelectionBox(null); return;
           } else {
             structure = hit.object.userData.structure;
             const object = structure && status.objects.get(structure.id);
             if (object) point.sub(object.position);
             const source = object?.userData.sourceMetadata;
-            if (source) p.onReady?.({ loaded: true, method: source.representation || 'atlas-segmentation', sourceStructureId: structure.id, nativeSpace: source.nativeSpace || source.space, displaySpace: source.displaySpace || source.space || source.nativeSpace, targetAlignment: source.targetAlignment, sourceMetadata: source, message: `${source.dataset || source.atlas || sceneText('解剖图谱', 'Anatomical atlas')} · ${source.targetAlignment?.verified === false ? sceneText('原生参考空间（未联合配准）', 'Native reference space; no joint registration') : source.representation === 'tractography' ? sceneText('群体扩散流线', 'Population tractography') : sceneText('图谱分割表面', 'Atlas segmentation surface')}` });
+            if (source) p.onQueryStatus?.({ loaded: true, method: source.representation || 'atlas-segmentation', sourceStructureId: structure.id, nativeSpace: source.nativeSpace || source.space, displaySpace: source.displaySpace || source.space || source.nativeSpace, targetAlignment: source.targetAlignment, sourceMetadata: source, message: `${source.dataset || source.atlas || sceneText('解剖图谱', 'Anatomical atlas')} · ${source.representation === 'illustrative-subdivision' ? sceneText('整体分割表面的示意分区；分区边界待独立复核', 'Illustrative subdivision of a source envelope; regional boundaries await independent review') : source.targetAlignment?.verified === false ? sceneText('原生参考空间（未联合配准）', 'Native reference space; no joint registration') : source.representation === 'tractography' ? sceneText('群体扩散流线', 'Population tractography') : sceneText('图谱分割表面', 'Atlas segmentation surface')}` });
+            if (source?.regionRef) {
+              const region=source.regionRef;
+              p.onRegionSelect?.([region],point.toArray(),{atlasId:region.atlasId,atlasVersion:region.atlasVersion,coordinate:point.toArray(),method:'source-label-surface',requestId:status.atlasGeneration,selectionMode:start.shift?'add':'replace'});
+              start = null; setSelectionBox(null); return;
+            }
           }
           const coordinateInfo = coordinateMetadata(structure);
           if (structure && isStructureVisible(structure)) {
@@ -791,6 +813,19 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
     renderer.domElement.addEventListener('pointermove', pointerMove);
     renderer.domElement.addEventListener('pointerup', pointerUp);
     renderer.domElement.addEventListener('pointercancel', cancelPointer);
+    const keyboardView = event => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.isComposing) return;
+      const view = {'1':'oblique','2':'lateral','3':'anterior','4':'superior'}[event.key];
+      if (view) { status.autoOverview = false; setView(view); propsRef.current.onViewChange?.(view); }
+      else if (event.key === 'Home') { reset(); propsRef.current.onViewChange?.('oblique'); }
+      else if (['+', '=', '-', '_'].includes(event.key)) {
+        status.autoOverview = false;
+        camera.zoom = THREE.MathUtils.clamp(camera.zoom * (['+', '='].includes(event.key) ? 1.22 : .82), .12, 18);
+        camera.updateProjectionMatrix(); status.invalidate();
+      } else return;
+      event.preventDefault(); event.stopPropagation();
+    };
+    renderer.domElement.addEventListener('keydown', keyboardView);
     const suppressContext = event => event.preventDefault(); renderer.domElement.addEventListener('contextmenu', suppressContext);
     stateRef.current = status;
     rebuildStructures(); updateROI(); updateStudyMarkers(); reset();
@@ -812,18 +847,19 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       if (destroyed) return; status.loaded = true; setLoading(false); colorCortex(); if (status.autoOverview) reset();
       propsRef.current.onReady?.({ loaded: true, method: status.atlasVolume ? 'atlas' : 'teaching', message: sceneText('MNI152NLin6Asym 真实皮层表面 · RAS', 'MNI152NLin6Asym cortical surfaces · RAS') });
     }).catch(error => { if (!destroyed) { setLoading(false); setError(error.message); propsRef.current.onReady?.({ loaded: false, message: error.message }); } });
-    loadAnatomyVolume().then(volume => { if (!destroyed) { status.anatomyVolume = volume; updateSlices(); } }).catch(() => { if (!destroyed) setError(sceneText('T1 参考影像加载失败，切片影像暂不可用。请刷新重试。', 'The reference T1 image could not be loaded. Slice images are unavailable; refresh to retry.')); });
+    loadAnatomyVolume().then(volume => { if (!destroyed) { status.anatomyVolume = volume; updateSlices(); } }).catch(() => { /* App presents the shared T1 resource error and retry action. */ });
     loadManifest().then(async manifest => {
       const meshes = Array.isArray(manifest.meshes) ? manifest.meshes : [];
       await Promise.all(meshes.filter(entry => entry.atlas === 'ho').map(async entry => {
-        const hemisphere = /left/i.test(entry.name) ? 'L' : /right/i.test(entry.name) ? 'R' : 'M';
-        const structure = findMatchingStructure(propsRef.current.structures.filter(s => s.category !== 'cortex' && s.category !== 'brainstem'), entry.name, hemisphere);
+        const structure = propsRef.current.structures.find(s => s.id === HO_DISPLAY_OBJECTS[entry.id]);
         if (!structure) return;
         try {
           const response = await fetch(dataURL(entry.file));
           if (!response.ok) throw new Error(`Failed ${structure.id}`); const data = await response.json();
           if (destroyed) return;
-          applyActualAsset(structure.id, data, { ...entry, representation: 'atlas-segmentation' });
+          let regionRef = null;
+          try { regionRef=makeAtlasRegionRef('ho',manifest.atlases.ho,Number(entry.id.slice(3))); } catch { /* Missing source identity preserves the concept display path. */ }
+          applyActualAsset(structure.id, data, { ...entry, regionRef, representation: 'atlas-segmentation' });
         } catch (error) { if (!destroyed) { status.anatomyFailures.add(structure.id); console.warn('[NeuroAtlas anatomical asset]', structure.id, dataURL(entry.file), error); } }
       }));
       const cerebellum = meshes.find(entry => entry.id === 'cerebellum');
@@ -840,7 +876,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
               const x = (data.positions[a * 3] + data.positions[b * 3] + data.positions[c * 3]) / 3;
               if (structure.hemisphere === 'L' ? x < (hasVermis ? -5 : 0) : structure.hemisphere === 'R' ? x >= (hasVermis ? 5 : 0) : Math.abs(x) <= 5) indices.push(a, b, c);
             }
-            applyActualAsset(structure.id, { ...data, indices }, { ...cerebellum, representation: 'atlas-segmentation', note: 'Diedrichsen 小脑整体表面；中线几何分侧', noteEn: 'Diedrichsen whole-cerebellum surface; geometric separation at the midline' }, false);
+            applyActualAsset(structure.id, { ...data, indices }, { ...cerebellum, representation: representationForAsset({id:structure.id},null), subdivisionId:structure.id, schematic:true, actualEnvelope:true, note: 'Diedrichsen 小脑整体表面；半球与蚓部由中线几何带示意划分，并非源标签分割', noteEn: 'Diedrichsen whole-cerebellum envelope; hemisphere and vermis boundaries are illustrative midline bands, not source label segmentations' }, false);
           }
           updateMaterials();
         } catch (error) { if (!destroyed) { propsRef.current.structures.filter(s => s.category === 'cerebellum').forEach(s => status.anatomyFailures.add(s.id)); console.warn('[NeuroAtlas anatomical asset]', 'cerebellum', error); } }
@@ -859,7 +895,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
               if (structure.id === 'midbrain' ? z > -22 : structure.id === 'pons' ? z <= -22 && z > -47 : structure.id === 'medulla' ? z <= -47 : false) indices.push(a, b, c);
             }
             if (!indices.length) continue;
-            applyActualAsset(structure.id, { ...data, indices }, { ...brainstem, representation: 'atlas-segmentation', schematic: true, actualEnvelope: true, note: 'HO 脑干真实外表面；中脑、脑桥和延髓界线为示意几何分段，并非核验后的解剖分割', noteEn: 'Real HO brainstem envelope; midbrain, pons and medulla boundaries are illustrative geometric divisions, not validated anatomical subdivisions' }, false);
+            applyActualAsset(structure.id, { ...data, indices }, { ...brainstem, representation: representationForAsset({id:structure.id},null), subdivisionId:structure.id, schematic: true, actualEnvelope: true, note: 'HO 脑干真实外表面；中脑、脑桥和延髓界线为示意几何分段，并非核验后的解剖分割', noteEn: 'Real HO brainstem envelope; midbrain, pons and medulla boundaries are illustrative geometric divisions, not validated anatomical subdivisions' }, false);
           }
           updateMaterials();
         } catch (error) { if (!destroyed) { propsRef.current.structures.filter(s => s.category === 'brainstem').forEach(s => status.anatomyFailures.add(s.id)); console.warn('[NeuroAtlas anatomical asset]', 'brainstem', error); } }
@@ -870,10 +906,7 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
         if (status.anatomyFailures.size) { setError(sceneText(`${status.anatomyFailures.size} 个真实结构文件加载失败，相关结构已隐藏。请刷新重试。`, `${status.anatomyFailures.size} anatomical files failed to load. Those structures are hidden; refresh to retry.`)); propsRef.current.onReady?.({ loaded: status.loaded, anatomyFailures: [...status.anatomyFailures] }); }
       }
     }).catch(error => { if (!destroyed) setError(sceneText(`解剖表面清单加载失败：${error.message}`, 'The anatomical surface manifest could not be loaded.')); });
-    fetch(dataURL('anatomy/manifest.json')).then(response => {
-      if (!response.ok) throw new Error(sceneText('真实纤维图谱清单加载失败', 'The tractography manifest could not be loaded'));
-      return response.json();
-    }).then(async manifest => {
+    resourceValue(ANATOMY_MANIFEST_RESOURCE).then(async manifest => {
       if (destroyed) return;
       status.anatomyEntries = Object.fromEntries(Object.entries(manifest.structures || {}).filter(([id])=>propsRef.current.structures.some(s=>s.id===id)));
       updateRemoteAnatomy();
@@ -901,12 +934,14 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
       destroyed = true; cancelAnimationFrame(animation); resizeObserver.disconnect(); controls.dispose(); status.remotePAMLoader?.terminate();
       renderer.domElement.removeEventListener('pointerdown', pointerDown); renderer.domElement.removeEventListener('pointermove', pointerMove); renderer.domElement.removeEventListener('pointerup', pointerUp); renderer.domElement.removeEventListener('pointercancel', cancelPointer);
       renderer.domElement.removeEventListener('contextmenu', suppressContext);
+      renderer.domElement.removeEventListener('keydown', keyboardView);
       status.labelNodes.forEach(({ node }) => node.remove()); disposeObject(root); renderer.dispose(); renderer.domElement.remove(); stateRef.current = null;
     };
   }, []);
 
   useEffect(() => { const state = stateRef.current; if (state && state.structures !== props.structures) state.rebuildStructures(); }, [props.structures]);
-  useEffect(() => { stateRef.current?.updateMaterials(); }, [props.selectedIds, props.visibleCategories, props.hiddenIds, props.hemisphere, props.opacity, props.categoryOpacity, props.exploded, props.labels, props.network, props.showSchematic, props.language]);
+  useEffect(() => { stateRef.current?.updateMaterials(); }, [props.selectedIds, props.selectedRegions, props.visibleCategories, props.hiddenIds, props.hemisphere, props.opacity, props.categoryOpacity, props.exploded, props.labels, props.network, props.showSchematic, props.language]);
+  useEffect(() => { stateRef.current?.colorCortex(); }, [props.regionRelations]);
   useEffect(() => { stateRef.current?.updateROI(); }, [props.roiComparison, props.roiDisplay, props.exploded]);
   useEffect(() => { stateRef.current?.updateStudyMarkers(); }, [props.studyMarkers, props.exploded]);
   useEffect(() => { stateRef.current?.updateRemoteAnatomy(); }, [props.remoteAnatomyEnabled, props.remoteAnatomyRequest, props.remoteAnatomyTissues, props.selectedIds, props.visibleCategories, props.language]);
@@ -916,19 +951,22 @@ const BrainScene = forwardRef(function BrainScene(props, ref) {
   useEffect(() => {
     const state = stateRef.current; if (!state) return;
     const generation = ++state.atlasGeneration;
+    state.atlasVolume=null;state.atlasOverlayBlocked=true;state.colorCortex();state.updateSlices();
     loadAtlas(props.atlas).then(volume => {
       if (stateRef.current !== state || generation !== state.atlasGeneration) return;
-      state.atlasOverlayBlocked = volume?.canOverlayOnTarget === false;
+      state.atlasOverlayBlocked = !queryableAtlasVolume(volume,props.atlas,props.atlasIdentity);
       state.atlasVolume = state.atlasOverlayBlocked ? null : volume; state.colorCortex(); state.updateSlices();
-      propsRef.current.onReady?.({ loaded: state.loaded, method: state.atlasOverlayBlocked ? 'independent' : volume ? 'atlas' : 'teaching', overlayBlocked: state.atlasOverlayBlocked, message: state.atlasOverlayBlocked ? sceneText(`${volume.space || '原生图谱'} 未配准到当前模板 · 已停止表面叠加和坐标查询`, `${volume.space || 'Native atlas'} alignment is unverified · Surface overlay and coordinate queries are disabled`) : volume ? sceneText(`${volume.space || 'MNI'} · 图谱体素采样`, `${volume.space || 'MNI'} · Atlas voxel sampling`) : sceneText('图谱体素数据未接入 · 结构定位', 'Atlas voxel data unavailable · Structure locations only') });
+      propsRef.current.onReady?.({ loaded: state.loaded, method: state.atlasOverlayBlocked ? 'independent' : volume ? 'atlas' : 'teaching', overlayBlocked: state.atlasOverlayBlocked, message: state.atlasOverlayBlocked ? sceneText(`${volume?.space || '原生图谱'} 未配准到当前模板 · 已停止表面叠加和坐标查询`, `${volume?.space || 'Native atlas'} alignment is unverified · Surface overlay and coordinate queries are disabled`) : volume ? sceneText(`${volume.space || 'MNI'} · 图谱体素采样`, `${volume.space || 'MNI'} · Atlas voxel sampling`) : sceneText('图谱体素数据未接入 · 结构定位', 'Atlas voxel data unavailable · Structure locations only') });
     }).catch(() => {
       if (stateRef.current !== state || generation !== state.atlasGeneration) return;
       state.atlasVolume = null; state.colorCortex(); state.updateSlices();
       propsRef.current.onReady?.({ loaded: state.loaded, method: 'unavailable', message: sceneText('图谱体素数据加载失败 · 体素标签查询不可用', 'Atlas data failed to load · Voxel-label queries are unavailable') });
     });
-  }, [props.atlas, props.volumeRevision]);
+    return()=>{if(state.atlasGeneration===generation){state.atlasGeneration++;state.atlasVolume=null;}};
+  }, [props.atlas, props.atlasIdentity?.id, props.atlasIdentity?.version, props.atlasIdentity?.sha256, props.atlasIdentity?.spaceId, props.resourceEpoch, props.volumeRevision]);
 
   return <div className="brain-scene" style={{ position: 'relative', width: '100%', height: '100%', minHeight: 0, overflow: 'hidden' }}>
+    <p id="brain-keyboard-help" className="visually-hidden">{sceneText('画布聚焦时：1 三维，2 矢状，3 冠状，4 轴位；加号或减号缩放，Home 重置。也可 Tab 到标准视角按钮。', 'With the canvas focused: 1 oblique, 2 lateral, 3 anterior, 4 superior; plus or minus to zoom, Home to reset. Tab also reaches the standard view buttons.')}</p>
     <div ref={containerRef} style={{ position: 'absolute', inset: 0 }} />
     <div ref={overlayRef} style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
       <div style={{ position: 'absolute', left: 20, bottom: 76, color: '#6c7f75', fontSize: 10 }}>

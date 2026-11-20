@@ -1,0 +1,10 @@
+{
+  "source": "6248f7c",
+  "assets": 2,
+  "nearLimitVoxelCount": 64000000,
+  "exactNearLimitValues": true,
+  "nativeComparisonBlocked": true,
+  "originalSmallVolumeUnchanged": true,
+  "nearLimitSourceSha256": "fc320b750815e518954da548350091c97d1589c0836e3510d3d5276d61d4c709",
+  "downloadBytes": 177417
+}

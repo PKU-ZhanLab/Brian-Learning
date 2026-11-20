@@ -1,20 +1,22 @@
 import { Matrix4, Vector3 } from 'three';
 import { dataURL } from './assets.js';
 import { roiSliceStyle, sampleComparisonRAS } from './roi.js';
-import {getCustomVolume} from './custom-volumes.js';
+import {getCustomVolume,listCustomVolumes,getCustomVolumeScope,isCustomVolumeScopeCurrent,subscribeCustomVolumeRetirement} from './custom-volumes.js';
+import { makeAssetIdentity } from './computation-manifest.js';
+import { MAIN_MANIFEST_RESOURCE, ANATOMY_VOLUME_RESOURCE, atlasResourceKey, resourceValue,retireResource } from './atlas-resource.js';
 
-const cache = new Map();
 const pending = new Map();
+const atlasMetadata = new Map();
+subscribeCustomVolumeRetirement(scope=>{
+  for(const [key,metadata] of atlasMetadata)if(metadata.ownerScope===scope){atlasMetadata.delete(key);retireResource(key);}
+});
+const sameScope=(a,b)=>!!a&&!!b&&a.projectId===b.projectId&&a.entryId===b.entryId&&a.generation===b.generation;
 export const SLICE_BOUNDS = { x: [-100, 100], y: [-140, 100], z: [-80, 120] };
 const assetPath = dataURL;
 const ATLAS_RGB = ['9ebdb2','e4bcaa','b6b7d3','b8cbb0','d9c797','a6becf','d5b0ba','b8c5d5','c9c1a7','98bfbf','d7c4b9','c2b5ca'].map(hex=>hex.match(/../g).map(value=>parseInt(value,16)));
 
 export async function loadManifest() {
-  if (!pending.has('manifest')) pending.set('manifest', fetch(dataURL('manifest.json')).then(response => {
-    if (!response.ok) throw new Error('解剖数据清单尚未加载');
-    return response.json();
-  }).catch(error => { pending.delete('manifest'); throw error; }));
-  return pending.get('manifest');
+  return resourceValue(MAIN_MANIFEST_RESOURCE);
 }
 
 export function prepareVolume(data, metadata) {
@@ -45,59 +47,130 @@ export function prepareVolume(data, metadata) {
   };
 }
 
-async function loadBinaryVolume(metadata) {
-  const response = await fetch(assetPath(metadata.data || metadata.file || metadata.path));
+async function loadBinaryVolume(metadata, {signal}={}) {
+  const file = metadata.data || metadata.file || metadata.path;
+  const response = await fetch(assetPath(file),{signal});
   if (!response.ok) throw new Error('影像文件加载失败');
   const buffer = await response.arrayBuffer();
+  const identity = await makeAssetIdentity(new Uint8Array(buffer), {id:`public/data/${file}`,version:metadata.atlasVersion||`sha256:${metadata.sha256}`,spaceId:metadata.spaceId??metadata.space??null});
+  if (!metadata.sha256 || identity.sha256 !== metadata.sha256) throw new Error('Loaded volume byte digest mismatch or missing expected hash');
+  if (!pending.has('asset-identities')) pending.set('asset-identities',fetch(dataURL('asset-identities.json')).then(r=>{if(!r.ok)throw Error('Asset identities could not be loaded');return r.json();}).catch(error=>{pending.delete('asset-identities');throw error;}));
+  const entry=(await pending.get('asset-identities')).assets?.[file];
+  if(entry&&(entry.identity.sha256!==identity.sha256||entry.identity.spaceId!==identity.spaceId))throw Error('Asset identity differs from loaded volume');
+  for(const dependency of entry?.verificationFiles||[]){
+    if(dependency.path===metadata.probability)continue;
+    const r=await fetch(assetPath(dependency.path),{signal});if(!r.ok)throw Error('Transform/source bytes unavailable');
+    const observed=await makeAssetIdentity(new Uint8Array(await r.arrayBuffer()),{id:dependency.path,version:'observed',spaceId:null});
+    if(observed.sha256!==dependency.sha256)throw Error('Transform/source byte digest mismatch');
+  }
   const dtype = String(metadata.dtype || 'uint8').toLowerCase();
   const data = dtype.includes('float32') ? new Float32Array(buffer) : dtype.includes('16') ? new Uint16Array(buffer) : new Uint8Array(buffer);
   if (data.length !== metadata.shape.reduce((a, b) => a * b, 1)) throw new Error('影像文件尺寸与空间信息不一致');
   if (metadata.probability) {
-    const probabilityResponse = await fetch(assetPath(metadata.probability));
+    const probabilityResponse = await fetch(assetPath(metadata.probability),{signal});
     if (!probabilityResponse.ok) throw new Error('图谱概率数据加载失败');
     const probabilityData = new Uint8Array(await probabilityResponse.arrayBuffer());
+    const probabilityIdentity=await makeAssetIdentity(probabilityData,{id:metadata.probability,version:'observed',spaceId:identity.spaceId});
+    if(!metadata.probabilitySha256||probabilityIdentity.sha256!==metadata.probabilitySha256)throw Error('Probability byte digest mismatch');
     if (probabilityData.length !== data.length) throw new Error('图谱概率体积尺寸不匹配');
     metadata = { ...metadata, probabilityData };
   }
-  return prepareVolume(data, metadata);
+  return prepareVolume(data, {...metadata,identity,identityVerification:'received-bytes',sourceIdentities:entry?.sourceIdentities??null,sourceGrid:entry?.sourceGrid??null,transforms:entry?.transforms??null,spatialEvidence:entry?.spatialEvidence??{space:identity.spaceId,source:metadata.source??null,limitations:['Original dependencies and transform chain are unavailable.']}});
 }
 
 export async function loadAnatomyVolume() {
-  if (cache.has('t1')) return cache.get('t1');
-  if (!pending.has('t1')) pending.set('t1', fetch(dataURL('volume.json')).then(response => {
+  return resourceValue(ANATOMY_VOLUME_RESOURCE);
+}
+export async function loadAnatomyVolumeData({signal}={}) {
+  return fetch(dataURL('volume.json'),{signal}).then(response => {
     if (!response.ok) throw new Error('MNI152 影像尚未加载');
     return response.json();
-  }).then(loadBinaryVolume).then(volume => { cache.set('t1', volume); return volume; }).catch(error => { pending.delete('t1'); throw error; }));
-  return pending.get('t1');
+  }).then(metadata=>loadBinaryVolume(metadata,{signal}));
 }
 
-export async function loadAtlas(atlasId) {
+async function resolveAtlasMetadata(atlasId,{signal}={}) {
   const custom=getCustomVolume(atlasId);
-  if(custom)return prepareVolume(custom.data,custom);
-  if (cache.has(atlasId)) return cache.get(atlasId);
-  const key = `atlas-${atlasId}`;
-  if (!pending.has(key)) pending.set(key, loadManifest().then(async manifest => {
-    let metadata = manifest.atlases?.[atlasId];
-    if (!metadata?.available || !(metadata.data || metadata.file || metadata.metadata)) return null;
-    if (metadata.metadata) metadata = { ...metadata, ...await fetch(assetPath(metadata.metadata)).then(r => { if (!r.ok) throw new Error('图谱空间信息加载失败'); return r.json(); }) };
-    const volume = await loadBinaryVolume(metadata);
+  if(custom)return {...custom,ownerScope:getCustomVolumeScope(atlasId),atlasId,atlasVersion:custom.atlasVersion||custom.identity?.version,sha256:custom.identity?.sha256||custom.sha256,spaceId:custom.identity?custom.identity.spaceId:custom.spaceId??null};
+  if(atlasId?.startsWith('custom-'))throw Error('Requested project atlas is unavailable');
+  const manifest = await loadManifest();
+  let metadata = manifest.atlases?.[atlasId];
+  if (!metadata?.available || !(metadata.data || metadata.file || metadata.metadata)) return null;
+  if (metadata.metadata) metadata = { ...metadata, ...await fetch(assetPath(metadata.metadata),{signal}).then(r => { if (!r.ok) throw new Error('图谱空间信息加载失败'); return r.json(); }) };
+  metadata = { ...metadata, atlasId };
+  if (!metadata.atlasVersion || !/^[a-f\d]{64}$/i.test(metadata.sha256) || !metadata.spaceId) throw Error('Atlas version, digest and source space identity are required');
+  return metadata;
+}
+export const atlasIdentityFor=metadata=>metadata?.identity||{id:`public/data/${metadata?.data||metadata?.file||metadata?.path}`,version:metadata?.atlasVersion,sha256:metadata?.sha256,spaceId:metadata?.spaceId};
+const metadataIdentity=atlasIdentityFor;
+/** Runtime ownership is read from the admitted registry, never file metadata. */
+export const atlasResourceKeyFor=(metadata,atlasId=metadata?.atlasId||metadata?.id)=>atlasResourceKey(metadataIdentity(metadata),getCustomVolumeScope(atlasId));
+const metadataSignature=metadata=>JSON.stringify([metadata.atlasId,metadata.probabilitySha256??null,metadata.shape,metadata.affine,metadata.order,metadata.surfaceProjection??null]);
+export async function loadAtlas(atlasId,options={}) {
+  const metadata=await resolveAtlasMetadata(atlasId,options);if(!metadata)return null;
+  const identity=metadataIdentity(metadata),key=atlasResourceKey(identity,metadata.ownerScope);
+  if(metadata.custom&&!sameScope(metadata.ownerScope,getCustomVolumeScope(atlasId)))throw Error('Project atlas ownership expired');
+  const previous=atlasMetadata.get(key);
+  if(previous&&metadataSignature(previous)!==metadataSignature(metadata))throw Error('Atlas metadata changed without a new asset identity');
+  atlasMetadata.set(key,getCustomVolume(atlasId)?{...metadata}:structuredClone(metadata));
+  const volume=await loadAtlasVersion(identity,{...options,ownerScope:metadata.ownerScope});
+  options.signal?.throwIfAborted();
+  if(metadata.ownerScope&&!isCustomVolumeScopeCurrent(metadata.ownerScope))throw Error('Project atlas ownership expired');
+  return volume;
+}
+/** Load only the declared identity; byte/catalog/transform checks remain mandatory. */
+export async function loadAtlasVersion(identity,{signal,ownerScope}={}) {
+  signal?.throwIfAborted();
+  if(!ownerScope&&!identity.id.startsWith('public/data/')){
+    const matches=listCustomVolumes().filter(v=>atlasResourceKey(metadataIdentity(v))===atlasResourceKey(identity));
+    if(matches.length>1)throw Error('Project atlas entry is ambiguous; select its owned ID');
+    if(matches.length===1)ownerScope=getCustomVolumeScope(matches[0].id);
+  }
+  if(ownerScope&&!isCustomVolumeScopeCurrent(ownerScope))throw Error('Project atlas ownership expired');
+  const promise=resourceValue(atlasResourceKey(identity,ownerScope));
+  const volume=await (signal?new Promise((resolve,reject)=>{
+    const abort=()=>reject(signal.reason||new DOMException('Aborted','AbortError'));
+    signal.addEventListener('abort',abort,{once:true});
+    promise.then(resolve,reject).finally(()=>signal.removeEventListener('abort',abort));
+  }):promise);
+  signal?.throwIfAborted();
+  if(ownerScope&&!isCustomVolumeScopeCurrent(ownerScope))throw Error('Project atlas ownership expired');
+  return volume;
+}
+/** Resource loader: only atlas-resource starts/cancels the shared transfer. */
+export async function loadAtlasVersionData(identity,{signal,ownerScope}={}) {
+  signal?.throwIfAborted();
+  const key=atlasResourceKey(identity,ownerScope);
+  let metadata=atlasMetadata.get(key);
+  if(ownerScope){
+    if(!sameScope(ownerScope,getCustomVolumeScope(ownerScope.entryId)))throw Error('Project atlas ownership expired');
+    metadata=await resolveAtlasMetadata(ownerScope.entryId,{signal});
+    if(!sameScope(ownerScope,metadata.ownerScope))throw Error('Project atlas ownership expired');
+    atlasMetadata.set(key,metadata);
+  }
+  if(!metadata){
+    const manifest=await loadManifest();
+    const candidate=Object.entries(manifest.atlases||{}).find(([atlasId,entry])=>identity.id===atlasId||identity.id===`public/data/${entry.data||entry.file||entry.path}`);
+    if(candidate)metadata=await resolveAtlasMetadata(candidate[0],{signal});
+  }
+  if(!metadata||atlasResourceKey(metadataIdentity(metadata),metadata.ownerScope)!==key)throw Error('Requested atlas identity/version is unavailable');
+  const atlasId=metadata.atlasId;
+  const volume=metadata.custom||getCustomVolume(atlasId)?prepareVolume(metadata.data,metadata):await loadBinaryVolume(metadata,{signal});
+  if(atlasResourceKey(volume.identity,ownerScope)!==key)throw Error('Loaded atlas identity differs from requested identity');
     if(metadata.surfaceProjection){
-      const response=await fetch(dataURL(metadata.surfaceProjection));
+      const response=await fetch(dataURL(metadata.surfaceProjection),{signal});
       if(!response.ok)throw Error('Surface projection metadata could not be loaded');
       const projection=(await response.json()).atlases?.[atlasId];
       if(!projection||projection.sourceSha256!==metadata.sha256)throw Error('Surface projection does not match the atlas volume');
       volume.surfaceLabels={};volume.surfaceProjectionInfo=projection;
       await Promise.all(Object.entries(projection.hemispheres).map(async([hemi,entry])=>{
-        const r=await fetch(dataURL(entry.file));if(!r.ok)throw Error('Surface labels could not be loaded');
+        const r=await fetch(dataURL(entry.file),{signal});if(!r.ok)throw Error('Surface labels could not be loaded');
         const buffer=await r.arrayBuffer();if(buffer.byteLength!==entry.vertices*2)throw Error('Surface label count does not match geometry');
         const view=new DataView(buffer),labels=new Uint16Array(entry.vertices);for(let i=0;i<labels.length;i++)labels[i]=view.getUint16(i*2,true);
         volume.surfaceLabels[hemi]=labels;
       }));
     }
-    cache.set(atlasId, volume);
+    if(ownerScope&&!sameScope(ownerScope,getCustomVolumeScope(ownerScope.entryId)))throw Error('Project atlas ownership expired');
     return volume;
-  }).catch(error => { pending.delete(key); throw error; }));
-  return pending.get(key);
 }
 
 export const nativeAtlasId=id=>['aal-registered','aal3-registered'].includes(id)?id.replace('-registered',''):['aal','aal3'].includes(id)?id:null;
@@ -118,13 +191,14 @@ export async function loadAtlasSlicePair(id){
 export function sliceOverlayAllowed(anatomy,atlas){
   if(!anatomy||!atlas)return false;
   if(anatomy.sliceReference)return anatomy.sliceReference===atlas.sliceReference;
+  if(atlas.spaceId===null||/unknown|unspecified/i.test(atlas.spaceId||atlas.space||''))return false;
   return atlas.canOverlayOnTarget===true;
 }
 
-export function sliceWorldPoint(axis, value, u, v, radiological = true) {
+export function sliceWorldPoint(axis, value, u, v, radiological = true, bounds = SLICE_BOUNDS) {
   const horizontal = axis === 'x' ? 'y' : 'x';
   const vertical = axis === 'z' ? 'y' : 'z';
-  const h = SLICE_BOUNDS[horizontal], w = SLICE_BOUNDS[vertical];
+  const h = bounds[horizontal], w = bounds[vertical];
   const hu = radiological && axis !== 'x' ? 1 - u : u;
   const point = { x: 0, y: 0, z: 0 };
   point[axis] = value;
@@ -138,14 +212,15 @@ export function makeSliceCanvas(volume, axis, value, options = {}) {
   const canvas = document.createElement('canvas');
   const horizontal = axis === 'x' ? 'y' : 'x';
   const vertical = axis === 'z' ? 'y' : 'z';
-  const h = SLICE_BOUNDS[horizontal], v = SLICE_BOUNDS[vertical];
+  const bounds=options.bounds||SLICE_BOUNDS;
+  const h = bounds[horizontal], v = bounds[vertical];
   canvas.width = size;
   canvas.height = Math.round(size * (v[1] - v[0]) / (h[1] - h[0]));
   const context = canvas.getContext('2d');
   const pixels = context.createImageData(canvas.width, canvas.height);
   const radiological = options.radiological !== false;
   for (let py = 0; py < canvas.height; py++) for (let px = 0; px < canvas.width; px++) {
-    const point = sliceWorldPoint(axis, value, px / (canvas.width - 1), py / (canvas.height - 1), radiological);
+    const point = sliceWorldPoint(axis, value, px / (canvas.width - 1), py / (canvas.height - 1), radiological, bounds);
     const intensity = volume.sampleRAS(...point);
     const q = (py * canvas.width + px) * 4;
     pixels.data[q] = pixels.data[q + 1] = pixels.data[q + 2] = intensity;

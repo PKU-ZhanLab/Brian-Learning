@@ -1,0 +1,21 @@
+✔ release verification rejects changed, missing, extra and stale files without rewriting expectations (625.8023ms)
+✔ build provenance refuses a nested non-repository package and separates cleanliness from origin (761.6283ms)
+✖ explicit packaged origin detects modified and extra source independently from parent Git (177.4712ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1783.8716
+
+✖ failing tests:
+
+test at src\lib\release-verification.test.mjs:37:1
+✖ explicit packaged origin detects modified and extra source independently from parent Git (177.4712ms)
+  Error: Packaged source is stale or modified
+      at recordBuildSource (file:///F:/project/brain-model/.worktrees/research-20261029/scripts/verify-release.mjs:24:57)
+      at async TestContext.<anonymous> (file:///F:/project/brain-model/.worktrees/research-20261029/src/lib/release-verification.test.mjs:43:163)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7)

@@ -1,0 +1,14 @@
+{
+  "source": "c95d1fd",
+  "exactNotesEvidenceDraftsVoxelsAndSnapshot": true,
+  "coordinate": [
+    1.25,
+    2.5,
+    3.75
+  ],
+  "atlas": "ba-histology",
+  "atlasHttpStatus": [
+    503,
+    200
+  ]
+}

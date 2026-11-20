@@ -1,0 +1,379 @@
+{
+  "status": "candidate-only-no-independent-regional-review",
+  "sourceSpaceDeclaration": "MNI152NLin6AsymC (README at pinned source)",
+  "rawParserSpace": "native-unverified",
+  "sameGrid": true,
+  "shape": [
+    153,
+    103,
+    84
+  ],
+  "affine": [
+    -1,
+    0,
+    0,
+    76,
+    0,
+    1,
+    0,
+    -108,
+    0,
+    0,
+    1,
+    -72,
+    0,
+    0,
+    0,
+    1
+  ],
+  "header": {
+    "format": "NIfTI-1",
+    "littleEndian": true,
+    "datatype": 2,
+    "qformCode": 2,
+    "sformCode": 2,
+    "affineSource": "sform",
+    "qformAffine": [
+      -1,
+      0,
+      0,
+      76,
+      0,
+      1,
+      0,
+      -108,
+      0,
+      0,
+      1,
+      -72,
+      0,
+      0,
+      0,
+      1
+    ],
+    "sformAffine": [
+      -1,
+      0,
+      0,
+      76,
+      0,
+      1,
+      0,
+      -108,
+      0,
+      0,
+      1,
+      -72,
+      0,
+      0,
+      0,
+      1
+    ],
+    "affineConflict": false,
+    "originalSpatialUnits": 2,
+    "spatialUnits": "mm",
+    "scaling": {
+      "slope": 1,
+      "intercept": 0
+    },
+    "min": 0,
+    "max": 34,
+    "nonzero": 164802,
+    "description": "label",
+    "geometryDoesNotVerifySpace": true
+  },
+  "template": {
+    "shape": [
+      153,
+      103,
+      84
+    ],
+    "affine": [
+      -1,
+      0,
+      0,
+      76,
+      0,
+      1,
+      0,
+      -108,
+      0,
+      0,
+      1,
+      -72,
+      0,
+      0,
+      0,
+      1
+    ],
+    "header": {
+      "format": "NIfTI-1",
+      "littleEndian": true,
+      "datatype": 4,
+      "qformCode": 2,
+      "sformCode": 2,
+      "affineSource": "sform",
+      "qformAffine": [
+        -1,
+        0,
+        0,
+        76,
+        0,
+        1,
+        0,
+        -108,
+        0,
+        0,
+        1,
+        -72,
+        0,
+        0,
+        0,
+        1
+      ],
+      "sformAffine": [
+        -1,
+        0,
+        0,
+        76,
+        0,
+        1,
+        0,
+        -108,
+        0,
+        0,
+        1,
+        -72,
+        0,
+        0,
+        0,
+        1
+      ],
+      "affineConflict": false,
+      "originalSpatialUnits": 2,
+      "spatialUnits": "mm",
+      "scaling": {
+        "slope": 1,
+        "intercept": 0
+      },
+      "min": 0,
+      "max": 7479,
+      "nonzero": 234349,
+      "description": "cropped",
+      "geometryDoesNotVerifySpace": true
+    }
+  },
+  "labels": [
+    {
+      "id": 1,
+      "name": "Left_I_IV",
+      "color": "#ccff00",
+      "voxels": 3929
+    },
+    {
+      "id": 2,
+      "name": "Right_I_IV",
+      "color": "#b8e600",
+      "voxels": 4749
+    },
+    {
+      "id": 3,
+      "name": "Left_V",
+      "color": "#00e65c",
+      "voxels": 5054
+    },
+    {
+      "id": 4,
+      "name": "Right_V",
+      "color": "#00ff66",
+      "voxels": 5534
+    },
+    {
+      "id": 5,
+      "name": "Left_VI",
+      "color": "#0066ff",
+      "voxels": 11718
+    },
+    {
+      "id": 6,
+      "name": "Vermis_VI",
+      "color": "#0052cc",
+      "voxels": 2504
+    },
+    {
+      "id": 7,
+      "name": "Right_VI",
+      "color": "#0066ff",
+      "voxels": 11532
+    },
+    {
+      "id": 8,
+      "name": "Left_CrusI",
+      "color": "#cc00ff",
+      "voxels": 17660
+    },
+    {
+      "id": 9,
+      "name": "Vermis_CrusI",
+      "color": "#a200cc",
+      "voxels": 27
+    },
+    {
+      "id": 10,
+      "name": "Right_CrusI",
+      "color": "#cc00ff",
+      "voxels": 17980
+    },
+    {
+      "id": 11,
+      "name": "Left_CrusII",
+      "color": "#ff0000",
+      "voxels": 13560
+    },
+    {
+      "id": 12,
+      "name": "Vermis_CrusII",
+      "color": "#cc0000",
+      "voxels": 551
+    },
+    {
+      "id": 13,
+      "name": "Right_CrusII",
+      "color": "#ff0000",
+      "voxels": 12549
+    },
+    {
+      "id": 14,
+      "name": "Left_VIIb",
+      "color": "#ff9900",
+      "voxels": 7013
+    },
+    {
+      "id": 15,
+      "name": "Vermis_VIIb",
+      "color": "#cc7900",
+      "voxels": 266
+    },
+    {
+      "id": 16,
+      "name": "Right_VIIb",
+      "color": "#ff9900",
+      "voxels": 7035
+    },
+    {
+      "id": 17,
+      "name": "Left_VIIIa",
+      "color": "#33ff00",
+      "voxels": 6876
+    },
+    {
+      "id": 18,
+      "name": "Vermis_VIIIa",
+      "color": "#29cc00",
+      "voxels": 1618
+    },
+    {
+      "id": 19,
+      "name": "Right_VIIIa",
+      "color": "#33ff00",
+      "voxels": 6452
+    },
+    {
+      "id": 20,
+      "name": "Left_VIIIb",
+      "color": "#00ffff",
+      "voxels": 5409
+    },
+    {
+      "id": 21,
+      "name": "Vermis_VIIIb",
+      "color": "#00cccc",
+      "voxels": 816
+    },
+    {
+      "id": 22,
+      "name": "Right_VIIIb",
+      "color": "#00ffff",
+      "voxels": 5443
+    },
+    {
+      "id": 23,
+      "name": "Left_IX",
+      "color": "#3300ff",
+      "voxels": 4478
+    },
+    {
+      "id": 24,
+      "name": "Vermis_IX",
+      "color": "#2900cc",
+      "voxels": 879
+    },
+    {
+      "id": 25,
+      "name": "Right_IX",
+      "color": "#3300ff",
+      "voxels": 4682
+    },
+    {
+      "id": 26,
+      "name": "Left_X",
+      "color": "#ff0099",
+      "voxels": 776
+    },
+    {
+      "id": 27,
+      "name": "Vermis_X",
+      "color": "#cc0079",
+      "voxels": 493
+    },
+    {
+      "id": 28,
+      "name": "Right_X",
+      "color": "#ff0099",
+      "voxels": 827
+    },
+    {
+      "id": 29,
+      "name": "Left_Dentate",
+      "color": "#4c4c4c",
+      "voxels": 1843
+    },
+    {
+      "id": 30,
+      "name": "Right_Dentate",
+      "color": "#4c4c4c",
+      "voxels": 2087
+    },
+    {
+      "id": 31,
+      "name": "Left_Interposed",
+      "color": "#7f7f7f",
+      "voxels": 213
+    },
+    {
+      "id": 32,
+      "name": "Right_Interposed",
+      "color": "#7f7f7f",
+      "voxels": 242
+    },
+    {
+      "id": 33,
+      "name": "Left_Fastigial",
+      "color": "#b2b2b2",
+      "voxels": 3
+    },
+    {
+      "id": 34,
+      "name": "Right_Fastigial",
+      "color": "#b2b2b2",
+      "voxels": 4
+    }
+  ],
+  "unexpectedLabelIds": [],
+  "humanValidated": false,
+  "limitations": [
+    "Header/grid agreement is not registration accuracy.",
+    "No independent regional measurements or human review performed.",
+    "No rendering asset replaced."
+  ]
+}

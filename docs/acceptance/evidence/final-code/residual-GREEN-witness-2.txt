@@ -1,0 +1,13 @@
+node --input-type=module < residual-witness-2.mjs.txt
+exit=1
+file:///F:/project/brain-model/.worktrees/research-20261029/src/lib/volume.js:136
+  if(ownerScope&&!isCustomVolumeScopeCurrent(ownerScope))throw Error('Project atlas ownership expired');
+                                                               ^
+
+Error: Project atlas ownership expired
+    at loadAtlasVersion (file:///F:/project/brain-model/.worktrees/research-20261029/src/lib/volume.js:136:64)
+    at async loadAtlas (file:///F:/project/brain-model/.worktrees/research-20261029/src/lib/volume.js:115:16)
+    at async Object.run (file:///F:/project/brain-model/.worktrees/research-20261029/src/lib/comparison-link.js:12:89)
+    at async file:///F:/project/brain-model/.worktrees/research-20261029/[eval1]:10:14
+
+Node.js v24.15.0

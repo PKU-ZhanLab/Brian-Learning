@@ -1,0 +1,12 @@
+{
+  "url": "https://neurovault.org/api/collections/?DOI=10.7554%2FeLife.61679",
+  "status": 200,
+  "finalURL": "https://neurovault.org/api/collections/?DOI=10.7554%2FeLife.61679",
+  "retrievedAt": "2026-10-29T21:09:25.054Z",
+  "bytes": 305928,
+  "sha256": "d548e293cd8f87ce149003563a2fa461b346bbaf4057d7af86e83f24c105e099",
+  "count": 18055,
+  "returned": 100,
+  "exactDOIMatches": [],
+  "hasNext": true
+}

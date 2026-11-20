@@ -1,0 +1,9 @@
+.dialog-host{position:fixed;inset:0;z-index:1000;pointer-events:none}
+.dialog-layer{position:absolute;inset:0;pointer-events:none;isolation:isolate}
+.dialog-layer-modal{background:#17372b66;pointer-events:auto}
+.dialog-focus-scope{position:absolute;inset:0;pointer-events:none}
+.dialog-focus-scope>*{pointer-events:auto}
+.dialog-focus-scope:focus-visible{outline:3px solid #245c49;outline-offset:-5px}
+.dialog-layer[inert]{pointer-events:none}
+.dialog-layer[inert] *{pointer-events:none!important}
+.dialog-host .workspace-files-backdrop,.dialog-host .modal-backdrop{background:transparent}

@@ -1,0 +1,56 @@
+node --test src/lib/final-correctness.test.mjs src/lib/workspace-session.test.mjs src/lib/workspace-status.test.mjs
+exit=0
+✔ I1 same bytes remain independently owned; replacement retires the old ready value (4.7985ms)
+✔ I1 late A resource completion cannot publish after B owns the same ID (1.0289ms)
+✔ I1 note commits keep unchanged custom resource lifetime (9.2312ms)
+✔ I1 a local entry cannot shadow a verified public identity (1.0997ms)
+✔ I2 immutable reference, result, location and artifact collisions refuse atomically (112.3729ms)
+✔ I2 established aliases and source anchors survive independent merge/export (88.7565ms)
+✔ I2 incompatible alias snapshots refuse without silently replacing history (62.9637ms)
+✔ I2 an established alias can losslessly follow a remapped canonical reference (60.7393ms)
+✔ I3 occupied original and recomputed slots refuse atomically (1.6949ms)
+✔ I3 identical histories and non-overlapping slots remain lossless (0.8361ms)
+✔ I3 merged navigation retains both saved-history bindings (2.1902ms)
+✔ I3 merging beyond bounded navigation capacity refuses instead of pruning visits (10.5567ms)
+✔ I4 persist, refresh, navigation, new notes and drafts save without session images (12.573ms)
+✔ I5 project checks freshly earn derivative verification; flags do not confer spatial authority (7.2454ms)
+✔ I4 recovery envelopes remain portable but opaque and excluded from public/evidence projections (38.5236ms)
+✔ I4 distinct recovery originals cannot be silently merged; malformed and oversized records reject (638.0625ms)
+✔ I4 archiving requires separate saved-file acknowledgement; failure and cancellation retain originals (2.5418ms)
+✔ I4 a large valid old envelope has an explicit archive path to normal export/open and continued saves (3571.6066ms)
+✔ project and named views preserve local marker identity and visibility; missing coordinate rejects atomic restore (8.8586ms)
+✔ a named view rejects foreign or unknown project origin before reused local coordinates can bind (1.6378ms)
+✔ all failed stages preserve every storage key, view identity and project assets (10.7608ms)
+✔ quota failure is zero publication; successful commit publishes one coherent revision even with broken subscribers (1.4691ms)
+✔ open replaces ownership and does not remap IDs against former project (0.7158ms)
+✔ merge keeps both colliding records and rewrites only incoming references by record kind (9.3139ms)
+✔ identical content may reuse IDs but changed dependency forces dependent incoming record separation (3.2784ms)
+✔ stale concurrency, foreign stages and post-stage mutations cannot overwrite committed state (0.5069ms)
+✔ drafts obey envelope bounds and old persistence is read without mutation (1.2058ms)
+✔ authoritative envelope ignores corrupt preserved legacy keys; corrupt legacy without an envelope is reported without writes (0.783ms)
+✔ staging does not freeze or mutate caller state and rejects duplicate note identities (0.3339ms)
+✔ reentrant subscriber commits cannot change the revision observed by peers (0.4971ms)
+✔ merge remaps incoming draft owners and record links without rewriting draft prose or legacy originals (2.1821ms)
+✔ saving notes or evidence with unchanged assets preserves the registry and running ROI consumers (2.4646ms)
+✔ malformed legacy note containers are reported before React sees them and never overwritten (0.33ms)
+✔ incoming asset collisions never relabel retained current ROI and recomputation snapshots (6.4264ms)
+✔ merge rewrites explicitly incoming snapshots independently while retaining the other current computation (2.5852ms)
+✔ successful undo keeps Quota and Unexpected paper titles verbatim while caught failures remain normalized (5.0835ms)
+✔ structured counts use distinct result references, independently of bibliography and E3 matching/selected papers (57.9908ms)
+✔ matching result-method counts consume E3 result IDs instead of including every result of each matched paper (49.6054ms)
+✔ full download size uses canonical staged UTF8 including saved computations; image bytes stay separately named (1.2567ms)
+✔ public omission feedback consumes projection codes, covers all categories and never includes private text or IDs (1.0673ms)
+✔ paired public projection explains source views, points and cameras without exposing either identity (0.6181ms)
+✔ native quota and draft-size failures remain actionable while actual manager preserves complete pending edits and prior bytes (3.0228ms)
+✔ first manifest failure uses shared retry with loading then ready while current drafts and saved computation survive (0.6986ms)
+✔ unresolved labels retain source and numeric identity without inventing a region name (0.1555ms)
+✔ a JSON storage budget is reported as a size failure, separately from actual JSON parse failures (0.2863ms)
+✔ one actual atlas resource fails and recovers through S3 without replacing session images, selections or pending drafts (5.3806ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 46
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4884.3087

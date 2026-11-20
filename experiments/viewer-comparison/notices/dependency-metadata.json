@@ -1,0 +1,158 @@
+{
+  "scope": "Installed package metadata and available top-level license texts; not a complete bundled-asset audit",
+  "candidate": {
+    "name": "@niivue/niivue",
+    "version": "0.69.0",
+    "license": "BSD-2-Clause",
+    "integrity": "sha512-YMjQvJgD1W2b7DuoxkwlC4VxbrgIePRJ5qyQzXKxi2v2MBVg285P/CIQyg46oDDGDIcaNlbd+MhtO/edMbXJkA=="
+  },
+  "lockSha256": "334fd903669b873c915c6a0a2fdd189673da8de52255bac8b5185a55f49b6cc7",
+  "packages": [
+    {
+      "path": "node_modules/@lukeed/csprng",
+      "version": "1.1.0",
+      "license": "MIT",
+      "integrity": "sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/@lukeed_csprng-license"
+      ]
+    },
+    {
+      "path": "node_modules/@lukeed/uuid",
+      "version": "2.0.1",
+      "license": "MIT",
+      "integrity": "sha512-qC72D4+CDdjGqJvkFMMEAtancHUQ7/d/tAiHf64z8MopFDmcrtbcJuerDtFceuAfQJ2pDSfCKCtbqoGBNnwg0w==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/@lukeed_uuid-license"
+      ]
+    },
+    {
+      "path": "node_modules/@niivue/niivue",
+      "version": "0.69.0",
+      "license": "BSD-2-Clause",
+      "integrity": "sha512-YMjQvJgD1W2b7DuoxkwlC4VxbrgIePRJ5qyQzXKxi2v2MBVg285P/CIQyg46oDDGDIcaNlbd+MhtO/edMbXJkA==",
+      "installed": true,
+      "noticeFiles": []
+    },
+    {
+      "path": "node_modules/@rollup/rollup-linux-x64-gnu",
+      "version": "4.66.0",
+      "license": "MIT",
+      "integrity": "sha512-E46rnZgp7J84Qwe8RMlF+rgimnDo/9fuiGbUArGB0ZkMWf97O7yeSCfKls5x/YJOF0RcuSe9RctuKe1hlxICiA==",
+      "installed": false,
+      "noticeFiles": []
+    },
+    {
+      "path": "node_modules/@ungap/structured-clone",
+      "version": "1.4.0",
+      "license": "ISC",
+      "integrity": "sha512-1mEZtMKPM09vDmQt5y7YvmN2+DFTP7Tg0EWXdic8/C6VRnpb33e4ghisCIE3WZjsE2N8mf+QV1Zqh7ZFYLWInQ==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/@ungap_structured-clone-LICENSE"
+      ]
+    },
+    {
+      "path": "node_modules/@zarrita/storage",
+      "version": "0.1.4",
+      "license": "MIT",
+      "integrity": "sha512-qURfJAQcQGRfDQ4J9HaCjGaj3jlJKc66bnRk6G/IeLUsM7WKyG7Bzsuf1EZurSXyc0I4LVcu6HaeQQ4d3kZ16g==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/@zarrita_storage-LICENSE"
+      ]
+    },
+    {
+      "path": "node_modules/array-equal",
+      "version": "1.0.2",
+      "license": "MIT",
+      "integrity": "sha512-gUHx76KtnhEgB3HOuFYiCm3FIdEs6ocM2asHvNTkfu/Y09qQVrrVVaOKENmS2KkSaGoxgXNqC+ZVtR/n0MOkSA==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/array-equal-LICENSE"
+      ]
+    },
+    {
+      "path": "node_modules/fflate",
+      "version": "0.8.3",
+      "license": "MIT",
+      "integrity": "sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/fflate-LICENSE"
+      ]
+    },
+    {
+      "path": "node_modules/gl-matrix",
+      "version": "3.4.4",
+      "license": "MIT",
+      "integrity": "sha512-latSnyDNt/8zYUB6VIJ6PCh2jBjJX6gnDsoCZ7LyW7GkqrD51EWwa9qCoGixj8YqBtETQK/xY7OmpTF8xz1DdQ==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/gl-matrix-LICENSE.md"
+      ]
+    },
+    {
+      "path": "node_modules/nifti-reader-js",
+      "version": "0.8.1",
+      "license": "MIT",
+      "integrity": "sha512-inWrhWVqjn39gtTbK3DadYrevsmOzGK2a2LsgnwkNtvVlPrXbazOS2I2lzhmQa7KEwiegX4htGbi1moB0k/msA==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/nifti-reader-js-LICENSE"
+      ]
+    },
+    {
+      "path": "node_modules/numcodecs",
+      "version": "0.3.2",
+      "license": "MIT",
+      "integrity": "sha512-6YSPnmZgg0P87jnNhi3s+FVLOcIn3y+1CTIgUulA3IdASzK9fJM87sUFkpyA+be9GibGRaST2wCgkD+6U+fWKw==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/numcodecs-LICENSE"
+      ]
+    },
+    {
+      "path": "node_modules/reference-spec-reader",
+      "version": "0.2.0",
+      "license": "MIT",
+      "integrity": "sha512-q0mfCi5yZSSHXpCyxjgQeaORq3tvDsxDyzaadA/5+AbAUwRyRuuTh0aRQuE/vAOt/qzzxidJ5iDeu1cLHaNBlQ==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/reference-spec-reader-LICENSE"
+      ]
+    },
+    {
+      "path": "node_modules/unzipit",
+      "version": "1.4.3",
+      "license": "MIT",
+      "integrity": "sha512-gsq2PdJIWWGhx5kcdWStvNWit9FVdTewm4SEG7gFskWs+XCVaULt9+BwuoBtJiRE8eo3L1IPAOrbByNLtLtIlg==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/unzipit-LICENSE.md"
+      ]
+    },
+    {
+      "path": "node_modules/uzip-module",
+      "version": "1.0.3",
+      "license": "MIT",
+      "integrity": "sha512-AMqwWZaknLM77G+VPYNZLEruMGWGzyigPK3/Whg99B3S6vGHuqsyl5ZrOv1UUF3paGK1U6PM0cnayioaryg/fA==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/uzip-module-LICENSE"
+      ]
+    },
+    {
+      "path": "node_modules/zarrita",
+      "version": "0.5.4",
+      "license": "MIT",
+      "integrity": "sha512-i88iN2+HqIQ+uiCEWLfhjbYNXAJD7IrM4h3lFwFclfqEOOhxp10amRWtqmgN5jbuy3+h0LwdyLVVzk4y9rTLgg==",
+      "installed": true,
+      "noticeFiles": [
+        "notices/dependencies/zarrita-LICENSE"
+      ]
+    }
+  ]
+}

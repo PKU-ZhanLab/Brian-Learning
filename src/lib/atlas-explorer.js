@@ -1,7 +1,26 @@
 import {Matrix4} from 'three';
 
+const palette=['#9ebdb2','#e4bcaa','#b6b7d3','#b8cbb0','#d9c797','#a6becf','#d5b0ba','#b8c5d5','#c9c1a7','#98bfbf','#d7c4b9','#c2b5ca'];
+export function atlasLabelColor(id) {
+  return palette[(id * 7) % palette.length];
+}
+
 const DIRECTIONS=[[-1,0,0],[1,0,0],[0,-1,0],[0,1,0],[0,0,-1],[0,0,1]];
 const CORNERS=[[[0,0,0],[0,0,1],[0,1,1],[0,1,0]],[[1,0,0],[1,1,0],[1,1,1],[1,0,1]],[[0,0,0],[1,0,0],[1,0,1],[0,0,1]],[[0,1,0],[0,1,1],[1,1,1],[1,1,0]],[[0,0,0],[0,1,0],[1,1,0],[1,0,0]],[[0,0,1],[1,0,1],[1,1,1],[0,1,1]]];
+
+/** A queued observer notification must never measure a stale atlas canvas. */
+export function createAtlasCanvasResizeGuard(container,readHost,onResize){
+  let active=true;
+  return {
+    resize(){
+      if(!active||readHost()!==container||!container.isConnected)return;
+      const {width,height}=container.getBoundingClientRect();
+      if(!Number.isFinite(width)||!Number.isFinite(height)||width<=0||height<=0)return;
+      onResize(width,height);
+    },
+    dispose(){active=false;},
+  };
+}
 
 export function nativeDisplayVolume(volume,{threshold=.5,tail='positive'}={}){
   if(!volume.kind||volume.kind==='label')return volume;

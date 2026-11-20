@@ -1,0 +1,317 @@
+{
+  "recordedAt": "2026-10-29T22:04:27.499Z",
+  "sourceCommit": "91dc4b37a9ba591690529e1386230a713e769a45",
+  "manifestPath": "tests/fixtures/audit-20261029/manifest.json",
+  "manifestSha256": "acffb7c64beb6e7a5a6b0ffe0366d66939ab9f7eca52c43892aad4723408c0d1",
+  "records": [
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/REVIEW.zh-CN.md",
+      "expected": "3a8988588c6c16ea73551d930b029409281495499406e5a919019bd2a0353ad9",
+      "workingSha256": "3a8988588c6c16ea73551d930b029409281495499406e5a919019bd2a0353ad9",
+      "committedSha256": "3a8988588c6c16ea73551d930b029409281495499406e5a919019bd2a0353ad9",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/REVIEW.zh-CN.md",
+      "originalSha256": "3a8988588c6c16ea73551d930b029409281495499406e5a919019bd2a0353ad9",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/UX_REVIEW.zh-CN.md",
+      "expected": "d8c23810c947db6b7a3117b13ab0df8b7c1bd5df8d4e19b4d5e00c52d52479aa",
+      "workingSha256": "d8c23810c947db6b7a3117b13ab0df8b7c1bd5df8d4e19b4d5e00c52d52479aa",
+      "committedSha256": "d8c23810c947db6b7a3117b13ab0df8b7c1bd5df8d4e19b4d5e00c52d52479aa",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/UX_REVIEW.zh-CN.md",
+      "originalSha256": "d8c23810c947db6b7a3117b13ab0df8b7c1bd5df8d4e19b4d5e00c52d52479aa",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/anatomy-probes.json",
+      "expected": "aea1c3299db50d43623ce71e13aa1ecff3e6abb2db0066e9d966b587de3c9f4d",
+      "workingSha256": "aea1c3299db50d43623ce71e13aa1ecff3e6abb2db0066e9d966b587de3c9f4d",
+      "committedSha256": "aea1c3299db50d43623ce71e13aa1ecff3e6abb2db0066e9d966b587de3c9f4d",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/anatomy-probes.json",
+      "originalSha256": "aea1c3299db50d43623ce71e13aa1ecff3e6abb2db0066e9d966b587de3c9f4d",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/anatomy-probes.mjs",
+      "expected": "89ff77906647ed678a2e9c86e2cc4ce45f583f3849276cb374cb48a2e2df8c81",
+      "workingSha256": "89ff77906647ed678a2e9c86e2cc4ce45f583f3849276cb374cb48a2e2df8c81",
+      "committedSha256": "89ff77906647ed678a2e9c86e2cc4ce45f583f3849276cb374cb48a2e2df8c81",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/anatomy-probes.mjs",
+      "originalSha256": "89ff77906647ed678a2e9c86e2cc4ce45f583f3849276cb374cb48a2e2df8c81",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/anatomy-review.md",
+      "expected": "76c4779a5fcc77a33bd590bf4a78c2a0fe4e05f2e1362e5c2621c69239f82f9f",
+      "workingSha256": "76c4779a5fcc77a33bd590bf4a78c2a0fe4e05f2e1362e5c2621c69239f82f9f",
+      "committedSha256": "76c4779a5fcc77a33bd590bf4a78c2a0fe4e05f2e1362e5c2621c69239f82f9f",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/anatomy-review.md",
+      "originalSha256": "76c4779a5fcc77a33bd590bf4a78c2a0fe4e05f2e1362e5c2621c69239f82f9f",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/audit-baseline.mjs",
+      "expected": "6c3795ea45f8b72fc53b914c4679857801f3afea5770868efca6b671d17b4f24",
+      "workingSha256": "6c3795ea45f8b72fc53b914c4679857801f3afea5770868efca6b671d17b4f24",
+      "committedSha256": "6c3795ea45f8b72fc53b914c4679857801f3afea5770868efca6b671d17b4f24",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/audit-baseline.mjs",
+      "originalSha256": "6c3795ea45f8b72fc53b914c4679857801f3afea5770868efca6b671d17b4f24",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/baseline.json",
+      "expected": "383eb309f9a2a8bc63c8a1baedcc03a79270a366ed9d709f99e85b9fe8a56951",
+      "workingSha256": "383eb309f9a2a8bc63c8a1baedcc03a79270a366ed9d709f99e85b9fe8a56951",
+      "committedSha256": "383eb309f9a2a8bc63c8a1baedcc03a79270a366ed9d709f99e85b9fe8a56951",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/baseline.json",
+      "originalSha256": "383eb309f9a2a8bc63c8a1baedcc03a79270a366ed9d709f99e85b9fe8a56951",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/build.log",
+      "expected": "93c0164232558f11b3933eef0a8eb93b9750418a8a97f56f4924c88d77c0445d",
+      "workingSha256": "93c0164232558f11b3933eef0a8eb93b9750418a8a97f56f4924c88d77c0445d",
+      "committedSha256": "93c0164232558f11b3933eef0a8eb93b9750418a8a97f56f4924c88d77c0445d",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/build.log",
+      "originalSha256": "93c0164232558f11b3933eef0a8eb93b9750418a8a97f56f4924c88d77c0445d",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/check.log",
+      "expected": "6109116ea4df2e8650a07d91fb06359fffa335a68ece49525111aeb2f86ff9c8",
+      "workingSha256": "6109116ea4df2e8650a07d91fb06359fffa335a68ece49525111aeb2f86ff9c8",
+      "committedSha256": "6109116ea4df2e8650a07d91fb06359fffa335a68ece49525111aeb2f86ff9c8",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/check.log",
+      "originalSha256": "6109116ea4df2e8650a07d91fb06359fffa335a68ece49525111aeb2f86ff9c8",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/engineering-probes.json",
+      "expected": "49b4868421e089b0f39b359a791a2139fbc151228c66d0dc4195e1fae8eee72a",
+      "workingSha256": "49b4868421e089b0f39b359a791a2139fbc151228c66d0dc4195e1fae8eee72a",
+      "committedSha256": "49b4868421e089b0f39b359a791a2139fbc151228c66d0dc4195e1fae8eee72a",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/engineering-probes.json",
+      "originalSha256": "49b4868421e089b0f39b359a791a2139fbc151228c66d0dc4195e1fae8eee72a",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/engineering-probes.mjs",
+      "expected": "629b55778fe932b9edff255b17dc393932bccf37113a7d081b27a7507f733a7c",
+      "workingSha256": "629b55778fe932b9edff255b17dc393932bccf37113a7d081b27a7507f733a7c",
+      "committedSha256": "629b55778fe932b9edff255b17dc393932bccf37113a7d081b27a7507f733a7c",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/engineering-probes.mjs",
+      "originalSha256": "629b55778fe932b9edff255b17dc393932bccf37113a7d081b27a7507f733a7c",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/engineering-review.md",
+      "expected": "9a506d2bb869386a531820801a088a24ee408d51ec38a872e6ff23bb49f8f5e2",
+      "workingSha256": "9a506d2bb869386a531820801a088a24ee408d51ec38a872e6ff23bb49f8f5e2",
+      "committedSha256": "9a506d2bb869386a531820801a088a24ee408d51ec38a872e6ff23bb49f8f5e2",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/engineering-review.md",
+      "originalSha256": "9a506d2bb869386a531820801a088a24ee408d51ec38a872e6ff23bb49f8f5e2",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/evidence-probes.json",
+      "expected": "1a14407eef6cd5d8d65ef951a259b5b5610fee5bd706cd8704e94056f0b7330e",
+      "workingSha256": "1a14407eef6cd5d8d65ef951a259b5b5610fee5bd706cd8704e94056f0b7330e",
+      "committedSha256": "1a14407eef6cd5d8d65ef951a259b5b5610fee5bd706cd8704e94056f0b7330e",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/evidence-probes.json",
+      "originalSha256": "1a14407eef6cd5d8d65ef951a259b5b5610fee5bd706cd8704e94056f0b7330e",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/evidence-probes.mjs",
+      "expected": "28cdba70f2b641377309a1c9b885aea15b6e4b4ec7fb60514d3a139b18262639",
+      "workingSha256": "28cdba70f2b641377309a1c9b885aea15b6e4b4ec7fb60514d3a139b18262639",
+      "committedSha256": "28cdba70f2b641377309a1c9b885aea15b6e4b4ec7fb60514d3a139b18262639",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/evidence-probes.mjs",
+      "originalSha256": "28cdba70f2b641377309a1c9b885aea15b6e4b4ec7fb60514d3a139b18262639",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/evidence-review.md",
+      "expected": "e57aae35228fd3f89cd6fc98afe07a9cf5b788d9a91973ab70ab629e4b885601",
+      "workingSha256": "e57aae35228fd3f89cd6fc98afe07a9cf5b788d9a91973ab70ab629e4b885601",
+      "committedSha256": "e57aae35228fd3f89cd6fc98afe07a9cf5b788d9a91973ab70ab629e4b885601",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/evidence-review.md",
+      "originalSha256": "e57aae35228fd3f89cd6fc98afe07a9cf5b788d9a91973ab70ab629e4b885601",
+      "originalMatches": true
+    },
+    {
+      "group": "auditFiles",
+      "file": "tests/fixtures/audit-20261029/preserved/ux-accessibility.md",
+      "expected": "266c0ecf0216a9baaa8a5ec7b5a855c01988f57217f63f09121a918dcd4530c3",
+      "workingSha256": "266c0ecf0216a9baaa8a5ec7b5a855c01988f57217f63f09121a918dcd4530c3",
+      "committedSha256": "266c0ecf0216a9baaa8a5ec7b5a855c01988f57217f63f09121a918dcd4530c3",
+      "workingMatches": true,
+      "committedMatches": true,
+      "originalFile": "F:/project/brain-model/output/audit-20261029/ux-accessibility.md",
+      "originalSha256": "266c0ecf0216a9baaa8a5ec7b5a855c01988f57217f63f09121a918dcd4530c3",
+      "originalMatches": true
+    },
+    {
+      "group": "planFiles",
+      "file": "docs/superpowers/plans/2026-10-29-neuroatlas/00-spec.md",
+      "expected": "bdfd46771de8eb65d47652ab7cc3d030a0f196328fff4bdde7049caeb9a13442",
+      "workingSha256": "bdfd46771de8eb65d47652ab7cc3d030a0f196328fff4bdde7049caeb9a13442",
+      "committedSha256": "bdfd46771de8eb65d47652ab7cc3d030a0f196328fff4bdde7049caeb9a13442",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "planFiles",
+      "file": "docs/superpowers/plans/2026-10-29-neuroatlas/01-spatial.md",
+      "expected": "9bbdca3c1880be83b82e40fe0912936523d3d0db7ac4d2ce37071159f7a3cd3b",
+      "workingSha256": "9bbdca3c1880be83b82e40fe0912936523d3d0db7ac4d2ce37071159f7a3cd3b",
+      "committedSha256": "9bbdca3c1880be83b82e40fe0912936523d3d0db7ac4d2ce37071159f7a3cd3b",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "planFiles",
+      "file": "docs/superpowers/plans/2026-10-29-neuroatlas/02-workspace.md",
+      "expected": "7f543ac9cd19036bd867f1d73599da5734763df68684c5406f072769b810ae0a",
+      "workingSha256": "7f543ac9cd19036bd867f1d73599da5734763df68684c5406f072769b810ae0a",
+      "committedSha256": "7f543ac9cd19036bd867f1d73599da5734763df68684c5406f072769b810ae0a",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "planFiles",
+      "file": "docs/superpowers/plans/2026-10-29-neuroatlas/03-evidence.md",
+      "expected": "c8a28fe726dc31ccd4a2c0e5cf670930227212f8eab84d795cad4a6c555633df",
+      "workingSha256": "c8a28fe726dc31ccd4a2c0e5cf670930227212f8eab84d795cad4a6c555633df",
+      "committedSha256": "c8a28fe726dc31ccd4a2c0e5cf670930227212f8eab84d795cad4a6c555633df",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "planFiles",
+      "file": "docs/superpowers/plans/2026-10-29-neuroatlas/04-experience.md",
+      "expected": "1b2195054d55c43a4a4557ccc73aa66c6304a96a4247454fedb7acf9f50a541a",
+      "workingSha256": "1b2195054d55c43a4a4557ccc73aa66c6304a96a4247454fedb7acf9f50a541a",
+      "committedSha256": "1b2195054d55c43a4a4557ccc73aa66c6304a96a4247454fedb7acf9f50a541a",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "planFiles",
+      "file": "docs/superpowers/plans/2026-10-29-neuroatlas/EXECUTION.md",
+      "expected": "66d5fc07cd7fae4e73df6e8156ac7ef1ca2b317e9bc247a48a1654f546a7217e",
+      "workingSha256": "66d5fc07cd7fae4e73df6e8156ac7ef1ca2b317e9bc247a48a1654f546a7217e",
+      "committedSha256": "66d5fc07cd7fae4e73df6e8156ac7ef1ca2b317e9bc247a48a1654f546a7217e",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "planFiles",
+      "file": "docs/superpowers/plans/2026-10-29-neuroatlas/README.md",
+      "expected": "b125e9e7569b9d4fe72dabf5eb7c7b201713e7b29ed7b973ea6c6b6982a8afb5",
+      "workingSha256": "b125e9e7569b9d4fe72dabf5eb7c7b201713e7b29ed7b973ea6c6b6982a8afb5",
+      "committedSha256": "b125e9e7569b9d4fe72dabf5eb7c7b201713e7b29ed7b973ea6c6b6982a8afb5",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "planFiles",
+      "file": "docs/superpowers/plans/2026-10-29-neuroatlas/backlog.csv",
+      "expected": "8d7461c5a361872562f3d6172017db9229cf3641180d221c493d690c6d232d7a",
+      "workingSha256": "8d7461c5a361872562f3d6172017db9229cf3641180d221c493d690c6d232d7a",
+      "committedSha256": "8d7461c5a361872562f3d6172017db9229cf3641180d221c493d690c6d232d7a",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "planFiles",
+      "file": "docs/superpowers/plans/2026-10-29-neuroatlas/plan-validation.json",
+      "expected": "1ec74721cf878fa21e3e361d705cc3bec07cad01b473cfa77788e146ae69b3ae",
+      "workingSha256": "1ec74721cf878fa21e3e361d705cc3bec07cad01b473cfa77788e146ae69b3ae",
+      "committedSha256": "1ec74721cf878fa21e3e361d705cc3bec07cad01b473cfa77788e146ae69b3ae",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "planFiles",
+      "file": "docs/superpowers/plans/2026-10-29-neuroatlas/validate-plan.mjs",
+      "expected": "04cc4ce6b9088a76985e5aef31faaa1d593a9a462a742c93fc615695d3ff185a",
+      "workingSha256": "04cc4ce6b9088a76985e5aef31faaa1d593a9a462a742c93fc615695d3ff185a",
+      "committedSha256": "04cc4ce6b9088a76985e5aef31faaa1d593a9a462a742c93fc615695d3ff185a",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "derivedFiles",
+      "file": "tests/fixtures/audit-20261029/atlas-labels.json",
+      "expected": "cbf6d74f1547e46d198972f29d8fa34b55a10de89a0716dfbfbe726aa4c3dbca",
+      "workingSha256": "cbf6d74f1547e46d198972f29d8fa34b55a10de89a0716dfbfbe726aa4c3dbca",
+      "committedSha256": "cbf6d74f1547e46d198972f29d8fa34b55a10de89a0716dfbfbe726aa4c3dbca",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "derivedFiles",
+      "file": "tests/fixtures/audit-20261029/roi-label134.json",
+      "expected": "687c6eaf7f7ef0b0149dd8b39f244f28d75e9d3012d1057f2dcfc323ce09380f",
+      "workingSha256": "687c6eaf7f7ef0b0149dd8b39f244f28d75e9d3012d1057f2dcfc323ce09380f",
+      "committedSha256": "687c6eaf7f7ef0b0149dd8b39f244f28d75e9d3012d1057f2dcfc323ce09380f",
+      "workingMatches": true,
+      "committedMatches": true
+    },
+    {
+      "group": "derivedFiles",
+      "file": "tests/fixtures/audit-20261029/root-source-comparison.json",
+      "expected": "29024ca5c0bad0cf45150cd5cb7674ba91f5e35024c46e2ffb1508079f27276f",
+      "workingSha256": "29024ca5c0bad0cf45150cd5cb7674ba91f5e35024c46e2ffb1508079f27276f",
+      "committedSha256": "29024ca5c0bad0cf45150cd5cb7674ba91f5e35024c46e2ffb1508079f27276f",
+      "workingMatches": true,
+      "committedMatches": true
+    }
+  ]
+}

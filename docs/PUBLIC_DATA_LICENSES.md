@@ -1,3 +1,15 @@
+# 当前打包范围 / Current distribution · 4.2.0
+
+应用代码许可与每个数据/来源许可分别适用。公开包保留许可、原始来源版本/哈希、允许的变换和最小事实摘录。AAL 来源按逐文件 allowlist 验证；PAM50 预生成网格/原件不随包再分发，保留官方按需描述。来源许可网页以不可执行 .html.txt 保存。
+
+Application and data licences are distinct. The source package includes permitted tests, configurations, inert fixtures, provenance and the isolated viewer prototype's source/lock/notices. It excludes node_modules, generated output/caches and restricted raw article images/full texts. The prototype is not a production dependency.
+
+脑干候选源的再分发限制保持；Martin 和 Schaum 原始图未据推测加入公开数据。原文最小摘录的保存不授权全文再分发。详见 data-sources/results/upstream-assets.json、public/data/licenses/NOTICE-DATA.md、各数据目录许可与[交付说明](acceptance/RELEASE_CHECKLIST.md)。
+
+---
+
+以下为保留的历史记录 / Retained historical record. Earlier pass/deployment claims apply only to their dated versions.
+
 # 公开数据发布策略
 
 核对日期：2026-10-26。适用于本项目免费、无财务回报的脑模型与论文证据浏览工具及 GitHub / Pages 发布。代码许可证不能覆盖第三方图谱；数据按下表分别保留许可、署名、修改说明和可取得的原始文件。这里记录发布依据和打包要求，不把仓库的软件许可证当成所有借入数据的授权。

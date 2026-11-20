@@ -1,0 +1,7 @@
+{
+  "name":"neuroatlas-viewer-comparison",
+  "private":true,
+  "type":"module",
+  "scripts":{"dev":"node ../../node_modules/vite/bin/vite.js --host 127.0.0.1","build":"node ../../node_modules/vite/bin/vite.js build","check":"node --test fixture.test.mjs"},
+  "dependencies":{"@niivue/niivue":"0.69.0"}
+}

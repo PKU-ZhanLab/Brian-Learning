@@ -1,0 +1,1026 @@
+{
+  "schemaVersion": 1,
+  "policy": "Only source-recorded concept mappings are exact-source. Cross-atlas similarities and unknown relationships are not inferred from names, coordinates or catalog order.",
+  "relations": [
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 1,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "bankssts-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS bankssts; data-sources/dk/label/aparc.annot.ctab:line 2; annotation bankssts; sourceId 1001; hemisphere L; structureId bankssts-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 2,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "caudal-anterior-cingulate-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS caudalanteriorcingulate; data-sources/dk/label/aparc.annot.ctab:line 3; annotation caudalanteriorcingulate; sourceId 1002; hemisphere L; structureId caudal-anterior-cingulate-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 3,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "caudal-middle-frontal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS caudalmiddlefrontal; data-sources/dk/label/aparc.annot.ctab:line 4; annotation caudalmiddlefrontal; sourceId 1003; hemisphere L; structureId caudal-middle-frontal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 4,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "cuneus-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS cuneus; data-sources/dk/label/aparc.annot.ctab:line 6; annotation cuneus; sourceId 1005; hemisphere L; structureId cuneus-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 5,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "entorhinal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS entorhinal; data-sources/dk/label/aparc.annot.ctab:line 7; annotation entorhinal; sourceId 1006; hemisphere L; structureId entorhinal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 6,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "fusiform-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS fusiform; data-sources/dk/label/aparc.annot.ctab:line 8; annotation fusiform; sourceId 1007; hemisphere L; structureId fusiform-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 7,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "inferior-parietal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS inferiorparietal; data-sources/dk/label/aparc.annot.ctab:line 9; annotation inferiorparietal; sourceId 1008; hemisphere L; structureId inferior-parietal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 8,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "inferior-temporal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS inferiortemporal; data-sources/dk/label/aparc.annot.ctab:line 10; annotation inferiortemporal; sourceId 1009; hemisphere L; structureId inferior-temporal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 9,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "isthmus-cingulate-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS isthmuscingulate; data-sources/dk/label/aparc.annot.ctab:line 11; annotation isthmuscingulate; sourceId 1010; hemisphere L; structureId isthmus-cingulate-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 10,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "lateral-occipital-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS lateraloccipital; data-sources/dk/label/aparc.annot.ctab:line 12; annotation lateraloccipital; sourceId 1011; hemisphere L; structureId lateral-occipital-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 11,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "lateral-orbitofrontal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS lateralorbitofrontal; data-sources/dk/label/aparc.annot.ctab:line 13; annotation lateralorbitofrontal; sourceId 1012; hemisphere L; structureId lateral-orbitofrontal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 12,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "lingual-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS lingual; data-sources/dk/label/aparc.annot.ctab:line 14; annotation lingual; sourceId 1013; hemisphere L; structureId lingual-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 13,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "medial-orbitofrontal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS medialorbitofrontal; data-sources/dk/label/aparc.annot.ctab:line 15; annotation medialorbitofrontal; sourceId 1014; hemisphere L; structureId medial-orbitofrontal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 14,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "middle-temporal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS middletemporal; data-sources/dk/label/aparc.annot.ctab:line 16; annotation middletemporal; sourceId 1015; hemisphere L; structureId middle-temporal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 15,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "parahippocampal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS parahippocampal; data-sources/dk/label/aparc.annot.ctab:line 17; annotation parahippocampal; sourceId 1016; hemisphere L; structureId parahippocampal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 16,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "paracentral-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS paracentral; data-sources/dk/label/aparc.annot.ctab:line 18; annotation paracentral; sourceId 1017; hemisphere L; structureId paracentral-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 17,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "pars-opercularis-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS parsopercularis; data-sources/dk/label/aparc.annot.ctab:line 19; annotation parsopercularis; sourceId 1018; hemisphere L; structureId pars-opercularis-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 18,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "pars-orbitalis-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS parsorbitalis; data-sources/dk/label/aparc.annot.ctab:line 20; annotation parsorbitalis; sourceId 1019; hemisphere L; structureId pars-orbitalis-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 19,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "pars-triangularis-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS parstriangularis; data-sources/dk/label/aparc.annot.ctab:line 21; annotation parstriangularis; sourceId 1020; hemisphere L; structureId pars-triangularis-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 20,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "pericalcarine-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS pericalcarine; data-sources/dk/label/aparc.annot.ctab:line 22; annotation pericalcarine; sourceId 1021; hemisphere L; structureId pericalcarine-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 21,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "postcentral-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS postcentral; data-sources/dk/label/aparc.annot.ctab:line 23; annotation postcentral; sourceId 1022; hemisphere L; structureId postcentral-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 22,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "posterior-cingulate-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS posteriorcingulate; data-sources/dk/label/aparc.annot.ctab:line 24; annotation posteriorcingulate; sourceId 1023; hemisphere L; structureId posterior-cingulate-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 23,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "precentral-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS precentral; data-sources/dk/label/aparc.annot.ctab:line 25; annotation precentral; sourceId 1024; hemisphere L; structureId precentral-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 24,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "precuneus-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS precuneus; data-sources/dk/label/aparc.annot.ctab:line 26; annotation precuneus; sourceId 1025; hemisphere L; structureId precuneus-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 25,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "rostral-anterior-cingulate-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS rostralanteriorcingulate; data-sources/dk/label/aparc.annot.ctab:line 27; annotation rostralanteriorcingulate; sourceId 1026; hemisphere L; structureId rostral-anterior-cingulate-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 26,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "rostral-middle-frontal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS rostralmiddlefrontal; data-sources/dk/label/aparc.annot.ctab:line 28; annotation rostralmiddlefrontal; sourceId 1027; hemisphere L; structureId rostral-middle-frontal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 27,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "superior-frontal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS superiorfrontal; data-sources/dk/label/aparc.annot.ctab:line 29; annotation superiorfrontal; sourceId 1028; hemisphere L; structureId superior-frontal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 28,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "superior-parietal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS superiorparietal; data-sources/dk/label/aparc.annot.ctab:line 30; annotation superiorparietal; sourceId 1029; hemisphere L; structureId superior-parietal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 29,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "superior-temporal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS superiortemporal; data-sources/dk/label/aparc.annot.ctab:line 31; annotation superiortemporal; sourceId 1030; hemisphere L; structureId superior-temporal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 30,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "supramarginal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS supramarginal; data-sources/dk/label/aparc.annot.ctab:line 32; annotation supramarginal; sourceId 1031; hemisphere L; structureId supramarginal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 31,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "frontal-pole-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS frontalpole; data-sources/dk/label/aparc.annot.ctab:line 33; annotation frontalpole; sourceId 1032; hemisphere L; structureId frontal-pole-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 32,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "temporal-pole-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS temporalpole; data-sources/dk/label/aparc.annot.ctab:line 34; annotation temporalpole; sourceId 1033; hemisphere L; structureId temporal-pole-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 33,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "transverse-temporal-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS transversetemporal; data-sources/dk/label/aparc.annot.ctab:line 35; annotation transversetemporal; sourceId 1034; hemisphere L; structureId transverse-temporal-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 34,
+        "hemisphere": "L",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "insula-l",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS insula; data-sources/dk/label/aparc.annot.ctab:line 36; annotation insula; sourceId 1035; hemisphere L; structureId insula-l",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 35,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "bankssts-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS bankssts; data-sources/dk/label/aparc.annot.ctab:line 2; annotation bankssts; sourceId 2001; hemisphere R; structureId bankssts-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 36,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "caudal-anterior-cingulate-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS caudalanteriorcingulate; data-sources/dk/label/aparc.annot.ctab:line 3; annotation caudalanteriorcingulate; sourceId 2002; hemisphere R; structureId caudal-anterior-cingulate-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 37,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "caudal-middle-frontal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS caudalmiddlefrontal; data-sources/dk/label/aparc.annot.ctab:line 4; annotation caudalmiddlefrontal; sourceId 2003; hemisphere R; structureId caudal-middle-frontal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 38,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "cuneus-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS cuneus; data-sources/dk/label/aparc.annot.ctab:line 6; annotation cuneus; sourceId 2005; hemisphere R; structureId cuneus-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 39,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "entorhinal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS entorhinal; data-sources/dk/label/aparc.annot.ctab:line 7; annotation entorhinal; sourceId 2006; hemisphere R; structureId entorhinal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 40,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "fusiform-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS fusiform; data-sources/dk/label/aparc.annot.ctab:line 8; annotation fusiform; sourceId 2007; hemisphere R; structureId fusiform-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 41,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "inferior-parietal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS inferiorparietal; data-sources/dk/label/aparc.annot.ctab:line 9; annotation inferiorparietal; sourceId 2008; hemisphere R; structureId inferior-parietal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 42,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "inferior-temporal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS inferiortemporal; data-sources/dk/label/aparc.annot.ctab:line 10; annotation inferiortemporal; sourceId 2009; hemisphere R; structureId inferior-temporal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 43,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "isthmus-cingulate-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS isthmuscingulate; data-sources/dk/label/aparc.annot.ctab:line 11; annotation isthmuscingulate; sourceId 2010; hemisphere R; structureId isthmus-cingulate-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 44,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "lateral-occipital-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS lateraloccipital; data-sources/dk/label/aparc.annot.ctab:line 12; annotation lateraloccipital; sourceId 2011; hemisphere R; structureId lateral-occipital-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 45,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "lateral-orbitofrontal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS lateralorbitofrontal; data-sources/dk/label/aparc.annot.ctab:line 13; annotation lateralorbitofrontal; sourceId 2012; hemisphere R; structureId lateral-orbitofrontal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 46,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "lingual-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS lingual; data-sources/dk/label/aparc.annot.ctab:line 14; annotation lingual; sourceId 2013; hemisphere R; structureId lingual-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 47,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "medial-orbitofrontal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS medialorbitofrontal; data-sources/dk/label/aparc.annot.ctab:line 15; annotation medialorbitofrontal; sourceId 2014; hemisphere R; structureId medial-orbitofrontal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 48,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "middle-temporal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS middletemporal; data-sources/dk/label/aparc.annot.ctab:line 16; annotation middletemporal; sourceId 2015; hemisphere R; structureId middle-temporal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 49,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "parahippocampal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS parahippocampal; data-sources/dk/label/aparc.annot.ctab:line 17; annotation parahippocampal; sourceId 2016; hemisphere R; structureId parahippocampal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 50,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "paracentral-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS paracentral; data-sources/dk/label/aparc.annot.ctab:line 18; annotation paracentral; sourceId 2017; hemisphere R; structureId paracentral-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 51,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "pars-opercularis-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS parsopercularis; data-sources/dk/label/aparc.annot.ctab:line 19; annotation parsopercularis; sourceId 2018; hemisphere R; structureId pars-opercularis-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 52,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "pars-orbitalis-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS parsorbitalis; data-sources/dk/label/aparc.annot.ctab:line 20; annotation parsorbitalis; sourceId 2019; hemisphere R; structureId pars-orbitalis-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 53,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "pars-triangularis-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS parstriangularis; data-sources/dk/label/aparc.annot.ctab:line 21; annotation parstriangularis; sourceId 2020; hemisphere R; structureId pars-triangularis-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 54,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "pericalcarine-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS pericalcarine; data-sources/dk/label/aparc.annot.ctab:line 22; annotation pericalcarine; sourceId 2021; hemisphere R; structureId pericalcarine-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 55,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "postcentral-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS postcentral; data-sources/dk/label/aparc.annot.ctab:line 23; annotation postcentral; sourceId 2022; hemisphere R; structureId postcentral-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 56,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "posterior-cingulate-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS posteriorcingulate; data-sources/dk/label/aparc.annot.ctab:line 24; annotation posteriorcingulate; sourceId 2023; hemisphere R; structureId posterior-cingulate-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 57,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "precentral-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS precentral; data-sources/dk/label/aparc.annot.ctab:line 25; annotation precentral; sourceId 2024; hemisphere R; structureId precentral-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 58,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "precuneus-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS precuneus; data-sources/dk/label/aparc.annot.ctab:line 26; annotation precuneus; sourceId 2025; hemisphere R; structureId precuneus-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 59,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "rostral-anterior-cingulate-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS rostralanteriorcingulate; data-sources/dk/label/aparc.annot.ctab:line 27; annotation rostralanteriorcingulate; sourceId 2026; hemisphere R; structureId rostral-anterior-cingulate-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 60,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "rostral-middle-frontal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS rostralmiddlefrontal; data-sources/dk/label/aparc.annot.ctab:line 28; annotation rostralmiddlefrontal; sourceId 2027; hemisphere R; structureId rostral-middle-frontal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 61,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "superior-frontal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS superiorfrontal; data-sources/dk/label/aparc.annot.ctab:line 29; annotation superiorfrontal; sourceId 2028; hemisphere R; structureId superior-frontal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 62,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "superior-parietal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS superiorparietal; data-sources/dk/label/aparc.annot.ctab:line 30; annotation superiorparietal; sourceId 2029; hemisphere R; structureId superior-parietal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 63,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "superior-temporal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS superiortemporal; data-sources/dk/label/aparc.annot.ctab:line 31; annotation superiortemporal; sourceId 2030; hemisphere R; structureId superior-temporal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 64,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "supramarginal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS supramarginal; data-sources/dk/label/aparc.annot.ctab:line 32; annotation supramarginal; sourceId 2031; hemisphere R; structureId supramarginal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 65,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "frontal-pole-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS frontalpole; data-sources/dk/label/aparc.annot.ctab:line 33; annotation frontalpole; sourceId 2032; hemisphere R; structureId frontal-pole-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 66,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "temporal-pole-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS temporalpole; data-sources/dk/label/aparc.annot.ctab:line 34; annotation temporalpole; sourceId 2033; hemisphere R; structureId temporal-pole-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 67,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "transverse-temporal-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS transversetemporal; data-sources/dk/label/aparc.annot.ctab:line 35; annotation transversetemporal; sourceId 2034; hemisphere R; structureId transverse-temporal-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    },
+    {
+      "region": {
+        "atlasId": "dk",
+        "atlasVersion": "sha256:2839c8cd69c135b5d67a9caaecfbe4c9f009946c8b5df7f6309e0f7417c3b289",
+        "labelId": 68,
+        "hemisphere": "R",
+        "spaceId": "MNI152NLin6Asym"
+      },
+      "conceptId": "insula-r",
+      "type": "exact-source",
+      "sourceUrl": "https://raw.githubusercontent.com/ThomasYeoLab/CBIG/634f676630929a71297852d01dd92a287103e861/data/templates/volume/FSL_MNI152_FS4.5.0/label/aparc.annot.ctab",
+      "sourceLocator": "scripts/dk_build.py:ROWS insula; data-sources/dk/label/aparc.annot.ctab:line 36; annotation insula; sourceId 2035; hemisphere R; structureId insula-r",
+      "sourceTissue": "gray-matter",
+      "targetTissue": "gray-matter"
+    }
+  ]
+}

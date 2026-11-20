@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import { assetURL, dataURL } from './assets.js';
 import { compareLabelROIs, compareROIs, positiveLabels, voxelMaskSurface, comparisonMaskVolume, attachROISurfaces } from './roi.js';
 import { parseNifti, exportNifti } from './nifti.js';
+import { prepareLocalVolumeProvenance, prepareComparisonManifest } from './computation-manifest.js';
+import { normalizeROISelection, serializableVolume } from './roi.js';
 
 const affine = [2,0,0,0, 0,2,0,0, 0,0,2,0, 0,0,0,1];
 const grid = { shape: [4,3,2], affine, space: 'MNI152NLin6Asym' };
@@ -39,11 +41,11 @@ test('z-fastest input is reordered without changing anatomy', () => {
   assert.equal(compareLabelROIs({ ...source, order: 'z-fastest', data: zfast }, 1, source, 1, grid).metrics.dice, 1);
 });
 
-test('unverified alignment, background, missing labels and invalid geometry are rejected', () => {
+test('unverified alignment, background and invalid geometry are rejected; missing source labels are explicit', () => {
   const source = volume([0]);
   assert.throws(() => compareLabelROIs({ ...source, canOverlayOnTarget: false }, 1, source, 1, grid), /unaligned-atlas/);
   assert.throws(() => compareLabelROIs(source, 0, source, 1, grid), /invalid-label/);
-  assert.throws(() => compareLabelROIs(source, 2, source, 1, grid), /empty-label/);
+  assert.equal(compareLabelROIs(source, 2, source, 1, grid).sampling.A.status, 'empty-source');
   assert.throws(() => compareLabelROIs({ ...source, affine: new Array(16).fill(0) }, 1, source, 1, grid), /invalid-affine/);
   assert.deepEqual(positiveLabels(source).map(label => [label.id, label.voxels]), [[1,1]]);
 });
@@ -126,4 +128,66 @@ test('oversized surfaces preserve exact metrics, masks and slices instead of fai
   const result=attachROISurfaces(compareROIs(source,1,source,1,{...grid,shape}));
   assert.equal(result.metrics.dice,1);assert.equal(result.metrics.aVoxels,121000);
   assert.deepEqual(result.surfaceWarnings,['intersection','A','B']);assert.equal(result.surfaces.A.positions.length,0);assert.equal(result.surfaces.A.omitted,true);
+});
+
+test('worker preflight blocks absent source, waits for loss confirmation, and ignores cancelled or stale confirmation', async () => {
+  const messages = [];
+  globalThis.self = { postMessage:message => messages.push(message) };
+  try {
+    await import(`./roi.worker.js?test=${Date.now()}`);
+    const source = await prepareLocalVolumeProvenance(volume([0]),new Uint8Array([42]));
+    const shifted = [...affine]; shifted[3] = 100;
+    const target={...grid,affine:shifted};
+    const manifest=await prepareComparisonManifest(source,normalizeROISelection(source,1),source,normalizeROISelection(source,1),target);
+    const input = {requestId:1, volumeA:serializableVolume(source), volumeB:serializableVolume(source), selectionA:1, selectionB:1, target,manifest};
+    self.onmessage({data:input});
+    assert.deepEqual(messages.map(message => message.phase), ['preflight']);
+    assert.equal(messages[0].requiresConfirmation, true);
+    self.onmessage({data:{requestId:999,action:'confirm'}});
+    assert.equal(messages.length, 1);
+    self.onmessage({data:{requestId:1,action:'cancel'}});
+    self.onmessage({data:{requestId:1,action:'confirm'}});
+    assert.equal(messages.length, 1);
+    self.onmessage({data:{...input,requestId:2}});
+    self.onmessage({data:{requestId:2,action:'confirm'}});
+    assert.equal(messages.at(-1).phase, 'complete');
+    assert.equal(messages.at(-1).requestId, 2);
+    assert.equal(messages.at(-1).comparison.sampling.A.status, 'empty-target');
+    const absentManifest=await prepareComparisonManifest(source,normalizeROISelection(source,999),source,normalizeROISelection(source,1),target);
+    self.onmessage({data:{...input,requestId:3,selectionA:999,manifest:absentManifest}});
+    assert.equal(messages.at(-1).blocked, true);
+    assert.equal(messages.at(-1).sampling.A.status, 'empty-source');
+    const length = messages.length;
+    self.onmessage({data:{requestId:3,action:'confirm'}});
+    assert.equal(messages.length, length);
+    const retainedManifest=await prepareComparisonManifest(source,normalizeROISelection(source,1),source,normalizeROISelection(source,1),grid);
+    self.onmessage({data:{...input,requestId:4,target:grid,manifest:retainedManifest}});
+    assert.deepEqual(messages.slice(-2).map(message => message.phase), ['preflight','complete']);
+    assert.deepEqual(messages.at(-1).comparison.manifest,retainedManifest);
+    self.onmessage({data:{...input,requestId:5,manifest:undefined}});
+    assert.match(messages.at(-1).error,/provenance/);
+  } finally { delete globalThis.self; }
+});
+
+test('worker round trip retains independent A/B file identities, ordered transform hashes, grids, tails, label sets and loss warnings',async()=>{
+  const a=await prepareLocalVolumeProvenance(volume([0],134),new Uint8Array([1,2]),{id:'A.nii.gz'});
+  const b=await prepareLocalVolumeProvenance({...volume([]),kind:'statistic',data:Float32Array.from({length:24},(_,i)=>i===0?-3:0)},new Uint8Array([3,4]),{id:'B.nii'});
+  a.transforms=[{id:'A-field',sha256:'a'.repeat(64)}];b.transforms=[{id:'B-field',sha256:'b'.repeat(64)}];
+  const target={...grid,affine:[...affine]};target.affine[3]=100;
+  const sa=normalizeROISelection(a,134),sb=normalizeROISelection(b,{threshold:2,tail:'negative'});
+  const manifest=await prepareComparisonManifest(a,sa,b,sb,target);
+  const messages=[];globalThis.self={postMessage:message=>messages.push(structuredClone(message))};
+  try{
+    await import(`./roi.worker.js?provenance=${Date.now()}`);
+    const input={requestId:11,volumeA:serializableVolume(a),volumeB:serializableVolume(b),selectionA:sa,selectionB:sb,target,manifest};
+    self.onmessage({data:input});assert.equal(messages.at(-1).requiresConfirmation,true);
+    input.manifest={...manifest,inputs:[]};
+    self.onmessage({data:{requestId:11,action:'confirm'}});
+    const result=messages.at(-1).comparison;
+    assert.deepEqual(result.manifest,manifest);assert.deepEqual(result.manifest.transforms,[...a.transforms,...b.transforms]);
+    assert.deepEqual(result.manifest.sourceGrids,[a.sourceGrid,b.sourceGrid]);assert.deepEqual(result.manifest.labelSets,[[134],[]]);
+    assert.deepEqual(result.manifest.thresholds[1],{kind:'statistic',threshold:2,tail:'negative'});
+    assert.equal(result.sampling.A.sourceVoxels,1);assert.deepEqual(result.sampling.A.lostLabelIds,[134]);assert.equal(result.sampling.B.status,'empty-target');
+    const rerun=compareROIs(a,sa,b,sb,target,{manifest});assert.deepEqual(result.metrics,rerun.metrics);assert.deepEqual(result.sampling,rerun.sampling);
+  }finally{delete globalThis.self;}
 });

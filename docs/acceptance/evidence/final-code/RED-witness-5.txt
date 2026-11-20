@@ -1,0 +1,3 @@
+node --input-type=module < witness-5.mjs.txt
+exit=0
+{"probe":"refresh-history-with-session-only-asset","volumes":0,"historyEntries":1,"outcome":"missing-asset: custom-a"}

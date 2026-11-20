@@ -1,0 +1,223 @@
+{
+  "generatedAt": "2026-10-29T09:00:57.806Z",
+  "nodeVersion": "v24.15.0",
+  "method": "Current built-in data import and code-derived search; no browser execution, no local user evidence, no live literature re-verification.",
+  "sourceHashes": {
+    "src/App.jsx": "cf1385c26b6af8cd998f0698907c88a47be92b14a88100d5d906e8e0aecc2ea9",
+    "src/components/LiteratureWorkspace.jsx": "2331f177685faa63d687c8d8e5cf194451a4a4b3e0d832fe8b1e16aa3692231e",
+    "src/data/literature.js": "d2e164bf2e3b9b3ef7063cfef40a0e1b49c1e08c0c02c38a6cd606ef5d87fef7",
+    "src/data/results.js": "86c0cbaeb4d048e53c99a8688eeb7f36a7ca906e6ba214e116dc30990ae6e23e",
+    "scripts/literature_build.mjs": "c5983f3de50333c279d4dd37c3113ab83bd302c0fcd4dbd41e4b1eeeddadfe30"
+  },
+  "denominators": {
+    "fullBibliographyReferences": 118,
+    "note": "App.jsx filters structures, not allReferences: 118 and 115 are full-library counts, and 512 includes links to hidden spinal structures.",
+    "fullCatalogStructures": 188,
+    "activeBrainStructures": 150,
+    "hiddenSpinalStructures": 38,
+    "fullReadingRecords": 115,
+    "readingRecordsWithActiveBrainLinks": 99,
+    "readingRecordsWithHiddenSpinalLinks": 8,
+    "hiddenSpinalOnlyReadingRecordIds": [
+      "melzack1965",
+      "rexed1952",
+      "grillner2006",
+      "rupp2026"
+    ],
+    "readingRecordsWithoutStructureLinks": [
+      "tzourio2002",
+      "fonov2011",
+      "raichle2007",
+      "hoDocumentation",
+      "lancaster2000",
+      "lancaster2007",
+      "amunts1999",
+      "geyer2000",
+      "grefkes2001",
+      "geyer1996",
+      "amunts2000",
+      "geyer2004"
+    ],
+    "fullReadingLinks": 512,
+    "activeBrainReadingLinks": 433,
+    "hiddenSpinalReadingLinks": 79,
+    "unknownStructureLinks": [],
+    "activeBrainStructuresWithReadingLinks": 150,
+    "fullLibraryClaims": 115,
+    "readingRecordsWithGenericPopulation": 105
+  },
+  "structuredCoverage": {
+    "papers": 3,
+    "findings": 4,
+    "coordinates": 8,
+    "coordinateSpaces": {
+      "MNI-unspecified": 8
+    },
+    "activeBrainRegionIds": [
+      "pars-opercularis-r",
+      "pars-opercularis-l",
+      "insula-l",
+      "fusiform-r",
+      "fusiform-l",
+      "supramarginal-r",
+      "lateral-occipital-r"
+    ],
+    "hiddenSpinalRegionIds": [],
+    "directlyOverlayEligibleCoordinates": 0
+  },
+  "nonhumanDirectEvidence": {
+    "fullDataCount": 11,
+    "activeBrainCount": 8,
+    "hiddenSpinalCount": 3,
+    "activeBrainMappings": [
+      {
+        "referenceId": "hubel1962",
+        "species": "cat",
+        "structureId": "pericalcarine-l",
+        "sourceKind": "curated-region-reading"
+      },
+      {
+        "referenceId": "hubel1962",
+        "species": "cat",
+        "structureId": "pericalcarine-r",
+        "sourceKind": "curated-region-reading"
+      },
+      {
+        "referenceId": "hafting2005",
+        "species": "rat",
+        "structureId": "entorhinal-l",
+        "sourceKind": "curated-region-reading"
+      },
+      {
+        "referenceId": "hafting2005",
+        "species": "rat",
+        "structureId": "entorhinal-r",
+        "sourceKind": "curated-region-reading"
+      },
+      {
+        "referenceId": "padoaschioppa2006",
+        "species": "nonhuman-primate",
+        "structureId": "medial-orbitofrontal-l",
+        "sourceKind": "curated-region-reading"
+      },
+      {
+        "referenceId": "padoaschioppa2006",
+        "species": "nonhuman-primate",
+        "structureId": "medial-orbitofrontal-r",
+        "sourceKind": "curated-region-reading"
+      },
+      {
+        "referenceId": "graziano2002",
+        "species": "nonhuman-primate",
+        "structureId": "precentral-l",
+        "sourceKind": "curated-region-reading"
+      },
+      {
+        "referenceId": "graziano2002",
+        "species": "nonhuman-primate",
+        "structureId": "precentral-r",
+        "sourceKind": "curated-region-reading"
+      }
+    ],
+    "hiddenSpinalMappings": [
+      {
+        "referenceId": "rexed1952",
+        "species": "cat",
+        "structureId": "spinal-gray",
+        "sourceKind": "curated-region-reading"
+      },
+      {
+        "referenceId": "rexed1952",
+        "species": "cat",
+        "structureId": "spinal-posterior-horn-l",
+        "sourceKind": "curated-region-reading"
+      },
+      {
+        "referenceId": "rexed1952",
+        "species": "cat",
+        "structureId": "spinal-posterior-horn-r",
+        "sourceKind": "curated-region-reading"
+      }
+    ],
+    "tsaoCounterexample": [
+      {
+        "referenceId": "tsao2006",
+        "species": "nonhuman-primate",
+        "structureId": "fusiform-l",
+        "sourceKind": "cross-species-context",
+        "directEvidence": false
+      },
+      {
+        "referenceId": "tsao2006",
+        "species": "nonhuman-primate",
+        "structureId": "fusiform-r",
+        "sourceKind": "cross-species-context",
+        "directEvidence": false
+      },
+      {
+        "referenceId": "tsao2006",
+        "species": "nonhuman-primate",
+        "structureId": "inferior-temporal-l",
+        "sourceKind": "cross-species-context",
+        "directEvidence": false
+      },
+      {
+        "referenceId": "tsao2006",
+        "species": "nonhuman-primate",
+        "structureId": "inferior-temporal-r",
+        "sourceKind": "cross-species-context",
+        "directEvidence": false
+      }
+    ]
+  },
+  "search": {
+    "zh": {
+      "queryMatches": {
+        "pre-SMA": [],
+        "BA44": [],
+        "BA44/45": [],
+        "停止": [
+          "raichle2007",
+          "schaum2021"
+        ],
+        "inhibitory": [
+          "schaum2021"
+        ]
+      },
+      "schaumTopics": [
+        "attention"
+      ],
+      "schaumPaperModalities": [
+        "MEG"
+      ],
+      "schaumIncludedByControlFilter": false,
+      "schaumIncludedByFMRIFilter": false
+    },
+    "en": {
+      "queryMatches": {
+        "pre-SMA": [],
+        "BA44": [],
+        "BA44/45": [],
+        "停止": [],
+        "inhibitory": [
+          "todd2010",
+          "schaum2021"
+        ]
+      },
+      "schaumTopics": [
+        "attention"
+      ],
+      "schaumPaperModalities": [
+        "MEG"
+      ],
+      "schaumIncludedByControlFilter": false,
+      "schaumIncludedByFMRIFilter": false
+    },
+    "existingSchaumCoordinateLabels": [
+      "rIFG BA44/45",
+      "lIFG BA44/45",
+      "Left anterior insula / IFG",
+      "pre-SMA"
+    ]
+  }
+}

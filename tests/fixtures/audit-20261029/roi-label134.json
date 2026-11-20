@@ -1,0 +1,77 @@
+{
+  "source": "aal-v3/aal3-fsl1mm.bin",
+  "sourceSha256": "fdcc53f70f169fef2bfd3135c5da5027317b7840bddb212e0ea1638f2dfd5113",
+  "labelId": 134,
+  "sourceGrid": {
+    "shape": [
+      181,
+      217,
+      181
+    ],
+    "affine": [
+      1,
+      0,
+      0,
+      -90,
+      0,
+      1,
+      0,
+      -126,
+      0,
+      0,
+      1,
+      -72,
+      0,
+      0,
+      0,
+      1
+    ],
+    "space": "MNI152NLin6Asym",
+    "order": "x-fastest"
+  },
+  "positiveLinearIndices": [
+    2612830,
+    2613011,
+    2613191,
+    2613192,
+    2652468,
+    2652650,
+    2691745
+  ],
+  "targetGrid": {
+    "shape": [
+      91,
+      109,
+      91
+    ],
+    "affine": [
+      2,
+      0,
+      0,
+      -90,
+      0,
+      2,
+      0,
+      -126,
+      0,
+      0,
+      2,
+      -72,
+      0,
+      0,
+      0,
+      1
+    ],
+    "data": "t1.bin",
+    "dtype": "uint8",
+    "order": "x-fastest",
+    "name": "FSL MNI152 T1 2 mm brain",
+    "space": "MNI152NLin6Asym",
+    "resolutionMm": 2,
+    "source": "https://ftp.nmr.mgh.harvard.edu/pub/dist/freesurfer/tutorial_packages_centos6/OSX/fsl_501/data/standard/MNI152_T1_2mm_brain.nii.gz",
+    "normalization": "Intensity scaled to 0–255 with 99.6th percentile upper clipping for display only.",
+    "sourceSha256": "09c925ad165dfbe6b41b572876d67e9bbf8c5e26517e7817f9b43a8256227f53",
+    "sha256": "1008af54b83b1c74fa82ec5eab851b93c64a2affcd33a4b797ae97f72990e780"
+  },
+  "note": "Lossless sparse source mask for the actual AAL3 label 134; zero elsewhere. The recorded coarse-grid loss is an audit observation, not a correct-behavior assertion."
+}

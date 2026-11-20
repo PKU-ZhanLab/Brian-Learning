@@ -1,3 +1,13 @@
+# 当前验收入口 / Current acceptance · 4.2.0
+
+当前为本地候选，未上线。[完整矩阵](acceptance/STATUS.md)逐项记录 50 个 R 与 31 个任务；软件 pass、实际浏览器 not-run 和人工 pending-review 分开。历史记录只证明其固定版本的行为。新 S6/E6/X10/X11 不能借用早期截图声称运行通过。
+
+See the [three workflows](acceptance/RESEARCH_WORKFLOWS.md), [accessibility scope](acceptance/ACCESSIBILITY.md) and [release/rollback procedure](acceptance/RELEASE_CHECKLIST.md). Software integrity and build success do not establish independent anatomical accuracy, researcher task success or public deployment.
+
+---
+
+以下为保留的历史记录 / Retained historical record. Earlier pass/deployment claims apply only to their dated versions.
+
 # 4.0 验证说明
 
 当前范围与限制见 [4.0 功能范围](FEATURE_SCOPE_V4.md)。公开源码副本通过57项自动测试和独立公开构建；162项发布数据资产哈希匹配。真实DK23掩膜项目往返后仍为1732体素、Dice=1，交集NIfTI和相机参数保持一致。四个AAL入口分别生成116/166个实际标签的概览边界；小标签134可单独生成边界。下方记录属于历史版本。4.0最终文件/项目恢复及移动端浏览器验收未完成，自动化因Windows当前地址识别限制终止；未将其报告为通过。

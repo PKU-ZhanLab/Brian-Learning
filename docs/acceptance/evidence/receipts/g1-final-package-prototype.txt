@@ -1,0 +1,11 @@
+✔ immutable fixture keeps exact affine, discrete IDs and original/derived identities (7.1484ms)
+✔ same known values exercise inclusive positive, negative and absolute tails (2.8443ms)
+✔ canonical restore replaces changed fixture controls and preserves identity, source arrays and both decimal points (12.7521ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 148.8704

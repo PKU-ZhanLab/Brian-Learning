@@ -6,8 +6,9 @@ import {fileURLToPath} from 'node:url';
 import {references} from '../src/data/references.js';
 import {additionalReferences} from '../src/data/references-expanded.js';
 import {evidenceByStructureId,atlasEvidence,evidenceFields} from '../src/data/evidence.js';
-import {paperAnnotations} from '../data-sources/literature-upgrade/curation.mjs';
-import {literatureTopics,literatureModalities,studyTypeLabels,associationLabels,speciesLabels,populationOverrides,newPaperMappings,paperScopeOverrides,literatureDebates,curatedFigures} from '../data-sources/literature-upgrade/discovery.mjs';
+import {paperAnnotations,sourceRegionAnnotations} from '../data-sources/literature-upgrade/curation.mjs';
+import {literatureTopics,literatureModalities,studyTypeLabels,associationLabels,speciesLabels,populationOverrides,newPaperMappings,paperScopeOverrides,literatureDebates,curatedFigures,mappingSourceOverrides} from '../data-sources/literature-upgrade/discovery.mjs';
+import {classifyMapping} from '../src/lib/evidence-mapping.js';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const sourceDir=path.join(root,'data-sources/literature-upgrade');
@@ -77,11 +78,19 @@ for(const r of allRefs){
     return {structureId:m.structureId,relation:contextual?'review-association':relation(studyType),space:null,coordinates:null,source:r.url,sourceKind:'curated-region-reading',sourceFields:m.sourceFields,directEvidence:!contextual&&!['synthesis','background','theoretical'].includes(associationStrength),limitations:b([...m.scopes,paperLimit.zh,noCoordinates.zh].join(' '),`${paperLimit.en} ${noCoordinates.en}`)};
   });
   if(newPaperMappings[r.id])mappedRegions=newPaperMappings[r.id].flatMap(m=>m.structureIds.map(structureId=>({structureId,relation:m.relation,space:null,coordinates:null,source:m.source||r.url,sourceKind:m.sourceKind,sourceFields:['function'],directEvidence:m.relation!=='review-association',limitations:b(`${m.limitations.zh} ${noCoordinates.zh}`,`${m.limitations.en} ${noCoordinates.en}`)})));
+  const measurementKind=synthesisTypes.has(studyType)?'synthesis':backgroundTypes.has(studyType)||studyType==='theory'?'background':'direct-measurement';
+  mappedRegions=mappedRegions.map(m=>{
+    const source=sourceRegionAnnotations[r.id]||mappingSourceOverrides[r.id]||{label:null,hemisphere:'U'};
+    const mapping=classifyMapping({...m,id:`reading:${r.id}:${m.structureId}`,referenceId:r.id,claimId:`${r.id}:reading-claim`,resultId:null,sourceRegion:{species,label:source.label,hemisphere:source.hemisphere,spaceId:null},targetConceptId:m.structureId,targetRegionRef:null,measurementKind,support:m.directEvidence?'direct':'context',mappingKind:m.directEvidence?'author-reported':'contextual',sourceRefs:[{url:m.source,kind:m.sourceKind}],modalities});
+    if(!source.label)mapping.limitations=b(`${mapping.limitations.zh} 原作者区域标签与侧化尚未摘录；不由目标脑区名称补齐。`,`${mapping.limitations.en} Original author region labels and laterality have not been extracted; they are not inferred from target region names.`);
+    if(mapping.support==='cross-species')mapping.limitations=b(`${mapping.limitations.zh} 动物来源与人体目标仅作跨物种比较；同源性和来源侧化尚未验证。`,`${mapping.limitations.en} Animal sources and human targets are linked for cross-species comparison only; homology and source laterality are unverified.`);
+    return mapping;
+  });
   for(const m of mappedRegions)if(!evidenceByStructureId[m.structureId])throw Error(`Unknown region: ${r.id}/${m.structureId}`);
   const population=populationOverrides[r.id]||b(`${speciesLabels[species].zh}；${studyTypeLabels[studyType].zh}。具体样本与纳入范围见原文。`,`${speciesLabels[species].en}; ${studyTypeLabels[studyType].en.toLowerCase()}. See the source for exact sampling and inclusion criteria.`);
   const sourceFields=[...new Set(mappedRegions.flatMap(m=>m.sourceFields))];
   const claimField=anatomyTypes.has(studyType)?'anatomy':studyType==='clinical-standard'?'clinical':sourceFields.includes('function')?'function':sourceFields.includes('cognition')?'cognition':sourceFields.includes('clinical')?'clinical':'result';
-  literaturePapers.push({id:r.id,referenceId:r.id,modalities,topics:a.topics,species,speciesLabel:speciesLabels[species],studyType,studyTypeLabel:studyTypeLabels[studyType],population,associationStrength,associationStrengthLabel:associationLabels[associationStrength],mappedRegions,atlasAssociations:atlasInverse[r.id]||[],resultSummaries:b(r.summary,a.en),figures:figuresByRef[r.id]||[],claims:[{regionIds:mappedRegions.map(m=>m.structureId),field:claimField,text:b(r.summary,a.en),source:r.url,limitations:paperLimit}],methodProvenance:{source:r.url,sourceKind:info.abstract?'abstract-plus-curation':'title-record-plus-curation',metadataSources:info.sources,verifiedAt:'2026-10-25'},coordinateStatus:'not-extracted',limitations:paperLimit});
+  literaturePapers.push({id:r.id,referenceId:r.id,modalities,topics:a.topics,species,speciesLabel:speciesLabels[species],studyType,studyTypeLabel:studyTypeLabels[studyType],population,associationStrength,associationStrengthLabel:associationLabels[associationStrength],mappedRegions,atlasAssociations:atlasInverse[r.id]||[],resultSummaries:b(r.summary,a.en),figures:figuresByRef[r.id]||[],claims:[{id:`${r.id}:reading-claim`,regionIds:mappedRegions.map(m=>m.structureId),field:claimField,text:b(r.summary,a.en),source:r.url,limitations:paperLimit}],methodProvenance:{source:r.url,sourceKind:info.abstract?'abstract-plus-curation':'title-record-plus-curation',metadataSources:info.sources,verifiedAt:'2026-10-25'},coordinateStatus:'not-extracted',limitations:paperLimit});
 }
 const exports={additionalLiteratureReferences,literatureTopics,literatureModalities,literaturePapers,literatureDebates};
 const output='// Generated by scripts/literature_build.mjs from verified records and bilingual editorial annotations.\n// Region links are reading associations, not extracted activation coordinates.\n'+Object.entries(exports).map(([key,value])=>`export const ${key} = ${JSON.stringify(value,null,2)};\n`).join('\n')+'\nexport const literatureByReferenceId = Object.fromEntries(literaturePapers.map(p => [p.referenceId, p]));\n';

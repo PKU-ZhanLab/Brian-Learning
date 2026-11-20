@@ -1,0 +1,50 @@
+[
+  {
+    "url": "https://gitlab.gwdg.de/api/v4/projects/13668/repository/commits/15897968c2f068a5898a5e701ad284340b295b49",
+    "status": 200,
+    "retrievedAt": "2026-10-29T17:18:20.325Z",
+    "bytes": 744,
+    "sha256": "5955a569993af5a9e953a630ddb35e4b52164cf34c14b6102e8fc47ab57db612",
+    "local": "output/e6-source-assessment/code-commit.json"
+  },
+  {
+    "url": "https://gitlab.gwdg.de/api/v4/projects/13668/repository/files/fmriprep-stats%2Fmatlab%2Ff1c_second_level_batch_Active_vs_Sham_masked_covs_Age_GMV.m/raw?ref=15897968c2f068a5898a5e701ad284340b295b49",
+    "status": 200,
+    "retrievedAt": "2026-10-29T17:18:20.565Z",
+    "bytes": 2628,
+    "sha256": "e70c92f842248a271b3b23440dfe56b45284cbb017d5c3b1ac1c32f1debd3b7a",
+    "local": "output/e6-source-assessment/f1c_second_level_batch_Active_vs_Sham_masked_covs_Age_GMV.m"
+  },
+  {
+    "url": "https://neurovault.org/api/images/787769/",
+    "status": 200,
+    "retrievedAt": "2026-10-29T17:18:20.925Z",
+    "bytes": 1603,
+    "sha256": "5429ee6c8c4f1cfaaa9e95516241ecf7cceec5f4918b4a77e71729638cd63db7",
+    "local": "output/e6-source-assessment/image787769.json"
+  },
+  {
+    "url": "https://neurovault.org/api/collections/13064/",
+    "status": 200,
+    "retrievedAt": "2026-10-29T17:18:21.184Z",
+    "bytes": 3189,
+    "sha256": "0f9f4359520add2a14faf2ba9aad30c4625d7f9c544fb8953d3a6c034f036ba3",
+    "local": "output/e6-source-assessment/collection13064.json"
+  },
+  {
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10615837/fullTextXML",
+    "status": 200,
+    "retrievedAt": "2026-10-29T17:18:22.553Z",
+    "bytes": 167595,
+    "sha256": "d8b43af4be15b5a959d25031123b459fabc74551e5029ba68ff6b7093477cb42",
+    "local": null
+  },
+  {
+    "url": "https://neurovault.org/FAQ",
+    "status": 200,
+    "retrievedAt": "2026-10-29T17:18:22.926Z",
+    "bytes": 25708,
+    "sha256": "91786be4bd4b8a59fb7f5551ef9d15bf3ef69e497fc6e0559d54b6dff981a7b7",
+    "local": null
+  }
+]

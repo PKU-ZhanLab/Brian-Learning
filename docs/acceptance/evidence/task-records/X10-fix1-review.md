@@ -1,0 +1,23 @@
+- **I1 / P1 — Rebind thresholded slice sampling to the derived membership array — ADDRESSED.** `src/lib/comparison-display.js:4-10` now passes the derived membership buffer through canonical `prepareVolume`; its new `sampleRAS` closes over that buffer (`src/lib/volume.js:18-33`). The raw volume remains separate and unchanged; the derivative removes the raw `identity` claim and retains `sourceIdentity`. Production `SourcePanel` consumes this adapter at `src/components/ComparisonViewport.jsx:25,32,49`; the isolated fixture uses it at `experiments/viewer-comparison/fixture.mjs:3,15`. The actual slice overlay and crosshair label consume the resulting display sampler (`src/components/SliceViews.jsx:11,15`; `src/lib/volume.js:206-211,239-245`). The added regression covers the exact signed `[-3,3,1]` witness across positive/negative/absolute tails, excluded `+1`, probability/mask membership, raw-source preservation, and unchanged integer-label identity (`src/lib/comparison-display.test.mjs:10-35`).
+- **I2 / P2 — Give explicit same-source reset its own reload generation — ADDRESSED.** Reset increments the affected side's generation even when asset ID, empty labels, threshold `.5` and positive tail are unchanged (`src/components/ComparisonViewport.jsx:54,60-61`). That generation enters the actual effect request key (`src/lib/comparison-link.js:2-4`; `src/components/ComparisonViewport.jsx:16,39`), so reset clears/reloads the panel and source identity is republished through `resolved` (`src/components/ComparisonViewport.jsx:20-38,58`). Resolved identity alone is excluded from the request key, avoiding a new identity-resolution load loop. Both chooser/reset events immediately invalidate the previous load/worker generation; effect cleanup cancels and terminates it (`src/components/ComparisonViewport.jsx:28,38,40,43`; `src/lib/comparison-link.js:6-17`). Tests cover empty/default same-ID request changes, reload plus subsequent point edits, mismatch recovery after clearing saved identity, and cancelled/superseded completion (`src/lib/comparison-source.test.mjs:10-33`).
+
+## New Breakage in the Fix Diff
+
+- **None established.** Re-preparation retains the existing affine/order and canonical sampling authority. Worker serialization still supplies the membership array; worker summary/surface consumers do not require a display `identity` (`src/lib/roi.js:237-238`; `src/lib/atlas-explorer.worker.js:1-2`). The new loader preserves authoritative `loadAtlas` caching and saved-source identity validation.
+
+## Out-of-Scope Observations
+
+- **None newly established.** Prior nonblocking M1 readability and M2 build diagnostics remain recorded in `X10-review.md`; this round does not expand their scope or treat them as new gates.
+
+## Checks and Evidence Boundaries
+
+- **Checked:** supplied fix package `91dc4b37a9ba591690529e1386230a713e769a45..3f2325643b60698727008e46d81294d6d8bc106f`, both prior findings, appended fix report, changed adapters/tests, and the narrow sampler/worker/serializer consumers needed to assess them. The initial combined read was truncated; missing package/report content was retrieved in bounded reads. No Git commands were run.
+- **Checked:** `X10-report.md:109-128` names the covering commands and results. Preserved `X10-fix1-focused.log` shows all 22 named tests passing with zero failures, including the new sampling and same-ID lifecycle cases. Production and prototype build logs end in successful builds and retain the reported chunk warnings. These are inspected implementer-run records, not independently rerun results.
+- **Not run:** tests, builds, browser/desktop/Playwright execution, installs, or subagents. Reading the fix raised no specific unresolved doubt requiring another Node probe. Only this review report was written; source, index, HEAD and branch state were not changed.
+- **Still unverified:** browser rendering and interaction, responsive/focus/camera behavior, scientific pixel equivalence, lifecycle/privacy behavior in a browser, and full viewer-performance evaluation. The fix does not supply acceptance evidence for these and this review does not infer it.
+
+## Verdict
+
+- **Spec compliance for I1/I2:** PASS within the scoped implementation review; both specific defects are addressed. Original task acceptance that requires executed browser/scientific/performance evidence remains incomplete.
+- **Code quality for this fix:** PASS; no new Critical/Important breakage established. Earlier readability/build-warning observations remain nonblocking.
+- **Fix round:** All findings addressed, no new Critical/Important breakage.

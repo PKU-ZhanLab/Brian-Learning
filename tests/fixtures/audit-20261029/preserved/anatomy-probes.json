@@ -1,0 +1,1584 @@
+{
+  "schema": 1,
+  "createdAt": "2026-10-29T09:00:53.472Z",
+  "sourceRoot": "F:\\project\\brain-model\\.deployment\\source",
+  "revision": "ca00c0928b0c7b62c662636cddf3a8d1da374a15",
+  "method": "Read-only Node execution of the pinned source matching functions and compareROIs; actual binary surface labels and AAL3 voxels were read. No browser interaction and no anatomical certification.",
+  "inputSha256": {
+    "manifest.json": "25b9a2584a8db5849ca95b118321ed233731cf88673756018365a27d2bbd44d5",
+    "surface-v1/manifest.json": "c9529c36628593442dcb5c416da6351748d3a9379e5a295a9bf0f1b6606391c6",
+    "volume.json": "f8942cfef8a973f7764b66cfc7ddcd10a01acf1ac48f25a64737225b95f18b66",
+    "aal-v3/aal3-fsl1mm.bin": "fdcc53f70f169fef2bfd3135c5da5027317b7840bddb212e0ea1638f2dfd5113",
+    "surface-v1/aal-registered-left.bin": "4a84516aa863578fe5346c96a0308c3b4b6918051ed0765a2dcc3cc8a20a1d95",
+    "surface-v1/aal-registered-right.bin": "fd4966bd08f59a3da59fda1cd47330fd24ae9004c417a6c19f92adb4ece94830",
+    "surface-v1/aal3-registered-left.bin": "3a29ca4e86da3d01c777ced6ca4d272b3be241f406e0964ccb7630006d07d1cd",
+    "surface-v1/aal3-registered-right.bin": "6f6e28433c49c1fc4932361a8f71b36e217be435f8e237f7a74943ab29b33a08"
+  },
+  "coverage": {
+    "aal-registered": {
+      "totalVolumeLabels": 116,
+      "corticalLabelDenominator": 78,
+      "corticalLabelDenominatorDefinition": "All actual volume labels admitted by the current isAalCorticalLabel predicate, including both hemispheres. This is not the entire atlas and is not a vertex count.",
+      "distinctPositiveProjectedLabels": 78,
+      "labelsMappedToCorticalCards": 24,
+      "labelsUnmappedToCorticalCards": 54,
+      "vertices": {
+        "mappedToCorticalCard": 24392,
+        "unmappedToCorticalCard": 51310,
+        "labelled": 75702,
+        "eligible": 75966
+      },
+      "unmappedLabelledVertexPercent": 67.77892261763229,
+      "rows": [
+        {
+          "labelId": 2001,
+          "labelName": "Precentral_L",
+          "hemisphere": "L",
+          "corticalCardId": "precentral-l",
+          "clickCardId": "precentral-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 2002,
+          "labelName": "Precentral_R",
+          "hemisphere": "R",
+          "corticalCardId": "precentral-r",
+          "clickCardId": "precentral-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 2101,
+          "labelName": "Frontal_Sup_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2102,
+          "labelName": "Frontal_Sup_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2111,
+          "labelName": "Frontal_Sup_Orb_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2112,
+          "labelName": "Frontal_Sup_Orb_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2201,
+          "labelName": "Frontal_Mid_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2202,
+          "labelName": "Frontal_Mid_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2211,
+          "labelName": "Frontal_Mid_Orb_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2212,
+          "labelName": "Frontal_Mid_Orb_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2301,
+          "labelName": "Frontal_Inf_Oper_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2302,
+          "labelName": "Frontal_Inf_Oper_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2311,
+          "labelName": "Frontal_Inf_Tri_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2312,
+          "labelName": "Frontal_Inf_Tri_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2321,
+          "labelName": "Frontal_Inf_Orb_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2322,
+          "labelName": "Frontal_Inf_Orb_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2331,
+          "labelName": "Rolandic_Oper_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2332,
+          "labelName": "Rolandic_Oper_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2401,
+          "labelName": "Supp_Motor_Area_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2402,
+          "labelName": "Supp_Motor_Area_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2501,
+          "labelName": "Olfactory_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2502,
+          "labelName": "Olfactory_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2601,
+          "labelName": "Frontal_Sup_Medial_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2602,
+          "labelName": "Frontal_Sup_Medial_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2611,
+          "labelName": "Frontal_Med_Orb_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2612,
+          "labelName": "Frontal_Med_Orb_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2701,
+          "labelName": "Rectus_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 2702,
+          "labelName": "Rectus_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 3001,
+          "labelName": "Insula_L",
+          "hemisphere": "L",
+          "corticalCardId": "insula-l",
+          "clickCardId": "insula-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 3002,
+          "labelName": "Insula_R",
+          "hemisphere": "R",
+          "corticalCardId": "insula-r",
+          "clickCardId": "insula-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 4001,
+          "labelName": "Cingulum_Ant_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": "cingulum-l",
+          "clickCardCategory": "tract"
+        },
+        {
+          "labelId": 4002,
+          "labelName": "Cingulum_Ant_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": "cingulum-r",
+          "clickCardCategory": "tract"
+        },
+        {
+          "labelId": 4011,
+          "labelName": "Cingulum_Mid_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": "cingulum-l",
+          "clickCardCategory": "tract"
+        },
+        {
+          "labelId": 4012,
+          "labelName": "Cingulum_Mid_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": "cingulum-r",
+          "clickCardCategory": "tract"
+        },
+        {
+          "labelId": 4021,
+          "labelName": "Cingulum_Post_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": "cingulum-l",
+          "clickCardCategory": "tract"
+        },
+        {
+          "labelId": 4022,
+          "labelName": "Cingulum_Post_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": "cingulum-r",
+          "clickCardCategory": "tract"
+        },
+        {
+          "labelId": 4111,
+          "labelName": "ParaHippocampal_L",
+          "hemisphere": "L",
+          "corticalCardId": "parahippocampal-l",
+          "clickCardId": "parahippocampal-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 4112,
+          "labelName": "ParaHippocampal_R",
+          "hemisphere": "R",
+          "corticalCardId": "parahippocampal-r",
+          "clickCardId": "parahippocampal-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 5001,
+          "labelName": "Calcarine_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 5002,
+          "labelName": "Calcarine_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 5011,
+          "labelName": "Cuneus_L",
+          "hemisphere": "L",
+          "corticalCardId": "cuneus-l",
+          "clickCardId": "cuneus-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 5012,
+          "labelName": "Cuneus_R",
+          "hemisphere": "R",
+          "corticalCardId": "cuneus-r",
+          "clickCardId": "cuneus-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 5021,
+          "labelName": "Lingual_L",
+          "hemisphere": "L",
+          "corticalCardId": "lingual-l",
+          "clickCardId": "lingual-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 5022,
+          "labelName": "Lingual_R",
+          "hemisphere": "R",
+          "corticalCardId": "lingual-r",
+          "clickCardId": "lingual-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 5101,
+          "labelName": "Occipital_Sup_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 5102,
+          "labelName": "Occipital_Sup_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 5201,
+          "labelName": "Occipital_Mid_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 5202,
+          "labelName": "Occipital_Mid_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 5301,
+          "labelName": "Occipital_Inf_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 5302,
+          "labelName": "Occipital_Inf_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 5401,
+          "labelName": "Fusiform_L",
+          "hemisphere": "L",
+          "corticalCardId": "fusiform-l",
+          "clickCardId": "fusiform-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 5402,
+          "labelName": "Fusiform_R",
+          "hemisphere": "R",
+          "corticalCardId": "fusiform-r",
+          "clickCardId": "fusiform-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 6001,
+          "labelName": "Postcentral_L",
+          "hemisphere": "L",
+          "corticalCardId": "postcentral-l",
+          "clickCardId": "postcentral-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 6002,
+          "labelName": "Postcentral_R",
+          "hemisphere": "R",
+          "corticalCardId": "postcentral-r",
+          "clickCardId": "postcentral-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 6101,
+          "labelName": "Parietal_Sup_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 6102,
+          "labelName": "Parietal_Sup_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 6201,
+          "labelName": "Parietal_Inf_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 6202,
+          "labelName": "Parietal_Inf_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 6211,
+          "labelName": "SupraMarginal_L",
+          "hemisphere": "L",
+          "corticalCardId": "supramarginal-l",
+          "clickCardId": "supramarginal-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 6212,
+          "labelName": "SupraMarginal_R",
+          "hemisphere": "R",
+          "corticalCardId": "supramarginal-r",
+          "clickCardId": "supramarginal-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 6221,
+          "labelName": "Angular_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 6222,
+          "labelName": "Angular_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 6301,
+          "labelName": "Precuneus_L",
+          "hemisphere": "L",
+          "corticalCardId": "precuneus-l",
+          "clickCardId": "precuneus-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 6302,
+          "labelName": "Precuneus_R",
+          "hemisphere": "R",
+          "corticalCardId": "precuneus-r",
+          "clickCardId": "precuneus-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 6401,
+          "labelName": "Paracentral_Lobule_L",
+          "hemisphere": "L",
+          "corticalCardId": "paracentral-l",
+          "clickCardId": "paracentral-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 6402,
+          "labelName": "Paracentral_Lobule_R",
+          "hemisphere": "R",
+          "corticalCardId": "paracentral-r",
+          "clickCardId": "paracentral-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 8101,
+          "labelName": "Heschl_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 8102,
+          "labelName": "Heschl_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 8111,
+          "labelName": "Temporal_Sup_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 8112,
+          "labelName": "Temporal_Sup_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 8121,
+          "labelName": "Temporal_Pole_Sup_L",
+          "hemisphere": "L",
+          "corticalCardId": "temporal-pole-l",
+          "clickCardId": "temporal-pole-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 8122,
+          "labelName": "Temporal_Pole_Sup_R",
+          "hemisphere": "R",
+          "corticalCardId": "temporal-pole-r",
+          "clickCardId": "temporal-pole-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 8201,
+          "labelName": "Temporal_Mid_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 8202,
+          "labelName": "Temporal_Mid_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 8211,
+          "labelName": "Temporal_Pole_Mid_L",
+          "hemisphere": "L",
+          "corticalCardId": "temporal-pole-l",
+          "clickCardId": "temporal-pole-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 8212,
+          "labelName": "Temporal_Pole_Mid_R",
+          "hemisphere": "R",
+          "corticalCardId": "temporal-pole-r",
+          "clickCardId": "temporal-pole-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 8301,
+          "labelName": "Temporal_Inf_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 8302,
+          "labelName": "Temporal_Inf_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        }
+      ]
+    },
+    "aal3-registered": {
+      "totalVolumeLabels": 166,
+      "corticalLabelDenominator": 86,
+      "corticalLabelDenominatorDefinition": "All actual volume labels admitted by the current isAalCorticalLabel predicate, including both hemispheres. This is not the entire atlas and is not a vertex count.",
+      "distinctPositiveProjectedLabels": 86,
+      "labelsMappedToCorticalCards": 24,
+      "labelsUnmappedToCorticalCards": 62,
+      "vertices": {
+        "mappedToCorticalCard": 24463,
+        "unmappedToCorticalCard": 51192,
+        "labelled": 75655,
+        "eligible": 75966
+      },
+      "unmappedLabelledVertexPercent": 67.66505848919437,
+      "rows": [
+        {
+          "labelId": 1,
+          "labelName": "Precentral_L",
+          "hemisphere": "L",
+          "corticalCardId": "precentral-l",
+          "clickCardId": "precentral-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 2,
+          "labelName": "Precentral_R",
+          "hemisphere": "R",
+          "corticalCardId": "precentral-r",
+          "clickCardId": "precentral-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 3,
+          "labelName": "Frontal_Sup_2_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 4,
+          "labelName": "Frontal_Sup_2_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 5,
+          "labelName": "Frontal_Mid_2_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 6,
+          "labelName": "Frontal_Mid_2_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 7,
+          "labelName": "Frontal_Inf_Oper_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 8,
+          "labelName": "Frontal_Inf_Oper_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 9,
+          "labelName": "Frontal_Inf_Tri_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 10,
+          "labelName": "Frontal_Inf_Tri_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 11,
+          "labelName": "Frontal_Inf_Orb_2_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 12,
+          "labelName": "Frontal_Inf_Orb_2_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 13,
+          "labelName": "Rolandic_Oper_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 14,
+          "labelName": "Rolandic_Oper_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 15,
+          "labelName": "Supp_Motor_Area_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 16,
+          "labelName": "Supp_Motor_Area_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 17,
+          "labelName": "Olfactory_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 18,
+          "labelName": "Olfactory_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 19,
+          "labelName": "Frontal_Sup_Medial_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 20,
+          "labelName": "Frontal_Sup_Medial_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 21,
+          "labelName": "Frontal_Med_Orb_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 22,
+          "labelName": "Frontal_Med_Orb_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 23,
+          "labelName": "Rectus_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 24,
+          "labelName": "Rectus_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 25,
+          "labelName": "OFCmed_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 26,
+          "labelName": "OFCmed_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 27,
+          "labelName": "OFCant_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 28,
+          "labelName": "OFCant_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 29,
+          "labelName": "OFCpost_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 30,
+          "labelName": "OFCpost_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 31,
+          "labelName": "OFClat_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 32,
+          "labelName": "OFClat_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 33,
+          "labelName": "Insula_L",
+          "hemisphere": "L",
+          "corticalCardId": "insula-l",
+          "clickCardId": "insula-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 34,
+          "labelName": "Insula_R",
+          "hemisphere": "R",
+          "corticalCardId": "insula-r",
+          "clickCardId": "insula-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 37,
+          "labelName": "Cingulate_Mid_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 38,
+          "labelName": "Cingulate_Mid_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 39,
+          "labelName": "Cingulate_Post_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 40,
+          "labelName": "Cingulate_Post_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 43,
+          "labelName": "ParaHippocampal_L",
+          "hemisphere": "L",
+          "corticalCardId": "parahippocampal-l",
+          "clickCardId": "parahippocampal-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 44,
+          "labelName": "ParaHippocampal_R",
+          "hemisphere": "R",
+          "corticalCardId": "parahippocampal-r",
+          "clickCardId": "parahippocampal-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 47,
+          "labelName": "Calcarine_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 48,
+          "labelName": "Calcarine_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 49,
+          "labelName": "Cuneus_L",
+          "hemisphere": "L",
+          "corticalCardId": "cuneus-l",
+          "clickCardId": "cuneus-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 50,
+          "labelName": "Cuneus_R",
+          "hemisphere": "R",
+          "corticalCardId": "cuneus-r",
+          "clickCardId": "cuneus-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 51,
+          "labelName": "Lingual_L",
+          "hemisphere": "L",
+          "corticalCardId": "lingual-l",
+          "clickCardId": "lingual-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 52,
+          "labelName": "Lingual_R",
+          "hemisphere": "R",
+          "corticalCardId": "lingual-r",
+          "clickCardId": "lingual-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 53,
+          "labelName": "Occipital_Sup_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 54,
+          "labelName": "Occipital_Sup_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 55,
+          "labelName": "Occipital_Mid_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 56,
+          "labelName": "Occipital_Mid_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 57,
+          "labelName": "Occipital_Inf_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 58,
+          "labelName": "Occipital_Inf_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 59,
+          "labelName": "Fusiform_L",
+          "hemisphere": "L",
+          "corticalCardId": "fusiform-l",
+          "clickCardId": "fusiform-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 60,
+          "labelName": "Fusiform_R",
+          "hemisphere": "R",
+          "corticalCardId": "fusiform-r",
+          "clickCardId": "fusiform-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 61,
+          "labelName": "Postcentral_L",
+          "hemisphere": "L",
+          "corticalCardId": "postcentral-l",
+          "clickCardId": "postcentral-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 62,
+          "labelName": "Postcentral_R",
+          "hemisphere": "R",
+          "corticalCardId": "postcentral-r",
+          "clickCardId": "postcentral-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 63,
+          "labelName": "Parietal_Sup_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 64,
+          "labelName": "Parietal_Sup_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 65,
+          "labelName": "Parietal_Inf_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 66,
+          "labelName": "Parietal_Inf_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 67,
+          "labelName": "SupraMarginal_L",
+          "hemisphere": "L",
+          "corticalCardId": "supramarginal-l",
+          "clickCardId": "supramarginal-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 68,
+          "labelName": "SupraMarginal_R",
+          "hemisphere": "R",
+          "corticalCardId": "supramarginal-r",
+          "clickCardId": "supramarginal-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 69,
+          "labelName": "Angular_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 70,
+          "labelName": "Angular_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 71,
+          "labelName": "Precuneus_L",
+          "hemisphere": "L",
+          "corticalCardId": "precuneus-l",
+          "clickCardId": "precuneus-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 72,
+          "labelName": "Precuneus_R",
+          "hemisphere": "R",
+          "corticalCardId": "precuneus-r",
+          "clickCardId": "precuneus-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 73,
+          "labelName": "Paracentral_Lobule_L",
+          "hemisphere": "L",
+          "corticalCardId": "paracentral-l",
+          "clickCardId": "paracentral-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 74,
+          "labelName": "Paracentral_Lobule_R",
+          "hemisphere": "R",
+          "corticalCardId": "paracentral-r",
+          "clickCardId": "paracentral-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 83,
+          "labelName": "Heschl_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 84,
+          "labelName": "Heschl_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 85,
+          "labelName": "Temporal_Sup_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 86,
+          "labelName": "Temporal_Sup_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 87,
+          "labelName": "Temporal_Pole_Sup_L",
+          "hemisphere": "L",
+          "corticalCardId": "temporal-pole-l",
+          "clickCardId": "temporal-pole-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 88,
+          "labelName": "Temporal_Pole_Sup_R",
+          "hemisphere": "R",
+          "corticalCardId": "temporal-pole-r",
+          "clickCardId": "temporal-pole-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 89,
+          "labelName": "Temporal_Mid_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 90,
+          "labelName": "Temporal_Mid_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 91,
+          "labelName": "Temporal_Pole_Mid_L",
+          "hemisphere": "L",
+          "corticalCardId": "temporal-pole-l",
+          "clickCardId": "temporal-pole-l",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 92,
+          "labelName": "Temporal_Pole_Mid_R",
+          "hemisphere": "R",
+          "corticalCardId": "temporal-pole-r",
+          "clickCardId": "temporal-pole-r",
+          "clickCardCategory": "cortex"
+        },
+        {
+          "labelId": 93,
+          "labelName": "Temporal_Inf_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 94,
+          "labelName": "Temporal_Inf_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 151,
+          "labelName": "ACC_sub_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 152,
+          "labelName": "ACC_sub_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 153,
+          "labelName": "ACC_pre_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 154,
+          "labelName": "ACC_pre_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 155,
+          "labelName": "ACC_sup_L",
+          "hemisphere": "L",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        },
+        {
+          "labelId": 156,
+          "labelName": "ACC_sup_R",
+          "hemisphere": "R",
+          "corticalCardId": null,
+          "clickCardId": null,
+          "clickCardCategory": null
+        }
+      ]
+    }
+  },
+  "wrongTissueMappings": [
+    {
+      "labelId": 4001,
+      "labelName": "Cingulum_Ant_L",
+      "hemisphere": "L",
+      "corticalCardId": null,
+      "clickCardId": "cingulum-l",
+      "clickCardCategory": "tract"
+    },
+    {
+      "labelId": 4002,
+      "labelName": "Cingulum_Ant_R",
+      "hemisphere": "R",
+      "corticalCardId": null,
+      "clickCardId": "cingulum-r",
+      "clickCardCategory": "tract"
+    },
+    {
+      "labelId": 4011,
+      "labelName": "Cingulum_Mid_L",
+      "hemisphere": "L",
+      "corticalCardId": null,
+      "clickCardId": "cingulum-l",
+      "clickCardCategory": "tract"
+    },
+    {
+      "labelId": 4012,
+      "labelName": "Cingulum_Mid_R",
+      "hemisphere": "R",
+      "corticalCardId": null,
+      "clickCardId": "cingulum-r",
+      "clickCardCategory": "tract"
+    },
+    {
+      "labelId": 4021,
+      "labelName": "Cingulum_Post_L",
+      "hemisphere": "L",
+      "corticalCardId": null,
+      "clickCardId": "cingulum-l",
+      "clickCardCategory": "tract"
+    },
+    {
+      "labelId": 4022,
+      "labelName": "Cingulum_Post_R",
+      "hemisphere": "R",
+      "corticalCardId": null,
+      "clickCardId": "cingulum-r",
+      "clickCardCategory": "tract"
+    }
+  ],
+  "collapsedTemporalPoleMappings": {
+    "aal-registered": [
+      {
+        "labelId": 8121,
+        "labelName": "Temporal_Pole_Sup_L",
+        "hemisphere": "L",
+        "corticalCardId": "temporal-pole-l",
+        "clickCardId": "temporal-pole-l",
+        "clickCardCategory": "cortex"
+      },
+      {
+        "labelId": 8122,
+        "labelName": "Temporal_Pole_Sup_R",
+        "hemisphere": "R",
+        "corticalCardId": "temporal-pole-r",
+        "clickCardId": "temporal-pole-r",
+        "clickCardCategory": "cortex"
+      },
+      {
+        "labelId": 8211,
+        "labelName": "Temporal_Pole_Mid_L",
+        "hemisphere": "L",
+        "corticalCardId": "temporal-pole-l",
+        "clickCardId": "temporal-pole-l",
+        "clickCardCategory": "cortex"
+      },
+      {
+        "labelId": 8212,
+        "labelName": "Temporal_Pole_Mid_R",
+        "hemisphere": "R",
+        "corticalCardId": "temporal-pole-r",
+        "clickCardId": "temporal-pole-r",
+        "clickCardCategory": "cortex"
+      }
+    ],
+    "aal3-registered": [
+      {
+        "labelId": 87,
+        "labelName": "Temporal_Pole_Sup_L",
+        "hemisphere": "L",
+        "corticalCardId": "temporal-pole-l",
+        "clickCardId": "temporal-pole-l",
+        "clickCardCategory": "cortex"
+      },
+      {
+        "labelId": 88,
+        "labelName": "Temporal_Pole_Sup_R",
+        "hemisphere": "R",
+        "corticalCardId": "temporal-pole-r",
+        "clickCardId": "temporal-pole-r",
+        "clickCardCategory": "cortex"
+      },
+      {
+        "labelId": 91,
+        "labelName": "Temporal_Pole_Mid_L",
+        "hemisphere": "L",
+        "corticalCardId": "temporal-pole-l",
+        "clickCardId": "temporal-pole-l",
+        "clickCardCategory": "cortex"
+      },
+      {
+        "labelId": 92,
+        "labelName": "Temporal_Pole_Mid_R",
+        "hemisphere": "R",
+        "corticalCardId": "temporal-pole-r",
+        "clickCardId": "temporal-pole-r",
+        "clickCardCategory": "cortex"
+      }
+    ]
+  },
+  "baExamples": [
+    {
+      "labelId": 4,
+      "labelName": "BA4",
+      "leftCard": "paracentral-l"
+    },
+    {
+      "labelId": 10,
+      "labelName": "BA10",
+      "leftCard": "medial-orbitofrontal-l"
+    },
+    {
+      "labelId": 20,
+      "labelName": "BA20",
+      "leftCard": "fusiform-l"
+    },
+    {
+      "labelId": 32,
+      "labelName": "BA32",
+      "leftCard": "caudal-anterior-cingulate-l"
+    },
+    {
+      "labelId": 40,
+      "labelName": "BA40",
+      "leftCard": "inferior-parietal-l"
+    },
+    {
+      "labelId": 47,
+      "labelName": "BA47",
+      "leftCard": "lateral-orbitofrontal-l"
+    }
+  ],
+  "label134SelfComparison": {
+    "sourceLabel": {
+      "id": 134,
+      "name": "Thal_Re_R",
+      "voxels": 7,
+      "volumeMm3": 7,
+      "center": [
+        4.571,
+        -11.286,
+        -5.429
+      ]
+    },
+    "actualSourceVoxels": 7,
+    "sourceVoxelSizeMm": [
+      1,
+      1,
+      1
+    ],
+    "sourceVolumeMm3": 7,
+    "targetGrid": {
+      "shape": [
+        91,
+        109,
+        91
+      ],
+      "affine": [
+        2,
+        0,
+        0,
+        -90,
+        0,
+        2,
+        0,
+        -126,
+        0,
+        0,
+        2,
+        -72,
+        0,
+        0,
+        0,
+        1
+      ],
+      "order": "x-fastest",
+      "space": "MNI152NLin6Asym",
+      "voxelVolumeMm3": 8
+    },
+    "metrics": {
+      "aVoxels": 0,
+      "bVoxels": 0,
+      "intersectionVoxels": 0,
+      "unionVoxels": 0,
+      "aOnlyVoxels": 0,
+      "bOnlyVoxels": 0,
+      "aMm3": 0,
+      "bMm3": 0,
+      "intersectionMm3": 0,
+      "unionMm3": 0,
+      "aOnlyMm3": 0,
+      "bOnlyMm3": 0,
+      "dice": null,
+      "jaccard": null,
+      "aCoveredByB": null,
+      "bCoveredByA": null
+    },
+    "interpretation": "The fixed 2 mm comparison grid removes this 7 mm3 source parcel. The UI has an empty-target warning. This demonstrates a known resolution limitation, not an arithmetic error in nearest-neighbour resampling."
+  }
+}

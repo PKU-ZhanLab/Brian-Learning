@@ -1,0 +1,458 @@
+{
+  "schema": "source-artifact-v1",
+  "id": "bosco2008-v1",
+  "referenceId": "bosco2008",
+  "doi": "10.1523/JNEUROSCI.2869-08.2008",
+  "sourceUrl": "https://www.jneurosci.org/content/28/46/12071",
+  "sourceVersion": "Versioned minimal extraction v1; capture-specific primary source versions listed separately",
+  "retrievedAt": "2026-10-29",
+  "locator": "Selected cells and named sections; exact per-field locators below",
+  "rights": "Copyright Society for Neuroscience; retain only necessary numerical cells and source locators, not the complete article or table.",
+  "sourceFileSha256": null,
+  "captures": [
+    {
+      "id": "table",
+      "sourceUrl": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6671632/#T1",
+      "sourceVersion": "Journal of Neuroscience Version of Record / 2008 / PMC6671632 rendered 2026-10-29",
+      "retrievedAt": "2026-10-29",
+      "sourceFileSha256": null,
+      "sourceFilePersisted": false,
+      "retrievalMethod": "rendered-source"
+    }
+  ],
+  "excerpt": {
+    "format": "minimal-factual-cells-v1",
+    "cells": [
+      {
+        "id": "doi",
+        "rawText": "10.1523/JNEUROSCI.2869-08.2008",
+        "locator": "Article front matter / DOI",
+        "captureId": "table"
+      },
+      {
+        "id": "source-url",
+        "rawText": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6671632/#T1",
+        "locator": "Article identity / inspected primary source URL",
+        "captureId": "table"
+      },
+      {
+        "id": "author-0",
+        "rawText": "Gianfranco Bosco",
+        "locator": "Article front matter / ordered author 1",
+        "captureId": "table"
+      },
+      {
+        "id": "author-1",
+        "rawText": "Mauro Carrozzo",
+        "locator": "Article front matter / ordered author 2",
+        "captureId": "table"
+      },
+      {
+        "id": "author-2",
+        "rawText": "Francesco Lacquaniti",
+        "locator": "Article front matter / ordered author 3",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-raw-cell",
+        "rawText": "65, −36.6, 30.1 (1.2, 3.3, 3.6)",
+        "locator": "Table 1 / Protocol 1 / TPJ / mean (SD) cell",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-label",
+        "rawText": "TPJ",
+        "locator": "Table 1 / Protocol 1 / TPJ / row label",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-x",
+        "rawText": "65",
+        "locator": "Table 1 / Protocol 1 / TPJ / x coordinate (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-y",
+        "rawText": "−36.6",
+        "locator": "Table 1 / Protocol 1 / TPJ / y coordinate (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-z",
+        "rawText": "30.1",
+        "locator": "Table 1 / Protocol 1 / TPJ / z coordinate (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-table",
+        "rawText": "Table 1",
+        "locator": "Table 1 / Protocol 1 / TPJ / table identifier",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-mni",
+        "rawText": "MNI",
+        "locator": "Table 1 / Protocol 1 / TPJ / coordinate-system header or associated Methods",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-sd-0",
+        "rawText": "1.2",
+        "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / x (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-sd-1",
+        "rawText": "3.3",
+        "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / y (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-sd-2",
+        "rawText": "3.6",
+        "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / z (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-tpj-sd-label",
+        "rawText": "SD",
+        "locator": "Table 1 / Protocol 1 / TPJ / dispersion label in table note",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-raw-cell",
+        "rawText": "55, −67.8, 1.8 (1.4, 2.2, 3.0)",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / mean (SD) cell",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-label",
+        "rawText": "hMT/V5+",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / row label",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-x",
+        "rawText": "55",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / x coordinate (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-y",
+        "rawText": "−67.8",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / y coordinate (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-z",
+        "rawText": "1.8",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / z coordinate (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-table",
+        "rawText": "Table 1",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / table identifier",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-mni",
+        "rawText": "MNI",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate-system header or associated Methods",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-sd-0",
+        "rawText": "1.4",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / x (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-sd-1",
+        "rawText": "2.2",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / y (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-sd-2",
+        "rawText": "3.0",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / z (mm)",
+        "captureId": "table"
+      },
+      {
+        "id": "bosco-mt-sd-label",
+        "rawText": "SD",
+        "locator": "Table 1 / Protocol 1 / hMT/V5+ / dispersion label in table note",
+        "captureId": "table"
+      }
+    ]
+  },
+  "fields": [
+    {
+      "path": "references/bosco2008/doi",
+      "cellId": "doi",
+      "rawText": "10.1523/JNEUROSCI.2869-08.2008",
+      "locator": "Article front matter / DOI",
+      "encoding": "text"
+    },
+    {
+      "path": "references/bosco2008/url",
+      "cellId": "source-url",
+      "rawText": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6671632/#T1",
+      "locator": "Article identity / inspected primary source URL",
+      "encoding": "normalization",
+      "normalizedValue": "https://doi.org/10.1523/JNEUROSCI.2869-08.2008",
+      "rationale": "Canonical DOI resolver URL for the same inspected article DOI."
+    },
+    {
+      "path": "references/bosco2008/fullAuthorList/0",
+      "cellId": "author-0",
+      "rawText": "Gianfranco Bosco",
+      "locator": "Article front matter / ordered author 1",
+      "encoding": "text"
+    },
+    {
+      "path": "references/bosco2008/fullAuthorList/1",
+      "cellId": "author-1",
+      "rawText": "Mauro Carrozzo",
+      "locator": "Article front matter / ordered author 2",
+      "encoding": "text"
+    },
+    {
+      "path": "references/bosco2008/fullAuthorList/2",
+      "cellId": "author-2",
+      "rawText": "Francesco Lacquaniti",
+      "locator": "Article front matter / ordered author 3",
+      "encoding": "text"
+    },
+    {
+      "path": "references/bosco2008/fullAuthorList/length",
+      "cellId": "source-url",
+      "rawText": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6671632/#T1",
+      "locator": "Article identity / inspected primary source URL",
+      "encoding": "normalization",
+      "normalizedValue": 3,
+      "rationale": "Number of names in the ordered primary article author list transcribed above."
+    },
+    {
+      "path": "locations/bosco-tpj/xyz/0",
+      "cellId": "bosco-tpj-x",
+      "rawText": "65",
+      "locator": "Table 1 / Protocol 1 / TPJ / x coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-tpj/xyz/1",
+      "cellId": "bosco-tpj-y",
+      "rawText": "−36.6",
+      "locator": "Table 1 / Protocol 1 / TPJ / y coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-tpj/xyz/2",
+      "cellId": "bosco-tpj-z",
+      "rawText": "30.1",
+      "locator": "Table 1 / Protocol 1 / TPJ / z coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-tpj/legacyV1/sourceTable",
+      "cellId": "bosco-tpj-table",
+      "rawText": "Table 1",
+      "locator": "Table 1 / Protocol 1 / TPJ / table identifier",
+      "encoding": "text"
+    },
+    {
+      "path": "locations/bosco-tpj/legacyV1/sourceRow",
+      "cellId": "bosco-tpj-label",
+      "rawText": "TPJ",
+      "locator": "Table 1 / Protocol 1 / TPJ / row label",
+      "encoding": "normalization",
+      "normalizedValue": "Protocol 1 — TPJ",
+      "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+    },
+    {
+      "path": "locations/bosco-tpj/sourceRefs/0",
+      "cellId": "bosco-tpj-label",
+      "rawText": "TPJ",
+      "locator": "Table 1 / Protocol 1 / TPJ / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://www.jneurosci.org/content/28/46/12071#T1",
+      "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+    },
+    {
+      "path": "locations/bosco-tpj/legacyV1/sourceUrl",
+      "cellId": "bosco-tpj-label",
+      "rawText": "TPJ",
+      "locator": "Table 1 / Protocol 1 / TPJ / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://www.jneurosci.org/content/28/46/12071#T1",
+      "rationale": "Retained original publisher source link to this row."
+    },
+    {
+      "path": "locations/bosco-tpj/sourceSpaceId",
+      "cellId": "bosco-tpj-mni",
+      "rawText": "MNI",
+      "locator": "Table 1 / Protocol 1 / TPJ / coordinate-system header or associated Methods",
+      "encoding": "normalization",
+      "normalizedValue": "MNI-unspecified",
+      "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+    },
+    {
+      "path": "locations/bosco-tpj/kind",
+      "cellId": "bosco-tpj-label",
+      "rawText": "TPJ",
+      "locator": "Table 1 / Protocol 1 / TPJ / row label",
+      "encoding": "normalization",
+      "normalizedValue": "stimulation-target",
+      "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+    },
+    {
+      "path": "locations/bosco-tpj/dispersion/value/value/0",
+      "cellId": "bosco-tpj-sd-0",
+      "rawText": "1.2",
+      "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / x (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-tpj/dispersion/value/value/1",
+      "cellId": "bosco-tpj-sd-1",
+      "rawText": "3.3",
+      "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / y (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-tpj/dispersion/value/value/2",
+      "cellId": "bosco-tpj-sd-2",
+      "rawText": "3.6",
+      "locator": "Table 1 / Protocol 1 / TPJ / coordinate SD / z (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-tpj/dispersion/value/kind",
+      "cellId": "bosco-tpj-sd-label",
+      "rawText": "SD",
+      "locator": "Table 1 / Protocol 1 / TPJ / dispersion label in table note",
+      "encoding": "normalization",
+      "normalizedValue": "sd",
+      "rationale": "Standard deviation across subjects, not localization error or standard error."
+    },
+    {
+      "path": "locations/bosco-mt/xyz/0",
+      "cellId": "bosco-mt-x",
+      "rawText": "55",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / x coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-mt/xyz/1",
+      "cellId": "bosco-mt-y",
+      "rawText": "−67.8",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / y coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-mt/xyz/2",
+      "cellId": "bosco-mt-z",
+      "rawText": "1.8",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / z coordinate (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-mt/legacyV1/sourceTable",
+      "cellId": "bosco-mt-table",
+      "rawText": "Table 1",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / table identifier",
+      "encoding": "text"
+    },
+    {
+      "path": "locations/bosco-mt/legacyV1/sourceRow",
+      "cellId": "bosco-mt-label",
+      "rawText": "hMT/V5+",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / row label",
+      "encoding": "normalization",
+      "normalizedValue": "Protocol 1 — hMT/V5+",
+      "rationale": "Existing concise row description identifies this same source row; the original row label remains in the excerpt."
+    },
+    {
+      "path": "locations/bosco-mt/sourceRefs/0",
+      "cellId": "bosco-mt-label",
+      "rawText": "hMT/V5+",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://www.jneurosci.org/content/28/46/12071#T1",
+      "rationale": "Public publisher link identifies the same article/table/row; the inspected capture URL is retained separately."
+    },
+    {
+      "path": "locations/bosco-mt/legacyV1/sourceUrl",
+      "cellId": "bosco-mt-label",
+      "rawText": "hMT/V5+",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / row label",
+      "encoding": "normalization",
+      "normalizedValue": "https://www.jneurosci.org/content/28/46/12071#T1",
+      "rationale": "Retained original publisher source link to this row."
+    },
+    {
+      "path": "locations/bosco-mt/sourceSpaceId",
+      "cellId": "bosco-mt-mni",
+      "rawText": "MNI",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate-system header or associated Methods",
+      "encoding": "normalization",
+      "normalizedValue": "MNI-unspecified",
+      "rationale": "The inspected source identifies MNI but does not establish a precise template variant."
+    },
+    {
+      "path": "locations/bosco-mt/kind",
+      "cellId": "bosco-mt-label",
+      "rawText": "hMT/V5+",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / row label",
+      "encoding": "normalization",
+      "normalizedValue": "stimulation-target",
+      "rationale": "Point role follows the named source table and study Methods, rather than the coordinate numbers alone."
+    },
+    {
+      "path": "locations/bosco-mt/dispersion/value/value/0",
+      "cellId": "bosco-mt-sd-0",
+      "rawText": "1.4",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / x (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-mt/dispersion/value/value/1",
+      "cellId": "bosco-mt-sd-1",
+      "rawText": "2.2",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / y (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-mt/dispersion/value/value/2",
+      "cellId": "bosco-mt-sd-2",
+      "rawText": "3.0",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / coordinate SD / z (mm)",
+      "encoding": "number"
+    },
+    {
+      "path": "locations/bosco-mt/dispersion/value/kind",
+      "cellId": "bosco-mt-sd-label",
+      "rawText": "SD",
+      "locator": "Table 1 / Protocol 1 / hMT/V5+ / dispersion label in table note",
+      "encoding": "normalization",
+      "normalizedValue": "sd",
+      "rationale": "Standard deviation across subjects, not localization error or standard error."
+    }
+  ],
+  "paraphrases": [
+    {
+      "locator": "Table 1, Protocol 1, TPJ and hMT/V5+ mean MNI coordinate columns",
+      "text": "Protocol 1 reports across-subject mean actual stimulation coordinates and coordinate SD. These are not BOLD peaks or millimetre localization accuracy; other protocols have distinct coordinates."
+    }
+  ],
+  "limitations": [
+    "AI-assisted source inspection by Codex/root; human or expert review remains pending.",
+    "Only the listed minimal cells are available offline; complete articles and images are not retained.",
+    "A source-file digest records actual observed bytes of the named response only; it cannot re-verify absent full-source bytes.",
+    "Generic MNI does not establish an exact template variant or direct overlay eligibility."
+  ],
+  "sha256": "8143a4f6712099c5ad4e850f0900d9eb4dafe560209584b6b0d664b02efbc41e",
+  "recordSha256": "95617355ac01e36f51090e71a843f5bc3cd579345c5c11c67a30ad16b18d4f22"
+}

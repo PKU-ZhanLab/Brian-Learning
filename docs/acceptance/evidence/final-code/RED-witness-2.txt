@@ -1,0 +1,3 @@
+node --input-type=module < witness-2.mjs.txt
+exit=0
+{"probe":"same-owned-id-project-replacement","sameObject":true,"expected":"Project B label","actual":"Project A private label","expectedProvenance":"Project B provenance","actualProvenance":"Project A private provenance"}

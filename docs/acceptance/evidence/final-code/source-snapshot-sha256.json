@@ -1,0 +1,110 @@
+{
+  "base": "dbac9ebd1a557876ff3f5167d314da964d8e5422",
+  "files": [
+    {
+      "path": "src/App.jsx",
+      "bytes": 106542,
+      "sha256": "9d6d2d2964708db99ce1f3461db931a2166e345a3253110da35cef42332afd41"
+    },
+    {
+      "path": "src/components/AtlasExplorer.jsx",
+      "bytes": 13892,
+      "sha256": "8531e3a7d3b0170b6075e25e16d284de61a4c1a21239b7a2d3284f51ab79b419"
+    },
+    {
+      "path": "src/components/ComparisonViewport.jsx",
+      "bytes": 8935,
+      "sha256": "73100b1caacd0b8734ab8e9e2679cbf8d8b0baf3e5e2fea8736acdbdd7083f28"
+    },
+    {
+      "path": "src/components/ROICompare.jsx",
+      "bytes": 70659,
+      "sha256": "4e4aacca18a85712e5bee6923faa7e96cec651aacbcbc24b06f92366fc946333"
+    },
+    {
+      "path": "src/components/SliceViews.jsx",
+      "bytes": 7894,
+      "sha256": "304f2e5ea7f5ded9d0bf8fa8f95a1519aab2df6bc0c13483c8a0c879b729c14d"
+    },
+    {
+      "path": "src/components/WorkspaceFiles.jsx",
+      "bytes": 13553,
+      "sha256": "c10293d12a148cb9ca42649f82af11a348bc0b9c4c7c844712d7bf6aba60ac78"
+    },
+    {
+      "path": "src/lib/atlas-resource.js",
+      "bytes": 3907,
+      "sha256": "e043fb6ce0c81631b1f17c770da753ae7ad9ea9ce2132da83afff97fed8027d1"
+    },
+    {
+      "path": "src/lib/comparison-link.js",
+      "bytes": 5830,
+      "sha256": "176ab265494938dbc6819e9db080ff5f698930b70acb028f3c4cff8ea136dd11"
+    },
+    {
+      "path": "src/lib/custom-volumes.js",
+      "bytes": 3396,
+      "sha256": "4abacd732e18d85439d7d88ff3b54ea7389448c07e347e5ba72c95bc801094fb"
+    },
+    {
+      "path": "src/lib/final-correctness.test.mjs",
+      "bytes": 25416,
+      "sha256": "b401ea7862efe7412616412b0ecc127fac8648247d38a10e2b23765f61a57322"
+    },
+    {
+      "path": "src/lib/navigation-history.test.mjs",
+      "bytes": 11886,
+      "sha256": "0d5601cbaf78d39338edc8a596f20d1ed4da1f67ec21e77152cbb04a89c257f9"
+    },
+    {
+      "path": "src/lib/research-journey-contract.test.mjs",
+      "bytes": 1099,
+      "sha256": "1553481b3b97551cee2b2ad0f140f5d2ff32cf64b1d33be5b906f4af569a0cd1"
+    },
+    {
+      "path": "src/lib/volume.js",
+      "bytes": 17317,
+      "sha256": "dc43f32761c95bc6b9eb5769a9b55f33bbb39d5bc85788c5cf0a64777f21e72b"
+    },
+    {
+      "path": "src/lib/workspace-assets.js",
+      "bytes": 6950,
+      "sha256": "4824243048975831e673caadf1e7946fea6a80890ecb17a6c2bd70373140b8b9"
+    },
+    {
+      "path": "src/lib/workspace-assets.test.mjs",
+      "bytes": 9598,
+      "sha256": "10ac6b898f9136da75d9bbb913e8d5236c5308b4864524c285ef14dde35cfe29"
+    },
+    {
+      "path": "src/lib/workspace-project.js",
+      "bytes": 36293,
+      "sha256": "2682b6ace6df4f51e6414a482bd707d43763376b8497ba80443e1cdeea5859cc"
+    },
+    {
+      "path": "src/lib/workspace-session.js",
+      "bytes": 23996,
+      "sha256": "8712201c56a31143c3a7a4238106083b2b9d0da729cb2711df6efce3cd5bb75a"
+    },
+    {
+      "path": "src/lib/workspace-session.test.mjs",
+      "bytes": 19004,
+      "sha256": "a2b43fe4dc95c9f3995f74f7093dac05c650fb4a836243c30635cd50a294afe9"
+    },
+    {
+      "path": "src/lib/workspace-status.js",
+      "bytes": 7306,
+      "sha256": "b5445fff94d0748b25dfffb20505a928d20f67c3bf98714c994e07fc11832584"
+    },
+    {
+      "path": "tests/e2e/research-journeys.spec.mjs",
+      "bytes": 10028,
+      "sha256": "93e6dde8f498b4259094649ecf9f557f0c4bf44ca51e6023dfeea00151b51db6"
+    },
+    {
+      "path": "tests/helpers/research-journey-contract.mjs",
+      "bytes": 1068,
+      "sha256": "f4c694de041830a8e1ed6f986bc37ecefc530bcac7cdf715ca458b8dbf4c8f4b"
+    }
+  ]
+}

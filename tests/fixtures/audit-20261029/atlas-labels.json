@@ -1,0 +1,76 @@
+{
+  "source": "public/data/manifest.json",
+  "sourceSha256": "25b9a2584a8db5849ca95b118321ed233731cf88673756018365a27d2bbd44d5",
+  "labels": [
+    {
+      "atlasId": "aal-registered",
+      "label": {
+        "id": 8121,
+        "name": "Temporal_Pole_Sup_L",
+        "voxels": 11977,
+        "volumeMm3": 11977,
+        "center": [
+          -38.291,
+          12.743,
+          -24.296
+        ]
+      }
+    },
+    {
+      "atlasId": "aal-registered",
+      "label": {
+        "id": 8211,
+        "name": "Temporal_Pole_Mid_L",
+        "voxels": 6696,
+        "volumeMm3": 6696,
+        "center": [
+          -36.185,
+          11.637,
+          -37.645
+        ]
+      }
+    },
+    {
+      "atlasId": "aal3-registered",
+      "label": {
+        "id": 87,
+        "name": "Temporal_Pole_Sup_L",
+        "voxels": 12156,
+        "volumeMm3": 12156,
+        "center": [
+          -37.972,
+          12.223,
+          -24.736
+        ]
+      }
+    },
+    {
+      "atlasId": "aal3-registered",
+      "label": {
+        "id": 91,
+        "name": "Temporal_Pole_Mid_L",
+        "voxels": 6542,
+        "volumeMm3": 6542,
+        "center": [
+          -36.079,
+          11.06,
+          -38.11
+        ]
+      }
+    },
+    {
+      "atlasId": "aal3-registered",
+      "label": {
+        "id": 134,
+        "name": "Thal_Re_R",
+        "voxels": 7,
+        "volumeMm3": 7,
+        "center": [
+          4.571,
+          -11.286,
+          -5.429
+        ]
+      }
+    }
+  ]
+}

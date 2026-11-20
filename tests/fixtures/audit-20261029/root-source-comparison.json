@@ -1,0 +1,380 @@
+{
+  "recordedAt": "2026-10-29T11:09:58.264Z",
+  "comparedFiles": 85,
+  "rootOnly": [
+    "src/i18n/ui-strings.json",
+    "scripts/integrate-workspace.mjs"
+  ],
+  "differences": [],
+  "dataComparison": [
+    {
+      "path": "public/data/manifest.json",
+      "sourceSha256": "25b9a2584a8db5849ca95b118321ed233731cf88673756018365a27d2bbd44d5",
+      "rootSha256": "56deb3aa34ddd083885def12db6acdcb14a5aa70c4085cdcc3ed3bef21dbe966",
+      "checkoutSha256": "25b9a2584a8db5849ca95b118321ed233731cf88673756018365a27d2bbd44d5"
+    },
+    {
+      "path": "public/data/surface-v1/manifest.json",
+      "sourceSha256": "c9529c36628593442dcb5c416da6351748d3a9379e5a295a9bf0f1b6606391c6",
+      "rootSha256": "c9529c36628593442dcb5c416da6351748d3a9379e5a295a9bf0f1b6606391c6",
+      "checkoutSha256": "c9529c36628593442dcb5c416da6351748d3a9379e5a295a9bf0f1b6606391c6"
+    },
+    {
+      "path": "public/data/asset-checksums.json",
+      "sourceSha256": "a1a85f03d04ffcb398331fdd959c0a211fa1833cdcc59d9f642a492965db908c",
+      "rootSha256": "154a8141a7cb6c91583f1cd0f43028d5b92f38487898e8cc5f9db5473f1653e8",
+      "checkoutSha256": "a1a85f03d04ffcb398331fdd959c0a211fa1833cdcc59d9f642a492965db908c"
+    },
+    {
+      "path": "public/data/volume.json",
+      "sourceSha256": "f8942cfef8a973f7764b66cfc7ddcd10a01acf1ac48f25a64737225b95f18b66",
+      "rootSha256": "f8942cfef8a973f7764b66cfc7ddcd10a01acf1ac48f25a64737225b95f18b66",
+      "checkoutSha256": "f8942cfef8a973f7764b66cfc7ddcd10a01acf1ac48f25a64737225b95f18b66"
+    }
+  ],
+  "auditCopies": 16,
+  "allAuditCopiesMatch": true,
+  "planCopies": 10,
+  "allPlanCopiesMatch": true,
+  "fixtureLabel134Voxels": 7,
+  "manifestDetails": [
+    {
+      "path": "public/data/manifest.json",
+      "jsonDifferences": [
+        {
+          "path": "atlases.aal.distribution",
+          "root": null,
+          "source": "bundled-gpl-native-atlas"
+        },
+        {
+          "path": "atlases.aal3.distribution",
+          "root": null,
+          "source": "bundled-gpl-native-atlas"
+        },
+        {
+          "path": "atlases.ba-legacy.distribution",
+          "root": null,
+          "source": "metadata-only"
+        },
+        {
+          "path": "atlases.ba-legacy.publicationNote",
+          "root": null,
+          "source": {
+            "zh": "公开版仅保留来源与标签目录，未分发旧版二进制。",
+            "en": "The public edition retains source and terminology metadata; legacy binary files are not distributed."
+          }
+        },
+        {
+          "path": "atlases.aal-registered.distribution",
+          "root": null,
+          "source": "bundled-gpl-project-registration"
+        },
+        {
+          "path": "atlases.aal3-registered.distribution",
+          "root": null,
+          "source": "bundled-gpl-project-registration"
+        },
+        {
+          "path": "dataLicenseNotice",
+          "root": null,
+          "source": "/data/licenses/NOTICE-DATA.md"
+        }
+      ]
+    },
+    {
+      "path": "public/data/asset-checksums.json",
+      "jsonDifferences": [
+        {
+          "path": "generated",
+          "root": "2026-10-27",
+          "source": "2026-10-27T02:55:35.532Z"
+        },
+        {
+          "path": "files.aal.bin",
+          "root": "284c09ae2b27566ac988abf991247e8455356dba755cc7ed1ae771e9210e3a18",
+          "source": null
+        },
+        {
+          "path": "files.aal3.bin",
+          "root": "6a31413b1084fcc6b32e3dd47b282e1b519c2375e431814ea829681133b733e5",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/licenses/HCP1065-NOTICE.md",
+          "root": "1dc3e4883c5efbf754f19ce227c35253db44a928724b7369f04013fbbc09938f",
+          "source": "fe9b69a9c6f487f254dac5086001b7b4f2aeeb4a0eb19a562feaaa679f453453"
+        },
+        {
+          "path": "files.anatomy/licenses/README.md",
+          "root": "dffa6e100af3870f5825ed4d4811e61fd4477b9d143edd55bd1818989845612a",
+          "source": "cbf30d0a37f0ec97726129cfce0fac961745ac21974482c87ab1f5a573505db3"
+        },
+        {
+          "path": "files.anatomy/licenses/WU-Minn-HCP-data-use-terms.html",
+          "root": "ab039626f478b9d1efe99116596293e6fd53fa8ab98444a17ff787b668356c61",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/manifest.json",
+          "root": "db649479c9d40ce9dd5bcc64ee9efd97b4c649f23c6ea41927fe8ba0db9e998a",
+          "source": "e0498dc69928bd69d756b8303ba7fc8a3cf03508a1964c1f411e84c40887d915"
+        },
+        {
+          "path": "files.anatomy/pam-C1.json",
+          "root": "e7b0115f66739e0e9d0a10774ff21f374392849c8aac67e43954c72e8e6fb8e7",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-C2.json",
+          "root": "f41e36450405d372007c2ee82c0ef45ccb4b37ec5deacfd469c35aa51e9117fc",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-C3.json",
+          "root": "aaa52a3129999b4da7e9521d693a62830b97ba0a296a72f420ff6e34bec4e087",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-C4.json",
+          "root": "dc423930f141695f2ed0ba74fc8abb62ced7fb84757903deb7a36ce124b5f8d9",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-C5.json",
+          "root": "1e99dbdf45b7401745fe5e2da18ea949ff78958d728a37f256d63dba13950970",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-C6.json",
+          "root": "01361b1b983776fc8cd82b3cbfea28205fc6168e2ddb9e1405cc14d5432f5c3f",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-C7.json",
+          "root": "0b402950222d54a3d6216fef8cb79c5cdeea4ca12bb5dce9edb52dad972a0d25",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-C8.json",
+          "root": "bd56c3ebf535b30860ed5dca1af9a95d92ca5f5011f305f11c34cf8e2da1b278",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-L1.json",
+          "root": "f272a30126376c99f026956ea7cc5a5dc1a4621a535a3aad5e2340100fa479c1",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-L2.json",
+          "root": "7cd227b40fced28858fd5b276c5ef51c6d7864d7a19f8ffae0dec91182bbeaa7",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-L3.json",
+          "root": "095722318aa345f5afeabbd58f1ee7b8021891dc1b00f0ac47c4a028ed73b9a4",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-L4.json",
+          "root": "8abd32d8796fa810b9b6c013ea8b3457c87bd86cc464466ff1c679f5e40187b8",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-L5.json",
+          "root": "0b7b87a96c95aef6f3ba6860a9a13a891c19dca9feb5a3ef23ca84dba0cebaef",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-S1.json",
+          "root": "fd9e38bd1f2e4c3bc13208bcaabd942a48a48f41ad9230525307eefc9d9be71e",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-S2.json",
+          "root": "4db5da2de6803beccb5d235f2f2a36f9a61d4786f36a908e63ab3bb35b847014",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-S3.json",
+          "root": "3b2dafb6f0027ff2fee80799c255e2bd0d32fd5ad1cd383e7d9ecf2508eb3180",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-S4.json",
+          "root": "5d5349daab6772b169888b11e161d8d19efea90825bbbec0acc25f22627cd36b",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-S5.json",
+          "root": "6426f7947d60e765ca7d467f75961ae940101482f1953d476a67e3ccf75f9abf",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-spinal-anterior-horn-l.json",
+          "root": "d2da260ed876a03782fe2ed5eaafc4a3c382f9c7e3f2e02360157eeb4f22843c",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-spinal-anterior-horn-r.json",
+          "root": "66f8b403f95fb4994a8e5c7c751c7b2fabf69f101aee468752b8f08bb92fa913",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-spinal-gray.json",
+          "root": "144a255eaea648e805c3dd3b4ae074ea45de717bea84b11f64e55a6a9cdaa58a",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-spinal-posterior-horn-l.json",
+          "root": "45d89e10219587a3e00f9a37f681c2bd871b7c29b12dd4704d8c3a743d93bb92",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-spinal-posterior-horn-r.json",
+          "root": "0e80632f2cc31050af4555ea481df8a139fef242fb1817986b5c2f9556b15b2a",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-spinal-white.json",
+          "root": "4b1d294ef65a8f90f6b2eed27f34d968b9f988b66ee0a05ec76e306832da5f36",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T1.json",
+          "root": "5667a50b3b45bbe3a4d49adf85be9c03beb927354f9a66247899095233b7a6e5",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T10.json",
+          "root": "c10e4208584b1ad018ad88e601d1778fed12519bbf4e49630d1a277442eb5f47",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T11.json",
+          "root": "e08b8c145d59b521e439cc809532766a4e844530f0f96c56d3326c2a7f31fe7f",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T12.json",
+          "root": "07387622f7be5d11c977ae9488f100ac8b7d1463301bee6bb462c59d2c29da5e",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T2.json",
+          "root": "4d6d0f0c774b3e79ffc00374e8bbf1145521e268d93afd9014acb39a72009fae",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T3.json",
+          "root": "5e5002c9cd7c9361c234642ba00700f7341a10244f950e5dc6d12dcf01c94cce",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T4.json",
+          "root": "7acbf6261af558019cc72ee9f94553e704c978564be1ad285695d94efedd1d2a",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T5.json",
+          "root": "5077238215067f3fd2da6eb7166c338f6433168627367cdf81d4768f17523a87",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T6.json",
+          "root": "fd0510761cc05e221e13594b9e78d60fcf395428feaa744fd642646bfd7f6912",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T7.json",
+          "root": "60c492dc7e7664b3cdbd723b010f9e93bbe1e54a61f02448c750d5e01339c85a",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T8.json",
+          "root": "00235f68749729899fe2ef2b0dbcdddeb4f88fea41c098b30af202c82a3b1e24",
+          "source": null
+        },
+        {
+          "path": "files.anatomy/pam-T9.json",
+          "root": "b395ed21545a0fe6e3f184facd222d90b23a06e2d0c99bc93d2cee811f66e22b",
+          "source": null
+        },
+        {
+          "path": "files.ba.bin",
+          "root": "58c50825e4b4b4446dbbbc709e59b76a578680e9979633bccddd28e52087316d",
+          "source": null
+        },
+        {
+          "path": "files.cortex-left.json",
+          "root": "6b7a8d3b5f67b948fac627a2fac5d3abd28c044da9161d65f50158e96eba8b0d",
+          "source": null
+        },
+        {
+          "path": "files.cortex-right.json",
+          "root": "448a0604a2ab570ce40477f0ceb6c1314a50fabad852a860dedb7ae0a062b0a2",
+          "source": null
+        },
+        {
+          "path": "files.dk.bin",
+          "root": "9b7ebcdef3a93f52d6e0eea4d781b44de2be830fecdcab5f3d37effb542cbc4d",
+          "source": null
+        },
+        {
+          "path": "files.legacy-manifest-v1.json",
+          "root": "fecd7809ab7268d884e4de7c6b73e4aa3838d183ed135b7f3d461b5ebaec5f19",
+          "source": null
+        },
+        {
+          "path": "files.licenses/FSL-5.0.1-license.html",
+          "root": "cc1d18954e7412fdf291f3c48131ee34953ed3bc2f1f45eee4b66195b253d1aa",
+          "source": null
+        },
+        {
+          "path": "files.licenses/FSL-license-20261025.html",
+          "root": "1260bd30fdff9fe1e750a76a7cb1b1129ea549cba9ae55fed021ad6bb9b08742",
+          "source": null
+        },
+        {
+          "path": "files.licenses/FSL-license.html",
+          "root": "596a871d2c6275b78f272eae88e8f83e06d17d2f7170c64b513480e171d00234",
+          "source": null
+        },
+        {
+          "path": "files.licenses/license-evidence.json",
+          "root": "c46e55b430866f6a33c367046ecdfbff7c71ec358309574d2999d1a1542085b2",
+          "source": "fd32c4fddf350005266194360775c5252329f61e3fe2ba47c4d4b7eaadc4ebd0"
+        },
+        {
+          "path": "files.manifest.json",
+          "root": "56deb3aa34ddd083885def12db6acdcb14a5aa70c4085cdcc3ed3bef21dbe966",
+          "source": "25b9a2584a8db5849ca95b118321ed233731cf88673756018365a27d2bbd44d5"
+        },
+        {
+          "path": "files.anatomy/licenses/WU-Minn-HCP-data-use-terms.html.txt",
+          "root": null,
+          "source": "ab039626f478b9d1efe99116596293e6fd53fa8ab98444a17ff787b668356c61"
+        },
+        {
+          "path": "files.licenses/FSL-5.0.1-license.html.txt",
+          "root": null,
+          "source": "cc1d18954e7412fdf291f3c48131ee34953ed3bc2f1f45eee4b66195b253d1aa"
+        },
+        {
+          "path": "files.licenses/FSL-license-20261025.html.txt",
+          "root": null,
+          "source": "1260bd30fdff9fe1e750a76a7cb1b1129ea549cba9ae55fed021ad6bb9b08742"
+        },
+        {
+          "path": "files.licenses/FSL-license.html.txt",
+          "root": null,
+          "source": "596a871d2c6275b78f272eae88e8f83e06d17d2f7170c64b513480e171d00234"
+        },
+        {
+          "path": "files.public-edition.json",
+          "root": null,
+          "source": "5ee49eba168cb0101b368563662bf9eb8f26d76346974177ef0e227374e3aa97"
+        }
+      ]
+    }
+  ]
+}

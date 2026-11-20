@@ -1,0 +1,261 @@
+{
+  "schema": "neuroatlas-final-code-evidence-v1",
+  "reviewedCodeCommit": "aa20e40f2e6261492f4ef8d63ba4f89204fca386",
+  "scope": "Software code/API evidence only. cdeb6ed fresh/archive build is withheld intermediate. Final artifact will be a separately recorded documentation-only successor.",
+  "reviewAttribution": "Independent whole-branch and scoped reviews; final R1/R2 closure performed directly by ROOT, not a later independent all-clear.",
+  "files": [
+    {
+      "source": ".superpowers/sdd/README/FINAL-review.md",
+      "file": "FINAL-review.md",
+      "kind": "independent-review",
+      "outcome": "WITH FIXES: six Important findings and M1",
+      "bytes": 35143,
+      "sha256": "0734d157ec51d97644eb357d0532fe16e7c156934f837d54758231c1ff8769e8"
+    },
+    {
+      "source": ".superpowers/sdd/README/FINAL-fix-review.md",
+      "file": "FINAL-fix-review.md",
+      "kind": "independent-review",
+      "outcome": "WITH FIXES: I2-I6/M1 addressed; R1/R2 remained",
+      "bytes": 18585,
+      "sha256": "a1da71bc3459c59b42c92cfc0bf75597c3b3503c74edac46c17f4bc45b39f3fa"
+    },
+    {
+      "source": ".superpowers/sdd/README/FINAL-fix-report.md",
+      "file": "FINAL-fix-report.md",
+      "kind": "worker-report",
+      "outcome": "Initial correction plus appended residual correction; runtime/scientific gates open",
+      "bytes": 24437,
+      "sha256": "97215d328019869991d542ab6d25b52d95fd838291d42a09a97a68012c1b477e"
+    },
+    {
+      "source": ".superpowers/sdd/README/FINAL-residual-closure.md",
+      "file": "FINAL-residual-closure.md",
+      "kind": "primary-integrator-closure",
+      "outcome": "ROOT direct bounded closure of R1/R2 at aa20e40; not a later independent all-clear",
+      "bytes": 4680,
+      "sha256": "413ab81eea1bc2401d3dbf16e8e921d0c35f3b217e451f206ac6c024e3d7eef6"
+    },
+    {
+      "source": "output/release-candidate/neuroatlas-4.2.0-20261030-root-final/verification/residual-worktree-check.txt",
+      "file": "root-450-check.txt",
+      "kind": "integrated-check",
+      "outcome": {
+        "tests": 450,
+        "pass": 450,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "scope": "Root checked exact stable residual source before commit; data/literature passed"
+      },
+      "bytes": 47455,
+      "sha256": "e4a7c477e614d763614f6f088f0c649581ec9fc1e5754e8e361c1c7de2f3ae42"
+    },
+    {
+      "source": "output/final-fix/covering-final.txt",
+      "file": "covering-final.txt",
+      "kind": "covering-tests",
+      "outcome": {
+        "exit": 0,
+        "tests": 189,
+        "pass": 189,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "bytes": 20178,
+      "sha256": "c5c55e790aa35426ec025b172a217350268f14cbe478454ff9f2bba6b270dcf7"
+    },
+    {
+      "source": "output/final-fix/covering-message-final.txt",
+      "file": "covering-message-final.txt",
+      "kind": "covering-tests",
+      "outcome": {
+        "exit": 0,
+        "tests": 46,
+        "pass": 46,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "bytes": 5127,
+      "sha256": "b5e434a1afa248e8859c1e350d14eea4176464a3ba08564d97c0d8ace1e83bf7"
+    },
+    {
+      "source": "output/final-fix/residual-covering-final.txt",
+      "file": "residual-covering-final.txt",
+      "kind": "covering-tests",
+      "outcome": {
+        "exit": 0,
+        "tests": 73,
+        "pass": 73,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "bytes": 7794,
+      "sha256": "202bc35b2f117d35781844478828fc3982254ba4a738f93b1738c83ea9b93858"
+    },
+    {
+      "source": "output/final-fix/RED-witness-1.txt",
+      "file": "RED-witness-1.txt",
+      "kind": "original-semantic-failure",
+      "outcome": {
+        "exit": 0,
+        "status": "fail: semantic defect demonstrated by the original program; process exit0 is not a successful assertion"
+      },
+      "bytes": 503,
+      "sha256": "54a469873a85bf729de93caf12944ce1da49d420a97e8e675cf29baccf0ac7a6"
+    },
+    {
+      "source": "output/final-fix/RED-witness-2.txt",
+      "file": "RED-witness-2.txt",
+      "kind": "original-semantic-failure",
+      "outcome": {
+        "exit": 0,
+        "status": "fail: semantic defect demonstrated by the original program; process exit0 is not a successful assertion"
+      },
+      "bytes": 274,
+      "sha256": "227be717672190c283637cba9dae6f0608746057b295ac508fe2fabec9b21d60"
+    },
+    {
+      "source": "output/final-fix/RED-witness-3.txt",
+      "file": "RED-witness-3.txt",
+      "kind": "original-semantic-failure",
+      "outcome": {
+        "exit": 0,
+        "status": "fail: semantic defect demonstrated by the original program; process exit0 is not a successful assertion"
+      },
+      "bytes": 387,
+      "sha256": "4bc768be5176eaeb69fada976d7541eee49b3e6ac128710ce2efa6a8a1d70d01"
+    },
+    {
+      "source": "output/final-fix/RED-witness-4.txt",
+      "file": "RED-witness-4.txt",
+      "kind": "original-semantic-failure",
+      "outcome": {
+        "exit": 0,
+        "status": "fail: semantic defect demonstrated by the original program; process exit0 is not a successful assertion"
+      },
+      "bytes": 514,
+      "sha256": "6057d9e29381f105c06d043e752595a4877851b570a9b5d7cce22c8ba9fe2676"
+    },
+    {
+      "source": "output/final-fix/RED-witness-5.txt",
+      "file": "RED-witness-5.txt",
+      "kind": "original-semantic-failure",
+      "outcome": {
+        "exit": 0,
+        "status": "fail: semantic defect demonstrated by the original program; process exit0 is not a successful assertion"
+      },
+      "bytes": 171,
+      "sha256": "89c791d2f2c17269ae0b5305990350749743e1fb4daff1fb82e2562b07c41ef6"
+    },
+    {
+      "source": "output/final-fix/RED-witness-6.txt",
+      "file": "RED-witness-6.txt",
+      "kind": "original-semantic-failure",
+      "outcome": {
+        "exit": 0,
+        "status": "fail: semantic defect demonstrated by the original program; process exit0 is not a successful assertion"
+      },
+      "bytes": 227,
+      "sha256": "6e7874ac7c2434e8549544e818897c6f38fa99747db8b0373b46bb68f941f2cc"
+    },
+    {
+      "source": "output/final-fix/residual-RED-witness-1.txt",
+      "file": "residual-RED-witness-1.txt",
+      "kind": "residual-semantic-failure",
+      "outcome": {
+        "exit": 0,
+        "status": "fail: stale ownership or lost retained visit demonstrated"
+      },
+      "bytes": 187,
+      "sha256": "6716839c63610aac682c062ca39455cdeda14981082e043b5733ee8387b280c8"
+    },
+    {
+      "source": "output/final-fix/residual-GREEN-witness-1.txt",
+      "file": "residual-GREEN-witness-1.txt",
+      "kind": "exact-residual-program-after-fix",
+      "outcome": {
+        "exit": 0,
+        "status": "corrected outcome in the unchanged original program"
+      },
+      "bytes": 191,
+      "sha256": "526f9ba4f86a331cee8a9582002b6974760bee94fea8d1337cfa8312e02f44d5"
+    },
+    {
+      "source": "output/final-fix/residual-RED-witness-2.txt",
+      "file": "residual-RED-witness-2.txt",
+      "kind": "residual-semantic-failure",
+      "outcome": {
+        "exit": 0,
+        "status": "fail: stale ownership or lost retained visit demonstrated"
+      },
+      "bytes": 429,
+      "sha256": "e3febcf332d1c2c14d5ac82519f838496ce42eb27d456d3c4022ab092cfcadef"
+    },
+    {
+      "source": "output/final-fix/residual-GREEN-witness-2.txt",
+      "file": "residual-GREEN-witness-2.txt",
+      "kind": "exact-residual-program-after-fix",
+      "outcome": {
+        "exit": 1,
+        "status": "intended uncaught ownership rejection in the unchanged original program; exit1 preserved. Canonical rejection assertion passes in covering suite."
+      },
+      "bytes": 809,
+      "sha256": "8b83cfcde707c6ecdd19cd66603ef140d163460fadc25ba54205447b97aadf8b"
+    },
+    {
+      "source": "output/final-fix/residual-RED-witness-3.txt",
+      "file": "residual-RED-witness-3.txt",
+      "kind": "residual-semantic-failure",
+      "outcome": {
+        "exit": 0,
+        "status": "fail: stale ownership or lost retained visit demonstrated"
+      },
+      "bytes": 218,
+      "sha256": "3ab2eddc5a791f3e48787bfcbef806fea01fe869dd5259410b608b6eec9ab4a2"
+    },
+    {
+      "source": "output/final-fix/residual-GREEN-witness-3.txt",
+      "file": "residual-GREEN-witness-3.txt",
+      "kind": "exact-residual-program-after-fix",
+      "outcome": {
+        "exit": 0,
+        "status": "corrected outcome in the unchanged original program"
+      },
+      "bytes": 239,
+      "sha256": "3ad635c18e04d709f22b8d46dd51aae9f4ddf87c5e0566798c27b814c897b2d6"
+    },
+    {
+      "source": "output/final-fix/source-snapshot-sha256.json",
+      "file": "source-snapshot-sha256.json",
+      "kind": "source-handoff-snapshot",
+      "outcome": "Prior21-file fix snapshot retained; residual changes have their separate snapshot",
+      "bytes": 3552,
+      "sha256": "8a3eb6245c5f17794a79c2a4f3ffd8e29fe1bcd62db2243681e2c10febd37406"
+    },
+    {
+      "source": "output/final-fix/residual-source-sha256.json",
+      "file": "residual-source-sha256.json",
+      "kind": "source-handoff-snapshot",
+      "outcome": "Final seven-file residual snapshot checked by ROOT at aa20e40",
+      "bytes": 1222,
+      "sha256": "023678aab93059871ca0fe397c3e76c1f09442f8d20da2360c522897770319c3"
+    },
+    {
+      "source": "output/final-fix/static-e2e-list.txt",
+      "file": "static-e2e-list.txt",
+      "kind": "test-discovery",
+      "outcome": {
+        "exit": 0,
+        "tests": 3,
+        "files": 1,
+        "runtime": "not-run; discovery only, no browser/server"
+      },
+      "bytes": 581,
+      "sha256": "a2b80ef0e620dd9bce064f4a1ab741d4b718018f0651d4b54a42e2721daf67e3"
+    }
+  ]
+}

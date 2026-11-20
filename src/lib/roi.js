@@ -1,4 +1,5 @@
 import { Matrix4 } from 'three';
+import { makeComputationManifest, makeComparisonManifest, compareComputationManifest } from './computation-manifest.js';
 
 export const ROI_COLORS = { aOnly: '#27a5b5', bOnly: '#e39845', intersection: '#8e69c6', A: '#27a5b5', B: '#e39845' };
 export const ROI_DEFAULT_DISPLAY = { mode: 'parts', opacity: 0.7, opacityA: 0.65, opacityB: 0.65, opacityOverlap: 0.9, xray: false };
@@ -13,7 +14,8 @@ function checkedGrid(volume, maxVoxels = MAX_GRID_VOXELS) {
   const matrix = new Matrix4().set(...affine);
   const determinant = matrix.determinant();
   if (Math.abs(determinant) < 1e-10) throw new Error('invalid-affine');
-  return { shape: [...volume.shape], affine: [...affine], matrix, voxelVolumeMm3: Math.abs(determinant), space: volume.space || 'MNI152NLin6Asym', order: 'x-fastest' };
+  if (typeof volume.space !== 'string' || !volume.space.trim()) throw new Error('source-space-required');
+  return { shape: [...volume.shape], affine: [...affine], matrix, voxelVolumeMm3: Math.abs(determinant), space: volume.space, order: 'x-fastest' };
 }
 
 export function positiveLabels(volume) {
@@ -39,17 +41,24 @@ export function resampleROI(volume, selection, target) {
   const weights = selection.kind === 'probability' ? new Float32Array(mask.length) : null;
   const sourceXFast = volume.order !== 'z-fastest';
   const labels = new Set(selection.labels);
+  const sourceLabelCounts = new Map(), targetLabelCounts = new Map();
   const include = value => selection.kind === 'label' ? labels.has(value) : selection.kind === 'mask' ? value !== 0 : selection.kind === 'probability' ? value > 0 && value >= selection.threshold : selection.tail === 'negative' ? value < 0 && value <= -selection.threshold : selection.tail === 'absolute' ? value !== 0 && Math.abs(value) >= selection.threshold : value > 0 && value >= selection.threshold;
   let sourceCount = 0;
   for (const value of volume.data) {
     if (!Number.isFinite(value)) throw new Error('invalid-values');
     if (selection.kind === 'probability' && (value < 0 || value > 1)) throw new Error('invalid-probability-range');
-    if (include(value)) sourceCount++;
+    if (include(value)) { sourceCount++; if (selection.kind === 'label') sourceLabelCounts.set(value, (sourceLabelCounts.get(value) || 0) + 1); }
   }
-  if (!sourceCount && selection.kind === 'label') throw new Error('empty-label');
+  let targetCount = 0;
+  const recordTarget = value => {
+    if (!include(value)) return 0;
+    targetCount++;
+    if (selection.kind === 'label') targetLabelCounts.set(value, (targetLabelCounts.get(value) || 0) + 1);
+    return 1;
+  };
   const identical = sameGrid(source, grid);
   if (identical && sourceXFast) {
-    for (let i = 0; i < mask.length; i++) { mask[i] = Number(include(volume.data[i])); if (weights) weights[i] = volume.data[i]; }
+    for (let i = 0; i < mask.length; i++) { mask[i] = recordTarget(volume.data[i]); if (weights) weights[i] = volume.data[i]; }
   } else {
     const transform = source.matrix.clone().invert().multiply(grid.matrix).elements;
     const [sx, sy, sz] = source.shape, [tx, ty, tz] = grid.shape;
@@ -66,10 +75,18 @@ export function resampleROI(volume, selection, target) {
         value=0;
         for(let oz=0;oz<2;oz++)for(let oy=0;oy<2;oy++)for(let ox=0;ox<2;ox++)value+=at(x0+ox,y0+oy,z0+oz)*(ox?dx:1-dx)*(oy?dy:1-dy)*(oz?dz:1-dz);
       }
-      mask[index]=Number(include(value));if(weights)weights[index]=value;
+      mask[index]=recordTarget(value);if(weights)weights[index]=value;
     }
   }
-  return { mask, weights, selection, sourceCount, resampled: !identical, reordered: !sourceXFast, interpolation: ['label','mask'].includes(selection.kind) ? 'nearest-neighbour' : 'trilinear' };
+  const perLabel = selection.kind === 'label' ? selection.labels.map(labelId => {
+    const sourceVoxels = sourceLabelCounts.get(labelId) || 0, targetVoxels = targetLabelCounts.get(labelId) || 0;
+    return { labelId, sourceVoxels, sourceMm3:sourceVoxels * source.voxelVolumeMm3, targetVoxels, targetMm3:targetVoxels * grid.voxelVolumeMm3 };
+  }) : [];
+  const lostLabelIds = perLabel.filter(label => label.sourceVoxels && !label.targetVoxels).map(label => label.labelId);
+  const absentLabelIds = perLabel.filter(label => !label.sourceVoxels).map(label => label.labelId);
+  const sampling = { sourceVoxels:sourceCount, sourceMm3:sourceCount * source.voxelVolumeMm3, targetVoxels:targetCount, targetMm3:targetCount * grid.voxelVolumeMm3, lostLabelIds, absentLabelIds, labels:perLabel,
+    status:!sourceCount ? 'empty-source' : !targetCount ? 'empty-target' : lostLabelIds.length || absentLabelIds.length ? 'partial-loss' : 'retained' };
+  return { mask, weights, selection, sourceCount, sampling, resampled: !identical, reordered: !sourceXFast, interpolation: ['label','mask'].includes(selection.kind) ? 'nearest-neighbour' : 'trilinear' };
 }
 
 export function normalizeROISelection(volume, selection) {
@@ -92,6 +109,11 @@ export function compareROIs(volumeA, selectionA, volumeB, selectionB, target, de
   const grid = checkedGrid(target);
   if (grid.space !== 'MNI152NLin6Asym') throw new Error('unsupported-target-space');
   const a = resampleROI(volumeA, selectionA, grid), b = resampleROI(volumeB, selectionB, grid);
+  const manifest = descriptors.manifest ? makeComputationManifest(descriptors.manifest) : null;
+  if (manifest) {
+    const current = makeComparisonManifest(volumeA,a.selection,volumeB,b.selection,grid);
+    if (!compareComputationManifest(manifest,current).matches) throw Error('result-manifest-mismatch');
+  }
   const classes = new Uint8Array(a.mask.length);
   let aVoxels = 0, bVoxels = 0, intersectionVoxels = 0, unionVoxels = 0;
   const low = [Infinity, Infinity, Infinity], high = [-Infinity, -Infinity, -Infinity], sum = [0, 0, 0];
@@ -118,7 +140,7 @@ export function compareROIs(volumeA, selectionA, volumeB, selectionB, target, de
   }
   return {
     id: `${A.atlasId || 'A'}:${JSON.stringify(a.selection)}|${B.atlasId || 'B'}:${JSON.stringify(b.selection)}|${grid.shape.join('x')}|${grid.affine.join(',')}`,
-    A, B, grid: { shape: grid.shape, affine: grid.affine, order: 'x-fastest', space: grid.space, voxelVolumeMm3: mm3 },
+    A, B, manifest, sampling: { A:a.sampling, B:b.sampling }, grid: { shape: grid.shape, affine: grid.affine, order: 'x-fastest', space: grid.space, voxelVolumeMm3: mm3 },
     maskA: a.mask, maskB: b.mask, classes, center: unionVoxels ? sum.map(n => n / unionVoxels) : null, bounds: unionVoxels ? [low, high] : null,
     metrics: { aVoxels, bVoxels, intersectionVoxels, unionVoxels, aOnlyVoxels, bOnlyVoxels, aMm3: aVoxels * mm3, bMm3: bVoxels * mm3, intersectionMm3: intersectionVoxels * mm3, unionMm3: unionVoxels * mm3, aOnlyMm3: aOnlyVoxels * mm3, bOnlyMm3: bOnlyVoxels * mm3, dice: aVoxels + bVoxels ? 2 * intersectionVoxels / (aVoxels + bVoxels) : null, jaccard: unionVoxels ? intersectionVoxels / unionVoxels : null, aCoveredByB: aVoxels ? intersectionVoxels / aVoxels : null, bCoveredByA: bVoxels ? intersectionVoxels / bVoxels : null },
     probabilityMetrics, display: { ...ROI_DEFAULT_DISPLAY }, representation: 'binary-labels', method: `Labels/masks: nearest-neighbour. Continuous maps: trilinear sampling with zero outside source, then threshold. Exact binary counts on FSL shared grid; no new anatomical registration. A: ${JSON.stringify(a.selection)}; B: ${JSON.stringify(b.selection)}.`
@@ -213,5 +235,5 @@ export function roiSliceStyle(value, display = ROI_DEFAULT_DISPLAY) {
 }
 
 export function serializableVolume(volume) {
-  return Object.fromEntries(['data', 'shape', 'affine', 'order', 'space', 'canOverlayOnTarget', 'alignmentStatus', 'labels', 'source', 'thresholdPercent','kind','custom','name','provenance'].map(key => [key, volume[key]]));
+  return Object.fromEntries(['data', 'shape', 'affine', 'order', 'space', 'dtype', 'canOverlayOnTarget', 'alignmentStatus', 'labels', 'source', 'thresholdPercent','kind','custom','name','provenance','identity','sourceIdentities','sourceGrid','transforms','encoding','spatialEvidence','identityVerification'].map(key => [key, volume[key]]));
 }

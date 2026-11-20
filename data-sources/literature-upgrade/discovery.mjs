@@ -66,6 +66,13 @@ export const populationOverrides={
   haxby2001:b('观看面孔、动物、物体和控制图像的人类参与者。','Human participants viewing faces, animals, objects and control images.'),
 };
 const mapping=(structureIds,relation,zh,en,source=null,sourceKind='abstract-region-association')=>({structureIds,relation,limitations:b(zh,en),source,sourceKind});
+// Original measurement and target support are separate. Scalp measurements retain
+// their source label; human anatomical targets never become inferred generators.
+export const mappingSourceOverrides={
+  bentin1996:{label:'posterior temporal scalp electrodes (N170)',hemisphere:'U'},
+  liu2002:{label:'MEG components',hemisphere:'U'},
+  tsao2006:{label:'macaque face patches near the superior temporal sulcus',hemisphere:'U'},
+};
 export const newPaperMappings={
   cichy2014:[mapping(['pericalcarine-l','pericalcarine-r','inferior-temporal-l','inferior-temporal-r'],'task-association','论文功能ROI为 V1 与 IT；映射到宏观脑区仅用于区域阅读，不是精确 DK 边界或标准坐标。','The paper’s functional ROIs are V1 and IT. These gross-anatomy links support regional reading, not exact DK boundaries or standardized coordinates.','https://pmc.ncbi.nlm.nih.gov/articles/PMC4261693/#F4','full-text-functional-roi')],
   liu2002:[mapping(['fusiform-l','fusiform-r'],'review-association','仅作为面孔网络的时间过程对照。论文 MEG 成分不构成当前 DK 梭状回的直接定位。','A temporal-processing comparison for the face network only. The MEG components do not directly localize the current DK fusiform parcels.','https://web.mit.edu/bcs/nklab/media/pdfs/LiuHarrisKanwisherNN02.pdf','contextual-reading')],

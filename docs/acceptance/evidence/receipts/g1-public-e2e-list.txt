@@ -1,0 +1,19 @@
+
+> neuroatlas-brain-evidence@4.2.0 test:e2e
+> playwright test --config tests/e2e/public-result-page.config.mjs --list
+
+Listing tests:
+  [chromium] › public-result-page.spec.mjs:15:1 › fixed direct-open/refresh preserves old identity, language and base without private startup
+  [chromium] › public-result-page.spec.mjs:41:1 › versionless opens latest only after replacing with its explicit fixed address
+  [chromium] › public-result-page.spec.mjs:47:1 › failed workspace bootstrap offers reload and retains saved storage
+  [chromium] › public-result-page.spec.mjs:62:3 › unavailable public input remains outside workspace: result=axelrod2015-rffa&version=
+  [chromium] › public-result-page.spec.mjs:62:3 › unavailable public input remains outside workspace: result=axelrod2015-rffa&version=unknown
+  [chromium] › public-result-page.spec.mjs:62:3 › unavailable public input remains outside workspace: result=axelrod2015-rffa&version=2026-10-29.2&version=2026-10-30.1
+  [chromium] › public-result-page.spec.mjs:62:3 › unavailable public input remains outside workspace: result=axelrod2015-rffa&result=axelrod2015-rffa
+  [chromium] › public-result-page.spec.mjs:62:3 › unavailable public input remains outside workspace: result=private-note
+  [chromium] › public-result-page.spec.mjs:62:3 › unavailable public input remains outside workspace: result=
+  [chromium] › public-result-page.spec.mjs:62:3 › unavailable public input remains outside workspace: result=local-image.nii.gz
+  [chromium] › public-result-page.spec.mjs:62:3 › unavailable public input remains outside workspace: result=%3Cscript%3Esecret%3C%2Fscript%3E
+  [chromium] › public-result-page.spec.mjs:69:1 › static fixed page works without JavaScript, refreshes and navigates exact versions/languages
+  [chromium] › public-result-page.spec.mjs:87:1 › returning from a public page preserves the existing saved workspace bytes
+Total: 13 tests in 1 file

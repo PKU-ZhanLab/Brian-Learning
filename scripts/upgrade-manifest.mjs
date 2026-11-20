@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { enrichAtlasIdentities } from './enrich-atlas-identities.mjs';
 const root=path.resolve(import.meta.dirname,'..'),data=path.join(root,'public/data');
 const read=p=>JSON.parse(fs.readFileSync(path.join(data,p),'utf8'));
 const write=(p,v)=>fs.writeFileSync(path.join(data,p),JSON.stringify(v,null,2));
@@ -11,7 +12,7 @@ const legacy=read('legacy-manifest-v1.json');
 const dk=read('dk-v2/metadata.json'),ba=read('ba-v2/manifest.json');
 m.schemaVersion=2;m.generated='2026-10-27';m.version='4.1.0';m.edition='brain-evidence';
 m.atlases.dk=dk;
-m.atlases['ba-legacy']={...legacy.atlases.ba,available:false,data:null,alignmentStatus:'legacy',canOverlayOnTarget:false,canViewInNativeSpace:false,note:'保留 BrainNet 旧版 BA 41 个编号目录；精确配对 T1 与该版本数据许可尚未确认。待取得原始图谱、配对 T1 和坐标依据后再配准，当前不加载旧二进制。'};
+m.atlases['ba-legacy']={...(legacy.atlases['ba-legacy']||legacy.atlases.ba),available:false,data:null,alignmentStatus:'legacy',canOverlayOnTarget:false,canViewInNativeSpace:false,note:'保留 BrainNet 旧版 BA 41 个编号目录；精确配对 T1 与该版本数据许可尚未确认。待取得原始图谱、配对 T1 和坐标依据后再配准，当前不加载旧二进制。'};
 Object.assign(m.atlases,ba.atlases);
 m.meshes=m.meshes.filter(x=>!x.id.startsWith('cortex-'));
 m.meshes.unshift(...dk.meshes.filter(x=>x.id.startsWith('cortex-')));
@@ -40,7 +41,9 @@ m.aalSourceManifest='aal-v3/manifest.json';m.aalRegistrationReview='aal-v3/root-
 m.atlases.ho.alignmentStatus??='published-template';m.atlases.jhu.alignmentStatus??='published-template';
 m.anatomy='anatomy/manifest.json';m.baCoverage='ba-v2/manifest.json';
 m.counts=Object.fromEntries(Object.entries(m.atlases).map(([id,atlas])=>[id,atlas.labels?.filter(label=>label.id>0&&label.voxels>0).length||0]));
-write(file,m);
+const enriched=enrichAtlasIdentities(m,{root});
+write('atlas-region-relations.json',enriched.relations);
+write(file,enriched.manifest);
 if(process.argv.includes('--manifest-only')){
   console.log(`Integrated DK ${dk.labels.length}, AAL ${aal.atlases.aal.positiveLabelCount}, AAL3 ${aal.atlases.aal3.positiveLabelCount}, native and registered variants; asset hashes deferred`);
   process.exit(0);

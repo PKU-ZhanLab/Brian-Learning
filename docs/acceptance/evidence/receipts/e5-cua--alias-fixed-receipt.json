@@ -1,0 +1,95 @@
+{
+  "commit": "8f7b6f19948e847ba923aaa43fc329eab3a0eae6",
+  "actualUIAliasImportSucceeded": true,
+  "canonicalReference": "axelrod2015",
+  "artifactAndLocationsAndStatisticsExact": true,
+  "sourceAudit": {
+    "integrityErrors": [],
+    "semanticReviewRequired": [],
+    "unavailableArtifacts": [],
+    "coverage": {
+      "coordinates": [
+        "axelrod-rffa",
+        "axelrod-lffa"
+      ],
+      "fields": [
+        "locations/axelrod-lffa/kind",
+        "locations/axelrod-lffa/legacyV1/sourceRow",
+        "locations/axelrod-lffa/legacyV1/sourceTable",
+        "locations/axelrod-lffa/legacyV1/sourceUrl",
+        "locations/axelrod-lffa/sourceRefs/0",
+        "locations/axelrod-lffa/sourceSpaceId",
+        "locations/axelrod-lffa/xyz/0",
+        "locations/axelrod-lffa/xyz/1",
+        "locations/axelrod-lffa/xyz/2",
+        "locations/axelrod-rffa/kind",
+        "locations/axelrod-rffa/legacyV1/sourceRow",
+        "locations/axelrod-rffa/legacyV1/sourceTable",
+        "locations/axelrod-rffa/legacyV1/sourceUrl",
+        "locations/axelrod-rffa/sourceRefs/0",
+        "locations/axelrod-rffa/sourceSpaceId",
+        "locations/axelrod-rffa/xyz/0",
+        "locations/axelrod-rffa/xyz/1",
+        "locations/axelrod-rffa/xyz/2",
+        "references/axelrod2015/doi",
+        "references/axelrod2015/fullAuthorList/0",
+        "references/axelrod2015/fullAuthorList/1",
+        "references/axelrod2015/fullAuthorList/length",
+        "references/axelrod2015/url",
+        "results/axelrod2015-lffa/correction/value/method",
+        "results/axelrod2015-lffa/correction/value/passed",
+        "results/axelrod2015-lffa/correction/value/threshold/value",
+        "results/axelrod2015-lffa/sample/perAnalysis/value",
+        "results/axelrod2015-lffa/statistics/value/0/df",
+        "results/axelrod2015-lffa/statistics/value/0/p/operator",
+        "results/axelrod2015-lffa/statistics/value/0/p/value",
+        "results/axelrod2015-lffa/statistics/value/0/sourceRefs/0",
+        "results/axelrod2015-lffa/statistics/value/0/type",
+        "results/axelrod2015-lffa/statistics/value/0/value",
+        "results/axelrod2015-lffa/statistics/value/1/df",
+        "results/axelrod2015-lffa/statistics/value/1/p/operator",
+        "results/axelrod2015-lffa/statistics/value/1/p/value",
+        "results/axelrod2015-lffa/statistics/value/1/sourceRefs/0",
+        "results/axelrod2015-lffa/statistics/value/1/type",
+        "results/axelrod2015-lffa/statistics/value/1/value",
+        "results/axelrod2015-rffa/correction/value/method",
+        "results/axelrod2015-rffa/correction/value/passed",
+        "results/axelrod2015-rffa/correction/value/threshold/value",
+        "results/axelrod2015-rffa/sample/perAnalysis/value",
+        "results/axelrod2015-rffa/statistics/value/0/df",
+        "results/axelrod2015-rffa/statistics/value/0/p/operator",
+        "results/axelrod2015-rffa/statistics/value/0/p/value",
+        "results/axelrod2015-rffa/statistics/value/0/sourceRefs/0",
+        "results/axelrod2015-rffa/statistics/value/0/type",
+        "results/axelrod2015-rffa/statistics/value/0/value",
+        "results/axelrod2015-rffa/statistics/value/1/df",
+        "results/axelrod2015-rffa/statistics/value/1/p/operator",
+        "results/axelrod2015-rffa/statistics/value/1/p/value",
+        "results/axelrod2015-rffa/statistics/value/1/sourceRefs/0",
+        "results/axelrod2015-rffa/statistics/value/1/type",
+        "results/axelrod2015-rffa/statistics/value/1/value"
+      ],
+      "uncheckedReportedNumericFields": [
+        "results/axelrod2015-lffa/sample/included/value",
+        "results/axelrod2015-rffa/sample/included/value"
+      ],
+      "integrityCheckedArtifacts": [
+        "axelrod2015-v1"
+      ],
+      "currentComparedArtifacts": [
+        "axelrod2015-v1"
+      ]
+    }
+  },
+  "titleConflictRejected": true,
+  "rejectedImportLeavesActualExportByteIdentical": true,
+  "beforeSha256": "354e346bdaf52a5d7c31db4df6b9a55859fc5e3cc3fde2336705092d03494ca9",
+  "afterSha256": "354e346bdaf52a5d7c31db4df6b9a55859fc5e3cc3fde2336705092d03494ca9",
+  "browserWarningsErrors": [],
+  "publicReadingProjection": {
+    "privatePaperIdOmitted": true,
+    "freeTextQueryOmitted": true,
+    "noSourceArtifactOrAliasPayload": true,
+    "userNotice": "Completed only; explicit omitted-reading explanation deferred X8"
+  }
+}

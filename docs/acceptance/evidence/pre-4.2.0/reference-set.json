@@ -1,0 +1,377 @@
+{
+  "schemaVersion": 1,
+  "protocolVersion": "spatial-qc-protocol-v2",
+  "algorithmVersion": "spatial-qc-gates-v2",
+  "requiredCoverage": [
+    "whole-volume-axial",
+    "whole-volume-coronal",
+    "whole-volume-sagittal",
+    "left-right-landmarks",
+    "midline-landmarks",
+    "ventricular-landmarks",
+    "cortical-boundaries",
+    "aal3-label-134",
+    "midbrain",
+    "pons",
+    "medulla",
+    "cerebellum-l",
+    "cerebellum-r",
+    "cerebellar-vermis"
+  ],
+  "assessedAssetIds": [
+    "aal-registered",
+    "aal3-registered",
+    "aal",
+    "aal3"
+  ],
+  "coverageRegions": [
+    {
+      "regionId": "aal3-label-134",
+      "atlasId": "aal3-registered",
+      "labelId": 134
+    },
+    {
+      "regionId": "aal3-label-134",
+      "atlasId": "aal3",
+      "labelId": 134
+    }
+  ],
+  "references": [],
+  "thresholds": [],
+  "measurements": [],
+  "reviewFiles": [
+    "public/data/aal-v3/root-review.json"
+  ],
+  "lockedInputs": [
+    {
+      "id": "aal-registered",
+      "path": "public/data/aal-v3/aal-fsl1mm.bin",
+      "kind": "asset",
+      "sha256": "2e0da6dcc27fcf60a10835ae53053cb96362bd4b5881360e8bac4803e8f0830a",
+      "version": "sha256:2e0da6dcc27fcf60a10835ae53053cb96362bd4b5881360e8bac4803e8f0830a",
+      "spaceId": "MNI152NLin6Asym"
+    },
+    {
+      "id": "aal3-registered",
+      "path": "public/data/aal-v3/aal3-fsl1mm.bin",
+      "kind": "asset",
+      "sha256": "fdcc53f70f169fef2bfd3135c5da5027317b7840bddb212e0ea1638f2dfd5113",
+      "version": "sha256:fdcc53f70f169fef2bfd3135c5da5027317b7840bddb212e0ea1638f2dfd5113",
+      "spaceId": "MNI152NLin6Asym"
+    },
+    {
+      "id": "aal",
+      "path": "public/data/aal-v3/aal-native.bin",
+      "kind": "asset",
+      "sha256": "b6dc91b41abc811b95ec9c430f5cb9241024ad5cb811441992baffa8bfd1d3e4",
+      "version": "sha256:b6dc91b41abc811b95ec9c430f5cb9241024ad5cb811441992baffa8bfd1d3e4",
+      "spaceId": "Colin27 / MNI single-subject"
+    },
+    {
+      "id": "aal3",
+      "path": "public/data/aal-v3/aal3-native.bin",
+      "kind": "asset",
+      "sha256": "ad02a042ebd830108a2486fa19c118289eebb7c0560001acbbe2dc7e58423dd9",
+      "version": "sha256:ad02a042ebd830108a2486fa19c118289eebb7c0560001acbbe2dc7e58423dd9",
+      "spaceId": "Colin27 / MNI single-subject"
+    },
+    {
+      "id": "main-manifest",
+      "path": "public/data/manifest.json",
+      "kind": "metadata",
+      "sha256": "95a66695048760b9df8c8411973f5975bb3488574eb95180bde1713f2b6f2da9",
+      "version": "sha256:95a66695048760b9df8c8411973f5975bb3488574eb95180bde1713f2b6f2da9"
+    },
+    {
+      "id": "registration-field",
+      "path": "public/data/aal-v3/sources/colin27-to-fsl-dipy.npz",
+      "kind": "transform",
+      "sha256": "93ed27791cfceacba0f1caf609bc145193a5df6f03c2ecfa331b5b9e6fbb21ea",
+      "version": "sha256:93ed27791cfceacba0f1caf609bc145193a5df6f03c2ecfa331b5b9e6fbb21ea"
+    },
+    {
+      "id": "root-review.json",
+      "path": "public/data/aal-v3/root-review.json",
+      "kind": "historical-evidence",
+      "sha256": "15f24a05c5973a612686440e84e7cefe5d179d1ea7dcdd4ddc19adbba9eb0dd9",
+      "version": "sha256:15f24a05c5973a612686440e84e7cefe5d179d1ea7dcdd4ddc19adbba9eb0dd9"
+    },
+    {
+      "id": "registration-report.json",
+      "path": "public/data/aal-v3/registration-report.json",
+      "kind": "historical-evidence",
+      "sha256": "e89286bcfb69216b95172cb6f4ecc0f0b4403a6eb67430745186597f7166f6ba",
+      "version": "sha256:e89286bcfb69216b95172cb6f4ecc0f0b4403a6eb67430745186597f7166f6ba"
+    },
+    {
+      "id": "label-resampling-report.json",
+      "path": "public/data/aal-v3/label-resampling-report.json",
+      "kind": "historical-evidence",
+      "sha256": "3c2f31419ebc22737880e1ae8a71ccbc2e3a15e02bd30bc18093c587be9d11f6",
+      "version": "sha256:3c2f31419ebc22737880e1ae8a71ccbc2e3a15e02bd30bc18093c587be9d11f6"
+    },
+    {
+      "id": "registration-qc.png",
+      "path": "public/data/aal-v3/registration-qc.png",
+      "kind": "historical-evidence",
+      "sha256": "17fb3353b5a49f60dc58ca2cb9030e00cfc618766521e57c175a3438749dadaf",
+      "version": "sha256:17fb3353b5a49f60dc58ca2cb9030e00cfc618766521e57c175a3438749dadaf"
+    },
+    {
+      "id": "source-template-identity.json",
+      "path": "public/data/aal-v3/source-template-identity.json",
+      "kind": "historical-evidence",
+      "sha256": "ecf210ab659134cc8bcda6578aabeb414474b2ae87b7c1b11be9936fb8a51983",
+      "version": "sha256:ecf210ab659134cc8bcda6578aabeb414474b2ae87b7c1b11be9936fb8a51983"
+    },
+    {
+      "id": "candidate-inspection",
+      "path": "data-sources/spatial-qc/candidate-inspection.json",
+      "kind": "historical-evidence",
+      "sha256": "565397bfacb9d39aa2eb74005ead4b3fcf8bb536af402bb1464d51264d813e9a",
+      "version": "sha256:565397bfacb9d39aa2eb74005ead4b3fcf8bb536af402bb1464d51264d813e9a"
+    },
+    {
+      "id": "candidate-download-manifest",
+      "path": "data-sources/spatial-qc/download-manifest.json",
+      "kind": "metadata",
+      "sha256": "a22fb5273eb8a235a2fe8ddc7a4221916b829fe8cedf6fc7c5f4e9616017bf2c",
+      "version": "sha256:a22fb5273eb8a235a2fe8ddc7a4221916b829fe8cedf6fc7c5f4e9616017bf2c"
+    },
+    {
+      "id": "diedrichsen-README.md",
+      "path": "data-cache/spatial-qc/cerebellar_atlases-6857dfa/README.md",
+      "kind": "source-metadata",
+      "sha256": "f6c544b949f5a20059f9f154c93d892909f2a9bf6bba74396a9b15a5df55246e",
+      "version": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+      "spaceId": "MNI152NLin6AsymC",
+      "sourceUrl": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/README.md",
+      "gitBlobSha": "cfcba96abb20c1fdbcc8b36d65483facda644583"
+    },
+    {
+      "id": "diedrichsen-Diedrichsen_2009/atlas_description.json",
+      "path": "data-cache/spatial-qc/cerebellar_atlases-6857dfa/Diedrichsen_2009/atlas_description.json",
+      "kind": "source-metadata",
+      "sha256": "90240cabe8f1fab75bcf9af0d1e8b287cab76d04233095b978b650d2cb1405c1",
+      "version": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+      "spaceId": "MNI152NLin6AsymC",
+      "sourceUrl": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atlas_description.json",
+      "gitBlobSha": "4a24d3414d9b18ab7bd42d016238290a0dc66c38"
+    },
+    {
+      "id": "diedrichsen-dictionary",
+      "path": "data-cache/spatial-qc/cerebellar_atlases-6857dfa/Diedrichsen_2009/atl-Anatom.tsv",
+      "kind": "asset",
+      "sha256": "dc682c847972bd37badaa979526cf22a25bc79cdf50f4f49c107391c517fe7ad",
+      "version": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+      "spaceId": "MNI152NLin6AsymC",
+      "sourceUrl": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atl-Anatom.tsv",
+      "gitBlobSha": "2dc2ba1d85805342470fdb46574e0890f32f3ac8"
+    },
+    {
+      "id": "diedrichsen-segmentation",
+      "path": "data-cache/spatial-qc/cerebellar_atlases-6857dfa/Diedrichsen_2009/atl-Anatom_space-MNI_dseg.nii",
+      "kind": "asset",
+      "sha256": "434471d89ff329e6e14cdecb66998018fe0dcadbbe47781429148d0017598b72",
+      "version": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+      "spaceId": "MNI152NLin6AsymC",
+      "sourceUrl": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atl-Anatom_space-MNI_dseg.nii",
+      "gitBlobSha": "3b53404f70f0d271e4b2a82e3460741ae61caa3d"
+    },
+    {
+      "id": "diedrichsen-t1",
+      "path": "data-cache/spatial-qc/cerebellar_atlases-6857dfa/tpl-MNI152NLin6AsymC/tpl-MNI152NLin6AsymC_T1w.nii",
+      "kind": "asset",
+      "sha256": "b482979d8d6359462a6f050b1217d1096af77f8f0c05aadc6c29803c6a1ae902",
+      "version": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+      "spaceId": "MNI152NLin6AsymC",
+      "sourceUrl": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/tpl-MNI152NLin6AsymC/tpl-MNI152NLin6AsymC_T1w.nii",
+      "gitBlobSha": "79aa08b3c15f0fc0b3d922199542a938415191aa"
+    },
+    {
+      "id": "protocol",
+      "path": "docs/validation/spatial-qc-protocol.md",
+      "kind": "protocol",
+      "sha256": "9b98817721cf401c4c98ce129ba679e7dfe4e49838119356f89b10ef593c2306",
+      "version": "sha256:9b98817721cf401c4c98ce129ba679e7dfe4e49838119356f89b10ef593c2306"
+    },
+    {
+      "id": "source-preparation",
+      "path": "data-sources/spatial-qc/source-preparation.json",
+      "kind": "metadata",
+      "sha256": "8620714d5d6780cea559efef7d0298a61e8cf77620ccecdbb06ff591a8cdefb0",
+      "version": "sha256:8620714d5d6780cea559efef7d0298a61e8cf77620ccecdbb06ff591a8cdefb0"
+    }
+  ],
+  "segmentationCandidates": [
+    {
+      "id": "diedrichsen-2009-vermis-candidate",
+      "expectedEligible": false,
+      "originalSegmentation": {
+        "assetId": "diedrichsen-segmentation",
+        "sourceUrl": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atl-Anatom_space-MNI_dseg.nii",
+        "version": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+        "license": {
+          "id": "CC BY statement; version/attribution resolution pending",
+          "sourceUrl": "https://github.com/DiedrichsenLab/cerebellar_atlases/blob/6857dfa732de6dd60c94da2f84d0b15ccf316618/README.md",
+          "publicRedistributionAllowed": null,
+          "reviewStatus": "pending",
+          "statements": [
+            "Pinned README: CC BY with contributing-paper exception.",
+            "Atlas description: LICENSE file referenced but absent.",
+            "Older author web page: CC BY-NC 3.0."
+          ]
+        }
+      },
+      "asset": {
+        "id": "diedrichsen-segmentation",
+        "path": "data-cache/spatial-qc/cerebellar_atlases-6857dfa/Diedrichsen_2009/atl-Anatom_space-MNI_dseg.nii",
+        "kind": "asset",
+        "sha256": "434471d89ff329e6e14cdecb66998018fe0dcadbbe47781429148d0017598b72",
+        "version": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+        "spaceId": "MNI152NLin6AsymC",
+        "sourceUrl": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atl-Anatom_space-MNI_dseg.nii",
+        "gitBlobSha": "3b53404f70f0d271e4b2a82e3460741ae61caa3d",
+        "expectedSha256": "434471d89ff329e6e14cdecb66998018fe0dcadbbe47781429148d0017598b72"
+      },
+      "originalLabelDictionary": {
+        "assetId": "diedrichsen-dictionary",
+        "path": "data-cache/spatial-qc/cerebellar_atlases-6857dfa/Diedrichsen_2009/atl-Anatom.tsv",
+        "sha256": "dc682c847972bd37badaa979526cf22a25bc79cdf50f4f49c107391c517fe7ad",
+        "labelIds": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34
+        ]
+      },
+      "sourceSpace": {
+        "id": "MNI152NLin6AsymC",
+        "sourceUrl": "https://github.com/DiedrichsenLab/cerebellar_atlases/blob/6857dfa732de6dd60c94da2f84d0b15ccf316618/README.md",
+        "status": "source-declared; parser-native-unverified"
+      },
+      "targetSpaceId": "MNI152NLin6Asym",
+      "transformChain": [],
+      "derivationSteps": [],
+      "coverageStructures": [
+        "cerebellar-vermis"
+      ],
+      "regionalQC": {
+        "referenceSet": {
+          "requiredCoverage": [
+            "cerebellar-vermis"
+          ],
+          "references": [],
+          "thresholds": []
+        },
+        "measurements": [],
+        "reviews": []
+      },
+      "templateAssetId": "diedrichsen-t1"
+    },
+    {
+      "id": "current-midbrain",
+      "coverageStructures": [
+        "midbrain"
+      ],
+      "expectedEligible": false,
+      "representation": "illustrative-subdivision",
+      "derivationDescription": "Triangle centroid z boundaries: -22 / -47 mm"
+    },
+    {
+      "id": "current-pons",
+      "coverageStructures": [
+        "pons"
+      ],
+      "expectedEligible": false,
+      "representation": "illustrative-subdivision",
+      "derivationDescription": "Triangle centroid z boundaries: -22 / -47 mm"
+    },
+    {
+      "id": "current-medulla",
+      "coverageStructures": [
+        "medulla"
+      ],
+      "expectedEligible": false,
+      "representation": "illustrative-subdivision",
+      "derivationDescription": "Triangle centroid z boundaries: -22 / -47 mm"
+    },
+    {
+      "id": "current-cerebellum-l",
+      "coverageStructures": [
+        "cerebellum-l"
+      ],
+      "expectedEligible": false,
+      "representation": "illustrative-subdivision",
+      "derivationDescription": "Triangle centroid x midline bands: -5 / +5 mm"
+    },
+    {
+      "id": "current-cerebellum-r",
+      "coverageStructures": [
+        "cerebellum-r"
+      ],
+      "expectedEligible": false,
+      "representation": "illustrative-subdivision",
+      "derivationDescription": "Triangle centroid x midline bands: -5 / +5 mm"
+    },
+    {
+      "id": "current-cerebellar-vermis",
+      "coverageStructures": [
+        "cerebellar-vermis"
+      ],
+      "expectedEligible": false,
+      "representation": "illustrative-subdivision",
+      "derivationDescription": "Triangle centroid x midline bands: -5 / +5 mm"
+    }
+  ],
+  "excludedSources": [
+    {
+      "id": "brainstem-navigator",
+      "status": "not-acquired-not-redistributable",
+      "reason": "Agreement prohibits redistribution outside organization; no agreement accepted.",
+      "sourceUrl": "https://www.nitrc.org/frs/download.php/17380/BrainstemNavigatorv1.0.zip"
+    },
+    {
+      "id": "freesurfer-brainstem",
+      "status": "method-only-no-output",
+      "reason": "No fixed-space candidate or processing output acquired.",
+      "sourceUrl": "https://freesurfer.net/fswiki/BrainstemSubstructures"
+    }
+  ],
+  "limitations": [
+    "Historical AI scope: three central planes only; no genuine independent reviewer records supplied.",
+    "No independent whole-brain, deep-nucleus, brainstem or vermis measurements.",
+    "Candidate acquisition/grid checks do not resolve licensing or certify regional anatomy."
+  ],
+  "protocolSha256": "9b98817721cf401c4c98ce129ba679e7dfe4e49838119356f89b10ef593c2306"
+}

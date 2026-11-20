@@ -1,3 +1,10 @@
+import {migrateEvidence,getResultViewModel,reported,missing} from '../lib/evidence-schema.js';
+import {paperSearchAnnotations} from '../../data-sources/literature-upgrade/curation.mjs';
+import schaumSource from '../../data-sources/results/source-artifacts/schaum2021-v1.json' with {type:'json'};
+import axelrodSource from '../../data-sources/results/source-artifacts/axelrod2015-v1.json' with {type:'json'};
+import boscoSource from '../../data-sources/results/source-artifacts/bosco2008-v1.json' with {type:'json'};
+import axelrodSourceV2 from '../../data-sources/results/source-artifacts/axelrod2015-v2.json' with {type:'json'};
+import correctionLog from '../../data-sources/results/corrections.json' with {type:'json'};
 // Selected primary-source records. Source checking was performed with AI assistance,
 // not human certification. Generic MNI is deliberately NOT relabelled as NLin6Asym.
 const bi = (zh, en) => ({zh,en});
@@ -12,7 +19,7 @@ export const additionalResultsReferences = [
 const sources = {schaum:'https://elifesciences.org/articles/61679',axelrod:'https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0117126',bosco:'https://www.jneurosci.org/content/28/46/12071'};
 const point = (id,label,xyz,sourceRow,sourceUrl,kind='peak') => ({id,label,x:xyz[0],y:xyz[1],z:xyz[2],space:'MNI-unspecified',kind,sourceTable:'Table 1',sourceRow,sourceUrl,status:'source-checked',frameNote:bi('原文报告 MNI 坐标（mm），未给出可确认的 NLin6Asym 变体；保留独立坐标系。','The source reports MNI coordinates (mm); a specific NLin6Asym variant is not established. Retained in an independent coordinate frame.')});
 const common = {curationStatus:'source-checked',annotator,checkedAt:checked,curationNote:bi('已对照开放原文表格及方法核对选定记录；属于 AI 辅助整理，不代表人工认证或研究质量评级。','Selected records checked against the open primary table and methods with AI assistance; not human certification or a study-quality rating.')};
-export const curatedResults = [
+const legacyCuratedResults = [
   {...common,id:'schaum2021-meg-stop',referenceId:'schaum2021',topics:['attention'],modalities:['MEG'],
     finding:bi('成功停止相对注意捕获后继续反应，在右额下回等区域出现更高的 beta 源功率。选取表 1 的四个皮层峰值。','Successful stopping versus continuing after attentional capture increased beta source power in right inferior frontal and related cortical areas. Four cortical peaks from Table 1 are included.'),
     condition:bi('sSTOP > cAC-GO；刺激选择性停止任务，beta 源功率','sSTOP > cAC-GO; stimulus-selective stopping, beta source power'),sample:bi('59 名健康成人（62 名入组，3 名排除）','59 healthy adults (62 enrolled, 3 excluded)'),
@@ -32,5 +39,67 @@ export const curatedResults = [
   {...common,id:'bosco2008-tms-protocol1',referenceId:'bosco2008',topics:['motor'],modalities:['TMS','behavior'],finding:bi('协议 1 采用右侧 TPJ 或 hMT/V5+ 的 rTMS 检验下落目标拦截的时间控制。坐标为实际刺激点的组均值。','Protocol 1 used right TPJ or hMT/V5+ rTMS to examine interception timing for descending targets. Coordinates summarize the actual stimulation sites.'),condition:bi('协议 1：rTMS 前后比较；自然重力或反重力下落目标；反应时控制任务','Protocol 1: before/after rTMS; gravity-consistent or reversed-gravity descent; reaction-time control'),sample:bi('协议 1 共 12 名，TPJ 与 hMT/V5+ 各 6 名；其中 6 名也接受另一靶点刺激','Protocol 1: 12 participants, 6 per initial target; 6 also received stimulation of the other target'),roiDefinition:bi('根据既往 fMRI 设置靶点并以个体 MRI 导航；表 1 报告实际刺激位置的 MNI 均值','Targets based on prior fMRI and navigated using individual MRI; Table 1 reports mean actual MNI stimulation positions'),direction:bi('拦截反应提前；TPJ 效应依赖重力一致性，hMT/V5+ 的效应更广','Earlier interception responses; TPJ effects depended on gravity consistency, hMT/V5+ effects were broader'),regionIds:['supramarginal-r','lateral-occipital-r'],sourceUrl:sources.bosco,limitations:bi('刺激范围与网络效应不能由单一坐标表示；这些是刺激位置而非 BOLD 激活峰值。区域关联是宏观阅读线索。','Stimulation spread and network effects cannot be represented by a single point. These are stimulation positions, not BOLD peaks; anatomical links are broad reading associations.'),coordinates:[point('bosco-tpj','Right TPJ stimulation mean',[65,-36.6,30.1],'Protocol 1 — TPJ',`${sources.bosco}#T1`,'stimulation-target'),point('bosco-mt','Right hMT/V5+ stimulation mean',[55,-67.8,1.8],'Protocol 1 — hMT/V5+',`${sources.bosco}#T1`,'stimulation-target')],figures:[{id:'bosco-fig1',label:'Figure 1',url:`${sources.bosco}#F1`,sourceUrl:sources.bosco,license:'Source publisher rights; external link only',caption:bi('图 1：TPJ 与 hMT/V5+ 刺激位置。仅提供原文图链接。','Figure 1: TPJ and hMT/V5+ stimulation positions. Source link only.'),regionIds:['supramarginal-r','lateral-occipital-r']}],
   },
 ];
+
+// Source-anchored factual transcription; these additions do not create a new
+// source check, space check, human review, or an inferred experiment boundary.
+export const curatedEvidence=migrateEvidence({schema:'brain-evidence-v1',references:additionalResultsReferences,results:legacyCuratedResults,relations:[]}).value;
+// New extraction belongs to the active reference, never the retained v1 original.
+for(const reference of [...additionalResultsReferences,...curatedEvidence.references])if(paperSearchAnnotations[reference.id])Object.assign(reference,structuredClone(paperSearchAnnotations[reference.id]));
+curatedEvidence.dataVersion='2026-10-29.1';
+const table1='https://doi.org/10.1371/journal.pone.0117126.t001';
+const table2='https://doi.org/10.1371/journal.pone.0117126.t002';
+const mvpa=sources.axelrod;
+for(const [id,n,t,df,p,passed] of [['axelrod2015-lffa',13,2.57,12,.012,false],['axelrod2015-rffa',16,4.29,15,.001,true]]){
+  const result=curatedEvidence.results.find(r=>r.id===id);
+  result.sample={enrolled:missing('Enrollment count not separately extracted'),included:reported(17,[sources.axelrod]),perAnalysis:reported(n,[table1])};
+  result.statistics=reported([{type:'t',value:t,df,unit:'dimensionless',p:{operator:id.endsWith('lffa')?'=':'<',value:p},sourceRefs:[mvpa],sourceLocator:'Results / Neuroimaging Results / MVPA'},
+    {type:'t',value:id.endsWith('lffa')?2.57:4.3,df,unit:'dimensionless',p:{operator:id.endsWith('lffa')?'=':'<',value:id.endsWith('lffa')?.01:.001},sourceRefs:[table2],sourceLocator:'Table 2 / FFA / 20 voxels'}],[mvpa,table2]);
+  result.correction=reported({method:'Bonferroni',comparisonFamily:'12 ROIs, primary 20-voxel analysis',passed,threshold:{operator:'<',value:.05,appliesTo:'Bonferroni-adjusted p'}},[mvpa,table2]);
+}
+for(const [id,sd] of [['bosco-tpj',[1.2,3.3,3.6]],['bosco-mt',[1.4,2.2,3.0]]]){
+  const location=curatedEvidence.locations.find(l=>l.id===id);
+  location.dispersion=reported({kind:'sd',value:sd,unit:'mm',scope:'Between-subject distribution of stimulation-site coordinates'},[`${sources.bosco}#T1`]);
+  location.uncertainty={kind:'unknown',reason:'Localization error is not established by between-subject coordinate SD',unit:'mm',sourceRefs:[`${sources.bosco}#T1`]};
+}
+// E4 observations are scoped to these exact versions and minimal source cells.
+// Historic v1 values/events remain intact; no spatial or human review is added.
+curatedEvidence.dataVersion='2026-10-29.2';
+curatedEvidence.sourceArtifacts=structuredClone([schaumSource,axelrodSource,boscoSource]);
+const schaum=curatedEvidence.results.find(result=>result.id==='schaum2021-meg-stop');
+const schaumTable=`${sources.schaum}#table1`;
+schaum.sample.included=reported(59,[schaumSource.id]);
+schaum.sample.perAnalysis=reported(59,[schaumSource.id]);
+schaum.statistics=reported([['schaum-rifg',3.654],['schaum-lifg',2.820],['schaum-insula',2.894],['schaum-presma',3.878]].map(([locationId,value])=>({type:'t',value,df:null,p:null,unit:'dimensionless',locationId,sourceRefs:[schaumSource.id,schaumTable],sourceLocator:`Table 1 / ${locationId} / t-Value; no peak-level p reported in selected cells`})),[schaumSource.id,schaumTable]);
+schaum.timeWindow=reported({start:100,end:373,unit:'ms',role:'source-reconstruction cross-spectral-density window',event:'STOP/AC-GO signal onset',temporalROI:{start:100,end:350,unit:'ms',role:'a priori temporal ROI'},explanationParaphrase:'Methods / Source imaging explicitly extends the window beyond 350 ms to fit integer oscillatory cycles and reduce spectral leakage.'},[schaumSource.id,sources.schaum]);
+schaum.frequencyBand=reported({min:12,max:32,unit:'Hz',role:'source reconstruction',spectralCenter:22,smoothingHalfWidth:10,sensorCluster:{min:12,max:31.9,unit:'Hz',role:'sensor-level cluster selected for source reconstruction'}},[schaumSource.id]);
+schaum.correction=reported({method:'two-sided cluster-based permutation inference',comparisonFamily:'MEG source statistics; dependent-samples t statistic',passed:null,threshold:{operator:'<',value:.05,appliesTo:'cluster alpha'},permutations:5000},[schaumSource.id]);
+for(const result of curatedEvidence.results){
+  const artifact=curatedEvidence.sourceArtifacts.find(source=>source.referenceId===result.referenceId);
+  result.recordVersion='2026-10-29.2';
+  if(result.referenceId==='axelrod2015'){
+    result.correction.value.threshold={operator:'<',value:.004,appliesTo:'reported Bonferroni threshold across 12 regions'};
+    for(const statistic of result.statistics.value)statistic.sourceRefs.push(artifact.id);
+    result.statistics.sourceRefs.push(artifact.id);result.correction.sourceRefs.push(artifact.id);
+  }
+  const scope='AI-assisted comparison of the versioned minimal primary-source cells listed in the source artifact; no human review or spatial alignment.';
+  curatedEvidence.reviewEvents.push({id:`${result.id}:e4-source-check-v1`,subjectId:result.id,stage:'source-checked',actorType:'ai',actorName:annotator,date:'2026-10-29',scope,sourceRefs:[artifact.id],recordVersion:result.recordVersion,limitations:[bi('仅核对所列最小原文单元；人工审阅仍待完成。','Only listed minimal source cells checked; human review remains pending.')]});
+  for(const location of curatedEvidence.locations.filter(row=>row.resultId===result.id)){
+    location.recordVersion=result.recordVersion;location.sourceRefs.push(artifact.id);
+    curatedEvidence.reviewEvents.push({id:`${location.id}:e4-source-check-v1`,subjectId:location.id,stage:'source-checked',actorType:'ai',actorName:annotator,date:'2026-10-29',scope:`${scope} All three axes independently anchored.`,sourceRefs:[artifact.id],recordVersion:location.recordVersion,limitations:[bi('MNI 模板变体未知；人工审阅仍待完成。','MNI template variant remains unspecified; human review remains pending.')]});
+  }
+}
+// Additive source revision. v1 source artifacts and the published 2026-10-29.2
+// snapshot stay immutable. Included17 is arithmetic, not a verbatim source cell.
+curatedEvidence.dataVersion='2026-10-30.1';
+curatedEvidence.sourceArtifacts.push(structuredClone(axelrodSourceV2));
+curatedEvidence.corrections=structuredClone(correctionLog.corrections);
+for(const result of curatedEvidence.results.filter(row=>row.referenceId==='axelrod2015')){
+  result.recordVersion=curatedEvidence.dataVersion;
+  result.sample.enrolled=reported(18,[axelrodSourceV2.id]);
+  result.sample.included=reported(17,[axelrodSourceV2.id]);
+  result.limitations.push(bi('18 名招募、排除 1 名，纳入 17 名为算术推导；9 名与早先论文样本重叠。','18 recruited minus one excluded gives17 included by arithmetic;9 participants overlap an earlier publication.'));
+  curatedEvidence.reviewEvents.push({id:`${result.id}:e6-source-check-v2`,subjectId:result.id,stage:'source-checked',actorType:'ai',actorName:annotator,date:'2026-10-30',scope:'AI-assisted minimal source transcription; participant count17 is explicitly derived as18 minus1. No human or spatial review.',sourceRefs:[axelrodSourceV2.id],recordVersion:result.recordVersion,limitations:[bi('仅最小原文单元核对，人工审阅待完成。','Only minimal source cells checked; human review remains pending.')]});
+}
+export const curatedResults=curatedEvidence.results.map(result=>getResultViewModel(result.id,curatedEvidence));
 
 

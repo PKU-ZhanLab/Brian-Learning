@@ -1,0 +1,28 @@
+/* Research desk. Scientific atlas, ROI and axis palettes remain data-owned. */
+:root {
+  --text-primary: #263e30;
+  --text-secondary: #435d49;
+  --text-muted: #526550;
+  --surface-page: #f2f5ee;
+  --surface-paper: #fcfdf9;
+  --surface-subtle: #eaf0e4;
+  --surface-raised: #ffffff;
+  --surface-border: #c9d6c2;
+  --selection-surface: #e3eddd;
+  --selection-border: #426742;
+  --selection-text: #24462f;
+  --comparison-a: #27a5b5;
+  --comparison-b: #e39845;
+  --comparison-overlap: #8e69c6;
+  --font-body: 15px;
+  --font-assist: 13px;
+  --font-coordinate: 14px;
+  --font-numeric: 'Consolas', 'SFMono-Regular', 'Liberation Mono', monospace;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --target-control: 40px;
+  --target-compact: 24px;
+}

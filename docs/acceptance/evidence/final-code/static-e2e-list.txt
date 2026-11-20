@@ -1,0 +1,6 @@
+Listing tests:
+  [chromium] › research-journeys.spec.mjs:41:1 › source coordinate keeps unknown space blocked; explicit template probe, paper export and fresh project restore remain explainable
+  [chromium] › research-journeys.spec.mjs:55:1 › two atlas label groups compare, export full provenance, reopen without recompute and return to source controls
+  [chromium] › research-journeys.spec.mjs:64:1 › synthetic statistic retains file-specific space, threshold, sampling and image identity through independent export and recovery
+Total: 3 tests in 1 file
+exit=0

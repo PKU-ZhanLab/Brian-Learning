@@ -1,15 +1,18 @@
+import {APP_VERSION} from '../src/lib/app-version.js';
+import {recordBuildSource,sourcePackageFiles} from './verify-release.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {pam50RemoteDescriptor} from '../src/lib/pam50.js';
+import {assertSpatialQCSourcePackageInputs} from './prepare-spatial-qc-sources.mjs';
 
 export const projectRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const slash=value=>value.split(path.sep).join('/');
 const json=async file=>JSON.parse(await fs.readFile(file,'utf8'));
 const writeJSON=(file,data)=>fs.writeFile(file,JSON.stringify(data,null,2)+'\n');
-async function files(root){const result=[];for(const entry of await fs.readdir(root,{withFileTypes:true})){const file=path.join(root,entry.name);if(entry.isDirectory())result.push(...await files(file));else result.push(file);}return result;}
+async function files(root){const result=[];for(const entry of await fs.readdir(root,{withFileTypes:true})){const file=path.join(root,entry.name);if(entry.isDirectory()){if(!['node_modules','dist','dist-public','output','.vite','test-results','playwright-report','browserprofiles'].includes(entry.name))result.push(...await files(file));}else result.push(file);}return result;}
 function inside(root,file){const absolute=path.resolve(file),relative=path.relative(path.resolve(root),absolute);if(!relative||relative.startsWith('..')||path.isAbsolute(relative))throw Error(`Unsafe output path: ${absolute}`);return absolute;}
 async function removeFile(root,file){const absolute=inside(root,file);const stat=await fs.stat(absolute).catch(error=>error.code==='ENOENT'?null:Promise.reject(error));if(stat?.isDirectory())throw Error('Only individual generated files may be removed');if(stat)await fs.unlink(absolute);}
 
@@ -42,7 +45,7 @@ export async function preparePublicData(source,target){
     if(!id.endsWith('-registered')&&entry.canOverlayOnTarget!==false)throw Error(`Native AAL must retain its own space: ${id}`);
     if(id.endsWith('-registered')&&(entry.alignmentStatus!=='registered-estimate'||!entry.canOverlayOnTarget||!entry.limitations?.length))throw Error(`Missing registration status or limits: ${id}`);
   }
-  manifest.edition='brain-evidence';manifest.version='4.1.0';
+  manifest.edition='brain-evidence';manifest.version=APP_VERSION;
   manifest.dataLicenseNotice='/data/licenses/NOTICE-DATA.md';
   anatomy.edition='brain-evidence';anatomy.datasets.PAM50.distribution='on-demand-official-source';
   anatomy.datasets.PAM50.bundledGeometryCount=0;anatomy.datasets.PAM50.remoteGeometryCount=remoteCount;
@@ -64,7 +67,7 @@ export async function preparePublicData(source,target){
     else for(const original of htmlFiles){const name=path.basename(original);content=content.replaceAll(`](${name})`,`](${name}.txt)`).replaceAll('`'+name+'`','`'+name+'.txt`');}
     if(content!==originalContent)await fs.writeFile(file,content);
   }
-  const report={edition:'brain-evidence',version:'4.1.0',generatedAt:new Date().toISOString(),excludedBundledFiles:[...excluded].sort(),bundledPAM50Geometry:0,onDemandPAM50Structures:remoteCount,metadataOnlyAtlases:['ba-legacy'],nativeAalAtlases:['aal','aal3'],estimatedRegisteredAalAtlases:['aal-registered','aal3-registered'],aalLicenseNotice:'aal-v3/licenses/AAL-NOTICE.md',licenseNotice:'licenses/NOTICE-DATA.md',licenseEvidenceFormat:'Original fetched HTML bytes retained as inert .html.txt files',sourceRepository:'https://github.com/PKU-ZhanLab/Brian-Learning'};
+  const report={edition:'brain-evidence',version:APP_VERSION,generatedAt:new Date().toISOString(),excludedBundledFiles:[...excluded].sort(),bundledPAM50Geometry:0,onDemandPAM50Structures:remoteCount,metadataOnlyAtlases:['ba-legacy'],nativeAalAtlases:['aal','aal3'],estimatedRegisteredAalAtlases:['aal-registered','aal3-registered'],aalLicenseNotice:'aal-v3/licenses/AAL-NOTICE.md',licenseNotice:'licenses/NOTICE-DATA.md',licenseEvidenceFormat:'Original fetched HTML bytes retained as inert .html.txt files',sourceRepository:'https://github.com/PKU-ZhanLab/Brian-Learning'};
   await writeJSON(path.join(target,'public-edition.json'),report);
   const hashes={};for(const file of await files(target)){const name=slash(path.relative(target,file));if(name==='asset-checksums.json')continue;hashes[name]=sha(await fs.readFile(file));}
   await writeJSON(path.join(target,'asset-checksums.json'),{generated:new Date().toISOString(),algorithm:'SHA-256',files:hashes});
@@ -73,24 +76,28 @@ export async function preparePublicData(source,target){
 }
 
 const sourceInputs={
+  'spatial-qc':['reference-set.json','source-preparation.json','candidate-inspection.json','download-manifest.json'],
   raw:['MNI152_T1_2mm_brain.nii.gz','HarvardOxford-sub.nii.gz','HarvardOxford-Subcortical.xml','HarvardOxford-fs-labels.txt','HarvardOxford-relabel.sh','JHU.nii.gz','JHU-labels.xml','Cerebellum.nii.gz','Cerebellum.xml','download-manifest.json'],
   ba:['Talairach-labels-2mm.nii.gz','Talairach.xml','Juelich-maxprob-thr25-2mm.nii.gz','Juelich-prob-2mm.nii.gz','Juelich.xml','source-manifest.json','talairach-ba-label-mapping.json'],
   space:['sources.json','TemplateFlow-commit.txt','MNI152NLin2009aAsym-template_description.json','LICENSE-MNI.txt'],
   literature:['verification.json','candidates.json','README.md'],
   'literature-upgrade':['curation.mjs','discovery.mjs','candidates.json','figure-audit.json','metadata.json'],
-  results:['source-audit.json','curated-results.json','schaum2021-metadata.json','axelrod2015-metadata.json','bosco2008-metadata.json','verify-sources.mjs'],
+  results:['source-audit.json','curated-results.json','search-aliases.json','schaum2021-metadata.json','axelrod2015-metadata.json','bosco2008-metadata.json','verify-sources.mjs','source-artifacts/index.json','source-artifacts/schaum2021-v1.json','source-artifacts/axelrod2015-v1.json','source-artifacts/bosco2008-v1.json','source-artifacts/axelrod2015-v2.json','curation-scope.json','upstream-assets.json','corrections.json','publication-registry.json','published/2026-10-29.2.json','published/2026-10-30.1.json','source-facts/axelrod-participants-v1.json','source-facts/martin-article-v1.json','source-facts/martin-rights-v1.json','source-facts/martin-image-api-v1.json','source-facts/martin-collection-api-v1.json','source-facts/martin-retrievals-v1.json','source-facts/martin-local-verification-v1.json'],
 };
 
+sourceInputs.results.push('source-facts/index.json','source-facts/schaum-doi-lookup-v1.json','source-facts/martin-code-evidence-v1.json','source-facts/martin-code-LICENSE.txt','source-facts/neurovault-api-contract-v1.json');
+
+export const sourceInputPaths=()=>new Set([...Object.entries(sourceInputs).flatMap(([folder,names])=>names.map(name=>`data-sources/${folder}/${name}`)),'tests/fixtures/evidence-v1-baseline.json']);
+
 export async function prepareSourceRelease(target){
-  target=path.resolve(target);inside(projectRoot,target);await fs.mkdir(target,{recursive:true});
+  target=path.resolve(target);inside(projectRoot,target);if((await fs.readdir(target).catch(e=>e.code==='ENOENT'?[]:Promise.reject(e))).length)throw Error('Source package target must be new and empty; preserve existing candidates');await fs.mkdir(target,{recursive:true});
   for(const file of await files(target))if(/(?:^|\/)__pycache__\/|\.pyc$/.test(slash(path.relative(target,file))))await removeFile(target,file);
   const copy=async(relative)=>{const source=inside(projectRoot,path.join(projectRoot,relative)),destination=inside(target,path.join(target,relative));await fs.mkdir(path.dirname(destination),{recursive:true});await fs.copyFile(source,destination);};
-  for(const folder of ['src','scripts','docs'])for(const file of await files(path.join(projectRoot,folder))){const relative=slash(path.relative(projectRoot,file));if(relative==='scripts/integrate-workspace.mjs'||relative==='src/i18n/ui-strings.json'||/(?:^|\/)__pycache__\/|\.pyc$/.test(relative))continue;await copy(relative);}
-  for(const name of ['package.json','package-lock.json','vite.config.js','index.html','README.md','README.en.md','LICENSE','LICENSE-MIT','.gitattributes','启动教学模型.cmd'])await copy(name);
+  for(const folder of ['src','scripts','docs','tests','.github','experiments/viewer-comparison'])for(const file of await files(path.join(projectRoot,folder))){const relative=slash(path.relative(projectRoot,file));if(/(?:^|\/)(?:node_modules|dist|dist-public|output|browserprofiles|playwright-report|test-results)(?:\/|$)/.test(relative)||relative==='scripts/integrate-workspace.mjs'||relative==='src/i18n/ui-strings.json'||/(?:^|\/)__pycache__\/|\.pyc$/.test(relative))continue;await copy(relative);}
+  for(const name of ['package.json','package-lock.json','vite.config.js','playwright.config.mjs','index.html','README.md','README.en.md','LICENSE','LICENSE-MIT','.gitattributes','启动教学模型.cmd'])await copy(name);
   for(const file of await files(path.join(projectRoot,'public'))){const relative=slash(path.relative(path.join(projectRoot,'public'),file));if(relative.startsWith('data/'))continue;await copy('public/'+relative);}
   const report=await preparePublicData(path.join(projectRoot,'public/data'),path.join(target,'public/data'));
-  const allowedSourceFiles=new Set();
-  for(const [folder,names] of Object.entries(sourceInputs))for(const name of names)allowedSourceFiles.add(`data-sources/${folder}/${name}`);
+  const allowedSourceFiles=sourceInputPaths();
   const dk=await json(path.join(projectRoot,'data-sources/dk/sources.json'));
   for(const name of ['sources.json','CBIG-commit.txt',...dk.files.map(f=>f.file)])allowedSourceFiles.add('data-sources/dk/'+name);
   const aalSources=await json(path.join(projectRoot,'public/data/aal-v3/source-package-allowlist.json'));
@@ -101,6 +108,7 @@ export async function prepareSourceRelease(target){
     if(!evidence?.sha256||sha(await fs.readFile(inside(projectRoot,path.join(projectRoot,relative))))!==evidence.sha256)throw Error('AAL original or transform hash changed: '+relative);
     allowedSourceFiles.add(relative);
   }
+  assertSpatialQCSourcePackageInputs({registry:await json(path.join(projectRoot,'data-sources/spatial-qc/reference-set.json')),preparation:await json(path.join(projectRoot,'data-sources/spatial-qc/source-preparation.json')),allowedSourceFiles});
   for(const relative of allowedSourceFiles)await copy(relative);
   // Remove stale output-only source caches using individual checked paths. Never
   // mirror-delete or alter the workspace originals.
@@ -110,12 +118,16 @@ export async function prepareSourceRelease(target){
   for(const entry of metadata.records){delete entry.abstract;delete entry.fulltext;}
   metadata.publicationPolicy='Full abstracts, raw API bodies and full article XML are omitted. Source URLs, dates and hashes remain; fetch scripts can restore local verification caches.';
   await writeJSON(metadataFile,metadata);
-  await fs.writeFile(path.join(target,'.gitignore'),'node_modules/\ndist/\ndist-public/\n.vite/\noutput/\n.deployment/\nsnapshots/\ndata-cache/\n__pycache__/\n*.pyc\n*.log\ndata-sources/literature/raw/\ndata-sources/literature-upgrade/raw/\n');
+  await fs.writeFile(path.join(target,'.gitignore'),'node_modules/\ndist/\ndist-public/\n.vite/\noutput/\n.deployment/\nsnapshots/\ndata-cache/\n__pycache__/\n*.pyc\n*.log\n!/data-sources/dk/scripts/recon-all.log\ndata-sources/literature/raw/\ndata-sources/literature-upgrade/raw/\n');
   await writeJSON(path.join(target,'PUBLIC_RELEASE.json'),{...report,aalSourceInputCount:aalSources.requiredFiles.length,sourceInputs:'Licensed originals, saved transforms, transformation scripts and result source metadata included; PAM50 precomputed files, article PDFs and full-text caches excluded.'});
+  const origin=await recordBuildSource({sourceRoot:projectRoot});
+  const packageHashes=await sourcePackageFiles(target);
+  const sorted=Object.fromEntries(Object.entries(packageHashes).sort(([a],[b])=>a<b?-1:a>b?1:0));
+  await writeJSON(path.join(target,'SOURCE_ORIGIN.json'),{schema:'neuroatlas-packaged-source-v1',originCommit:origin.originCommit,originSource:origin,packagedTreeSha256:sha(JSON.stringify(sorted)),transformed:true});
   return report;
 }
 
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
-  const target=process.argv[2]||path.join(projectRoot,'.deployment/source');
+  const target=process.argv[2]||path.join(projectRoot,'output/release-candidate',`source-${Date.now()}`);
   console.log(JSON.stringify(await prepareSourceRelease(target),null,2));
 }

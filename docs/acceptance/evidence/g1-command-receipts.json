@@ -1,0 +1,115 @@
+{
+  "scope": "actual G1 command outputs; version-scoped working/probe evidence, not final clean release",
+  "records": [
+    {
+      "source": "output/g1-final-check-post-receipt.txt",
+      "snapshot": "receipts/g1-final-check-post-receipt.txt",
+      "sha256": "5b5f120dea50c47083dffde5e6c1680ce8c1b583a2320f11c335eaa7217d1a7f"
+    },
+    {
+      "source": "output/g1-final-build-post-receipt.txt",
+      "snapshot": "receipts/g1-final-build-post-receipt.txt",
+      "sha256": "9d253cf373333f759a6aa65e0f71e6b52e9e73994be3446f446db9f0cb77b2ed"
+    },
+    {
+      "source": "output/g1-final-release-verify.txt",
+      "snapshot": "receipts/g1-final-release-verify.txt",
+      "sha256": "8fd673fd23b68d9c92754d7d224d8900273de0d4dce53436303c93383cf1522f"
+    },
+    {
+      "source": "output/g1-scratch-red-bounded.txt",
+      "snapshot": "receipts/g1-scratch-red-bounded.txt",
+      "sha256": "64665405c95ad59a0ff99503516e754ef9adf112e2c81070dfc41dfb0a69fb8c"
+    },
+    {
+      "source": "output/g1-scratch-green.txt",
+      "snapshot": "receipts/g1-scratch-green.txt",
+      "sha256": "6f94d2c55bddf25be05b44011474f60f15cb5d6d8c12a64f141f1c513dcfbe2a"
+    },
+    {
+      "source": "output/g1-output-receipt-red.txt",
+      "snapshot": "receipts/g1-output-receipt-red.txt",
+      "sha256": "b735b2f3a20593ab215b6d05bad8875ca3f4f041b67f9b263a99b2f47fe824b7"
+    },
+    {
+      "source": "output/g1-output-receipt-green.txt",
+      "snapshot": "receipts/g1-output-receipt-green.txt",
+      "sha256": "f5238e12046fbffc23beb33464ce848d83b120c6c41115a3b6a791573f658e24"
+    },
+    {
+      "source": "output/g1-package-test.txt",
+      "snapshot": "receipts/g1-package-test.txt",
+      "sha256": "72757a92bd67f2e50c71b3d3f2b953d0f353e4f1e2444c0554cd3b5f7435151c"
+    },
+    {
+      "source": "output/g1-package-check.txt",
+      "snapshot": "receipts/g1-package-check.txt",
+      "sha256": "d3e5413536d13f0f687219f746d9ec1801cc5808254236ef010b3482e2c4e462"
+    },
+    {
+      "source": "output/g1-package-test-green.txt",
+      "snapshot": "receipts/g1-package-test-green.txt",
+      "sha256": "97713c4bb7d54c3c00e54ec3d06dc9cfe99428462cfec1146af32fc63c80b3b4"
+    },
+    {
+      "source": "output/g1-package-check-green.txt",
+      "snapshot": "receipts/g1-package-check-green.txt",
+      "sha256": "2d33bc9c13f01369df92acd6f430e83bbfafe62af797512ed10f8d9c35460009"
+    },
+    {
+      "source": "output/g1-package-build-green.txt",
+      "snapshot": "receipts/g1-package-build-green.txt",
+      "sha256": "08f05cb7740904981a8d36dc19f04c22e348c148226799d921e5c902dd22f616"
+    },
+    {
+      "source": "output/g1-package-verify-green.txt",
+      "snapshot": "receipts/g1-package-verify-green.txt",
+      "sha256": "e5e5fad2e48e9c8fc782fe8e57a8891a8d60e152d6f4918c662a46b892e045c9"
+    },
+    {
+      "source": "output/g1-prototype-fixture.txt",
+      "snapshot": "receipts/g1-prototype-fixture.txt",
+      "sha256": "7055fdb2f1f36101df35090766652622fc8703411e1c5b76ae9921143d54db10"
+    },
+    {
+      "source": "output/g1-all-e2e-list.txt",
+      "snapshot": "receipts/g1-all-e2e-list.txt",
+      "sha256": "63c9a6462baf11e9dfd5f7064406cccb670d86659aef40aac8e1e9946b4ebcc6"
+    },
+    {
+      "source": "output/g1-public-e2e-list.txt",
+      "snapshot": "receipts/g1-public-e2e-list.txt",
+      "sha256": "914eabd44305dc1d5d5a09518b93369fc5ee16e8570f2e9b887fb7357421bccc"
+    },
+    {
+      "source": "output/g1-final-package-test.txt",
+      "snapshot": "receipts/g1-final-package-test.txt",
+      "sha256": "9684ee5afe9e2e7873b93f7f659988c54cf0581d7e9de08e35e82b12374cb6b7"
+    },
+    {
+      "source": "output/g1-final-package-check.txt",
+      "snapshot": "receipts/g1-final-package-check.txt",
+      "sha256": "61c3f80e4f8500baf20d72731272a0834db31aa103781698864a51ff780e1df2"
+    },
+    {
+      "source": "output/g1-final-package-build.txt",
+      "snapshot": "receipts/g1-final-package-build.txt",
+      "sha256": "d9baf595475a2e7aa1ffd31e4eea7ba89ec25b3f0877b1b4d7380c0552f2e053"
+    },
+    {
+      "source": "output/g1-final-package-verify.txt",
+      "snapshot": "receipts/g1-final-package-verify.txt",
+      "sha256": "6ac09c825dda52cbfd0652c36f7efb7bc72b0fe0735ef9d98b145130fa52a93d"
+    },
+    {
+      "source": "output/g1-final-package-e2e-list.txt",
+      "snapshot": "receipts/g1-final-package-e2e-list.txt",
+      "sha256": "63c9a6462baf11e9dfd5f7064406cccb670d86659aef40aac8e1e9946b4ebcc6"
+    },
+    {
+      "source": "output/g1-final-package-prototype.txt",
+      "snapshot": "receipts/g1-final-package-prototype.txt",
+      "sha256": "0d9fdf9e6cb85fc0d905909ca6b1460d606c6bac19e88a7d6cf99c3346b9a186"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "schema": "result-curation-scope-v1",
+  "status": "proposed",
+  "version": "2026-10-30.1",
+  "recommended": {
+    "topic": "motor-inhibition-control",
+    "referenceId": "schaum2021"
+  },
+  "alternatives": [
+    {
+      "topic": "face-perception",
+      "referenceId": "axelrod2015"
+    },
+    {
+      "topic": "action-perception-tms",
+      "referenceId": "bosco2008"
+    }
+  ],
+  "baseline": {
+    "id": "original-three-papers-four-results-eight-coordinates",
+    "version": "2026-10-29.2",
+    "referenceIds": [
+      "schaum2021",
+      "axelrod2015",
+      "bosco2008"
+    ],
+    "resultIds": [
+      "schaum2021-meg-stop",
+      "axelrod2015-rffa",
+      "axelrod2015-lffa",
+      "bosco2008-tms-protocol1"
+    ],
+    "locationIds": [
+      "schaum-rifg",
+      "schaum-lifg",
+      "schaum-insula",
+      "schaum-presma",
+      "axelrod-rffa",
+      "axelrod-lffa",
+      "bosco-tpj",
+      "bosco-mt"
+    ],
+    "directOverlays": 0
+  },
+  "cases": [
+    {
+      "id": "coordinate-source",
+      "referenceId": "schaum2021",
+      "resultId": "schaum2021-meg-stop",
+      "source": "source-artifacts/schaum2021-v1.json",
+      "sourceCheck": "ai-minimal-cells-checked",
+      "space": "MNI-unspecified",
+      "status": "pending-exact-space"
+    },
+    {
+      "id": "atlas-label-roi",
+      "source": "public/data/asset-identities.json",
+      "status": "software-fixture-checked-scientific-paper-link-pending",
+      "limitation": "Actual atlas-label identity and engineering ROI receipts do not establish an original-paper voxel ROI mapping."
+    },
+    {
+      "id": "native-image",
+      "upstreamAssetId": "neurovault:787769:original",
+      "source": "upstream-assets.json",
+      "sourceSpaceId": null,
+      "status": "pending-upload-template-model-threshold-and-workflow"
+    }
+  ],
+  "humanReview": {
+    "status": "pending",
+    "reviewer": null,
+    "date": null,
+    "scope": null
+  },
+  "quantification": "no-go"
+}

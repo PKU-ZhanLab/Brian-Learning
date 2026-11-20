@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "repository": "DiedrichsenLab/cerebellar_atlases",
+  "commit": "6857dfa732de6dd60c94da2f84d0b15ccf316618",
+  "cacheRoot": "data-cache/spatial-qc/cerebellar_atlases-6857dfa",
+  "status": "candidate-only-no-validation-upgrade",
+  "files": [
+    {
+      "path": "README.md",
+      "url": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/README.md",
+      "bytes": 10904,
+      "sha256": "f6c544b949f5a20059f9f154c93d892909f2a9bf6bba74396a9b15a5df55246e",
+      "gitBlobSha": "cfcba96abb20c1fdbcc8b36d65483facda644583"
+    },
+    {
+      "path": "Diedrichsen_2009/atlas_description.json",
+      "url": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atlas_description.json",
+      "bytes": 1351,
+      "sha256": "90240cabe8f1fab75bcf9af0d1e8b287cab76d04233095b978b650d2cb1405c1",
+      "gitBlobSha": "4a24d3414d9b18ab7bd42d016238290a0dc66c38"
+    },
+    {
+      "path": "Diedrichsen_2009/atl-Anatom.tsv",
+      "url": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atl-Anatom.tsv",
+      "bytes": 767,
+      "sha256": "dc682c847972bd37badaa979526cf22a25bc79cdf50f4f49c107391c517fe7ad",
+      "gitBlobSha": "2dc2ba1d85805342470fdb46574e0890f32f3ac8"
+    },
+    {
+      "path": "Diedrichsen_2009/atl-Anatom_space-MNI_dseg.nii",
+      "url": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/Diedrichsen_2009/atl-Anatom_space-MNI_dseg.nii",
+      "bytes": 1324108,
+      "sha256": "434471d89ff329e6e14cdecb66998018fe0dcadbbe47781429148d0017598b72",
+      "gitBlobSha": "3b53404f70f0d271e4b2a82e3460741ae61caa3d"
+    },
+    {
+      "path": "tpl-MNI152NLin6AsymC/tpl-MNI152NLin6AsymC_T1w.nii",
+      "url": "https://raw.githubusercontent.com/DiedrichsenLab/cerebellar_atlases/6857dfa732de6dd60c94da2f84d0b15ccf316618/tpl-MNI152NLin6AsymC/tpl-MNI152NLin6AsymC_T1w.nii",
+      "bytes": 2647864,
+      "sha256": "b482979d8d6359462a6f050b1217d1096af77f8f0c05aadc6c29803c6a1ae902",
+      "gitBlobSha": "79aa08b3c15f0fc0b3d922199542a938415191aa"
+    }
+  ]
+}

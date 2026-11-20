@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const checkOnly = process.argv.includes('--check');
 const publicRoot = path.join(root, 'public');
 const json = async file => JSON.parse(await readFile(file, 'utf8'));
 const manifest = await json(path.join(publicRoot, 'data/anatomy/manifest.json'));
@@ -91,5 +92,7 @@ if (meshes !== 36 || bundles !== 31 || realNerves !== 10 || points !== pointRepo
 await expectHash(path.join(root, 'data-sources/anatomy/hcp1065_avg_tracts_trk.zip'), manifest.datasets.HCP1065.archiveSha256, 'HCP1065 archive');
 await expectHash(path.join(root, 'data-sources/space/MNI152NLin2009aAsym_to_MNI152NLin6Asym_dipy.npz'), registration.fieldSha256, 'registration field');
 const report = { passed: true, checkedAt: new Date().toISOString(), realStructureCount: results.length, pam50Meshes: meshes, hcp1065Bundles: bundles, cranialNerveBundles: realNerves, spinalLevels: levels.length, transformedStreamlinePoints: points, checkedFiles: checkedSources.size, roundTripMm: pointReport.roundTripMm, scope: 'File integrity, finite and consistent geometry, source hashes, coordinate metadata, laterality, coverage and recorded registration QA. This is not individual anatomical validation.', structures: results };
-await writeFile(path.join(publicRoot, 'data/anatomy/validation.json'), JSON.stringify(report, null, 2) + '\n');
-console.log(JSON.stringify({ ...report, structures: undefined }, null, 2));
+const spatialQC = await json(path.join(publicRoot, 'data/spatial-qc/assessment.json'));
+if (!['partial','reviewed'].includes(spatialQC.status) || typeof spatialQC.humanValidated !== 'boolean') fail('Spatial QC scope record missing');
+if (!checkOnly) await writeFile(path.join(publicRoot, 'data/anatomy/validation.json'), JSON.stringify(report, null, 2) + '\n');
+console.log(JSON.stringify({ ...report, structures: undefined, spatialQC: { assessment: 'spatial-qc/assessment.json', status: spatialQC.status, humanValidated: spatialQC.humanValidated, missingCoverage: spatialQC.missingCoverage } }, null, 2));

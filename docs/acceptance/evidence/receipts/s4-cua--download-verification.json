@@ -1,0 +1,30 @@
+{
+  "download": "C:/Users/win/Downloads/ROI-A.nii",
+  "bytes": 7109489,
+  "sha256": "4eb83fa5c7a8ec17104fe9517c1919295650de5dcffe15bd8d3599f9d9981e1f",
+  "shape": [
+    181,
+    217,
+    181
+  ],
+  "affine": [
+    1,
+    0,
+    0,
+    -90,
+    0,
+    1,
+    0,
+    -126,
+    0,
+    0,
+    1,
+    -72,
+    0,
+    0,
+    0,
+    1
+  ],
+  "positiveVoxels": 7,
+  "modifiedAt": "2026-10-29T12:00:50.527Z"
+}

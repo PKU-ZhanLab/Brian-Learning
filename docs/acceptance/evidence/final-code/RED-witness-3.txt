@@ -1,0 +1,4 @@
+node --input-type=module < witness-3.mjs.txt
+exit=0
+{"probe":"project-merge-source-artifact-integrity","accepted":true,"before":{"valid":true,"errors":[]},"after":{"valid":false,"errors":["artifact record SHA-256 mismatch"]},"beforeReference":"axelrod2015","afterReference":"references-remapped-1"}
+{"probe":"project-merge-provenance-alias","before":1,"after":0,"missingSourcePaper":[]}

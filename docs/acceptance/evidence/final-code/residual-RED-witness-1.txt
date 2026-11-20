@@ -1,0 +1,3 @@
+node --input-type=module < residual-witness-1.mjs.txt
+exit=0
+{"probe":"ready-cache-late-publication","pendingResult":{"resolved":"A private label","owner":"A"},"currentResult":"B label"}

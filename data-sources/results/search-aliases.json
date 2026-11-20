@@ -1,0 +1,19 @@
+{
+  "schema": "evidence-search-aliases-v1",
+  "aliases": [
+    {
+      "id": "pre-sma",
+      "terms": ["pre-SMA", "pre SMA", "pre-supplementary motor area", "前辅助运动区"],
+      "sourceRefs": ["https://elifesciences.org/articles/61679#table1"],
+      "sourceLocator": "Table 1 / Pre-supplementary motor area; Abstract defines pre-SMA",
+      "translationNote": "Chinese search term translated by the curator; search expansion only."
+    },
+    {
+      "id": "ba44-45",
+      "terms": ["BA44/45", "Brodmann areas 44/45", "布罗德曼44/45区"],
+      "sourceRefs": ["https://elifesciences.org/articles/61679#table1"],
+      "sourceLocator": "Table 1 / Inferior frontal gyrus BA44/45 R and L",
+      "translationNote": "Chinese search term translated by the curator; does not identify an atlas label."
+    }
+  ]
+}

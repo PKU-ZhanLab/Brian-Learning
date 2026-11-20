@@ -5,3 +5,9 @@ data-sources/** -text
 *.ico -text
 *.gz -text
 *.bin -text
+# Historical audit inputs and copied plans have recorded original byte hashes.
+/tests/fixtures/audit-20261029/** -text
+/docs/superpowers/plans/2026-10-29-neuroatlas/** -text
+/experiments/viewer-comparison/notices/NiiVue-BSD-2-Clause.txt -text
+# Acceptance evidence keeps original receipt bytes and recorded SHA-256 values.
+/docs/acceptance/evidence/** -text

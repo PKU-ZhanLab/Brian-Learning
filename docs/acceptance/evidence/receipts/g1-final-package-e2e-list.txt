@@ -1,0 +1,148 @@
+
+> neuroatlas-brain-evidence@4.2.0 test:e2e
+> playwright test --list
+
+Listing tests:
+  [chromium] › baseline.spec.mjs:7:3 › baseline page loads in zh
+  [chromium] › baseline.spec.mjs:7:3 › baseline page loads in en
+  [chromium] › coordinate-navigation.spec.mjs:16:1 › decimal navigation links exact query, readout and all three slice positions across main atlases
+  [chromium] › coordinate-navigation.spec.mjs:29:1 › LPS and batch paste convert explicitly and visit points without truncation
+  [chromium] › coordinate-navigation.spec.mjs:36:1 › missing space and invalid/oversized batch inputs keep the current coordinate and show field errors
+  [chromium] › coordinate-navigation.spec.mjs:43:1 › outside-template input stays exact, axis stepping does not clip, and center is explicit
+  [chromium] › coordinate-navigation.spec.mjs:53:1 › unknown and unregistered references enter independent context and remain independent after reload
+  [chromium] › coordinate-navigation.spec.mjs:72:1 › a typed internal context name cannot authorize main-template lookup
+  [chromium] › coordinate-navigation.spec.mjs:78:1 › X1-R2 raw pam50 keeps its exact copy identity and both pasted batch points
+  [chromium] › coordinate-navigation.spec.mjs:93:1 › X1-R1 main manual navigation and Reset view do not release imported explorer positions
+  [chromium] › coordinate-navigation.spec.mjs:112:1 › native slices share precise input while keeping their source reference and main position separate
+  [chromium] › coordinate-navigation.spec.mjs:125:1 › ROI slice navigation preserves computed selections and does not trigger another computation
+  [chromium] › coordinate-navigation.spec.mjs:144:1 › task entries focus existing flows, and the example can be skipped
+  [chromium] › draft-and-undo.spec.mjs:18:1 › half a finding survives filter, Anatomy/Evidence library and refresh with stable draft identity
+  [chromium] › draft-and-undo.spec.mjs:28:1 › quota failure keeps editing and prevents destructive leave; retry and discard clear dirty state
+  [chromium] › draft-and-undo.spec.mjs:36:1 › saving formal metadata removes only its draft in the same durable publication
+  [chromium] › draft-and-undo.spec.mjs:42:1 › one deletion preview and undo restore the paper, structured findings, relations and artifacts
+  [chromium] › draft-and-undo.spec.mjs:49:1 › failed imports preserve current draft; successful project replacement clears editor and undo ownership
+  [chromium] › draft-and-undo.spec.mjs:58:1 › project export admits the current draft before its delayed autosave timer fires
+  [chromium] › draft-and-undo.spec.mjs:67:1 › project export refuses an oversized failed autosave and preserves the current editor
+  [chromium] › evidence.spec.mjs:11:1 › search: bilingual aliases keep paper methods separate from recorded results
+  [chromium] › evidence.spec.mjs:48:1 › mapping: opening Silani locates only the supported right hemisphere
+  [chromium] › evidence.spec.mjs:67:1 › mapping: scalp ERP links require explicit contextual navigation
+  [chromium] › evidence.spec.mjs:81:1 › export: reading-only JSON reconstructs a genuinely non-builtin reading card
+  [chromium] › keyboard-dialogs.spec.mjs:3:1 › nested atlas and save dialogs close one at a time and restore their openers
+  [chromium] › keyboard-dialogs.spec.mjs:29:1 › JSON import opens from Enter and Space and cancel returns to its button
+  [chromium] › keyboard-dialogs.spec.mjs:43:1 › structure visibility is visible on keyboard focus and input keeps slash
+  [chromium] › keyboard-dialogs.spec.mjs:57:1 › English page has no React unique-key warnings after localization
+  [chromium] › keyboard-dialogs.spec.mjs:69:1 › the focused canvas exposes existing standard views to the keyboard
+  [chromium] › keyboard-dialogs.spec.mjs:80:1 › a nonmodal coordinate panel explicitly returns focus and can be entered again
+  [chromium] › keyboard-dialogs.spec.mjs:101:1 › Help to Data keeps focus inside the replacement content and returns to the original opener
+  [chromium] › keyboard-dialogs.spec.mjs:118:1 › language changes retain mounted research input, unsaved editor and scene canvas
+  [chromium] › linked-comparison.spec.mjs:12:1 › two exact-reference sources synchronize decimals in both directions with independent switches and 3D keyboard/mouse controls
+  [chromium] › linked-comparison.spec.mjs:22:1 › different atlases in a recorded common reference link, while native and unknown references remain independent
+  [chromium] › linked-comparison.spec.mjs:29:1 › closing cancels stale source work, restores opener focus and retains paired project state
+  [chromium] › linked-comparison.spec.mjs:33:44 › paired sources and all controls remain reachable at 390px
+  [chromium] › linked-comparison.spec.mjs:33:44 › paired sources and all controls remain reachable at 650px
+  [chromium] › linked-comparison.spec.mjs:33:44 › paired sources and all controls remain reachable at 768px
+  [chromium] › linked-comparison.spec.mjs:33:44 › paired sources and all controls remain reachable at 1366px
+  [chromium] › linked-comparison.spec.mjs:33:44 › paired sources and all controls remain reachable at 1920px
+  [chromium] › performance.spec.mjs:14:1 › Import image consumes delayed mount readiness and also focuses a warm visit
+  [chromium] › performance.spec.mjs:24:1 › leaving the import task before its lazy panel resolves cancels late open and focus
+  [chromium] › performance.spec.mjs:35:1 › optional fonts may fail while layout and navigation remain usable
+  [chromium] › performance.spec.mjs:44:1 › optional panel download failure leaves the workspace and navigation available
+  [chromium] › performance.spec.mjs:51:1 › cancel before worker completion registers nothing and retains the declaration for retry
+  [chromium] › performance.spec.mjs:66:1 › worker error cannot replace an admitted image; retry uses the same stage path
+  [chromium] › performance.spec.mjs:77:1 › recompute cancels the old delayed mask export and a new current export succeeds
+  [chromium] › performance.spec.mjs:94:1 › actual worker tasks under CPU throttling preserve bytes and cancel without a partial result
+  [chromium] › project-recovery.spec.mjs:10:1 › a separate browser storage restores a chosen project and v1 migrates without invented numerical history
+  [chromium] › project-recovery.spec.mjs:15:1 › malformed chosen project cannot replace an existing synthetic project
+  [chromium] › recovery-and-feedback.spec.mjs:23:1 › mounted ROI consumers recover from first manifest failure when resource identity appears at generation zero, retaining A and B
+  [chromium] › recovery-and-feedback.spec.mjs:56:1 › successful undo preserves user paper titles containing Quota and Unexpected verbatim
+  [chromium] › recovery-and-feedback.spec.mjs:71:1 › structured baseline, matching denominator and clearing filters stay distinct in both languages
+  [chromium] › recovery-and-feedback.spec.mjs:81:1 › first manifest failure and single atlas failure recover using Retry while full local project remains intact
+  [chromium] › recovery-and-feedback.spec.mjs:99:1 › public-link omission feedback is specific without private text and full download preview equals actual staged bytes
+  [chromium] › recovery-and-feedback.spec.mjs:112:1 › failed title-conflict import removes previous success feedback and preserves exact saved evidence
+  [chromium] › recovery-and-feedback.spec.mjs:121:1 › native quota failure gives one contextual editor error and retains the complete draft until retry
+  [chromium] › recovery-and-feedback.spec.mjs:130:1 › computation cancellation retains chosen labels and durable project while late worker messages cannot publish
+  [chromium] › recovery-and-feedback.spec.mjs:140:1 › overlong escaped reference is rejected before navigation and input remains editable
+  [chromium] › research-journeys.spec.mjs:15:1 › source coordinate keeps unknown space blocked; explicit template probe, paper export and fresh project restore remain explainable
+  [chromium] › research-journeys.spec.mjs:29:1 › two atlas label groups compare, export full provenance, reopen without recompute and return to source controls
+  [chromium] › research-journeys.spec.mjs:38:1 › synthetic statistic retains file-specific space, threshold, sampling and image identity through independent export and recovery
+  [chromium] › research-layout.spec.mjs:14:1 › fourth selection keeps the original three until explicit replace/remove
+  [chromium] › research-layout.spec.mjs:27:95 › 2 papers use the main canvas and retain headers, dimensions and history at 1366
+  [chromium] › research-layout.spec.mjs:27:95 › 3 papers use the main canvas and retain headers, dimensions and history at 1366
+  [chromium] › research-layout.spec.mjs:27:95 › 2 papers use the main canvas and retain headers, dimensions and history at 1920
+  [chromium] › research-layout.spec.mjs:27:95 › 3 papers use the main canvas and retain headers, dimensions and history at 1920
+  [chromium] › research-layout.spec.mjs:53:1 › width changes persist through the workspace codec, reset and history restore
+  [chromium] › research-layout.spec.mjs:78:1 › the explicit Back to comparison restores outer and matrix scroll while keeping current membership and evidence edits
+  [chromium] › research-layout.spec.mjs:108:34 › evidence, editing and model controls stay reachable at 390px
+  [chromium] › research-layout.spec.mjs:108:34 › evidence, editing and model controls stay reachable at 650px
+  [chromium] › research-layout.spec.mjs:108:34 › evidence, editing and model controls stay reachable at 768px
+  [chromium] › responsive-workspace.spec.mjs:40:38 › a wide-open settings drawer remains operable after resizing to 390
+  [chromium] › responsive-workspace.spec.mjs:40:38 › a wide-open settings drawer remains operable after resizing to 649
+  [chromium] › responsive-workspace.spec.mjs:40:38 › a wide-open settings drawer remains operable after resizing to 650
+  [chromium] › responsive-workspace.spec.mjs:40:38 › a wide-open settings drawer remains operable after resizing to 651
+  [chromium] › responsive-workspace.spec.mjs:72:114 › long source content and project actions remain reachable at 390×844
+  [chromium] › responsive-workspace.spec.mjs:72:114 › long source content and project actions remain reachable at 650×844
+  [chromium] › responsive-workspace.spec.mjs:72:114 › long source content and project actions remain reachable at 1366×768
+  [chromium] › responsive-workspace.spec.mjs:72:114 › long source content and project actions remain reachable at 683×384
+  [chromium] › responsive-workspace.spec.mjs:117:1 › full comparison retains its sticky dimension and scrollable long content at 390
+  [chromium] › responsive-workspace.spec.mjs:128:1 › settings and grouped save controls retain a pending research draft
+  [chromium] › responsive-workspace.spec.mjs:142:1 › anatomy tree scroll returns through the existing research history
+  [chromium] › responsive-workspace.spec.mjs:155:1 › ordinary research text contrast, compact exceptions and selected/focus boundaries are measurable
+  [chromium] › responsive-workspace.spec.mjs:181:1 › atlas close, handoff and resize do not invoke a disposed canvas
+  [chromium] › responsive-workspace.spec.mjs:203:132 › all model action centers hit their own controls in anatomy at 1366×768
+  [chromium] › responsive-workspace.spec.mjs:203:132 › all model action centers hit their own controls in anatomy at 390×844
+  [chromium] › responsive-workspace.spec.mjs:203:132 › all model action centers hit their own controls in anatomy at 683×384
+  [chromium] › responsive-workspace.spec.mjs:203:132 › all model action centers hit their own controls in research at 1366×768
+  [chromium] › responsive-workspace.spec.mjs:203:132 › all model action centers hit their own controls in research at 390×844
+  [chromium] › responsive-workspace.spec.mjs:203:132 › all model action centers hit their own controls in research at 683×384
+  [chromium] › responsive-workspace.spec.mjs:236:3 › research model restores aal-registered provenance for requested aal-registered
+  [chromium] › responsive-workspace.spec.mjs:236:3 › research model restores ho provenance for requested ho
+  [chromium] › responsive-workspace.spec.mjs:236:3 › research model restores dk provenance for requested aal
+  [chromium] › responsive-workspace.spec.mjs:236:3 › research evidence restores aal-registered provenance for requested aal-registered
+  [chromium] › responsive-workspace.spec.mjs:236:3 › research evidence restores ho provenance for requested ho
+  [chromium] › responsive-workspace.spec.mjs:236:3 › research evidence restores dk provenance for requested aal
+  [chromium] › responsive-workspace.spec.mjs:263:1 › two-layer reading starts with compact source context and preserves the reclaimed paper space
+  [chromium] › responsive-workspace.spec.mjs:289:39 › layer source summary defaults compact at 390 and user choice survives narrowing/widening
+  [chromium] › responsive-workspace.spec.mjs:289:39 › layer source summary defaults compact at 650 and user choice survives narrowing/widening
+  [chromium] › responsive-workspace.spec.mjs:289:39 › layer source summary defaults compact at 651 and user choice survives narrowing/widening
+  [chromium] › responsive-workspace.spec.mjs:289:39 › layer source summary defaults compact at 1366 and user choice survives narrowing/widening
+  [chromium] › responsive-workspace.spec.mjs:304:1 › long comparison titles leave a hit-testable body in a short viewport and open their full source titles by keyboard
+  [chromium] › result-layers.spec.mjs:16:1 › two points and a hidden layer survive named-view and local-project restoration with their source identities
+  [chromium] › result-layers.spec.mjs:25:1 › public links omit local result contents and missing-coordinate named restore retains dialog, input and storage
+  [chromium] › result-layers.spec.mjs:33:1 › a bundled public result restores stable public references while preserving its unavailable source frame
+  [chromium] › result-layers.spec.mjs:40:1 › named view ownership rejects A to B reused-ID substitution and unknown-origin layer views without changing dialog or storage
+  [chromium] › result-layers.spec.mjs:49:1 › visiting paper B retains layer A and a real brain point returns to A’s exact finding and source
+  [chromium] › result-layers.spec.mjs:70:1 › clearing layers after selecting a private point preserves source restrictions in the shared view
+  [chromium] › result-layers.spec.mjs:80:1 › native and unknown frames expose source coordinates without a main brain overlay action
+  [chromium] › result-layers.spec.mjs:87:1 › compact layer disclosure keeps source, visibility, removal and clear controls reachable without color
+  [chromium] › result-layers.spec.mjs:94:1 › a mixed-space marker opens its own MNI frame and selected point, updates for the next marker, and survives source return
+  [chromium] › roi-grid.spec.mjs:17:1 › 2 mm real label loss requires confirmation and stays distinct from an empty intersection
+  [chromium] › roi-grid.spec.mjs:40:1 › 1 mm self comparison preserves label 134 and mask export uses the selected grid
+  [chromium] › roi-grid.spec.mjs:65:1 › late real-worker messages cannot commit a cancelled computation
+  [chromium] › roi-import.spec.mjs:19:40 › choosing B.nii resets its declaration and actual label input
+  [chromium] › roi-import.spec.mjs:19:40 › choosing same.nii resets its declaration and actual label input
+  [chromium] › roi-import.spec.mjs:34:1 › missing evidence and failed decoding preserve this file declaration for correction
+  [chromium] › roi-provenance.spec.mjs:19:28 › 1 mm JSON and CSV downloads preserve exact source bytes, transforms, grid and sampling
+  [chromium] › roi-provenance.spec.mjs:19:28 › 2 mm JSON and CSV downloads preserve exact source bytes, transforms, grid and sampling
+  [chromium] › selection-handoff.spec.mjs:12:1 › the real explorer delivers every chosen label to A while B/settings survive, and B can be targeted
+  [chromium] › selection-handoff.spec.mjs:26:1 › native multi labels remain browseable with explicit blocked comparison handoff
+  [chromium] › selection-handoff.spec.mjs:33:1 › back and forward restore comparison/paper context and both panels scroll without recomputing
+  [chromium] › selection-handoff.spec.mjs:61:47 › cleared statistic B threshold stays missing and blocked after explorer multi-label A handoff
+  [chromium] › selection-handoff.spec.mjs:61:47 › cleared probability B threshold stays missing and blocked after explorer multi-label A handoff
+  [chromium] › spatial-query.spec.mjs:3:1 › initial manifest 503 retries within the same session and preserves research content
+  [chromium] › spatial-query.spec.mjs:22:1 › AAL to DK to BA delayed volume completions never publish a stale source
+  [chromium] › spatial-query.spec.mjs:44:1 › moving a slice invalidates a cortical hit
+  [chromium] › spatial-query.spec.mjs:67:1 › clicks during a new atlas load cannot query the previous volume
+  [chromium] › spatial-query.spec.mjs:83:1 › opening an unmapped paper preserves the independent current-coordinate atlas query
+  [chromium] › spatial-selection.spec.mjs:12:1 › unlinked actual label supports exact annotation and ROI entry without concept evidence
+  [chromium] › spatial-selection.spec.mjs:29:1 › temporal labels stay independent and deep native labels do not trigger a cortical overlay
+  [chromium] › spatial-selection.spec.mjs:61:1 › unresolved A reference survives grid, B and threshold edits until explicit A reselection
+  [chromium] › workspace-assets.spec.mjs:14:1 › A to B scoped export lists exactly its downloaded assets; removal retains historical values and exports again
+  [chromium] › workspace-assets.spec.mjs:26:1 › quota failure keeps the asset list, export selection and all research storage
+  [chromium] › workspace-import.spec.mjs:17:1 › failed project and preview cancellation preserve every key and the ongoing note edit
+  [chromium] › workspace-import.spec.mjs:26:1 › opening a second project replaces its assets and evidence ownership; explicit merge preserves both
+  [chromium] › workspace-import.spec.mjs:35:1 › quota errors leave notes, the editor and every persistent key untouched
+  [chromium] › workspace-reproducibility.spec.mjs:24:1 › version drift restores saved numerical geometry without worker calls; explicit recompute adds a distinct snapshot
+  [chromium] › workspace-reproducibility.spec.mjs:32:1 › matching identities permit inspection and same-operand recomputation without replacing original history
+  [chromium] › workspace-reproducibility.spec.mjs:38:1 › legacy computed=true reports absent history and cannot silently create a worker or a new provenance record
+  [chromium] › workspace-reproducibility.spec.mjs:44:1 › a missing source preserves saved numbers and classes for inspection without any automatic worker
+Total: 142 tests in 22 files

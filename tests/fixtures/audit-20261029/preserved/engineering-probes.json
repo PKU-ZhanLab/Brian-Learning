@@ -1,0 +1,45 @@
+{
+  "runtime": "v24.15.0",
+  "scope": "Extracted current App.jsx import/restore handlers and current volume/table functions; in-memory storage and state setters; no browser or user storage touched",
+  "results": [
+    {
+      "finding": "failed-import-mutates-current-workspace",
+      "error": "This view uses imported data that are not loaded. Open the full project file to restore it.",
+      "persistedEvidenceBefore": 1,
+      "persistedEvidenceAfter": 0,
+      "notesAfter": [
+        {
+          "id": "75087346-ed8b-4c16-93da-b6b8ebef63f7",
+          "text": "incoming note",
+          "structureId": "",
+          "structureName": "",
+          "createdAt": "2026-10-29T08:55:56.085Z",
+          "position": null,
+          "coordinateSpace": "",
+          "coordinateFrame": ""
+        }
+      ]
+    },
+    {
+      "finding": "sequential-project-open-reexports-prior-project-volume",
+      "openedBInputVolumeCount": 0,
+      "currentNote": "Project B only",
+      "reexportedVolumeNames": [
+        "Project A private map"
+      ]
+    },
+    {
+      "finding": "accepted-label-table-blocks-project-export",
+      "acceptedLabelNameLength": 2001,
+      "exportError": "Invalid volume metadata: label name"
+    }
+  ],
+  "projectTopLevelFields": [
+    "schema",
+    "createdAt",
+    "view",
+    "notes",
+    "evidence",
+    "volumes"
+  ]
+}
