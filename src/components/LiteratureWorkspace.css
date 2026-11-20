@@ -39,3 +39,17 @@
 .workspace-layout .comparison-paper-open>svg{margin-top:4px}
 .workspace-layout .evidence-matrix .comparison-paper-remove{width:32px;height:32px;min-width:32px;min-height:32px;margin:0;padding:4px;align-self:start;border:1px solid var(--surface-border);border-radius:4px;color:var(--text-secondary)}
 .workspace-layout .comparison-column-heading .comparison-paper-meta{grid-column:1;display:block;max-height:20px;overflow:hidden;white-space:nowrap;font-size:13px;line-height:20px;color:var(--text-secondary)}
+
+.workspace-layout .region-evidence-counts {
+  display:flex;align-items:baseline;flex-wrap:wrap;gap:3px 12px;flex:none;
+  margin:0 20px 6px;color:var(--text-secondary);font-size:14px;line-height:1.6;
+}
+.region-evidence-counts strong {color:var(--text-primary);font-size:16px;font-weight:600}
+.workspace-layout .library-tools {margin-top:24px;padding:12px 0;border-top:1px solid var(--surface-border)}
+.workspace-layout .evidence-result .finding-sample {margin:8px 0;font-size:15px;line-height:1.6}
+.workspace-layout .finding-sample strong {margin-right:6px}
+.workspace-layout .paper-actions {justify-content:flex-start;gap:5px 14px}
+.workspace-layout .paper-actions a,.workspace-layout .evidence-coordinate-list a {text-decoration:underline;text-underline-offset:3px}
+.workspace-layout .paper-actions button {margin-left:auto}
+.workspace-layout .evidence-coordinate-list small {display:block;font-size:13px;color:var(--text-secondary)}
+@media(max-width:650px){.workspace-layout .region-evidence-counts{margin:0 14px 5px}}

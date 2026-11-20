@@ -13,6 +13,20 @@ test('specific reference with recorded evidence permits same-reference crosshair
  assert.equal(links.canLinkCoordinates({identity:identity('a')},source('b')).allowed,false);
  assert.equal(links.canLinkCoordinates(source('a'),source('b','Colin27'),{matrix:[1,0,0,0]}).allowed,false);
 });
+test('linkage follows resolved sources and retains each saved switch across unavailable references',()=>{
+ const settings=Object.freeze({linkCamera:true,linkCrosshair:true}),left=source('a'),right=source('b');
+ const modes=(preferences,sources)=>{
+  const {mode,allowed,camera,crosshair}=links.comparisonLinkState(preferences,sources);
+  return [mode,allowed,camera,crosshair];
+ };
+ assert.deepEqual(modes(settings,{left,right:undefined}),['loading',false,false,false]);
+ assert.deepEqual(modes(settings,{left:undefined,right:null}),['independent',false,false,false]);
+ assert.deepEqual(modes(settings,{left,right:source('b','Colin27')}),['independent',false,false,false]);
+ assert.deepEqual(modes(settings,{left,right}),['both',true,true,true]);
+ assert.deepEqual(modes({...settings,linkCamera:false},{left,right}),['crosshair',true,false,true]);
+ assert.deepEqual(modes({...settings,linkCrosshair:false},{left,right}),['camera',true,true,false]);
+ assert.deepEqual(modes({linkCamera:false,linkCrosshair:false},{left,right}),['independent',true,false,false]);
+});
 test('bidirectional updates retain fractions, independently unlink, suppress feedback and reject stale source events',()=>{
  const left=source('a'),right=source('b'),pair={left:{assetId:'a',identity:left.identity,point:[0,0,0]},right:{assetId:'b',identity:right.identity,point:[3,4,5]},linkCamera:true,linkCrosshair:true};
  const next=links.updateComparison(pair,'left','point',[123.75,-202.125,54.5],{left,right});

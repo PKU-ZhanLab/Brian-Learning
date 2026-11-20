@@ -12,14 +12,15 @@ const work=page=>page.getByRole('region',{name:'Literature workspace',exact:true
 const settingsButton=page=>page.locator('.header-actions').getByRole('button',{name:'Display settings',exact:true});
 const settingsDialog=page=>page.getByRole('dialog',{name:'Display settings',exact:true});
 
-async function setup(page,{mode='research',layers=false,comparison=false,atlas='dk',layoutPreset='evidence'}={}){
+async function setup(page,{mode='research',layers=false,comparison=false,atlas='dk',layoutPreset='evidence',selectedIds=[]}={}){
   const evidence=syntheticResultEvidence();
   evidence.references[0].title=longTitle;
+  evidence.references[0].authors='Synthetic author';
   evidence.results[0].finding='X7 long synthetic finding: '+('An observation with a precisely identified source. '.repeat(12));
   evidence.results[0].limitations=[longLimit];
   evidence.results[0].legacyV1.limitations=longLimit;
   evidence.references.push({id:'x7-second-paper',title:'X7 second synthetic title '+('Long comparison title. '.repeat(8)),url:'https://example.org/x7-second'});
-  const view=validateViewState({language:'en',mode,atlas,hiddenIds:['precentral-l'],showSlices:true,layout:{preset:comparison?'compare':layoutPreset,panels:{active:layoutPreset==='model'?'model':'evidence',modelWidth:440}},literature:{paperId:comparison?null:'private-paper',compared:comparison?['private-paper','x7-second-paper']:[],showCompare:comparison},resultLayers:layers?syntheticResultLayers():[]});
+  const view=validateViewState({language:'en',mode,atlas,selectedIds,hiddenIds:['precentral-l'],showSlices:true,layout:{preset:comparison?'compare':layoutPreset,panels:{active:layoutPreset==='model'?'model':'evidence',modelWidth:440}},literature:{paperId:comparison?null:'private-paper',compared:comparison?['private-paper','x7-second-paper']:[],showCompare:comparison},resultLayers:layers?syntheticResultLayers():[]});
   // The same transactional admission used by the normal project open path.
   await preflightResultLayerProject({projectId:'x7-isolated',view,evidence,notes:[],volumes:[]});
   const initial={schema:storageKey,projectId:'x7-isolated',revision:0,notes:[],drafts:[],view,evidence};
@@ -153,8 +154,9 @@ test('anatomy tree scroll returns through the existing research history',async({
 });
 
 test('ordinary research text contrast, compact exceptions and selected/focus boundaries are measurable',async({page},testInfo)=>{
-  await page.setViewportSize({width:1366,height:768});await setup(page);
+  await page.setViewportSize({width:1366,height:768});await setup(page,{selectedIds:['precentral-r']});
   const selectors=['.main-nav button','.header-actions>button','.paper-detail h2','.evidence-result h4','.evidence-result .evidence-note','.paper-authors','.app-footer'];
+  for (const selector of selectors) await expect(page.locator(selector).first(), selector).toBeVisible();
   const measurements=await page.evaluate(selectors=>{
     const color=value=>value.match(/[\d.]+/g).map(Number);
     const blend=(fg,bg)=>{const a=fg[3]??1;return fg.slice(0,3).map((v,i)=>v*a+bg[i]*(1-a));};
@@ -162,8 +164,8 @@ test('ordinary research text contrast, compact exceptions and selected/focus bou
     const lum=rgb=>rgb.map(value=>{const c=value/255;return c<=.04045?c/12.92:((c+.055)/1.055)**2.4;}).reduce((sum,value,index)=>sum+value*[.2126,.7152,.0722][index],0);
     return selectors.map(selector=>{const element=document.querySelector(selector),style=getComputedStyle(element),bg=background(element),fg=blend(color(style.color),bg),a=lum(fg),b=lum(bg);return {selector,fontSize:parseFloat(style.fontSize),contrast:(Math.max(a,b)+.05)/(Math.min(a,b)+.05)};});
   },selectors);
-  for(const value of measurements){expect(value.fontSize,value.selector).toBeGreaterThanOrEqual(12);expect(value.contrast,value.selector).toBeGreaterThanOrEqual(4.5);}
   await testInfo.attach('computed-reading-styles',{body:JSON.stringify(measurements,null,2),contentType:'application/json'});
+  for(const value of measurements){expect(value.fontSize,value.selector).toBeGreaterThanOrEqual(12);expect(value.contrast,value.selector).toBeGreaterThanOrEqual(4.5);}
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Anatomy',exact:true}).click();
   const count=page.locator('.group-count').first();await expect(count).toBeVisible();
   expect(await count.evaluate(element=>parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(13);
@@ -172,7 +174,10 @@ test('ordinary research text contrast, compact exceptions and selected/focus bou
   expect(await selected.evaluate(element=>parseFloat(getComputedStyle(element).borderLeftWidth))).toBeGreaterThanOrEqual(2);
   const controls=[settingsButton(page),page.getByRole('button',{name:'Projects & views',exact:true}),page.locator('.structure-row>button:last-child').first()];
   for(const [index,control]of controls.entries()){
-    await control.focus();await expect(control).toBeFocused();
+    await control.focus();
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Tab');
+    await expect(control).toBeFocused();
     const box=await control.boundingBox();expect(box.height).toBeGreaterThanOrEqual(index===2?24:40);expect(box.width).toBeGreaterThanOrEqual(index===2?24:40);
     expect(await control.evaluate(element=>getComputedStyle(element).outlineStyle)).not.toBe('none');
   }
@@ -267,6 +272,7 @@ test('two-layer reading starts with compact source context and preserves the rec
   await expect(bar).not.toHaveAttribute('open');
   await expect(summary).toContainText('private-result');await expect(summary).toContainText(longTitle);
   const before=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)).view.resultLayers,storageKey);
+  await expect(work(page).locator('.paper-detail h2')).toHaveText(longTitle);
   const measure=()=>page.evaluate(()=>({readingHeight:document.querySelector('.workspace-layout>.right-panel').getBoundingClientRect().height,headingY:document.querySelector('.paper-detail h2').getBoundingClientRect().top,layerHeight:document.querySelector('.result-layer-bar').getBoundingClientRect().height}));
   const compact=await measure();
   // Measure actual available reading area and heading position, not a CSS string.

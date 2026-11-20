@@ -18,7 +18,7 @@ test('two points and a hidden layer survive named-view and local-project restora
  expect((await snapshot(page)).view.resultLayers).toEqual(original);let markers=(await resolved(page)).markers;expect(markers.map(m=>m.position)).toEqual([[1,2,3],[-1,2,3]]);expect(markers.every(m=>m.sourceReferenceId==='private-paper')).toBe(true);
  await dialog.getByRole('textbox',{name:'View name'}).fill('Two points and hidden layer');await dialog.getByRole('button',{name:'Save view',exact:true}).click();
  const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-saved-views')));expect(saved[0].view.resultLayers).toEqual(original);expect(saved[0].projectId).toBe('synthetic-layers');
- await dialog.getByRole('button',{name:'Two points and hidden layer'}).click();await expect(dialog).not.toBeVisible();await page.reload();expect((await snapshot(page)).view.resultLayers).toEqual(original);expect((await resolved(page)).markers.map(m=>m.position)).toEqual([[1,2,3],[-1,2,3]]);
+ await dialog.getByRole('button',{name:/^Two points and hidden layer /}).click();await expect(dialog).not.toBeVisible();await page.reload();expect((await snapshot(page)).view.resultLayers).toEqual(original);expect((await resolved(page)).markers.map(m=>m.position)).toEqual([[1,2,3],[-1,2,3]]);
  dialog=await files(page);const download=page.waitForEvent('download');await dialog.getByRole('button',{name:'Export project',exact:true}).click();await dialog.getByRole('button',{name:'Confirm download',exact:true}).click();const artifact=await download,stream=await artifact.createReadStream(),parts=[];for await(const part of stream)parts.push(part);const exported=JSON.parse(Buffer.concat(parts).toString('utf8'));expect(exported.view.resultLayers).toEqual(original);await open(dialog,JSON.stringify(exported));expect((await snapshot(page)).view.resultLayers).toEqual(original);
 });
 
@@ -27,7 +27,7 @@ test('public links omit local result contents and missing-coordinate named resto
  await dialog.getByRole('button',{name:'Copy view link',exact:true}).click();const url=await page.evaluate(()=>navigator.clipboard.readText()),encoded=new URLSearchParams(new URL(url).hash.slice(1)).get('view');const decoded=JSON.parse(Buffer.from(encoded,'base64url').toString('utf8'));expect(decoded.resultLayers).toEqual([]);expect(JSON.stringify(decoded)).not.toMatch(/private-result|private-layer-name|private-point|private-paper/);
  await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1'));const bad=structuredClone(s.view);bad.resultLayers[0].coordinateIds=['missing-coordinate'];localStorage.setItem('neuroatlas-saved-views',JSON.stringify([{id:'bad-view',name:'Broken synthetic view',projectId:s.projectId,createdAt:new Date().toISOString(),view:bad}]));});
- const next=await files(page);await next.getByRole('textbox',{name:'View name'}).fill('Unfinished name');const before=await storage(page);await next.getByRole('button',{name:'Broken synthetic view'}).click();await expect(next).toBeVisible();await expect(next.getByRole('status')).toContainText('invalid-coordinate-reference');await expect(next.getByRole('textbox',{name:'View name'})).toHaveValue('Unfinished name');expect(await storage(page)).toEqual(before);
+ const next=await files(page);await next.getByRole('textbox',{name:'View name'}).fill('Unfinished name');const before=await storage(page);await next.getByRole('button',{name:/^Broken synthetic view /}).click();await expect(next).toBeVisible();await expect(next.getByRole('alert')).toContainText('invalid-coordinate-reference');await expect(next.getByRole('textbox',{name:'View name'})).toHaveValue('Unfinished name');expect(await storage(page)).toEqual(before);
 });
 
 test('a bundled public result restores stable public references while preserving its unavailable source frame',async({page,context})=>{
@@ -41,12 +41,15 @@ test('named view ownership rejects A to B reused-ID substitution and unknown-ori
  await page.goto('/?lang=en');let dialog=await files(page);await open(dialog,await serializeProject({projectId:'A',view:{language:'en',resultLayers:layers()},evidence:evidence(),volumes:[]}));
  await dialog.getByRole('textbox',{name:'View name'}).fill('A coordinates');await dialog.getByRole('button',{name:'Save view',exact:true}).click();
  const independent=evidence();independent.locations[0].xyz=[99,2,3];await open(dialog,await serializeProject({projectId:'B',view:{language:'en'},evidence:independent,volumes:[]}));
- await dialog.getByRole('textbox',{name:'View name'}).fill('Unfinished B view');const before=await storage(page);await dialog.getByRole('button',{name:'A coordinates'}).click();await expect(dialog).toBeVisible();await expect(dialog.getByRole('status')).toContainText('named-view-project-mismatch');await expect(dialog.getByRole('textbox',{name:'View name'})).toHaveValue('Unfinished B view');expect(await storage(page)).toEqual(before);expect((await snapshot(page)).evidence.locations[0].xyz).toEqual([99,2,3]);
+ await dialog.getByRole('textbox',{name:'View name'}).fill('Unfinished B view');const before=await storage(page);await dialog.getByRole('button',{name:/^A coordinates /}).click();await expect(dialog).toBeVisible();await expect(dialog.getByRole('alert')).toContainText('This view belongs to another project');await expect(dialog.getByRole('textbox',{name:'View name'})).toHaveValue('Unfinished B view');expect(await storage(page)).toEqual(before);expect((await snapshot(page)).evidence.locations[0].xyz).toEqual([99,2,3]);
  await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();await page.evaluate(()=>{const saved=JSON.parse(localStorage.getItem('neuroatlas-saved-views'));delete saved[0].projectId;localStorage.setItem('neuroatlas-saved-views',JSON.stringify(saved));});
- dialog=await files(page);await dialog.getByRole('textbox',{name:'View name'}).fill('Still unfinished');const unknownBefore=await storage(page);await dialog.getByRole('button',{name:'A coordinates'}).click();await expect(dialog).toBeVisible();await expect(dialog.getByRole('status')).toContainText('named-view-project-mismatch');await expect(dialog.getByRole('textbox',{name:'View name'})).toHaveValue('Still unfinished');expect(await storage(page)).toEqual(unknownBefore);
+ dialog=await files(page);await dialog.getByRole('textbox',{name:'View name'}).fill('Still unfinished');const unknownBefore=await storage(page);await dialog.getByRole('button',{name:/^A coordinates /}).click();await expect(dialog).toBeVisible();await expect(dialog.getByRole('alert')).toContainText('This view belongs to another project');await expect(dialog.getByRole('textbox',{name:'View name'})).toHaveValue('Still unfinished');expect(await storage(page)).toEqual(unknownBefore);
 });
 
 test('visiting paper B retains layer A and a real brain point returns to A’s exact finding and source',async({page})=>{
+ let releaseSurface;
+ const surfaceGate=new Promise(resolve=>{releaseSurface=resolve;});
+ await page.route('**/dk-v2/cortex-left.json',async route=>{await surfaceGate;await route.continue();});
  const local=evidence();local.references.push({id:'other-paper',title:'Synthetic unrelated paper B',url:'https://example.org/b'});
  local.reviewEvents.push({...local.reviewEvents[0],id:'synthetic-result-check',subjectId:'private-result',recordVersion:'legacy-v1',scope:'Synthetic fixture only; not a scientific source audit'});
  await page.goto('/?lang=en');const dialog=await files(page);
@@ -57,6 +60,10 @@ test('visiting paper B retains layer A and a real brain point returns to A’s e
  await page.getByRole('button',{name:'Back to papers',exact:true}).click();await page.locator('[data-reference-id="other-paper"] .paper-open').click();
  await expect(page.locator('.paper-detail h2')).toHaveText('Synthetic unrelated paper B');
  const bar=page.locator('.result-layer-bar');await expect(bar).toContainText('private-result');await expect(bar).toContainText('Synthetic local paper');expect((await snapshot(page)).view.resultLayers).toEqual(original);
+ const cameraBeforeSurface=(await snapshot(page)).view.camera;
+ releaseSurface();
+ expect(cameraBeforeSurface?.target).toEqual([1,2,3]);
+ await expect(page.locator('.scene-wrap')).toHaveAttribute('aria-busy','false');
  const canvas=page.locator('.scene-wrap canvas').first();await expect(canvas).toBeVisible();const bounds=await canvas.boundingBox();await canvas.click({position:{x:bounds.width/2,y:bounds.height/2}});
  const panel=page.getByRole('dialog',{name:'Paper result coordinates',exact:true});await expect(panel.locator('[data-result-id="private-result"]')).toBeVisible();await expect(panel).toContainText('Synthetic local result');await expect(panel).toContainText('Synthetic local paper');
  await panel.getByRole('button',{name:'Locate result point private-point-0',exact:true}).click();await expect(panel.locator('tr[aria-selected="true"]')).toContainText('private-point-0');
@@ -95,7 +102,9 @@ test('a mixed-space marker opens its own MNI frame and selected point, updates f
  const local=syntheticMixedResultEvidence();
  const original=[{...layers()[0],style:{color:'#123456',opacity:1,size:6}}],camera={position:[1,202,83],target:[1,2,3],up:[0,0,1],zoom:1,frameExtent:100};
  await page.goto('/?lang=en');const dialog=await files(page);await open(dialog,await serializeProject({projectId:'mixed-space-point-return',view:{language:'en',mode:'anatomy',atlas:'dk',visibleCategories:['cortex'],opacity:.2,camera,resultLayers:original},evidence:local,volumes:[]}));await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
- const canvas=page.locator('.scene-wrap canvas').first();await expect(canvas).toBeVisible();const bounds=await canvas.boundingBox();await canvas.click({position:{x:bounds.width/2,y:bounds.height/2}});
+ const scene=page.locator('.scene-wrap');
+ await expect(scene).toHaveAttribute('aria-busy','false');
+ const canvas=scene.locator('canvas').first();await expect(canvas).toBeVisible();const bounds=await canvas.boundingBox();await canvas.click({position:{x:bounds.width/2,y:bounds.height/2}});
  const panel=page.getByRole('dialog',{name:'Paper result coordinates',exact:true});await expect(panel.getByRole('combobox',{name:'Reported coordinate frame',exact:true})).toHaveValue('1');await expect(panel.locator('tr[aria-selected="true"]')).toContainText('private-point-0');await expect(panel.getByRole('button',{name:'Locate result point private-native-point',exact:true})).toHaveCount(0);
  const aspect=bounds.width/bounds.height,projection=new OrthographicCamera(-100*aspect,100*aspect,100,-100,.1,2000);projection.position.fromArray(camera.position);projection.up.fromArray(camera.up);projection.lookAt(new Vector3(...camera.target));projection.updateMatrixWorld();const screen=new Vector3(-1,2,3).project(projection);
  await canvas.click({position:{x:(screen.x*.5+.5)*bounds.width,y:(-.5*screen.y+.5)*bounds.height}});await expect(panel.locator('tr[aria-selected="true"]')).toContainText('private-point-1');

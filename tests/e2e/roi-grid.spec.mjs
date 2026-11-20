@@ -86,3 +86,35 @@ test('late real-worker messages cannot commit a cancelled computation', async ({
   await expect.poll(() => page.evaluate(() => window.__roiDelivered)).toBeGreaterThanOrEqual(2);
   await expect(page.locator('.roi-result')).toHaveCount(0);
 });
+
+test('narrow ROI editing and historical inspection keep the calculation inputs independent', async ({page}) => {
+  await page.setViewportSize({width:390, height:844});
+  await page.goto('/?lang=en');
+  await page.getByRole('navigation', {name:'Main navigation'}).getByRole('button', {name:'ROI comparison', exact:true}).click();
+  const compute = page.getByRole('button', {name:'Compute ROI overlap', exact:true});
+  await expect(compute).toBeEnabled();
+  const picker = page.locator('.roi-touch-picker').first();
+  await picker.locator('summary').click();
+  await picker.getByRole('searchbox').fill('precentral');
+  const addition = picker.getByRole('checkbox', {checked:false});
+  const addedLabel = await addition.evaluate(input => input.labels[0].textContent.trim());
+  await addition.check();
+  await expect(picker.locator('summary')).toContainText('2 selected');
+  await picker.getByRole('checkbox', {name:addedLabel, exact:true}).uncheck();
+  await expect(picker.locator('summary')).toContainText('1 selected');
+  await compute.click();
+  const card = page.locator('.roi-result-summary');
+  await expect(card.getByRole('heading')).toContainText('2 mm');
+  await expect(card).toContainText('57 voxels');
+  await expect(card.getByRole('heading')).toBeInViewport();
+  const grid = page.getByLabel('ROI shared grid spacing', {exact:true});
+  await grid.selectOption('1');
+  await compute.click();
+  await expect(card.getByRole('heading')).toContainText('Recomputed result');
+  await expect(card).toContainText('456 voxels');
+  await page.getByRole('button', {name:'Inspect original saved ROI result'}).click();
+  await expect(card.getByRole('heading')).toContainText('Original result');
+  await expect(card).toContainText('57 voxels');
+  await expect(card).toContainText('Current input grid 1 mm · Result grid 2 mm');
+  await expect(grid).toHaveValue('1');
+});

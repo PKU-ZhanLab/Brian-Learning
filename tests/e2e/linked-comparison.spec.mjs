@@ -6,25 +6,44 @@ import {exportNifti} from '../../src/lib/nifti.js';
 
 async function openPair(page){await page.goto('/?lang=en');await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'ROI comparison',exact:true}).click();await page.getByRole('button',{name:'Open source comparison',exact:true}).click();return page.getByRole('dialog',{name:'Source comparison',exact:true});}
 const panel=(dialog,side)=>dialog.getByRole('region',{name:`${side} comparison source`,exact:true});
+const linkStatus=dialog=>dialog.locator('.comparison-links').getByRole('status');
+async function expectIndependent(dialog){
+ await expect(linkStatus(dialog)).toContainText('Independent views');
+ for(const name of ['Link cameras','Link crosshairs']){
+  const control=dialog.getByRole('checkbox',{name,exact:true});
+  await expect(control).toBeDisabled();
+  await expect(control).not.toBeChecked();
+ }
+}
 async function common(dialog,right='dk'){await dialog.getByLabel('left source',{exact:true}).selectOption('dk');await dialog.getByLabel('right source',{exact:true}).selectOption(right);await expect(dialog.getByLabel('Link crosshairs',{exact:true})).toBeEnabled();}
 async function openProject(page,text){await page.getByRole('button',{name:'Projects & views',exact:true}).click();const files=page.getByRole('dialog',{name:'Save and share',exact:true});await files.locator('input[type=file]').setInputFiles({name:'pair.neuroatlas',mimeType:'application/json',buffer:Buffer.from(text)});await files.getByRole('button',{name:'Confirm open',exact:true}).click();await files.getByRole('button',{name:'Close save dialog',exact:true}).click();}
 
 test('two exact-reference sources synchronize decimals in both directions with independent switches and 3D keyboard/mouse controls',async({page})=>{
  const dialog=await openPair(page);await common(dialog);
+ await expect(linkStatus(dialog)).toContainText('Cameras and crosshairs linked');
  await dialog.getByLabel('left X coordinate',{exact:true}).fill('12.125');await expect(panel(dialog,'right')).toHaveAttribute('data-point',/^\[12\.125,/);
  await dialog.getByLabel('right Y coordinate',{exact:true}).fill('-202.75');await expect(panel(dialog,'left')).toHaveAttribute('data-point',/,\-202\.75,/);
  await dialog.getByLabel('right Sagittal source slice',{exact:true}).focus();await dialog.getByLabel('right Sagittal source slice',{exact:true}).press('ArrowUp');await dialog.getByLabel('left Coronal source slice',{exact:true}).click({position:{x:40,y:40}});
  await dialog.getByLabel('Link crosshairs',{exact:true}).uncheck();const rightPoint=await panel(dialog,'right').getAttribute('data-point');await dialog.getByLabel('left X coordinate',{exact:true}).fill('99.5');await expect(panel(dialog,'right')).toHaveAttribute('data-point',rightPoint);
+ await expect(linkStatus(dialog)).toContainText('Only cameras linked');
  const leftCanvas=dialog.getByLabel('left comparison 3D',{exact:true});await leftCanvas.focus();await leftCanvas.press('ArrowRight');await expect.poll(()=>panel(dialog,'left').getAttribute('data-camera')).not.toBe('null');await expect.poll(async()=>await panel(dialog,'right').getAttribute('data-camera')).toBe(await panel(dialog,'left').getAttribute('data-camera'));
  await dialog.getByLabel('Link cameras',{exact:true}).uncheck();const leftCamera=await panel(dialog,'left').getAttribute('data-camera'),rightCanvas=dialog.getByLabel('right comparison 3D',{exact:true});await rightCanvas.focus();await rightCanvas.press('+');await expect(panel(dialog,'left')).toHaveAttribute('data-camera',leftCamera);
+ await expect(linkStatus(dialog)).toContainText('Independent views');
+ await expect(dialog.getByLabel('Link cameras',{exact:true})).toBeEnabled();
  const box=await rightCanvas.boundingBox();await page.mouse.move(box.x+box.width*.4,box.y+box.height*.4);await page.mouse.down();await page.mouse.move(box.x+box.width*.6,box.y+box.height*.6,{steps:5});await page.mouse.up();await expect(panel(dialog,'left')).toHaveAttribute('data-camera',leftCamera);
 });
 test('different atlases in a recorded common reference link, while native and unknown references remain independent',async({page})=>{
  const dialog=await openPair(page);await common(dialog,'aal3-registered');await dialog.getByLabel('right Z coordinate',{exact:true}).fill('65.25');await expect(panel(dialog,'left')).toHaveAttribute('data-point',/,65\.25\]$/);
  await dialog.getByLabel('right source',{exact:true}).selectOption('aal');await expect(dialog.getByLabel('Link crosshairs',{exact:true})).toBeDisabled();await expect(dialog.locator('.comparison-links')).toContainText('Different reference spaces');const before=await panel(dialog,'left').getAttribute('data-point');await dialog.getByLabel('right X coordinate',{exact:true}).fill('1000.25');await expect(panel(dialog,'left')).toHaveAttribute('data-point',before);await expect(panel(dialog,'right')).toHaveAttribute('data-point',/^\[1000\.25,/);
+ await expectIndependent(dialog);
+ await dialog.getByLabel('right source',{exact:true}).selectOption('dk');
+ await expect(linkStatus(dialog)).toContainText('Cameras and crosshairs linked');
+ await expect(dialog.getByLabel('Link cameras',{exact:true})).toBeChecked();
+ await expect(dialog.getByLabel('Link crosshairs',{exact:true})).toBeChecked();
  await dialog.getByRole('button',{name:'Close source comparison',exact:true}).click();
  const raw={id:'custom-native',name:'Synthetic unknown',kind:'label',shape:[2,2,2],affine:[1,0,0,500,0,1,0,700,0,0,1,900,0,0,0,1],space:'native-unverified',order:'x-fastest',data:Uint8Array.from([1,1,0,0,0,0,0,0]),labels:[{id:1,name:'Native'}]};const volume=await prepareLocalVolumeProvenance(raw,exportNifti(raw),{id:raw.id});
  await openProject(page,await serializeProject({projectId:'unknown-pair',view:{language:'en',mode:'roi',roi:{aAtlas:'dk',bAtlas:'dk',paired:{left:{assetId:'custom-native',identity:volume.identity,point:[500.125,700.25,900.5]},right:{assetId:'dk',identity:null,point:[0,0,0]},linkCamera:true,linkCrosshair:true}}},volumes:[volume]}));await page.getByRole('button',{name:'Open source comparison',exact:true}).click();await expect(dialog.getByLabel('Link crosshairs',{exact:true})).toBeDisabled();await expect(dialog.locator('.comparison-links')).toContainText('unknown');await expect(panel(dialog,'left')).toHaveAttribute('data-point','[500.125,700.25,900.5]');await expect(dialog.getByLabel('left Axial source slice',{exact:true})).toBeVisible();
+ await expectIndependent(dialog);
 });
 test('closing cancels stale source work, restores opener focus and retains paired project state',async({page})=>{
  const dialog=await openPair(page);await common(dialog);await dialog.getByLabel('right X coordinate',{exact:true}).fill('45.875');await dialog.getByLabel('Link cameras',{exact:true}).uncheck();await dialog.getByLabel('left source',{exact:true}).selectOption('aal');await dialog.getByLabel('left source',{exact:true}).selectOption('dk');await expect(dialog.getByLabel('Link crosshairs',{exact:true})).toBeEnabled();await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);await expect(page.getByRole('button',{name:'Open source comparison',exact:true})).toBeFocused();await page.getByRole('button',{name:'Open source comparison',exact:true}).click();await expect(dialog.getByLabel('Link cameras',{exact:true})).not.toBeChecked();await page.keyboard.press('Escape');

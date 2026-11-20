@@ -1,4 +1,5 @@
 import {parseProject,prepareProjectPayload,validateViewState,validateProjectDrafts,validateProjectNotes,validateMissingAssetIds,validateStartupRecovery} from './workspace-project.js';
+import {makeAssetIdentity} from './computation-manifest.js';
 import {savedComputationUsage} from './saved-computation.js';
 import {validateResultLayers} from './result-layers.js';
 import {validateNavigationHistory} from './navigation-history.js';
@@ -42,6 +43,70 @@ function assertReferences(snapshot,known){
 
 const cloneSnapshot=value=>{if(value==null)return null;const {maskA,maskB,surfaces,...saved}=value;return structuredClone(saved);};
 
+// Only a fully validated snapshot can supply the non-view portion of the file budget.
+const viewReceipts = new WeakMap();
+const littleEndian = new Uint8Array(new Uint16Array([1]).buffer)[0] === 1;
+const serializedViewBytes = view => utf8ByteLength(JSON.stringify(validateViewState(view)));
+
+function computationMetadata(next) {
+  return Object.fromEntries(['roiSnapshot', 'recomputedSnapshot'].map(key => [key,
+    next[key] ? savedComputationUsage(next[key]).metadata : null
+  ]));
+}
+
+function serializeEnvelope(next, computationHistory) {
+  const envelope = {
+    schema: WORKSPACE_STORAGE_KEY,
+    projectId: next.projectId,
+    revision: next.revision,
+    notes: next.notes,
+    evidence: next.evidence,
+    view: next.view,
+    drafts: next.drafts,
+    missingAssetIds: next.missingAssetIds,
+    sessionAssetIds: next.volumes.map(volume => volume.id),
+    computationHistory,
+    ...(next.startupRecovery ? {startupRecovery: next.startupRecovery} : {})
+  };
+  return boundedJsonStringify(envelope, 32 * 1024 * 1024,
+    next.startupRecovery ? 'workspace-storage-budget-recovery' : 'workspace-storage-budget');
+}
+
+async function classDigests(snapshot) {
+  const buffers = [snapshot.roiSnapshot?.classes, snapshot.recomputedSnapshot?.classes];
+  return Promise.all(buffers.map(async bytes => bytes ? new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)) : null));
+}
+
+async function stageView(view, current, knownEvidence) {
+  const receipt = viewReceipts.get(current);
+  if (!receipt) return stageWorkspaceChange({...current, view}, {current, knownEvidence});
+
+  const next = {...current, revision: current.revision + 1, view: checkedView(view)};
+  assertReferences(next, knownEvidence);
+  if (receipt.nonViewBytes + serializedViewBytes(next.view) > MAX_PROJECT_UTF8_BYTES) {
+    throw Error('project-json-budget');
+  }
+
+  // Metadata is frozen, voxel arrays are not. Verify their actual bytes at every restore.
+  for (const volume of current.volumes) {
+    const data = volume.data;
+    const bytes = new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
+    const observed = await makeAssetIdentity(bytes, volume.identity);
+    if (observed.sha256 !== volume.identity.sha256.toLowerCase()) throw Error('project-volume-digest-mismatch');
+  }
+  const observedClasses = await classDigests(current);
+  if (observedClasses.some((digest, i) => digest &&
+    !digest.every((byte, j) => byte === receipt.classes[i][j]))) {
+    // Historical classes can change without a provenance digest. Revalidate and size the new payload.
+    return stageWorkspaceChange({...current, view}, {current, knownEvidence});
+  }
+  const stage = Object.freeze({baseRevision: current.revision, persistedJSON: serializeEnvelope(next, receipt.computationHistory)});
+  freeze(next);
+  viewReceipts.set(next, receipt);
+  stages.set(stage, {next, base: current});
+  return stage;
+}
+
 /** Full candidate admission. No storage, registry or React state is touched. */
 export async function stageWorkspaceChange(candidate,{current,knownEvidence,preview}={}){
   if(!current||!Number.isSafeInteger(current.revision)||current.revision<0||!identifier(current.projectId))throw Error('invalid-current-workspace');
@@ -61,13 +126,21 @@ export async function stageWorkspaceChange(candidate,{current,knownEvidence,prev
   assertReferences(next,knownEvidence);
   const prepared=await prepareProjectPayload(next);
   assertWorkspaceBudget(prepared.usage);
-  const computationHistory=Object.fromEntries(['roiSnapshot','recomputedSnapshot'].map(key=>[key,next[key]?savedComputationUsage(next[key]).metadata:null]));
-  const persistedJSON=boundedJsonStringify({schema:WORKSPACE_STORAGE_KEY,projectId:next.projectId,revision:next.revision,notes:next.notes,evidence:next.evidence,view:next.view,drafts:next.drafts,missingAssetIds:next.missingAssetIds,sessionAssetIds:next.volumes.map(v=>v.id),computationHistory,...(next.startupRecovery?{startupRecovery:next.startupRecovery}:{})},32*1024*1024,next.startupRecovery?'workspace-storage-budget-recovery':'workspace-storage-budget');
+  const computationHistory = computationMetadata(next);
+  const persistedJSON = serializeEnvelope(next, computationHistory);
   const replacement=assetsChanged?prepareCustomVolumeReplacement(next.projectId,next.volumes):null;
   freeze(next);
   const stage=Object.freeze({baseRevision:current.revision,next,persistedJSON,projectText:prepared.text,preview:freeze(preview||{mode:'change',includedAssetIds:next.volumes.map(v=>v.id),removedAssetIds:current.volumes.filter(v=>!next.volumes.some(n=>n.id===v.id)).map(v=>v.id),collisions:[],remap:{},changedReferenceCounts:{}}),warnings:freeze(warnings)});
   const recoveryArchive=preview?.mode==='archive-recovery'?{originalEnvelope:validateStartupRecovery(current.startupRecovery)?.originalEnvelope,downloadRequested:false,acknowledged:false}:null;
   if(recoveryArchive&&!recoveryArchive.originalEnvelope)throw Error('startup-recovery-unavailable');
+  // A legacy asset without checked bytes, or a non-native encoding, takes the full path.
+  if (littleEndian && next.volumes.every(v => v.identity && v.data && v.data.buffer instanceof ArrayBuffer)) {
+    viewReceipts.set(next, {
+      nonViewBytes: prepared.usage.projectUtf8Bytes - serializedViewBytes(next.view),
+      classes: await classDigests(next),
+      computationHistory
+    });
+  }
   stages.set(stage,{next,replacement,base:current,recoveryArchive});return stage;
 }
 
@@ -90,7 +163,12 @@ export function createWorkspaceSession({storage,initial,knownEvidence}={}){
   publishCustomVolumeReplacement(prepareCustomVolumeReplacement(current.projectId,current.volumes),{notify:false});
   const listeners=new Set();let committing=false,queue=Promise.resolve();
   const transact=update=>{const result=queue.then(async()=>{for(let attempt=0;attempt<5;attempt++){const base=current,candidate=await update(base),stage=await stageWorkspaceChange(candidate,{current:base,knownEvidence});if(current!==base)continue;return api.commit(stage);}throw Error('stale-workspace');});queue=result.catch(()=>{});return result;};
-  const api={transact,getSnapshot:()=>current,subscribe(callback){listeners.add(callback);return()=>listeners.delete(callback);},async stage(candidate){return stageWorkspaceChange(candidate,{current,knownEvidence});},commit(stage){
+  const api={transact,
+    async restoreView(view) {
+      const stage = await stageView(view, current, knownEvidence);
+      return api.commit(stage);
+    },
+    getSnapshot:()=>current,subscribe(callback){listeners.add(callback);return()=>listeners.delete(callback);},async stage(candidate){return stageWorkspaceChange(candidate,{current,knownEvidence});},commit(stage){
     if(committing)throw Error('workspace-commit-in-progress');
     const prepared=stages.get(stage);if(!prepared)throw Error('invalid-stage');
     if(stage.baseRevision!==current.revision||prepared.base!==current)throw Error('stale-workspace');

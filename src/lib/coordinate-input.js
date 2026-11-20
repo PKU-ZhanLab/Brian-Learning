@@ -47,6 +47,13 @@ export function formatCoordinate(point,spaceId) {
   return `${spaceId} · RAS · ${point.join(', ')} mm`;
 }
 
+// Compact readouts only. Editing, clipboard text and persistence use the original numbers.
+export function formatCoordinateValues(point) {
+  const rounded=point.map(value=>Number(value.toFixed(3)));
+  const approximate=rounded.some((value,axis)=>value!==point[axis]);
+  return (approximate?'≈ ':'')+rounded.join(', ');
+}
+
 // Keep arbitrary typed reference names from colliding with App's legacy contexts.
 export function coordinateNavigationSpace(spaceId) {
   if(spaceId==='MNI152NLin6Asym')return 'brain';

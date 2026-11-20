@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {validateViewState,serializeProject,parseProject} from './workspace-project.js';
-import {parseCoordinateInput, stepCoordinate, coordinateOutsideBounds, formatCoordinate, coordinateNavigationSpace, coordinateReferenceSpace, nextCoordinateOrigin} from './coordinate-input.js';
+import {parseCoordinateInput, stepCoordinate, coordinateOutsideBounds, formatCoordinate, formatCoordinateValues, coordinateNavigationSpace, coordinateReferenceSpace, nextCoordinateOrigin} from './coordinate-input.js';
 
 const options={spaceId:'MNI152NLin6Asym',convention:'RAS',maxPoints:1000};
 test('reference admission prevents canonical view/project codecs dropping long or escaped source identity',async()=>{
@@ -47,6 +47,10 @@ test('axis steps preserve other decimal axes, reject invalid steps and never cla
 });
 test('copy text carries the exact reference, RAS convention and full decimal values',()=>{
   assert.equal(formatCoordinate([-38.25,-20.5,54.1],'Colin27 / MNI single-subject'),'Colin27 / MNI single-subject · RAS · -38.25, -20.5, 54.1 mm');
+  const precise=[-38.25123456789,-0.000001,54];
+  assert.equal(formatCoordinateValues(precise),'≈ -38.251, 0, 54');
+  assert.equal(formatCoordinateValues([-38.251,0,54]),'-38.251, 0, 54');
+  assert.equal(formatCoordinate(precise,'MNI152NLin6Asym'),'MNI152NLin6Asym · RAS · -38.25123456789, -0.000001, 54 mm');
 });
 test('only the canonical reference enters the main context; a typed internal sentinel stays independent',()=>{
   assert.equal(coordinateNavigationSpace('MNI152NLin6Asym'),'brain');

@@ -17,6 +17,8 @@ async function resume(page,text){await work(page).getByRole('button',{name:`Resu
 
 test('half a finding survives filter, Anatomy/Evidence library and refresh with stable draft identity',async({page})=>{
  await setup(page);const text='Half entered finding, unchanged across views';await startDraft(page,text);
+ const filters=work(page).locator('.literature-filters');
+ if (!await filters.evaluate(node=>node.open)) await filters.locator('summary').click();
  await work(page).getByRole('textbox',{name:'Search papers, authors or regions'}).fill('different filter');await expect(editor(page)).toHaveCount(0);await resume(page,text);
  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Anatomy',exact:true}).click();
  await page.getByRole('button',{name:'Evidence library',exact:true}).click();await resume(page,text);

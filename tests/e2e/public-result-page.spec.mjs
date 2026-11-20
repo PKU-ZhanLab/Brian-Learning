@@ -45,11 +45,13 @@ test('versionless opens latest only after replacing with its explicit fixed addr
   expect(await page.evaluate(()=>window.__publicStorageCalls)).toEqual([]);
 });
 test('failed workspace bootstrap offers reload and retains saved storage',async({page})=>{
-  await page.route(/\/assets\/App-[^/]+\.js(?:\?|$)/,route=>route.abort(),{times:1});
+  const appChunk = /\/assets\/App-[^/]+\.js(?:\?|$)/;
+  await page.route(appChunk, route => route.abort());
   await page.addInitScript(()=>{if(!localStorage.getItem('x11-startup-sentinel'))localStorage.setItem('x11-startup-sentinel','retained');});
   await page.goto(`${base}?lang=en`);
   await expect(page.getByRole('alert')).toContainText('Workspace could not load');
   expect(await page.evaluate(()=>localStorage.getItem('x11-startup-sentinel'))).toBe('retained');
+  await page.unroute(appChunk);
   await page.getByRole('button',{name:'重新载入 / Reload',exact:true}).click();
   await expect(page.locator('.app-shell')).toBeVisible();
   expect(await page.evaluate(()=>localStorage.getItem('x11-startup-sentinel'))).toBe('retained');
@@ -88,7 +90,8 @@ test('returning from a public page preserves the existing saved workspace bytes'
   // Make a real saved note in this isolated browser, then leave and return.
   const key='neuroatlas-workspace-current-v1',note='X11 isolated private note';
   await page.goto(`${base}?lang=en`);
-  await page.getByRole('button',{name:'Research notes',exact:true}).click();
+  await page.locator('details.workspace-actions > summary').click();
+  await page.getByRole('button',{name:/^My notes/}).click();
   await page.locator('#note-draft').fill(note);
   await page.getByRole('button',{name:'Save note',exact:true}).click();
   await expect.poll(()=>page.evaluate(key=>localStorage.getItem(key),key)).toContain(note);

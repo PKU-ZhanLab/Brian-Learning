@@ -8,6 +8,31 @@ import {additionalReferences} from '../../src/data/references-expanded.js';
 import {additionalLiteratureReferences} from '../../src/data/literature.js';
 import {structures} from '../../src/data/catalog.js';
 
+test('regional reading leads with linked papers and the coordinate panel links the reported table row',async({page})=>{
+  await page.goto('/?lang=en&region=hippocampus-l');
+  await page.getByRole('button',{name:'Explore papers for this region',exact:true}).click();
+  const workspace=page.getByRole('region',{name:'Literature workspace'});
+  const counts=workspace.locator('[data-region-evidence="hippocampus-l"]');
+  await expect(counts).toContainText('3 matching papers');
+  await expect(counts).toContainText('0 structured findings and 0 coordinates');
+  await expect(workspace.locator('.paper-card').first()).toBeInViewport();
+  await workspace.locator('.literature-filters > summary').click();
+  await workspace.getByRole('checkbox',{name:/Current region only/}).uncheck();
+  await workspace.getByRole('textbox',{name:'Search papers, authors or regions'}).fill('Axelrod');
+  await workspace.locator('[data-reference-id="axelrod2015"] .paper-open').click();
+  const source=/pone\.0117126\.t001$/;
+  await expect(workspace.getByRole('link',{name:'Source Table 1',exact:true})).toHaveAttribute('href',source);
+  const finding=workspace.locator('.evidence-result[data-result-id="axelrod2015-rffa"]');
+  await finding.getByRole('button',{name:'View reported result coordinates'}).click();
+  const panel=page.getByRole('dialog',{name:'Paper result coordinates'});
+  await expect(panel.getByRole('heading',{name:'Right FFA mean ROI'})).toBeVisible();
+  await expect(panel.locator('.reported-point')).toContainText('(39, -52, -16)');
+  await expect(panel.locator('.reported-frame')).toContainText('variant unspecified');
+  await expect(panel.locator('.reported-point-facts')).toContainText('right FFA localized in 16');
+  await expect(panel.locator('.reported-point a')).toHaveAttribute('href',source);
+  await expect(panel.locator('.reported-point a')).toContainText('right FFA; n=16');
+});
+
 test('search: bilingual aliases keep paper methods separate from recorded results',async({page})=>{
   const aliases=JSON.parse(await readFile(new URL('../../data-sources/results/search-aliases.json',import.meta.url),'utf8'));
   const index=buildEvidenceSearchIndex({...curatedEvidence,references:[...references,...additionalReferences,...additionalLiteratureReferences,...curatedEvidence.references],readings:literaturePapers},{aliases,regions:structures});

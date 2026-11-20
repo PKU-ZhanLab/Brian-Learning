@@ -6,3 +6,52 @@
 
 .workspace-files{color:var(--text-primary);background:var(--surface-paper);font-size:15px;scroll-padding:20px;overscroll-behavior:contain}.workspace-files :is(button,input,select){min-height:40px;font-size:14px}.workspace-files :is(.workspace-file-note,.workspace-saved-list small){font-size:13px!important;color:var(--text-secondary)}.workspace-files :is(p,li,small,h3,.workspace-saved-list button){overflow-wrap:anywhere}.workspace-files header{gap:10px}.workspace-files header>button{min-width:40px}.workspace-files h2{font-size:21px}.workspace-files p{font-size:14px}.workspace-saved-list article>button:first-child{min-width:0}.workspace-import-preview{font-size:14px}.workspace-file-actions button{max-width:100%;white-space:normal}
 @media(max-width:650px){.workspace-files-backdrop{padding:10px}.workspace-files{padding:16px;max-height:calc(100dvh - 20px)}.workspace-saved-list article{flex-wrap:wrap}.workspace-assets li{flex-wrap:wrap}}
+
+.workspace-destinations {
+  border-block: 1px solid #cbd9ce;
+}
+.workspace-destination {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px 20px;
+  padding-block: 14px;
+}
+.workspace-destination + .workspace-destination {
+  border-top: 1px solid #dce5de;
+}
+.workspace-destination h3 {
+  margin: 0 0 3px;
+  font-size: 16px;
+}
+.workspace-destination p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+.workspace-destination .workspace-save-row {
+  grid-column: 1 / -1;
+  flex-direction: row;
+}
+.workspace-destination:first-child > div {
+  grid-column: 1 / -1;
+}
+.workspace-destination > button,
+.workspace-destination .workspace-save-row button {
+  min-width: 110px;
+}
+.workspace-import-preview h3:focus-visible {
+  outline: 2px solid #33725a;
+  outline-offset: 3px;
+}
+@media (max-width: 500px) {
+  .workspace-destination {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .workspace-destination > button {
+    justify-self: start;
+  }
+  .workspace-destination .workspace-save-row button {
+    min-width: 0;
+  }
+}

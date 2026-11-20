@@ -1,4 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import {createPortal} from 'react-dom';
+import {CompactLabelPicker, OperandLines, RecordedResult, operandDescription} from './ROIReadout.jsx';
 import CoordinateNavigator from './CoordinateNavigator.jsx';
 import WorkspaceStatus from './WorkspaceStatus.jsx';
 import {normalizeWorkspaceError} from '../lib/workspace-status.js';
@@ -98,7 +100,7 @@ function download(bytes, filename, type) {
   setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-export default function ROICompare({ language = 'zh', manifest, onComparisonChange, onComputedResult, onClose, initialState, savedSnapshot, recomputedSnapshot, provenanceStatus, onStateChange, onRestoreReady, customVolumes, onViewNative, onRestoreAborted, onImportVolume, onManageAssets, workspaceProjectId, workspaceEpoch, imageTaskIntent, onImportInputReady, onOpenComparisonViewer }) {
+export default function ROICompare({ summaryHost, language = 'zh', manifest, onComparisonChange, onComputedResult, onClose, initialState, savedSnapshot, recomputedSnapshot, provenanceStatus, onStateChange, onRestoreReady, customVolumes, onViewNative, onRestoreAborted, onImportVolume, onManageAssets, workspaceProjectId, workspaceEpoch, imageTaskIntent, onImportInputReady, onOpenComparisonViewer }) {
   const [paired,setPaired]=useState(initialState?.paired);
   const t = TEXT[language === 'en' ? 'en' : 'zh'];
   const callbacks = useRef({}); callbacks.current = { onComparisonChange, onComputedResult, onStateChange, onRestoreAborted };
@@ -119,11 +121,28 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
   const [resolutionMm, setResolutionMm] = useState(initialState?.resolutionMm === 1 ? 1 : 2);
   const [preflight, setPreflight] = useState(null);
   const sourceA = useSource(aAtlas, registryVersion, manifest?.atlases?.[aAtlas]), sourceB = useSource(bAtlas, registryVersion, manifest?.atlases?.[bAtlas]);
-  const aLabelIds = useMemo(() => new Set(sourceA.labels.map(label => label.id)), [sourceA.labels]);
-  const bLabelIds = useMemo(() => new Set(sourceB.labels.map(label => label.id)), [sourceB.labels]);
+  const aLabelIds = useMemo(() => new Map(sourceA.labels.map(label => [label.id,label])), [sourceA.labels]);
+  const bLabelIds = useMemo(() => new Map(sourceB.labels.map(label => [label.id,label])), [sourceB.labels]);
   const [comparison, setComparison] = useState(null), [display, setDisplay] = useState({ ...ROI_DEFAULT_DISPLAY, ...initialState?.display });
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [anatomy, setAnatomy] = useState(null), [point, setPoint] = useState(initialState?.point??[0, 0, 0]);
   const restoredScroll=useRef(false),resultRef=useRef(null);
+  const summaryRef = useRef(null), inputsRef = useRef(null), revealNextResult = useRef(false);
+  const [compact, setCompact] = useState(() => window.matchMedia('(max-width: 900px)').matches);
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 900px)');
+    const update = () => setCompact(query.matches);
+    query.addEventListener('change', update);
+    update();
+    return () => query.removeEventListener('change', update);
+  }, []);
+  useEffect(() => {
+    if (!comparison || !revealNextResult.current) return;
+    revealNextResult.current = false;
+    if (compact && summaryRef.current) {
+      summaryRef.current.scrollIntoView({block:'start'});
+      summaryRef.current.focus({preventScroll:true});
+    }
+  }, [comparison, compact]);
   const [computationNotice,setComputationNotice]=useState('');
   useEffect(()=>{if(!restoredScroll.current&&!sourceA.loading&&!sourceB.loading&&sourceA.volume&&sourceB.volume){restoredScroll.current=true;onRestoreReady?.();}},[sourceA,sourceB,onRestoreReady]);
   const [importFile, setImportFile] = useState(null), [importDraft, setImportDraft] = useState(()=>newImportDraft(null));
@@ -297,11 +316,16 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
           const result=createComputationSnapshot({ ...data.comparison, manifest: makeComputationManifest(data.comparison.manifest), display: { ...displayRef.current } });
           await callbacks.current.onComputedResult?.(result,{isCurrent:()=>requestId===sequence.current,projectId:workspaceProjectId,epoch:workspaceEpoch});
           if(requestId!==sequence.current)return;
+          revealNextResult.current=true;
           setBusy(false);setInspectWhich(savedSnapshot?'recomputed':'original');replaceComparison(result);setPoint(result.center||[0,0,0]);callbacks.current.onComparisonChange?.(result);
         }catch(problem){if(requestId===sequence.current){setBusy(false);setError(problem.message);}}
       };
       current.onerror = () => { if (requestId === sequence.current) { abortRestore('worker-failed'); setBusy(false); setError('computeError'); current.terminate(); worker.current = null; } };
-      const describe = (source, atlasId, labels) => ({ atlasId, regionRefs:refsFor(atlasId,source,labels), name: source.labels.length ? source.labels.filter(label => labels.includes(label.id)).map(label => label.name).join(' + ') : source.volume.name });
+      const describe = (source, atlasId, labels) => {
+        const rows = source.labels.filter(label => labels.includes(label.id));
+        return {atlasId, regionRefs:refsFor(atlasId,source,labels),
+          name: rows.length ? rows.map(label=>label.name).join(' + ') : source.volume.name};
+      };
       current.postMessage({ requestId, volumeA: serializableVolume(sourceA.volume), volumeB: serializableVolume(sourceB.volume), selectionA, selectionB, target: grid, manifest, descriptors: { A: describe(sourceA, aAtlas, aLabels), B: describe(sourceB, bAtlas, bLabels) } });
     } catch (problem) { if (requestId === sequence.current) { abortRestore('compute-failed'); setBusy(false); setError(problem.message); } }
   }
@@ -369,7 +393,8 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     const kind = source.volume?.kind || 'label';
     return <fieldset className={`roi-source roi-source-${key.toLowerCase()}`}><legend>ROI {key}</legend>
       <label><span>{t.atlas}</span><select aria-label={`ROI ${key} atlas`} value={atlasId} onChange={event => reselectRegion(key,'source',() => { setLabels([]); setAtlas(event.target.value); })}><option value="">{language==='en'?'Choose a source':'请选择来源'}</option>{atlases.map(([id, meta]) => <option key={id} value={id} disabled={meta.canOverlayOnTarget !== true}>{ATLAS_NAMES[id] || meta.name || id}{meta.canOverlayOnTarget !== true ? ` · ${t.blocked}` : ''}</option>)}</select></label>
-      {kind === 'label' && <label><span>{t.label}</span><select multiple size={5} aria-label={`ROI ${key} label`} value={labels.map(String)} disabled={source.loading || !source.labels.length} onChange={event => reselectRegion(key,'labels',() => setLabels([...event.target.selectedOptions].map(option => +option.value)))}>{source.labels.map(label => <option key={label.id} value={label.id}>{label.id} · {localizedLabel(label, language)} ({label.voxels.toLocaleString()} {t.voxels})</option>)}</select><small className="roi-note">{t.combine}</small></label>}
+      {kind === 'label' && <label className="roi-desktop-labels"><span>{t.label}</span><select multiple size={5} aria-label={`ROI ${key} label`} value={labels.map(String)} disabled={source.loading || !source.labels.length} onChange={event => reselectRegion(key,'labels',() => setLabels([...event.target.selectedOptions].map(option => +option.value)))}>{source.labels.map(label => <option key={label.id} value={label.id}>{label.id} · {localizedLabel(label, language)} ({label.voxels.toLocaleString()} {t.voxels})</option>)}</select><small className="roi-note">{t.combine}</small></label>}
+      {kind === 'label' && <CompactLabelPicker side={key} labels={source.labels} values={labels} language={language} labelName={localizedLabel} disabled={source.loading} onChange={next=>reselectRegion(key,'labels',()=>setLabels(next))}/>}
       {['statistic', 'probability'].includes(kind) && <><label><span>{t.thresholdValue}</span><input type="number" min="0" max={kind === 'probability' ? '1' : undefined} step="any" value={threshold} aria-label={`ROI ${key} threshold`} onChange={event => changeSelection(() => setThreshold(event.target.value === '' ? '' : +event.target.value))} /></label>{kind === 'statistic' && <label><span>{t.tail}</span><select aria-label={`ROI ${key} tail`} value={tail} onChange={event => changeSelection(() => setTail(event.target.value))}>{['positive','negative','absolute'].map(value => <option key={value} value={value}>{t[value]}</option>)}</select></label>}<p className="roi-note">{t.thresholdHint}</p></>}
       {kind === 'mask' && <p className="roi-note">{t.maskHint}</p>}
       {source.volume && <p className="roi-source-space">{t[alignmentKey(source.volume.alignmentStatus)]} · {source.volume.space}{source.volume.metadata && <> · {t.range}: {source.volume.metadata.min} – {source.volume.metadata.max}</>}</p>}
@@ -401,20 +426,58 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
     mismatch:'已保留保存时的数值；当前输入或设置与保存的计算不同。',
   };
   const fact=value=>value===undefined?(language==='en'?'Not recorded':'未记录'):JSON.stringify(value);
-  return <section className="roi-compare" aria-label="ROI overlap comparison"><header className="roi-header"><div><h2>{t.title}</h2><p>{t.subtitle}</p></div>{onClose && <button type="button" className="roi-close" onClick={onClose} aria-label="Close ROI comparison" title={t.close}>×</button>}</header>
-    <div className="roi-actions"><button type="button" aria-haspopup="dialog" aria-label="Open source comparison" onClick={()=>onOpenComparisonViewer?.({left:{assetId:aAtlas,labels:aLabels,threshold:aThreshold,tail:aTail},right:{assetId:bAtlas,labels:bLabels,threshold:bThreshold,tail:bTail},initialState:paired,onStateChange:setPaired})}>{language==='en'?'Compare source views':'并排查看来源'}</button></div>
-    {(savedSnapshot||recomputedSnapshot||provenanceStatus==='missing-provenance'||initialState?.computed||requestedSnapshotMissing)&&<section aria-label="Saved computation" className="roi-provenance">
+  const en = language === 'en';
+  const atlasTitle = id => ATLAS_NAMES[id] || manifest?.atlases?.[id]?.name || id || (en?'No source':'未选来源');
+  const liveOperand = (side,id,source,ids,threshold,tail) => {
+    const available = source.atlasId === id && source.volume;
+    const names = ids.map(labelId => {
+      const label = available && (side === 'A' ? aLabelIds : bLabelIds).get(labelId);
+      return '#'+labelId+(label?' '+localizedLabel(label,language):'');
+    });
+    return {side,atlas:source.volume?.custom && available ? source.volume.name : atlasTitle(id),description:available
+      ? operandDescription(source.volume.kind||'label',names,threshold,tail,en)
+      : (en?'Source not ready':'来源尚未就绪')};
+  };
+  const currentOperands=[liveOperand('A',aAtlas,sourceA,aLabels,aThreshold,aTail),liveOperand('B',bAtlas,sourceB,bLabels,bThreshold,bTail)];
+  const shown = comparison || inspectedSnapshot || selectedSaved;
+  const slot = shown && (shown===recomputedSnapshot || (shown.id && shown.id===recomputedSnapshot?.id)) ? (en?'Recomputed result':'重算结果')
+    : shown && (shown===savedSnapshot || (shown.id && shown.id===savedSnapshot?.id)) ? (en?'Original result':'原始结果') : (en?'Calculation result':'本次结果');
+  const grid = shown?.grid || shown?.manifest?.targetGrid;
+  const spacing = grid?.affine?.length === 16 ? [0,1,2].map(i=>+Math.hypot(grid.affine[i],grid.affine[i+4],grid.affine[i+8]).toFixed(4)) : [];
+  const gridText = spacing.length ? (spacing.every(n=>n===spacing[0])?spacing[0]:spacing.join(' × '))+' mm' : (en?'Grid not recorded':'网格未记录');
+  const title = slot + ' · ' + gridText;
+  const recordedOperands = ['A','B'].map((side,i) => {
+    const source = shown?.[side], input = shown?.manifest?.inputs?.[i];
+    const atlas = ATLAS_NAMES[source?.atlasId] || source?.atlasId || input?.id || (en?'Source not recorded':'来源未记录');
+    const selection = source?.selection || shown?.manifest?.thresholds?.[i];
+    const ids = source?.selection?.labels || source?.labelIds || shown?.manifest?.labelSets?.[i] || [];
+    const live = side === 'A' ? sourceA : sourceB;
+    const index = side === 'A' ? aLabelIds : bLabelIds;
+    const sameAtlas = input?.sha256 && live.atlasId === source?.atlasId && live.volume?.identity?.sha256 === input.sha256;
+    const rows = sameAtlas ? ids.map(id=>index.get(id)) : [];
+    const exactNames = rows.length > 0 && rows.every(Boolean) && rows.map(row=>row.name).join(' + ') === source?.name;
+    const names = ids.map((id,j) => '#'+id+(exactNames?' '+localizedLabel(rows[j],language):''));
+    let description = selection ? operandDescription(selection.kind,names,selection.threshold,selection.tail,en) : '';
+    if (!exactNames && source?.name) description = [source.name,description].filter(Boolean).join(' · ');
+    return {side,atlas,description:description || (en?'Selection not recorded':'选择未记录')};
+  });
+  const historyPanel = (comparison||savedSnapshot||recomputedSnapshot||provenanceStatus==='missing-provenance'||initialState?.computed||requestedSnapshotMissing)&&<section aria-label="Saved computation" className="roi-provenance roi-result-summary" ref={summaryRef} tabIndex={-1}>
+      {shown?.metrics && <RecordedResult key={shown.id || title} title={title} result={shown} language={language} operands={recordedOperands}/>}
       {requestedSnapshotMissing&&<p role="alert" className="roi-warning">{language==='en'?'The result from this visit is no longer in the saved computation slots. Inputs are restored; choose an available saved result or explicitly recompute.':'此访问对应的结果已不在保存的计算位置中。已恢复输入；可选择现有保存结果，或明确重新计算。'}</p>}
-      <p role="status" data-provenance-status={historical.status}>{selectedSaved?statusText[historical.status]:(language==='en'?'No historical numerical result was saved. Choose inputs and explicitly compute a new result.':'未保存历史数值结果。请选择输入并明确计算新结果。')}</p>
-      {comparison&&<p>{comparison.id===savedSnapshot?.id?(language==='en'?'Viewing original saved result':'正在查看原始保存结果'):comparison.id===recomputedSnapshot?.id?(language==='en'?'Viewing recomputed result':'正在查看重新计算结果'):(language==='en'?'Viewing current computation':'正在查看本次计算结果')}</p>}
+
+      {selectedSaved && !comparison && !inspectedSnapshot && <p className="roi-no-overlay">{en?'Saved values · no active overlay':'历史数值 · 未显示叠加'}</p>}
+      <p role="status" className={historical.status==='mismatch'?'roi-grid-difference':undefined} data-provenance-status={historical.status}>{shown?.metrics && spacing.length>0 && spacing.some(n=>n!==resolutionMm) && <strong>{en?'Current input grid':'当前输入网格'} {resolutionMm} mm · {en?'Result grid':'此结果网格'} {gridText}。 </strong>}{selectedSaved?statusText[historical.status]:shown?'':(language==='en'?'No historical numerical result was saved. Choose inputs and explicitly compute a new result.':'未保存历史数值结果。请选择输入并明确计算新结果。')}</p>
       {historical.overlayUnavailableReason&&<p>{language==='en'?`Saved grid space: ${selectedSaved.grid.space}. Numerical results remain available; this space cannot overlay the main brain.`:`保存的网格空间：${selectedSaved.grid.space}。仍可查看数值；此空间不能叠加到主脑。`}</p>}
       {!!historical.missingAssetIds.length&&<ul>{historical.missingAssetIds.map(id=><li key={id}><code>{id}</code></li>)}</ul>}
-      <div className="roi-actions">{savedSnapshot&&<button type="button" aria-label="Inspect original saved ROI result" aria-pressed={comparison?.id===savedSnapshot.id||inspectedSnapshot?.id===savedSnapshot.id} onClick={()=>{setInspectWhich('original');inspectSaved(savedSnapshot);}}>{language==='en'?'View original saved result':'查看原始保存结果'}</button>}{recomputedSnapshot&&<button type="button" aria-label="Inspect recomputed ROI result" aria-pressed={comparison?.id===recomputedSnapshot.id||inspectedSnapshot?.id===recomputedSnapshot.id} onClick={()=>{setInspectWhich('recomputed');inspectSaved(recomputedSnapshot);}}>{language==='en'?'View recomputed result':'查看重新计算结果'}</button>}</div>
-      {selectedSaved&&<details><summary>{language==='en'?'Saved result and identities':'保存的数值与身份'}</summary><p style={{overflowWrap:'anywhere'}}><code>{selectedSaved.id??(language==='en'?'ID not recorded':'未记录 ID')}</code></p><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify({metrics:selectedSaved.metrics??null,probabilityMetrics:selectedSaved.probabilityMetrics??null,manifest:selectedSaved.manifest??null},null,2)}</pre></details>}
-      {!!historical.differences.length&&<details open><summary>{language==='en'?'Changed computation fields':'计算差异字段'}</summary><table className="roi-counts" aria-label="Computation provenance differences"><thead><tr><th>{language==='en'?'Field':'字段'}</th><th>{language==='en'?'Saved':'保存时'}</th><th>{language==='en'?'Current':'当前'}</th></tr></thead><tbody>{historical.differences.map((difference,index)=><tr key={index}>{[difference.path,fact(difference.saved),fact(difference.current)].map((value,i)=><td key={i} style={{overflowWrap:'anywhere',maxWidth:220}}><code>{value}</code></td>)}</tr>)}</tbody></table></details>}
+      <div className="roi-actions">{savedSnapshot&&<button type="button" aria-label="Inspect original saved ROI result" aria-pressed={comparison?.id===savedSnapshot.id||inspectedSnapshot?.id===savedSnapshot.id} onClick={()=>{revealNextResult.current=true;setInspectWhich('original');inspectSaved(savedSnapshot);}}>{language==='en'?'Original':'原始结果'}</button>}{recomputedSnapshot&&<button type="button" aria-label="Inspect recomputed ROI result" aria-pressed={comparison?.id===recomputedSnapshot.id||inspectedSnapshot?.id===recomputedSnapshot.id} onClick={()=>{revealNextResult.current=true;setInspectWhich('recomputed');inspectSaved(recomputedSnapshot);}}>{language==='en'?'Recomputed':'重算结果'}</button>}{shown?.metrics&&<button type="button" className="roi-edit-inputs" onClick={()=>{inputsRef.current?.scrollIntoView({block:'start'});inputsRef.current?.focus({preventScroll:true});}}>{en?'Edit inputs':'修改输入'}</button>}</div>
+      <div className="roi-history-notes">{selectedSaved&&<details><summary>{language==='en'?'Saved result and identities':'保存的数值与身份'}</summary><p style={{overflowWrap:'anywhere'}}><code>{selectedSaved.id??(language==='en'?'ID not recorded':'未记录 ID')}</code></p><pre style={{whiteSpace:'pre-wrap',overflowWrap:'anywhere'}}>{JSON.stringify({metrics:selectedSaved.metrics??null,probabilityMetrics:selectedSaved.probabilityMetrics??null,manifest:selectedSaved.manifest??null},null,2)}</pre></details>}
+      {!!historical.differences.length&&<details><summary>{language==='en'?'Changed computation fields':'计算差异字段'}</summary><table className="roi-counts" aria-label="Computation provenance differences"><thead><tr><th>{language==='en'?'Field':'字段'}</th><th>{language==='en'?'Saved':'保存时'}</th><th>{language==='en'?'Current':'当前'}</th></tr></thead><tbody>{historical.differences.map((difference,index)=><tr key={index}>{[difference.path,fact(difference.saved),fact(difference.current)].map((value,i)=><td key={i} style={{overflowWrap:'anywhere',maxWidth:220}}><code>{value}</code></td>)}</tr>)}</tbody></table></details>}
+      </div>
       {inspectedSnapshot&&!hasDetailedResult&&<div className="roi-actions"><button type="button" onClick={()=>exportMetrics('csv')} aria-label="Export ROI overlap metrics CSV">{t.export}</button><button type="button" onClick={()=>exportMetrics('json')} aria-label="Export ROI provenance JSON">{language==='en'?'Export provenance JSON':'导出来源 JSON'}</button></div>}
       {provenanceError&&<p role="alert" className="roi-warning">{t[provenanceError]||provenanceError}</p>}
-    </section>}
+    </section>;
+  return <section className="roi-compare" aria-label="ROI overlap comparison"><header className="roi-header"><div><h2>{t.title}</h2><p>{t.subtitle}</p></div>{onClose && <button type="button" className="roi-close" onClick={onClose} aria-label="Close ROI comparison" title={t.close}>×</button>}</header>
+    <div className="roi-actions"><button type="button" aria-haspopup="dialog" aria-label="Open source comparison" onClick={()=>onOpenComparisonViewer?.({left:{assetId:aAtlas,labels:aLabels,threshold:aThreshold,tail:aTail},right:{assetId:bAtlas,labels:bLabels,threshold:bThreshold,tail:bTail},initialState:paired,onStateChange:setPaired})}>{language==='en'?'Compare source views':'并排查看来源'}</button></div>
     <details className="roi-import"><summary>{t.importTitle}</summary><p className="roi-note">{t.localOnly}</p><div className="roi-import-grid">
       <label><span>{t.file}</span><input ref={imageInput} id="roi-import-file" type="file" accept=".nii,.nii.gz" aria-label="Import NIfTI file" onChange={event => { const file=event.target.files[0]||null;setImportFile(file);changeImportDraft({type:'file-changed',fileToken:file?crypto.randomUUID():null});event.target.value=''; }} /></label>
       <label><span>{t.kind}</span><select value={importKind} aria-label="Imported image kind" onChange={event => changeImportDraft({type:'kind-changed',value:event.target.value})}>{['label','mask','statistic','probability'].map(kind => <option key={kind} value={kind}>{t[`${kind}Kind`]}</option>)}</select></label>
@@ -425,18 +488,25 @@ export default function ROICompare({ language = 'zh', manifest, onComparisonChan
       {importSpace === 'MNI152NLin6Asym' && <label className="roi-xray"><input type="checkbox" checked={aligned} aria-label="Confirm already aligned to FSL template" onChange={event => changeImportDraft({type:'alignment-changed',value:event.target.checked})} />{t.aligned}</label>}
       {importFile&&<dl className="roi-import-summary" aria-label="Image import summary"><div><dt>{t.file}</dt><dd>{importFile.name}</dd></div><div><dt>{t.kind}</dt><dd>{t[`${importKind}Kind`]}</dd></div><div><dt>{t.reference}</dt><dd>{importSpace==='other'?otherSpace||t.nativeSpace:importSpace==='native-unverified'?t.nativeSpace:importSpace}</dd></div><div><dt>{t.labelsFile}</dt><dd>{importDraft.labelFile?.file.name||(language==='en'?'None':'无')}</dd></div></dl>}
       <p className="roi-note">{t.provenanceHint}</p><div className="roi-actions"><button onClick={importVolume} disabled={!importFile || importBusy} aria-label="Import local NIfTI">{importBusy ? t.importing : t.importButton}</button>{importBusy&&<button type="button" onClick={cancelImport} aria-label="Cancel NIfTI import">{language==='en'?'Cancel import':'取消导入'}</button>}</div>
-      {importError && <p role="alert" className="roi-error">{errorText(importError)}</p>}{importMessage && <p className="roi-note" role="status">{t.importDone}: {importMessage.summary.fileName} · {t[`${importMessage.summary.kind}Kind`]} · {importMessage.summary.spaceId} · {importMessage.summary.labelFileName||(language==='en'?'No label table':'无标签表')} · {importMessage.aligned ? t.declared : t.nativeImport}{importMessage.conflict && <> · {t.conflict}</>}</p>}
+      {importError && <p role="alert" className="roi-error">{errorText(importError)}</p>}{importMessage && <p className="roi-note" role="status">{t.importDone}: {importMessage.summary.fileName} · {t[`${importMessage.summary.kind}Kind`]} · {importMessage.summary.spaceId} · {importMessage.summary.labelFileName||(language==='en'?'No label table':'无标签表')} · {importMessage.aligned ? (en?'Assigned to ROI B':'已设为 ROI B') : (en?'Outside A/B. '+t.nativeImport:'未加入 A/B。'+t.nativeImport)}{importMessage.conflict && <> · {t.conflict}</>}</p>}
     </details>
     {imageNotice&&<p role="status" className="roi-note">{imageNotice}</p>}
     {!!importedVolumes.length && <div className="roi-imported-volumes"><h3>{t.importedVolumes}</h3>{onManageAssets&&<button type="button" onClick={onManageAssets}>{language==='en'?'Manage project assets':'管理项目影像'}</button>}{importedVolumes.map(([id, volume]) => <div key={id}><span><strong>{volume.name || id}</strong><small>{volume.space} · {volume.canOverlayOnTarget === true ? t.declared : t.blocked}</small>{volume.metadata?.affineConflict && <small className="roi-imported-warning">{t.conflict}</small>}</span>{onViewNative && <button type="button" onClick={() => onViewNative(id)} aria-label={`${t.viewNative}: ${volume.name || id}`}>{t.viewNative}</button>}</div>)}</div>}
+    {historyPanel && summaryHost && !compact && createPortal(historyPanel,summaryHost)}
+    {(!manifest || !allowed.length) && (!summaryHost || compact) && historyPanel}
     {!manifest ? <p role="status">{t.notLoaded}</p> : !allowed.length ? <p role="status">{t.noAtlases}</p> : <>
-      <div className="roi-selectors">{sourceBlock('A', aAtlas, setAAtlas, aLabels, setALabels, aThreshold, setAThreshold, aTail, setATail, sourceA)}{sourceBlock('B', bAtlas, setBAtlas, bLabels, setBLabels, bThreshold, setBThreshold, bTail, setBTail, sourceB)}</div>
+      <div ref={inputsRef} tabIndex={-1} className="roi-selectors">{sourceBlock('A', aAtlas, setAAtlas, aLabels, setALabels, aThreshold, setAThreshold, aTail, setATail, sourceA)}{sourceBlock('B', bAtlas, setBAtlas, bLabels, setBLabels, bThreshold, setBThreshold, bTail, setBTail, sourceB)}</div>
       {identityMismatch&&<p className="roi-warning" role="alert">{language==='en'?'Saved atlas label identity is unavailable or has changed. Select the source labels again.':'保存的图谱标签身份不可用或版本已改变。请重新选择来源标签。'}</p>}
       <label className="roi-grid"><strong>{t.grid}</strong> <select aria-label="ROI shared grid spacing" value={resolutionMm} onChange={event => changeSelection(() => setResolutionMm(+event.target.value))}><option value="2">2 mm · 91 × 109 × 91</option><option value="1">1 mm · 181 × 217 × 181</option></select></label>
       <p className="roi-note">{t.gridHint}</p>
+      <section className="roi-current-inputs" aria-label={en?'Current comparison inputs':'本次计算输入'}>
+        <div className="roi-input-heading"><h3>{en?'Current inputs':'本次计算输入'}</h3><span>{resolutionMm} mm</span></div>
+        <OperandLines operands={currentOperands}/>
+      </section>
       <div className="roi-actions"><button type="button" className="roi-primary" onClick={compute} disabled={busy || !ready || missingThreshold} aria-label="Compute ROI overlap">{busy?t.computing:(savedSnapshot||recomputedSnapshot||initialState?.computed)?(language==='en'?'Recompute with current data':'按当前数据重新计算'):t.compare}</button>{busy && <button type="button" onClick={clear} aria-label="Cancel ROI computation">{t.cancelCompute}</button>}{comparison && <><button type="button" onClick={clear} aria-label="Clear ROI overlay">{t.clear}</button>{hasDetailedResult&&<><button type="button" onClick={() => exportMetrics('csv')} aria-label="Export ROI overlap metrics CSV">{t.export}</button><button type="button" onClick={() => exportMetrics('json')} aria-label="Export ROI provenance JSON">{language === 'en' ? 'Export provenance JSON' : '导出来源 JSON'}</button></>}</>}</div>
       {preflight && <div aria-live="polite">{samplingBlock(preflight.sampling, preflight.grid)}{preflight.blocked && <p className="roi-warning" role="alert">{t.sourceMissing}</p>}{preflight.requiresConfirmation && <><p className="roi-warning" role="alert">{t.lossWarning}</p><div className="roi-actions"><button type="button" className="roi-primary" aria-label="Confirm ROI sampling loss" onClick={confirmSamplingLoss}>{t.confirmLoss}</button><button type="button" aria-label="Cancel ROI sampling preflight" onClick={clear}>{t.cancelPreflight}</button></div></>}</div>}
-      {restoreWarning && <p role="alert" className="roi-warning">{t.restoreAborted}</p>}{error && <WorkspaceStatus status={{phase:'error',message:processingErrorText(error)||(normalizeWorkspaceError(error,language)!==error?normalizeWorkspaceError(error,language):t[error]||t.computeError)}}/>}{!comparison && !busy && <p className="roi-empty">{t.waiting}</p>}<WorkspaceStatus status={{phase:busy?'loading':'ready',message:busy?t.computing:computationNotice,resultLabel:language==='en'?'View result':'查看结果'}} onOpenResult={hasDetailedResult?()=>{resultRef.current?.scrollIntoView({block:'nearest'});resultRef.current?.focus();}:undefined}/>
+      {restoreWarning && <p role="alert" className="roi-warning">{t.restoreAborted}</p>}{error && <WorkspaceStatus status={{phase:'error',message:processingErrorText(error)||(normalizeWorkspaceError(error,language)!==error?normalizeWorkspaceError(error,language):t[error]||t.computeError)}}/>}{!comparison && !busy && <p className="roi-empty">{t.waiting}</p>}<WorkspaceStatus status={{phase:busy?'loading':'ready',message:busy?t.computing:computationNotice,resultLabel:language==='en'?'View result':'查看结果'}} onOpenResult={hasDetailedResult?()=>{const target=summaryRef.current||resultRef.current;target?.scrollIntoView({block:'nearest'});target?.focus();}:undefined}/>
+      {(!summaryHost || compact) && historyPanel}
       {hasDetailedResult && <div ref={resultRef} tabIndex={-1} className="roi-result" aria-live="polite">{samplingBlock(comparison.sampling, comparison.grid)}<h3>{t.binary}</h3><div className="roi-metrics"><div><span>Dice</span><strong>{formatRatio(comparison.metrics.dice)}</strong><small>2|A ∩ B| / (|A| + |B|)</small></div><div><span>Jaccard</span><strong>{formatRatio(comparison.metrics.jaccard)}</strong><small>|A ∩ B| / |A ∪ B|</small></div><div><span>{t.coveredA}</span><strong>{formatPercent(comparison.metrics.aCoveredByB)}</strong></div><div><span>{t.coveredB}</span><strong>{formatPercent(comparison.metrics.bCoveredByA)}</strong></div></div>
         {comparison.probabilityMetrics ? <div className="roi-probability"><h3>{t.probabilityTitle}</h3><div className="roi-metrics"><div><span>{t.fuzzyDice}</span><strong>{formatRatio(comparison.probabilityMetrics.fuzzyDice)}</strong><small>2Σmin(p,q) / (Σp + Σq)</small></div><div><span>{t.fuzzyJaccard}</span><strong>{formatRatio(comparison.probabilityMetrics.fuzzyJaccard)}</strong><small>Σmin(p,q) / Σmax(p,q)</small></div></div><p className="roi-note">{t.probabilityHint}</p></div> : [comparison.A,comparison.B].some(source => source.selection.kind === 'probability') && <p className="roi-note">{t.probabilityOne}</p>}
         <p className="roi-grid"><strong>{t.grid}</strong> {comparison.grid.space} · {comparison.grid.shape.join(' × ')} · {t.resolution} {comparison.grid.voxelVolumeMm3.toLocaleString()} mm³</p>

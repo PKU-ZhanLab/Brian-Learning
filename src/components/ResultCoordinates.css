@@ -6,3 +6,17 @@
 .result-coordinate-panel h3{font-size:19px;line-height:1.5}.result-coordinate-panel header{gap:12px;align-items:flex-start}.result-coordinate-panel button{min-height:40px;font-size:14px;color:var(--text-primary)}.result-coordinate-panel header button{width:40px;flex:none}.result-coordinate-panel p{font-size:15px;line-height:1.8;overflow-wrap:anywhere}.result-coordinate-panel :is(.result-coordinate-note,.result-source-identity span){font-size:13px;line-height:1.7;color:var(--text-secondary)}.result-coordinate-panel a{font-size:14px;color:#315b3a;line-height:1.8;overflow-wrap:anywhere}.result-coordinate-panel>a{display:inline-flex;min-height:40px;align-items:center;margin-top:10px}.result-coordinate-panel select{font-size:14px;max-width:100%;min-height:40px;border:1px solid var(--surface-border);border-radius:5px;padding:8px;background:white;color:var(--text-primary);margin:8px 0}
 .result-coordinate-panel table{font-size:14px}.result-coordinate-panel td:not(:first-child){font-family:var(--font-numeric);font-size:13px;white-space:nowrap}.result-coordinate-panel td:last-child{font-family:inherit;white-space:normal;min-width:100px}.result-coordinate-panel td:first-child{min-width:130px}.result-coordinate-panel th{font-size:13px}.result-coordinate-panel .result-coordinate-point{min-height:32px;white-space:normal;text-align:left;justify-content:flex-start}.result-coordinate-panel td small{font-size:12px;color:var(--text-secondary)}.result-coordinate-table{scrollbar-gutter:stable}.result-coordinate-panel .coordinate-axis-key{display:flex;gap:12px;margin:12px 0;font:14px var(--font-numeric)}
 @media(max-width:650px){.result-coordinate-panel{inset:10px 10px 16px;width:auto;padding:16px}.result-coordinate-canvas{height:220px}}
+
+.result-coordinate-panel .result-source-identity {display:block;margin:3px 0 15px;color:var(--text-secondary);font-size:13px;line-height:1.5}
+.result-source-identity cite {font-style:normal}
+.result-coordinate-panel .reported-point {padding:12px 16px;background:#edf3ea;border-left:3px solid #648268;border-radius:0 6px 6px 0}
+.reported-xyz {font-family:var(--font-numeric);font-size:14px;color:var(--text-secondary)}
+.reported-xyz strong {font-size:clamp(20px,3vw,26px);font-weight:600;line-height:1.35;color:var(--text-primary)}
+.result-coordinate-panel .reported-frame {margin:3px 0;font-size:14px}
+.result-coordinate-panel .reported-point a {display:inline-block;padding:3px 0;text-decoration:underline;text-underline-offset:3px}
+.reported-point-facts {display:grid;grid-template-columns:auto minmax(0,1fr);gap:5px 12px;margin:12px 0;font-size:14px;line-height:1.6}
+.reported-point-facts dt {font-weight:600}
+.reported-point-facts dd {margin:0;overflow-wrap:anywhere}
+.result-paper-actions {display:flex;flex-wrap:wrap;gap:8px}
+.result-coordinate-panel .result-provenance {margin:12px 0;font-size:13px;color:var(--text-secondary)}
+.result-provenance summary {cursor:pointer}

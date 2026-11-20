@@ -1,5 +1,5 @@
 import React,{useEffect,useId,useRef,useState} from 'react';
-import {parseCoordinateInput,stepCoordinate,coordinateOutsideBounds,formatCoordinate} from '../lib/coordinate-input.js';
+import {parseCoordinateInput,stepCoordinate,coordinateOutsideBounds,formatCoordinate,formatCoordinateValues} from '../lib/coordinate-input.js';
 import {coordinateUI} from '../i18n/ui.js';
 
 export default function CoordinateNavigator({point,spaceId,onNavigate,onCopy,language='zh',context='main',bounds,lockedSpace=false,independent=false,inputRef}) {
@@ -36,11 +36,11 @@ export default function CoordinateNavigator({point,spaceId,onNavigate,onCopy,lan
       <div className="coordinate-input-row"><label htmlFor={`${id}-input`}>{t.coordinates}</label><textarea ref={inputRef} id={`${id}-input`} rows={2} value={text} placeholder={t.placeholder} onChange={event=>{setText(event.target.value);setBatch([]);setErrors([]);}} aria-invalid={errorFields.has('coordinates')||undefined} aria-describedby={errorFields.has('coordinates')?`${id}-errors`:undefined}/><label htmlFor={`${id}-convention`}>{t.convention}</label><select id={`${id}-convention`} value={convention} onChange={event=>{setConvention(event.target.value);setBatch([]);}}><option value="RAS">RAS</option><option value="LPS">LPS → RAS</option></select><button type="submit">{t.go}</button></div>
     </form>
     {errors.length>0&&<div id={`${id}-errors`} role="alert" className="coordinate-error">{errors.map((error,i)=><p key={i}>{error.line?t.line(error.line):''}{t.errors[error.code]}</p>)}</div>}
-    {batch.length>1&&<label className="coordinate-batch">{t.batch}<select aria-label={t.batch} value={index} onChange={event=>{const next=Number(event.target.value);setIndex(next);move(batch[next],spaceId,"batch");}}>{batch.map((p,i)=><option key={i} value={i}>{i+1} / {batch.length} · RAS {p.join(', ')}</option>)}</select></label>}
-    <output className="coordinate-current" aria-live="polite">{formatCoordinate(point,spaceId||t.unknown)}</output>
+    {batch.length>1&&<label className="coordinate-batch">{t.batch}<select aria-label={t.batch} value={index} onChange={event=>{const next=Number(event.target.value);setIndex(next);move(batch[next],spaceId,"batch");}}>{batch.map((p,i)=><option key={i} value={i}>{i+1} / {batch.length} · RAS {formatCoordinateValues(p)}</option>)}</select></label>}
+    <output className="coordinate-current" aria-live="polite" title={formatCoordinate(point,spaceId||t.unknown)}>{spaceId||t.unknown} · RAS · {formatCoordinateValues(point)} mm</output>
     {independent&&<p className="coordinate-context" role="status">{t.independent}</p>}
     {coordinateOutsideBounds(point,bounds)&&<p className="coordinate-context" role="status">{t.outside}</p>}
     <div className="coordinate-actions"><label htmlFor={`${id}-step`}>{t.step}<input id={`${id}-step`} type="number" min="0" step="any" value={step} onChange={event=>setStep(event.target.value)} aria-invalid={errorFields.has('step')||undefined}/></label>{['X','Y','Z'].map((axis,i)=><span key={axis} className="coordinate-axis"><button type="button" aria-label={t.decrease(axis)} disabled={!sameSpace||!spaceId} onClick={()=>axisStep(i,-1)}>−{axis}</button><button type="button" aria-label={t.increase(axis)} disabled={!sameSpace||!spaceId} onClick={()=>axisStep(i,1)}>+{axis}</button></span>)}<button type="button" disabled={!sameSpace||!spaceId} onClick={()=>{setErrors([]);setBatch([]);setText('0, 0, 0');move([0,0,0],spaceId,"center");}}>{t.center}</button><button type="button" onClick={copy}>{t.copy}</button></div>
-    {message&&<p role="status" className="coordinate-context">{message}</p>}
+    {message&&<p role="status" className="coordinate-context">{message}{message===t.copyFailed&&<> {formatCoordinate(point,spaceId||t.unknown)}</>}</p>}
   </div>;
 }

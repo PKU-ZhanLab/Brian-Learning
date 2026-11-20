@@ -1,5 +1,10 @@
 import {Matrix4} from 'three';
 
+const palette=['#9ebdb2','#e4bcaa','#b6b7d3','#b8cbb0','#d9c797','#a6becf','#d5b0ba','#b8c5d5','#c9c1a7','#98bfbf','#d7c4b9','#c2b5ca'];
+export function atlasLabelColor(id) {
+  return palette[(id * 7) % palette.length];
+}
+
 const DIRECTIONS=[[-1,0,0],[1,0,0],[0,-1,0],[0,1,0],[0,0,-1],[0,0,1]];
 const CORNERS=[[[0,0,0],[0,0,1],[0,1,1],[0,1,0]],[[1,0,0],[1,1,0],[1,1,1],[1,0,1]],[[0,0,0],[1,0,0],[1,0,1],[0,0,1]],[[0,1,0],[0,1,1],[1,1,1],[1,1,0]],[[0,0,0],[0,1,0],[1,1,0],[1,0,0]],[[0,0,1],[1,0,1],[1,1,1],[0,1,1]]];
 

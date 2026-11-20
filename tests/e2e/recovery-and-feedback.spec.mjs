@@ -26,26 +26,13 @@ test('mounted ROI consumers recover from first manifest failure when resource id
   // Isolated component fixture: the actual ROICompare stays mounted with the
   // same selected A/B props while manifest metadata changes from null to ready.
   // This deliberately avoids App's later project-restore remount masking I1.
-  await page.route('**/src/App.jsx',route=>route.fulfill({contentType:'application/javascript',body:`
-    import React,{useEffect,useState} from '/node_modules/.vite/deps/react.js';
-    import ROICompare from '/src/components/ROICompare.jsx';
-    import {MAIN_MANIFEST_RESOURCE,resourceValue,retry,getResourceState,atlasResourceKey} from '/src/lib/atlas-resource.js';
-    import {atlasIdentityFor} from '/src/lib/volume.js';
-    const initial={aAtlas:'dk',aLabels:[2,3],bAtlas:'ba-histology',bLabels:[14],computed:false,snapshot:'none'};
-    export default function Fixture(){
-      const [manifest,setManifest]=useState(null),[failed,setFailed]=useState(false);
-      useEffect(()=>{resourceValue(MAIN_MANIFEST_RESOURCE).then(setManifest).catch(()=>setFailed(true));},[]);
-      const recover=async()=>{await retry(MAIN_MANIFEST_RESOURCE);const value=await resourceValue(MAIN_MANIFEST_RESOURCE);window.__x8SourceGenerations=['dk','ba-histology'].map(id=>getResourceState(atlasResourceKey(atlasIdentityFor(value.atlases[id]))).generation);setManifest(value);setFailed(false);};
-      return React.createElement(React.Fragment,null,
-        failed&&React.createElement('button',{onClick:recover},'Retry manifest fixture'),
-        React.createElement(ROICompare,{language:'en',manifest,initialState:initial,workspaceProjectId:'X8-mounted',workspaceEpoch:0,onStateChange:state=>{window.__x8MountedROI=state;}}));
-    }
-  `}));
+  await page.route('**/src/App.jsx',route=>route.fulfill({contentType:'application/javascript',
+    body:"export {RetryManifestFixture as default} from '/tests/fixtures/roi-browser.jsx';"}));
   await page.goto('/?lang=en&mode=roi');
   await expect.poll(()=>page.evaluate(()=>window.__x8MountedROI?.aLabels)).toEqual([2,3]);
   await expect.poll(()=>page.evaluate(()=>window.__x8MountedROI?.bLabels)).toEqual([14]);
   await page.getByRole('button',{name:'Retry manifest fixture',exact:true}).click();
-  expect(await page.evaluate(()=>window.__x8SourceGenerations)).toEqual([0,0]);
+  await expect.poll(()=>page.evaluate(()=>window.__x8SourceGenerations)).toEqual([0,0]);
   await expect(page.getByLabel('ROI A label',{exact:true})).toHaveValues(['2','3']);
   await expect(page.getByLabel('ROI B label',{exact:true})).toHaveValues(['14']);
   await expect(page.getByLabel('ROI A label',{exact:true})).toBeEnabled();await expect(page.getByLabel('ROI B label',{exact:true})).toBeEnabled();

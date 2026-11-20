@@ -17,7 +17,9 @@ test('decimal navigation links exact query, readout and all three slice position
   await navigate(page,'-38.25, -20.5, 54.1');
   await expect(page.locator('.voxel-info')).toHaveAttribute('data-query-coordinate','[-38.25,-20.5,54.1]');
   await expect(navigator(page).locator('output.coordinate-current')).toContainText('-38.25, -20.5, 54.1');
-  if(!await page.locator('.slice-views').isVisible())await page.locator('.coordinates-bar button').click();
+  // The open panel shows a loading state before its slice cards mount.
+  const showSlices = page.getByRole('button', {name: 'Show orthogonal slices', exact: true});
+  if (await showSlices.isVisible()) await showSlices.click();
   for(const text of ['X = -38.25 mm','Y = -20.5 mm','Z = 54.1 mm'])await expect(page.locator('.slice-card-header').filter({hasText:text})).toHaveCount(1);
   for(const atlas of ['dk','aal-registered','aal3-registered']){
     await page.getByLabel('Choose an atlas',{exact:true}).selectOption(atlas);
@@ -63,7 +65,7 @@ test('unknown and unregistered references enter independent context and remain i
   await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();
   await navigate(page,'0,0,0',{space:'MNI152NLin6Asym'});
   await page.getByRole('button',{name:'Projects & views',exact:true}).click();
-  await dialog.getByRole('button',{name:/Independent coordinates/}).click();
+  await dialog.getByRole('button',{name:/^Independent coordinates /}).click();
   await expect(page.locator('.voxel-info')).toHaveAttribute('data-query-coordinate','[10.25,20.5,30.75]');
   await page.reload();
   await expect(page.locator('.voxel-info')).toHaveAttribute('data-query-coordinate','[10.25,20.5,30.75]');

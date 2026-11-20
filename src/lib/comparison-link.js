@@ -36,10 +36,21 @@ function evidence(source){
 export function canLinkCoordinates(left,right,transform){
  try{validateAssetIdentity(left?.identity);validateAssetIdentity(right?.identity);}catch{return {allowed:false,reason:'Source identity is unavailable / 来源身份不可用'};}
  if(!specific(left.identity.spaceId)||!specific(right.identity.spaceId))return {allowed:false,reason:'Exact reference space is unknown / 精确参考空间未知'};
- if(left.identity.spaceId!==right.identity.spaceId)return {allowed:false,reason:transform?'No verified direction-correct transform bridge is available / 无可用的已核验定向变换':'Different reference spaces; no applicable recorded transform / 参考空间不同，无可用的记录变换'};
+ if(left.identity.spaceId!==right.identity.spaceId)return {allowed:false,reason:transform?'No verified direction-correct transform bridge is available / 缺少已核验且方向匹配的空间变换':'Different reference spaces lack an applicable recorded transform / 两侧参考空间不同，缺少适用的空间变换记录'};
  if(!evidence(left)||!evidence(right))return {allowed:false,reason:'Recorded reference evidence is required / 缺少参考空间依据'};
  const declared=[left,right].some(s=>s.spatialEvidence?.alignmentStatus==='user-declared');
- return {allowed:true,reason:declared?'User-declared alignment; not independently verified / 用户声明对齐，未经独立核验':'Common recorded reference; display does not certify anatomical registration / 同记录参考空间；显示不认证解剖配准'};
+ return {allowed:true,reason:declared?'The shared reference relies on user-declared alignment without independent verification. / 两侧参考空间依据用户声明对齐，未经独立核验。':'Both sources record the same reference space. Anatomical registration requires separate verification. / 两侧来源记录了相同的参考空间，解剖配准仍需另行核验。'};
+}
+/** An unresolved request is undefined. A source that could not be loaded is null. */
+export function comparisonLinkState(pair,sources){
+ const {left,right}=sources;
+ if((left===undefined||right===undefined)&&left!==null&&right!==null){
+  return {mode:'loading',allowed:false,camera:false,crosshair:false,reason:'Checking source identities and reference spaces… / 正在核对来源身份与参考空间…'};
+ }
+ const {allowed,reason}=canLinkCoordinates(left,right);
+ const camera=allowed&&pair.linkCamera,crosshair=allowed&&pair.linkCrosshair;
+ const mode=camera?(crosshair?'both':'camera'):(crosshair?'crosshair':'independent');
+ return {mode,allowed,reason,camera,crosshair};
 }
 export function validateComparisonState(value){
  if(!value||typeof value!=='object'||Array.isArray(value))throw Error('invalid-paired-view');

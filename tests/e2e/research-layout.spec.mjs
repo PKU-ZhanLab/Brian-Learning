@@ -54,7 +54,7 @@ test('width changes persist through the workspace codec, reset and history resto
   await page.setViewportSize({width:1366,height:768});
   const slider=page.getByRole('slider',{name:'Model panel width',exact:true});
   await slider.fill('390');
-  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1')).view.layout.panels.modelWidth)).toBe(390);
+  await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1'))?.view.layout.panels.modelWidth)).toBe(390);
   await page.reload();
   await expect(slider).toHaveValue('390');
   await workspace(page).locator('.paper-open').first().click();

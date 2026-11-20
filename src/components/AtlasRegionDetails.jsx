@@ -5,7 +5,7 @@ import {spatialQCForRegion} from '../lib/spatial-qc.js';
 import {dataURL} from '../lib/assets.js';
 import './AtlasRegionDetails.css';
 
-export default function AtlasRegionDetails({ details, language='zh', queryContext, notes=[], onAnnotate, onCompare, canCompare=false, onConcept }) {
+export default function AtlasRegionDetails({ details, language='zh', queryContext, notes=[], onAnnotate, onAssignROI, canCompare=false, onConcept }) {
   const [qcState,setQCState]=useState(()=>getResourceState(SPATIAL_QC_RESOURCE));
   const hasDetails=Boolean(details);
   useEffect(()=>{if(!hasDetails)return;const off=subscribe(SPATIAL_QC_RESOURCE,setQCState);setQCState(getResourceState(SPATIAL_QC_RESOURCE));ensureResource(SPATIAL_QC_RESOURCE);return off;},[hasDetails]);
@@ -24,7 +24,10 @@ export default function AtlasRegionDetails({ details, language='zh', queryContex
       {qcState.status==='error'?<button onClick={()=>retry(SPATIAL_QC_RESOURCE)}>{en?'Retry validation report':'重试验证报告'}</button>:<a href={dataURL('spatial-qc/assessment.json')} target="_blank" rel="noreferrer">{en?'Validation report':'验证报告'} ↗</a>}
     </details>
     {relations.length ? <ul>{relations.map(row=><li key={`${row.conceptId}-${row.type}`}><button onClick={()=>onConcept?.(row.conceptId)}>{row.conceptId}</button> · {row.type}<a href={row.sourceUrl} target="_blank" rel="noreferrer"> ↗</a></li>)}</ul> : <p>{en?'No linked concepts or research results yet.':'暂无已关联概念/研究结果'}</p>}
-    <div className="atlas-region-actions"><button onClick={onAnnotate} aria-label="Annotate atlas label">{en?'Add annotation':'添加批注'}</button><button onClick={onCompare} disabled={!canCompare} aria-label="Compare selected atlas label">{en?'Compare this ROI':'送入 ROI 对比'}</button></div>
+    <div className="atlas-region-actions">
+      <button onClick={onAnnotate} aria-label={en?'Annotate atlas label':'添加图谱标签批注'}>{en?'Add annotation':'添加批注'}</button>
+      {['A','B'].map(side=><button key={side} onClick={()=>onAssignROI(side)} disabled={!canCompare}>{en?`Use as ROI ${side}`:`设为 ROI ${side}`}</button>)}
+    </div>
     {ownNotes.map(note=><p data-user-content className="inline-note" key={note.id}>{note.text}</p>)}
   </section>;
 }

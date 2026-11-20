@@ -34,7 +34,7 @@ test('AAL to DK to BA delayed volume completions never publish a stale source',a
   await expect(page.locator('.voxel-info')).toHaveAttribute('data-query-atlas','ba');
   await expect(page.locator('.voxel-info')).toHaveAttribute('data-query-status','ready');
   await expect(page.locator('.voxel-info')).toHaveAttribute('data-query-source','public/data/ba-v2/talairach-ba.bin');
-  const final=await page.locator('.voxel-info').innerText();
+  const final=await page.locator('.voxel-info').textContent();
   const pendingResponses=Promise.all([page.waitForResponse(response=>response.url().includes('/data/aal-v3/')&&response.url().endsWith('.bin')),page.waitForResponse(response=>response.url().includes('/data/dk-v2/')&&response.url().endsWith('.bin'))]);
   releaseA();releaseB();await pendingResponses;
   await expect(page.locator('.voxel-info')).toHaveAttribute('data-query-atlas','ba');
@@ -93,7 +93,7 @@ test('opening an unmapped paper preserves the independent current-coordinate atl
   await expect(query).toHaveAttribute('data-query-label',/^\d+$/);
   const attrs=['status','atlas','version','source','label','method','coordinate'];
   const before=await Promise.all(attrs.map(name=>query.getAttribute(`data-query-${name}`)));
-  const text=await query.innerText();
+  const text=await query.textContent();
   await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Evidence library',exact:true}).click();
   await page.getByLabel('Search papers, authors or regions',{exact:true}).fill('Schaum');
   await page.locator('.paper-card').filter({hasText:'Schaum'}).locator('.paper-open').click();

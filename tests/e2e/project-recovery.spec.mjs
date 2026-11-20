@@ -15,3 +15,29 @@ test('a separate browser storage restores a chosen project and v1 migrates witho
 test('malformed chosen project cannot replace an existing synthetic project',async({page})=>{
  const text=await serializeProject({projectId:'g1-preserve',view:{language:'en',mode:'roi'},notes:[],evidence:emptyEvidence(),volumes:[]});await page.goto('/?lang=en');await open(page,text);const before=await exported(page);await page.getByRole('button',{name:'Close save dialog',exact:true}).click();const dialog=await files(page);await choose(dialog,'{"schema":"neuroatlas-project-v2","volumes":"BROKEN"}');await expect(dialog.getByRole('button',{name:'Confirm open',exact:true})).toHaveCount(0);await dialog.getByRole('button',{name:'Close save dialog',exact:true}).click();const after=await exported(page);expect(after.projectId).toBe(before.projectId);expect(after.notes).toEqual(before.notes);expect(after.evidence).toEqual(before.evidence);expect(after.volumes).toEqual(before.volumes);
 });
+
+test('restores saved display settings while the cortex mesh is still loading', async ({page}) => {
+  const key = 'neuroatlas-workspace-current-v1';
+  await page.addInitScript(({key, evidence}) => {
+    localStorage.setItem(key, JSON.stringify({schema: key, projectId: 'early-view', revision: 7,
+      view: {language: 'en', atlas: 'dk', opacity: 0.55}, notes: [], drafts: [], evidence}));
+  }, {key, evidence: emptyEvidence()});
+  let releaseMesh;
+  const gate = new Promise(resolve => { releaseMesh = resolve; });
+  await page.route('**/dk-v2/cortex-left.json', async route => { await gate; await route.continue(); });
+  const requested = page.waitForRequest('**/dk-v2/cortex-left.json');
+  try {
+    await page.goto('/?lang=en', {waitUntil: 'domcontentloaded'});
+    await requested;
+    const controls = page.locator('details.display-controls');
+    await controls.locator('summary').click();
+    const opacity = controls.getByRole('slider', {name: 'Cortical opacity', exact: true});
+    await expect(opacity).toHaveValue('0.55', {timeout: 5000});
+    await opacity.fill('0.4');
+    const loaded = page.waitForResponse('**/dk-v2/cortex-left.json');
+    releaseMesh();
+    await (await loaded).finished();
+    await expect(opacity).toHaveValue('0.4');
+    expect(await page.evaluate(key => JSON.parse(localStorage.getItem(key)).revision, key)).toBe(7);
+  } finally { releaseMesh(); }
+});

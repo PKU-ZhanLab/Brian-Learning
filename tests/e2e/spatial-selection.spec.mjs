@@ -21,9 +21,15 @@ test('unlinked actual label supports exact annotation and ROI entry without conc
   expect(note.regionRef).toMatchObject({atlasId:'aal-registered',labelId:2101,hemisphere:'L'});
   expect(note.structureId).toBeUndefined();
   await page.keyboard.press('Escape');
-  await page.getByRole('button',{name:'Compare selected atlas label',exact:true}).click();
+  await page.getByRole('button',{name:'Use as ROI A',exact:true}).click();
   await expect(page.getByLabel('ROI A atlas',{exact:true})).toHaveValue('aal-registered');
   await expect(page.getByLabel('ROI A label',{exact:true})).toHaveValues(['2101']);
+  await page.getByRole('navigation',{name:'Main navigation'}).getByRole('button',{name:'Anatomy',exact:true}).click();
+  await pick(page,'aal3-registered','Temporal_Pole_Mid_L');
+  await page.getByRole('button',{name:'Use as ROI B',exact:true}).click();
+  await expect(page.getByLabel('ROI A label',{exact:true})).toHaveValues(['2101']);
+  await expect(page.getByLabel('ROI B atlas',{exact:true})).toHaveValue('aal3-registered');
+  await expect(page.getByLabel('ROI B label',{exact:true})).toHaveValues(['91']);
 });
 
 test('temporal labels stay independent and deep native labels do not trigger a cortical overlay', async ({page}) => {
@@ -52,34 +58,18 @@ test('temporal labels stay independent and deep native labels do not trigger a c
   }
   await pick(page,'aal3','LC_L');
   await expect(page.getByRole('region',{name:'Atlas region details'})).toContainText('aal3');
-  await expect(page.getByRole('button',{name:'Compare selected atlas label',exact:true})).toBeDisabled();
+  for(const side of ['A','B'])await expect(page.getByRole('button',{name:`Use as ROI ${side}`,exact:true})).toBeDisabled();
   await expect(page.getByLabel('Choose an atlas',{exact:true})).not.toHaveValue('aal3');
 });
 
 // Supplementary component interaction. The App/project container integration
 // still belongs to W6; this mounts the real ROICompare against the real atlases.
 test('unresolved A reference survives grid, B and threshold edits until explicit A reselection',async({page})=>{
-  await page.goto('/?lang=en');
-  await page.evaluate(async()=>{
-    const main=await(await fetch('/src/main.jsx')).text();
-    const modulePath=name=>{
-      const path=main.match(new RegExp(`from\\s*["']([^"']*/${name}\\.js[^"']*)["']`))?.[1];
-      if(!path)throw Error(`Vite dependency URL unavailable: ${name}`);
-      return path;
-    };
-    const [{default:React},{createRoot},{default:ROICompare},{makeAtlasRegionRef},{registerCustomVolume},{prepareVolume}]=await Promise.all([
-      import(modulePath('react')),import(modulePath('react-dom_client')),import('/src/components/ROICompare.jsx'),import('/src/lib/atlas-identity.js'),import('/src/lib/custom-volumes.js'),import('/src/lib/volume.js'),
-    ]);
-    const manifest=await(await fetch('/data/manifest.json')).json();
-    const a=makeAtlasRegionRef('aal-registered',manifest.atlases['aal-registered'],8121);
-    const b=makeAtlasRegionRef('aal3-registered',manifest.atlases['aal3-registered'],87);
-    registerCustomVolume(prepareVolume(new Float32Array([1]),{shape:[1,1,1],affine:[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],space:'MNI152NLin6Asym',order:'x-fastest',kind:'statistic',name:'Threshold fixture',canOverlayOnTarget:true,alignmentStatus:'user-declared'}),{id:'custom-s2-threshold-fixture'});
-    document.getElementById('root').hidden=true;
-    const host=document.createElement('div');host.dataset.s2RoiFixture='';document.body.append(host);
-    window.__s2ROIState=null;
-    createRoot(host).render(React.createElement(ROICompare,{manifest,language:'en',initialState:{aAtlas:'aal-registered',aLabels:[8121],aRegionRefs:[{...a,atlasVersion:'saved-unavailable-version'}],bAtlas:'aal3-registered',bLabels:[87],bRegionRefs:[b],resolutionMm:2,computed:false},onStateChange:value=>{window.__s2ROIState=value;}}));
-  });
-  const fixture=page.locator('[data-s2-roi-fixture]');
+  await page.route('**/src/App.jsx', route => route.fulfill({
+    contentType:'application/javascript',
+    body:"export {UnresolvedROIFixture as default} from '/tests/fixtures/roi-browser.jsx';"
+  }));
+  await page.goto('/?lang=en');  const fixture=page.locator('[data-s2-roi-fixture]');
   const warning=fixture.getByRole('alert').filter({hasText:'Saved atlas label identity is unavailable or has changed.'});
   const compute=fixture.getByRole('button',{name:'Compute ROI overlap',exact:true});
   const assertBlocked=async()=>{

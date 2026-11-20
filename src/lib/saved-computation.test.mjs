@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {encodeSavedComputation,decodeSavedComputation,savedComputationUsage,inspectEncodedSavedComputation} from './saved-computation.js';
 import {prepareProjectPayload,parseProject,serializeProject} from './workspace-project.js';
-import {stageProjectImport} from './workspace-session.js';
+import {createWorkspaceSession,stageProjectImport} from './workspace-session.js';
 import {emptyEvidence} from './evidence-schema.js';
 import {compareROIs} from './roi.js';
 
@@ -122,4 +122,19 @@ test('z-fastest historical classes are reordered for geometry without changing t
 
 test('historical unknown-space results retain metrics and bytes but cannot attach geometry to the main brain',()=>{
  const original={...saved(),grid:{...grid,space:'native-unverified'}};const restored=history.restoreComputation(original);assert.equal(restored.comparison,null);assert.equal(restored.overlayUnavailableReason,'saved-space-not-main');assert.deepEqual(restored.saved.metrics,original.metrics);assert.deepEqual(restored.saved.classes,original.classes);
+});
+
+test('restoring a view revalidates mutated numerical classes before publishing', async () => {
+  const session = createWorkspaceSession({
+    initial: {...project({}), revision: 0},
+    storage: {setItem() {}}
+  });
+  const admitted = session.commit(await session.stage({...session.getSnapshot(), roiSnapshot: saved()}));
+  admitted.roiSnapshot.classes[0] = 5;
+  await assert.rejects(session.restoreView(admitted.view), /snapshot-classes/);
+  assert.strictEqual(session.getSnapshot(), admitted);
+  admitted.roiSnapshot.classes[0] = 3;
+  const next = await session.restoreView(admitted.view);
+  const reopened = await parseProject(await serializeProject(next));
+  assert.deepEqual(reopened.roiSnapshot.classes, Uint8Array.of(3, 1, 2, 3));
 });

@@ -3,13 +3,14 @@ import {resourceFeedback} from '../lib/workspace-status.js';
 import { atlasResourceKeyFor, makeSliceCanvas, sliceWorldPoint, atlasLabelAt, SLICE_BOUNDS } from '../lib/volume.js';
 import { ANATOMY_VOLUME_RESOURCE, getResourceState, subscribe, ensureResource, retry } from '../lib/atlas-resource.js';
 import { queryableAtlasVolume } from '../lib/query-state.js';
+import {formatCoordinateValues} from '../lib/coordinate-input.js';
 import {comparisonVolumeBounds} from '../lib/comparison-link.js';
 
 const PLANES=[{axis:'x',title:'矢状位',en:'Sagittal',left:'P',right:'A',top:'S',bottom:'I',color:'#b99ac5'},{axis:'y',title:'冠状位',en:'Coronal',left:'R',right:'L',top:'S',bottom:'I',color:'#94b9a8'},{axis:'z',title:'轴位',en:'Axial',left:'R',right:'L',top:'A',bottom:'P',color:'#d5ae85'}];
 function SourcePlane({volume,displayVolume,point,labels,plane,onPoint,side,language}){
  const canvas=useRef(null),bounds=comparisonVolumeBounds(volume),index='xyz'.indexOf(plane.axis),en=language==='en';
  useEffect(()=>{if(!canvas.current)return;const reference=`same-source:${volume.identity.sha256}`,rendered=makeSliceCanvas({...volume,sliceReference:reference},plane.axis,point[index],{size:192,bounds,crosshair:point,atlasVolume:{...displayVolume,sliceReference:reference},selectedLabels:new Set(labels)});canvas.current.width=rendered.width;canvas.current.height=rendered.height;canvas.current.getContext('2d').drawImage(rendered,0,0);},[volume,displayVolume,point,labels,plane]);
- return <section><header>{en?plane.en:plane.title} · {point[index]} mm</header><canvas ref={canvas} tabIndex={0} aria-label={`${side} ${plane.en} source slice`} onClick={e=>{const r=e.currentTarget.getBoundingClientRect();onPoint(sliceWorldPoint(plane.axis,point[index],(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,true,bounds));}} onKeyDown={e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();onPoint(point.map((v,i)=>i===index?v+(['ArrowRight','ArrowUp'].includes(e.key)?1:-1):v));}}}/><span className="orientation">{plane.left} / {plane.right} · {plane.top} / {plane.bottom}</span><input type="range" aria-label={`${side} ${plane.en} source position`} min={bounds[plane.axis][0]} max={bounds[plane.axis][1]} step="any" value={Math.min(bounds[plane.axis][1],Math.max(bounds[plane.axis][0],point[index]))} onChange={e=>onPoint(point.map((v,i)=>i===index?+e.target.value:v))}/></section>;
+ return <section><header title={String(point[index])}>{en?plane.en:plane.title} · {formatCoordinateValues([point[index]])} mm</header><canvas ref={canvas} tabIndex={0} aria-label={`${side} ${plane.en} source slice`} onClick={e=>{const r=e.currentTarget.getBoundingClientRect();onPoint(sliceWorldPoint(plane.axis,point[index],(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,true,bounds));}} onKeyDown={e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();onPoint(point.map((v,i)=>i===index?v+(['ArrowRight','ArrowUp'].includes(e.key)?1:-1):v));}}}/><span className="orientation">{plane.left} / {plane.right} · {plane.top} / {plane.bottom}</span><input type="range" aria-label={`${side} ${plane.en} source position`} min={bounds[plane.axis][0]} max={bounds[plane.axis][1]} step="any" value={Math.min(bounds[plane.axis][1],Math.max(bounds[plane.axis][0],point[index]))} onChange={e=>onPoint(point.map((v,i)=>i===index?+e.target.value:v))}/></section>;
 }
 export function SourceSliceViews({volume,displayVolume,point,labels,onPoint,side,language}){
  const label=atlasLabelAt(displayVolume,point),en=language==='en';
@@ -25,7 +26,7 @@ function Slice({plane,volume,atlasVolume,atlasStatus,slices,onChange,onCoordinat
   const labelName=en?label?.name?.replace(/^标签\s*/, 'Label '):label?.name;
   const emptyLabel=en?'No atlas label at this coordinate':'当前坐标没有图谱标签';
   return <div className="slice-card">
-    <div className="slice-card-header"><span><i style={{background:plane.color}}/>{title}</span><small>{plane.axis.toUpperCase()} = {slices[plane.axis]} mm</small></div>
+    <div className="slice-card-header"><span><i style={{background:plane.color}}/>{title}</span><small title={String(slices[plane.axis])}>{plane.axis.toUpperCase()} = {formatCoordinateValues([slices[plane.axis]])} mm</small></div>
     <div className="slice-image"><span className="orientation top">{plane.top}</span><span className="orientation left">{plane.left}</span><span className="orientation right">{plane.right}</span><span className="orientation bottom">{plane.bottom}</span>
       {volume?<><canvas ref={canvas} onClick={pick} title={en?'Click to move the intersection of all three slices':'点击移动三正交切片交点'} aria-label={`${title} MRI ${en?'slice':'切片'}`}/>{outside&&<div className="out-of-template">{en?'Outside the brain template':'超出脑模板范围'}<br/>{en?'Slices show the brain template only':'当前切片仅显示脑模板'}</div>}</>:<div className="slice-loading">{en?'Loading MRI…':'正在载入 MRI…'}</div>}
     </div>

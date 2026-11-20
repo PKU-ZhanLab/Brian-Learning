@@ -148,3 +148,31 @@ test('merge rewrites explicitly incoming snapshots independently while retaining
    const stage=await stageWorkspaceChange(merged.snapshot,{current,preview:merged.preview});assert.deepEqual(stage.next[retainedKey],before[retainedKey]);assert.equal(stage.next[incomingKey].volumeId,'custom-incoming');assert.equal(stage.next[incomingKey].A.atlasId,'custom-incoming');assert.equal(stage.next[incomingKey].manifest.inputs[0].id,'custom-incoming');assert.deepEqual(stage.next[incomingKey].voxels,[2]);assert.equal(stage.next[incomingKey].manifest.inputs[0].sha256,'2'.repeat(64));assert.deepEqual(current,before);assert.deepEqual(incoming,incomingBefore);
  }
 });
+
+test('view restore uses admitted asset bytes and enforces their digest, revision and storage transaction', async () => {
+  const {prepareLocalVolumeProvenance} = await import('./computation-manifest.js');
+  const storage = memoryStorage();
+  const session = createWorkspaceSession({storage, initial: makeWorkspace()});
+  const asset = await prepareLocalVolumeProvenance(volume(), Uint8Array.of(1));
+  const admitted = session.commit(await session.stage({...session.getSnapshot(), volumes: [asset]}));
+  const requested = {...admitted.view, atlas: asset.id};
+  const restored = await session.restoreView(requested);
+  assert.strictEqual(restored.volumes, admitted.volumes);
+  assert.equal(restored.view.atlas, asset.id);
+  assert.equal(restored.revision, admitted.revision + 1);
+  const before = storage.entries();
+  await assert.rejects(session.restoreView({...requested, atlas: 'custom-absent'}), /missing-asset/);
+  storage.fail = true;
+  await assert.rejects(session.restoreView(requested), /full/);
+  storage.fail = false;
+  restored.volumes[0].data[0] = 2;
+  await assert.rejects(session.restoreView(requested), /project-volume-digest-mismatch/);
+  assert.strictEqual(session.getSnapshot(), restored);
+  assert.deepEqual(storage.entries(), before);
+  restored.volumes[0].data[0] = 1;
+  const replacement = await session.stage(makeWorkspace('B', {volumes: [volume(asset.id, 2)]}));
+  const pending = session.restoreView(requested);
+  session.commit(replacement);
+  await assert.rejects(pending, /stale-workspace/);
+  assert.equal(session.getSnapshot().projectId, 'B');
+});
