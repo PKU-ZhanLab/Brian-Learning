@@ -5,6 +5,10 @@ import {validateEvidencePackageClosure} from '../../src/lib/evidence-package.js'
 import {exportNifti} from '../../src/lib/nifti.js';
 import {assertJourneyManifestInputs} from '../helpers/research-journey-contract.mjs';
 
+// Each journey exports a project and opens it in a second browser context.
+// Allow time for both sessions while retaining the usual per-assertion timeout.
+test.describe.configure({timeout:120_000});
+
 const nav=page=>page.getByRole('navigation',{name:'Main navigation',exact:true});
 async function downloaded(download){const stream=await download.createReadStream(),parts=[];for await(const part of stream)parts.push(part);return Buffer.concat(parts).toString('utf8');}
 async function files(page){await page.getByRole('button',{name:'Projects & views',exact:true}).click();return page.getByRole('dialog',{name:'Save and share',exact:true});}
