@@ -1,0 +1,9 @@
+{
+  "schema": "neuroatlas-build-source-v1",
+  "originCommit": "2402e965e476ef6ba13c7fd981d19dbef5ece3fd",
+  "sourceKind": "git-worktree",
+  "sourceTreeSha256": "b05e635a5898ecfe36691c23b2e9706da7d9490b5338bbcd472325bad8308a0e",
+  "version": "4.2.0",
+  "clean": true,
+  "exactCommit": true
+}

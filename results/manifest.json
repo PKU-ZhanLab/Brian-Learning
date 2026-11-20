@@ -1,0 +1,161 @@
+{
+  "schema": "public-result-pages-v1",
+  "base": "/Brian-Learning/",
+  "releaseStatus": "prepared-local-not-deployed",
+  "records": [
+    {
+      "resultId": "schaum2021-meg-stop",
+      "dataVersion": "2026-10-29.2",
+      "language": "zh",
+      "file": "results/schaum2021-meg-stop/2026-10-29.2/index.html",
+      "contentHash": "0d04b0c43c3065ca2794141f79e21e2743ce40438eea3d27b8bcc3c5cad1463e",
+      "snapshotSha256": "7a87e8cb8af331d0f1830793217e0db1ee0e9e5b68422ac4eeea7c1d31c08bce",
+      "sha256": "30632e7b9dc81426428d4ba90e145c7efba5dfd4063342d2b252a5fdc0feec7c"
+    },
+    {
+      "resultId": "schaum2021-meg-stop",
+      "dataVersion": "2026-10-29.2",
+      "language": "en",
+      "file": "results/schaum2021-meg-stop/2026-10-29.2/index.en.html",
+      "contentHash": "0d04b0c43c3065ca2794141f79e21e2743ce40438eea3d27b8bcc3c5cad1463e",
+      "snapshotSha256": "7a87e8cb8af331d0f1830793217e0db1ee0e9e5b68422ac4eeea7c1d31c08bce",
+      "sha256": "13dd1c9daa7b7c358b06f8d3ff4f0c77056a71c68666b20ab07f5408d6d21f90"
+    },
+    {
+      "resultId": "axelrod2015-rffa",
+      "dataVersion": "2026-10-29.2",
+      "language": "zh",
+      "file": "results/axelrod2015-rffa/2026-10-29.2/index.html",
+      "contentHash": "6976682895a722589187622049e496d4d16134c20accaad750ee626d18523dbe",
+      "snapshotSha256": "7a87e8cb8af331d0f1830793217e0db1ee0e9e5b68422ac4eeea7c1d31c08bce",
+      "sha256": "5d56e389dee905e317cc51d0f831502c2f8cb8d68650cbc07b0ca79e2dcc4c63"
+    },
+    {
+      "resultId": "axelrod2015-rffa",
+      "dataVersion": "2026-10-29.2",
+      "language": "en",
+      "file": "results/axelrod2015-rffa/2026-10-29.2/index.en.html",
+      "contentHash": "6976682895a722589187622049e496d4d16134c20accaad750ee626d18523dbe",
+      "snapshotSha256": "7a87e8cb8af331d0f1830793217e0db1ee0e9e5b68422ac4eeea7c1d31c08bce",
+      "sha256": "6cad8bab787ab4bdfa7cdfc4a8d9312143271511c5029b5b732c1885b831cfa8"
+    },
+    {
+      "resultId": "axelrod2015-lffa",
+      "dataVersion": "2026-10-29.2",
+      "language": "zh",
+      "file": "results/axelrod2015-lffa/2026-10-29.2/index.html",
+      "contentHash": "535c835d5e19ac967b096b4da6410a71f8c16d284b076038fda1ebf481b1a2db",
+      "snapshotSha256": "7a87e8cb8af331d0f1830793217e0db1ee0e9e5b68422ac4eeea7c1d31c08bce",
+      "sha256": "5e6bae1ddeeee38a738148a2cfc04ee89a18e321eaa84cdab89a168f3cfec56e"
+    },
+    {
+      "resultId": "axelrod2015-lffa",
+      "dataVersion": "2026-10-29.2",
+      "language": "en",
+      "file": "results/axelrod2015-lffa/2026-10-29.2/index.en.html",
+      "contentHash": "535c835d5e19ac967b096b4da6410a71f8c16d284b076038fda1ebf481b1a2db",
+      "snapshotSha256": "7a87e8cb8af331d0f1830793217e0db1ee0e9e5b68422ac4eeea7c1d31c08bce",
+      "sha256": "c3825dd60197b80f35c63afa0b65ff53ef1d7cefa0143b465b2b55c2d283678e"
+    },
+    {
+      "resultId": "bosco2008-tms-protocol1",
+      "dataVersion": "2026-10-29.2",
+      "language": "zh",
+      "file": "results/bosco2008-tms-protocol1/2026-10-29.2/index.html",
+      "contentHash": "331fe13120044d2ee28870ae8fcc65fe3d22b2cb07b1c9704030c5a0b707e45a",
+      "snapshotSha256": "7a87e8cb8af331d0f1830793217e0db1ee0e9e5b68422ac4eeea7c1d31c08bce",
+      "sha256": "f0706eef6d9030dbef30cc86e701834b5d5493217160335a8605a1684fde72b8"
+    },
+    {
+      "resultId": "bosco2008-tms-protocol1",
+      "dataVersion": "2026-10-29.2",
+      "language": "en",
+      "file": "results/bosco2008-tms-protocol1/2026-10-29.2/index.en.html",
+      "contentHash": "331fe13120044d2ee28870ae8fcc65fe3d22b2cb07b1c9704030c5a0b707e45a",
+      "snapshotSha256": "7a87e8cb8af331d0f1830793217e0db1ee0e9e5b68422ac4eeea7c1d31c08bce",
+      "sha256": "72ebe30902cafe9af40c0ca6b895e5597c0905e2fc7c749eaacc95fd821586a5"
+    },
+    {
+      "resultId": "schaum2021-meg-stop",
+      "dataVersion": "2026-10-30.1",
+      "language": "zh",
+      "file": "results/schaum2021-meg-stop/2026-10-30.1/index.html",
+      "contentHash": "b52f6f2dce85ec9e6664e5cfe3d8d2d2fa378f95de7466996c7e71298f189771",
+      "snapshotSha256": "234a04a803e9dfcb2dfd38f33bc7fc247ba3cd14e9c0245f14d6c165c051e208",
+      "sha256": "51613ac44d1559e569259d098c1ab3f175ce537f292caf7efa22bd2fe1e5ddfa"
+    },
+    {
+      "resultId": "schaum2021-meg-stop",
+      "dataVersion": "2026-10-30.1",
+      "language": "en",
+      "file": "results/schaum2021-meg-stop/2026-10-30.1/index.en.html",
+      "contentHash": "b52f6f2dce85ec9e6664e5cfe3d8d2d2fa378f95de7466996c7e71298f189771",
+      "snapshotSha256": "234a04a803e9dfcb2dfd38f33bc7fc247ba3cd14e9c0245f14d6c165c051e208",
+      "sha256": "c5afc9f8c3effdf81687dd72fed131a945bfcb088a2776f9b935c7f581dac144"
+    },
+    {
+      "resultId": "axelrod2015-rffa",
+      "dataVersion": "2026-10-30.1",
+      "language": "zh",
+      "file": "results/axelrod2015-rffa/2026-10-30.1/index.html",
+      "contentHash": "98e4fecd6ba1c40bb8f0b598fe61c0d9111a756ee4199ee4e24532b78a571334",
+      "snapshotSha256": "234a04a803e9dfcb2dfd38f33bc7fc247ba3cd14e9c0245f14d6c165c051e208",
+      "sha256": "e049c49503f5c7b2cea0549edd1080f6a41924107f2e5bf9a94547c634a3e22d"
+    },
+    {
+      "resultId": "axelrod2015-rffa",
+      "dataVersion": "2026-10-30.1",
+      "language": "en",
+      "file": "results/axelrod2015-rffa/2026-10-30.1/index.en.html",
+      "contentHash": "98e4fecd6ba1c40bb8f0b598fe61c0d9111a756ee4199ee4e24532b78a571334",
+      "snapshotSha256": "234a04a803e9dfcb2dfd38f33bc7fc247ba3cd14e9c0245f14d6c165c051e208",
+      "sha256": "a4ef559e7a7d66d606ed3fcbdaadbe2ba453ca85319a29db3ac12c63ffa9f3ec"
+    },
+    {
+      "resultId": "axelrod2015-lffa",
+      "dataVersion": "2026-10-30.1",
+      "language": "zh",
+      "file": "results/axelrod2015-lffa/2026-10-30.1/index.html",
+      "contentHash": "fabd54544a97428f3e00a7b6487bb54f23a089266525e5419e000e9a68b48dd7",
+      "snapshotSha256": "234a04a803e9dfcb2dfd38f33bc7fc247ba3cd14e9c0245f14d6c165c051e208",
+      "sha256": "672d8a5486d3e6dd8a93ecc588c513cb95e2b4450458a509f88f57d9a97f2c6a"
+    },
+    {
+      "resultId": "axelrod2015-lffa",
+      "dataVersion": "2026-10-30.1",
+      "language": "en",
+      "file": "results/axelrod2015-lffa/2026-10-30.1/index.en.html",
+      "contentHash": "fabd54544a97428f3e00a7b6487bb54f23a089266525e5419e000e9a68b48dd7",
+      "snapshotSha256": "234a04a803e9dfcb2dfd38f33bc7fc247ba3cd14e9c0245f14d6c165c051e208",
+      "sha256": "46b97ce1bae8b012ad8edcc199c2e2e9c7b6c8f2c7e7b76984b224c40295da12"
+    },
+    {
+      "resultId": "bosco2008-tms-protocol1",
+      "dataVersion": "2026-10-30.1",
+      "language": "zh",
+      "file": "results/bosco2008-tms-protocol1/2026-10-30.1/index.html",
+      "contentHash": "f8aa48c46cffc1d5b196f9194f8a0cceb20eb5db6f49aa870d941f6cfdd8c4fc",
+      "snapshotSha256": "234a04a803e9dfcb2dfd38f33bc7fc247ba3cd14e9c0245f14d6c165c051e208",
+      "sha256": "b4c69ebb70e2ad905da755fc5c1bfafe54b957a37d544030422e1efa21da898e"
+    },
+    {
+      "resultId": "bosco2008-tms-protocol1",
+      "dataVersion": "2026-10-30.1",
+      "language": "en",
+      "file": "results/bosco2008-tms-protocol1/2026-10-30.1/index.en.html",
+      "contentHash": "f8aa48c46cffc1d5b196f9194f8a0cceb20eb5db6f49aa870d941f6cfdd8c4fc",
+      "snapshotSha256": "234a04a803e9dfcb2dfd38f33bc7fc247ba3cd14e9c0245f14d6c165c051e208",
+      "sha256": "e9a08bbf13dd68e6ad8b105fa772bc9a435100a48e3db1803553b5097ff692ae"
+    }
+  ],
+  "files": [
+    {
+      "file": "results/index.html",
+      "sha256": "8fa281ba87a54b0156f5a6a493ab1af2e95685d932a7c8df3dbcd520d1ea7298"
+    },
+    {
+      "file": "results/index.en.html",
+      "sha256": "be3cb6b60d08b8be5a6c210054e5f5be26988b78223baa0e5bde07ce2c0607bd"
+    }
+  ]
+}
