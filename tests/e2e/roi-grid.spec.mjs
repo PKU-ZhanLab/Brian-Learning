@@ -66,11 +66,15 @@ test('late real-worker messages cannot commit a cancelled computation', async ({
   await page.addInitScript(() => {
     const OriginalWorker = window.Worker;
     window.__roiDelivered = 0;
-    window.__roiScheduled = 0;
+    const deliveries = [];
+    window.__flushROIMessages = () => deliveries.splice(0).forEach(deliver => deliver());
     window.Worker = class extends OriginalWorker {
       constructor(url, options) { super(url, options); this.isROI = String(url).includes('roi.worker'); }
       set onmessage(callback) {
-        super.onmessage = this.isROI ? event => { window.__roiScheduled++; setTimeout(() => { window.__roiDelivered++; callback?.(event); }, 1200); } : callback;
+        super.onmessage = this.isROI ? event => {
+          deliveries.push(() => { window.__roiDelivered++; callback?.(event); });
+          if (event.data.phase === 'complete') window.__roiCompleteQueued = true;
+        } : callback;
       }
     };
   });
@@ -79,10 +83,11 @@ test('late real-worker messages cannot commit a cancelled computation', async ({
   await page.getByRole('button', {name:'Compute ROI overlap', exact:true}).click();
   await expect.poll(() => page.workers().some(worker => worker.url().includes('roi.worker'))).toBe(true);
   // Let the real worker finish while delivery is delayed, then cancel the UI generation.
-  await page.waitForFunction(() => window.__roiScheduled >= 2 && window.__roiDelivered === 0);
+  await page.waitForFunction(() => window.__roiCompleteQueued && window.__roiDelivered === 0);
   await page.getByRole('button', {name:'Cancel ROI computation', exact:true}).click();
   await expect(page.locator('.roi-result')).toHaveCount(0);
   await page.getByLabel('ROI shared grid spacing', {exact:true}).selectOption('2');
+  await page.evaluate(() => window.__flushROIMessages());
   await expect.poll(() => page.evaluate(() => window.__roiDelivered)).toBeGreaterThanOrEqual(2);
   await expect(page.locator('.roi-result')).toHaveCount(0);
 });

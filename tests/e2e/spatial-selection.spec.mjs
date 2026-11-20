@@ -33,6 +33,8 @@ test('unlinked actual label supports exact annotation and ROI entry without conc
 });
 
 test('temporal labels stay independent and deep native labels do not trigger a cortical overlay', async ({page}) => {
+  // This workspace visits seven atlas selections and saves four independent notes.
+  test.slow();
   await page.goto('/?lang=en');
   for (const [atlas, first, second, ids] of [['aal-registered','Temporal_Pole_Sup_L','Temporal_Pole_Mid_L',[8121,8211]],['aal3-registered','Temporal_Pole_Sup_L','Temporal_Pole_Mid_L',[87,91]]]) {
     await pick(page,atlas,first);
@@ -40,6 +42,7 @@ test('temporal labels stay independent and deep native labels do not trigger a c
     await page.getByRole('button',{name:'Annotate atlas label',exact:true}).click();
     await page.locator('#note-draft').fill(`${atlas} first temporal label`);
     await page.getByRole('button',{name:'Save note',exact:true}).click();
+    await expect.poll(()=>page.evaluate(()=>JSON.parse(localStorage.getItem('neuroatlas-workspace-current-v1')||'null')?.notes?.at(-1)?.text)).toBe(`${atlas} first temporal label`);
     await page.keyboard.press('Escape');
     await pick(page,atlas,second);
     const after=await page.getByRole('region',{name:'Atlas region details'}).getAttribute('data-region-key');
